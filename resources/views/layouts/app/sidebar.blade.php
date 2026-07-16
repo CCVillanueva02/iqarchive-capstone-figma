@@ -11,24 +11,129 @@
             </flux:sidebar.header>
 
             <flux:sidebar.nav>
-                <flux:sidebar.group :heading="__('Platform')" class="grid">
-                    <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
-                        {{ __('Dashboard') }}
-                    </flux:sidebar.item>
-                </flux:sidebar.group>
+                <!-- Platform / Dashboard -->
+                <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
+                    {{ __('Dashboard') }}
+                </flux:sidebar.item>
+
+                @php
+                    $role = session('preview_role', 'iqa-admin');
+                @endphp
+
+                <!-- Dynamic Role-Based Sidebar Navigation Groups -->
+                @if ($role === 'system-administrator')
+                    <flux:sidebar.group :heading="__('Administration')">
+                        <flux:sidebar.item icon="shield" :href="route('admin.audit-logs')" :current="request()->routeIs('admin.audit-logs')" wire:navigate>
+                            {{ __('Audit Logs') }}
+                        </flux:sidebar.item>
+                        <flux:sidebar.item icon="cog" href="#" wire:navigate>
+                            {{ __('System Settings') }}
+                        </flux:sidebar.item>
+                    </flux:sidebar.group>
+                @endif
+
+                @if ($role === 'iqa-admin')
+                    <flux:sidebar.group :heading="__('IQA Management')">
+                        <flux:sidebar.item icon="users" :href="route('admin.users')" :current="request()->routeIs('admin.users')" wire:navigate>
+                            {{ __('User Accounts') }}
+                        </flux:sidebar.item>
+                        <flux:sidebar.item icon="folder" :href="route('documents.index')" :current="request()->routeIs('documents.index')" wire:navigate>
+                            {{ __('All Documents') }}
+                        </flux:sidebar.item>
+                        <flux:sidebar.item icon="clipboard" href="#" wire:navigate>
+                            {{ __('Accreditation Instruments') }}
+                        </flux:sidebar.item>
+                        <flux:sidebar.item icon="chart-bar" href="#" wire:navigate>
+                            {{ __('Compliance Reports') }}
+                        </flux:sidebar.item>
+                    </flux:sidebar.group>
+                @endif
+
+                @if ($role === 'iqa-member')
+                    <flux:sidebar.group :heading="__('Quality Assurance')">
+                        <flux:sidebar.item icon="folder" :href="route('documents.index')" :current="request()->routeIs('documents.index')" wire:navigate>
+                            {{ __('Document Archive') }}
+                        </flux:sidebar.item>
+                        <flux:sidebar.item icon="clipboard" href="#" wire:navigate>
+                            {{ __('Instruments') }}
+                        </flux:sidebar.item>
+                        <flux:sidebar.item icon="chart-bar" href="#" wire:navigate>
+                            {{ __('Compliance Tracking') }}
+                        </flux:sidebar.item>
+                    </flux:sidebar.group>
+                @endif
+
+                @if ($role === 'accreditor')
+                    <flux:sidebar.group :heading="__('Accreditation')">
+                        <flux:sidebar.item icon="clipboard" href="#" wire:navigate>
+                            {{ __('Review Submissions') }}
+                        </flux:sidebar.item>
+                        <flux:sidebar.item icon="folder" :href="route('documents.index')" :current="request()->routeIs('documents.index')" wire:navigate>
+                            {{ __('Document Vault') }}
+                        </flux:sidebar.item>
+                    </flux:sidebar.group>
+                @endif
+
+                @if ($role === 'university-administrator')
+                    <flux:sidebar.group :heading="__('BU Executive')">
+                        <flux:sidebar.item icon="chart-bar" href="#" wire:navigate>
+                            {{ __('Compliance Overview') }}
+                        </flux:sidebar.item>
+                        <flux:sidebar.item icon="folder" :href="route('documents.index')" :current="request()->routeIs('documents.index')" wire:navigate>
+                            {{ __('Institutional Archive') }}
+                        </flux:sidebar.item>
+                    </flux:sidebar.group>
+                @endif
+
+                @if (in_array($role, ['task-force', 'program-chair', 'faculty-member']))
+                    <flux:sidebar.group :heading="__('My Office')">
+                        <flux:sidebar.item icon="arrow-up-tray" :href="route('documents.index')" :current="request()->routeIs('documents.index')" wire:navigate>
+                            {{ __('Document Submission') }}
+                        </flux:sidebar.item>
+                        
+                        @if ($role === 'program-chair' || $role === 'task-force')
+                            <flux:sidebar.item icon="clipboard" href="#" wire:navigate>
+                                {{ __('Compliance Checklists') }}
+                            </flux:sidebar.item>
+                        @endif
+                        
+                        @if ($role === 'program-chair')
+                            <flux:sidebar.item icon="key" href="#" wire:navigate>
+                                {{ __('Access Requests') }}
+                            </flux:sidebar.item>
+                        @endif
+                    </flux:sidebar.group>
+                @endif
             </flux:sidebar.nav>
 
             <flux:spacer />
 
-            <flux:sidebar.nav>
-                <flux:sidebar.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
-                    {{ __('Repository') }}
-                </flux:sidebar.item>
-
-                <flux:sidebar.item icon="book-open-text" href="https://laravel.com/docs/starter-kits#livewire" target="_blank">
-                    {{ __('Documentation') }}
-                </flux:sidebar.item>
-            </flux:sidebar.nav>
+            <!-- Development Preview Role Switcher (Local Environment Only) -->
+            @if (app()->environment('local'))
+                <div class="px-3 py-2.5 mx-2 mb-4 bg-orange-50/50 border border-orange-100 rounded-lg dark:bg-orange-950/10 dark:border-orange-900/30">
+                    <label for="dev-role-switcher" class="block text-[10px] font-bold text-orange-600 dark:text-orange-400 uppercase tracking-wider mb-1">Preview Role</label>
+                    <select 
+                        id="dev-role-switcher" 
+                        onchange="window.location.href='{{ url('/dev/switch-role') }}/' + this.value"
+                        class="w-full text-xs bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded p-1 text-zinc-700 dark:text-zinc-300 focus:outline-none focus:ring-1 focus:ring-orange-500"
+                    >
+                        @foreach([
+                            'system-administrator' => 'System Admin',
+                            'iqa-admin' => 'IQA Admin',
+                            'iqa-member' => 'IQA Member',
+                            'accreditor' => 'Accreditor',
+                            'university-administrator' => 'BU Admin/Exec',
+                            'task-force' => 'Task Force',
+                            'program-chair' => 'Program Chair',
+                            'faculty-member' => 'Faculty Member'
+                        ] as $slug => $label)
+                            <option value="{{ $slug }}" {{ session('preview_role', 'iqa-admin') === $slug ? 'selected' : '' }}>
+                                {{ $label }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+            @endif
 
             <x-desktop-user-menu class="hidden lg:block" :name="auth()->user()->name" />
         </flux:sidebar>
