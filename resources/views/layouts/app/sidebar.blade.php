@@ -23,7 +23,7 @@
                 <!-- Dynamic Role-Based Sidebar Navigation Groups -->
                 @if ($role === 'system-administrator')
                     <flux:sidebar.group :heading="__('Administration')">
-                        <flux:sidebar.item icon="shield" :href="route('admin.audit-logs')" :current="request()->routeIs('admin.audit-logs')" wire:navigate>
+                        <flux:sidebar.item icon="shield-check" :href="route('admin.audit-logs')" :current="request()->routeIs('admin.audit-logs')" wire:navigate>
                             {{ __('Audit Logs') }}
                         </flux:sidebar.item>
                         <flux:sidebar.item icon="cog" href="#" wire:navigate>

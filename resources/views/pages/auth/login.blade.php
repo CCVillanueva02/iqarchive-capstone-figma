@@ -44,7 +44,7 @@
                     required
                     autocomplete="current-password"
                     placeholder="Enter your password"
-                    icon="lock"
+                    icon="lock-closed"
                     viewable
                 />
 

@@ -123,7 +123,7 @@
                                     </span>
                                 </td>
                                 <td class="py-3.5 px-4 text-right">
-                                    <flux:button variant="ghost" size="xs" @click="viewPayload(log)" icon="code">
+                                    <flux:button variant="ghost" size="xs" @click="viewPayload(log)" icon="code-bracket">
                                         Payload
                                     </flux:button>
                                 </td>

@@ -80,7 +80,7 @@
                 <!-- Admin Actions Panel -->
                 <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 shadow-2xs flex flex-col gap-4">
                     <flux:heading class="font-bold text-base">Quick Maintenance Actions</flux:heading>
-                    <flux:button href="{{ route('admin.audit-logs') }}" icon="shield" class="w-full justify-start text-xs">View Full Audit Log</flux:button>
+                    <flux:button href="{{ route('admin.audit-logs') }}" icon="shield-check" class="w-full justify-start text-xs">View Full Audit Log</flux:button>
                     <flux:button href="#" icon="cog" class="w-full justify-start text-xs">Manage System Configuration</flux:button>
                     <flux:button href="#" icon="arrow-up-tray" class="w-full justify-start text-xs">Trigger Backup Now</flux:button>
                 </div>
