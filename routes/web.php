@@ -5,29 +5,62 @@ use Illuminate\Support\Facades\Route;
 Route::view('/', 'welcome')->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
+    // Landing gateway: redirects to the appropriate role-specific homepage
     Route::get('dashboard', function () {
         $role = auth()->user()->role;
-        
-        // IQA Admin lands directly on the custom Documents view
         if ($role === 'iqa-admin') {
-            return redirect()->route('documents.index');
+            return redirect()->route('documents.iqa-admin');
         }
-        
-        // Other roles land on their respective dashboard stubs
-        $viewName = 'pages.roles.' . $role;
-        if (view()->exists($viewName)) {
-            return view($viewName);
-        }
-        
-        return view('pages.development');
+        return redirect()->route('dashboard.' . $role);
     })->name('dashboard');
-    
-    Route::view('documents', 'pages.documents.index')->name('documents.index');
-    
-    // Stub views for other sections
-    Route::view('submissions', 'pages.development')->name('submissions');
-    Route::view('reports', 'pages.development')->name('reports');
-    Route::view('settings', 'pages.development')->name('settings');
+
+    $roles = [
+        'system-administrator',
+        'iqa-admin',
+        'iqa-member',
+        'accreditor',
+        'university-administrator',
+        'task-force',
+        'program-chair',
+        'faculty-member',
+    ];
+
+    foreach ($roles as $role) {
+        Route::get("roles/{$role}/dashboard", function () use ($role) {
+            if ($role !== auth()->user()->role) {
+                abort(403, 'Unauthorized action.');
+            }
+            return view("pages.roles.{$role}.dashboard");
+        })->name("dashboard.{$role}");
+
+        Route::get("roles/{$role}/documents", function () use ($role) {
+            if ($role !== auth()->user()->role) {
+                abort(403, 'Unauthorized action.');
+            }
+            return view("pages.roles.{$role}.documents");
+        })->name("documents.{$role}");
+
+        Route::get("roles/{$role}/submissions", function () use ($role) {
+            if ($role !== auth()->user()->role) {
+                abort(403, 'Unauthorized action.');
+            }
+            return view("pages.roles.{$role}.submissions");
+        })->name("submissions.{$role}");
+
+        Route::get("roles/{$role}/reports", function () use ($role) {
+            if ($role !== auth()->user()->role) {
+                abort(403, 'Unauthorized action.');
+            }
+            return view("pages.roles.{$role}.reports");
+        })->name("reports.{$role}");
+
+        Route::get("roles/{$role}/settings", function () use ($role) {
+            if ($role !== auth()->user()->role) {
+                abort(403, 'Unauthorized action.');
+            }
+            return view("pages.roles.{$role}.settings");
+        })->name("settings.{$role}");
+    }
 });
 
 // Dev helper to switch user role in session

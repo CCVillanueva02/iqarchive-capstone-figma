@@ -101,7 +101,7 @@
             </div>
         </div>
 
-        <!-- Document Categories Grid (5 columns on large screen, matching mockup) -->
+        <!-- Document Categories Grid -->
         <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
             <!-- Category 1: Policies & Issuances -->
             <div class="bg-white border border-slate-200/65 rounded-xl p-5 shadow-3xs flex flex-col justify-between hover:shadow-2xs transition">
