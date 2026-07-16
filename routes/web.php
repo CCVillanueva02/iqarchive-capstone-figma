@@ -5,12 +5,13 @@ use Illuminate\Support\Facades\Route;
 Route::view('/', 'welcome')->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::view('dashboard', 'dashboard')->name('dashboard');
-    
-    // Custom mock routes for frontend objectives
-    Route::view('admin/users', 'pages.admin.users')->name('admin.users');
+    Route::view('dashboard', 'pages.development')->name('dashboard');
     Route::view('documents', 'pages.documents.index')->name('documents.index');
-    Route::view('admin/audit-logs', 'pages.admin.audit-logs')->name('admin.audit-logs');
+    
+    // Stub views for other sections
+    Route::view('submissions', 'pages.development')->name('submissions');
+    Route::view('reports', 'pages.development')->name('reports');
+    Route::view('settings', 'pages.development')->name('settings');
 });
 
 // Dev helper to switch user role in session
