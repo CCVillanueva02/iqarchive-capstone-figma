@@ -1,17 +1,17 @@
 <x-layouts::app :title="__('General Documents')">
-    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 py-8 flex flex-col gap-6">
+    <div class="w-full px-8 py-8 flex flex-col gap-6 bg-[#f4f6fa] min-h-screen">
         <!-- Top Header & Tabs -->
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-                <h1 class="text-2xl font-bold text-[#1b355a]">General Documents</h1>
-                <p class="text-xs text-zinc-500 mt-1">Manage your general documents</p>
+                <h1 class="text-2xl font-bold text-[#1b355a]">Common Documents</h1>
+                <p class="text-xs text-zinc-500 mt-1">Manage your common documents</p>
             </div>
             
             <div class="flex items-center gap-3">
                 <!-- Toggle Tab Switcher -->
                 <div class="bg-slate-100 border border-slate-200/60 rounded-lg p-0.5 flex gap-1 text-[11px]">
                     <button type="button" class="px-4 py-1.5 font-bold rounded-md bg-white border border-slate-200/50 shadow-2xs text-[#1b355a]">
-                        General Documents
+                        Common Documents
                     </button>
                     <button type="button" class="px-4 py-1.5 font-medium rounded-md text-zinc-500 hover:text-[#1b355a] transition">
                         Accreditation

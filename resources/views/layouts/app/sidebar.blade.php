@@ -10,9 +10,9 @@
         @fonts
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="min-h-screen bg-slate-50 antialiased text-zinc-800">
-        <flux:sidebar sticky collapsible="mobile" class="!bg-[#0b2545] border-none text-white flex flex-col gap-4">
-            <flux:sidebar.header class="flex flex-col gap-3 px-3 py-4 border-b border-[#1b355a]/30">
+    <body class="min-h-screen bg-[#f4f6fa] antialiased text-zinc-800">
+        <flux:sidebar sticky collapsible="mobile" class="!bg-[#0b2545] border-none text-white flex flex-col gap-0 !p-0 min-h-screen h-screen">
+            <flux:sidebar.header class="flex flex-col gap-3 px-6 py-5 border-b border-[#1b355a]/30">
                 <!-- Circular/Square Logo with "IQ" -->
                 <div class="flex items-center gap-3">
                     <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-[#2563eb] text-white font-black text-sm tracking-tighter shrink-0 select-none">
@@ -26,7 +26,7 @@
             </flux:sidebar.header>
 
             <!-- Navigation Links -->
-            <div class="flex flex-col gap-1.5 flex-1 px-1">
+            <div class="flex flex-col gap-1.5 flex-1 px-4 py-6">
                 <!-- Dashboard -->
                 <a href="{{ route('dashboard') }}" class="group flex items-center gap-3 px-4 py-2.5 rounded-lg text-xs font-semibold transition-all {{ request()->routeIs('dashboard') ? 'bg-[#133054] text-white border-l-4 border-[#f27224]' : 'text-[#94a3b8] hover:text-white hover:bg-[#133054]/30' }}" wire:navigate>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-current">
@@ -74,7 +74,7 @@
 
             <!-- Profile Dropdown Component matching Mockup -->
             <flux:dropdown position="top" align="start" class="w-full">
-                <button type="button" class="w-[calc(100%-16px)] text-left p-3 bg-[#133054] hover:bg-[#183a64] cursor-pointer rounded-xl mx-2 mb-4 flex items-center gap-3 transition focus:outline-none border-none">
+                <button type="button" class="w-[calc(100%-32px)] text-left p-3 bg-[#133054] hover:bg-[#183a64] cursor-pointer rounded-xl mx-4 mb-6 flex items-center gap-3 transition focus:outline-none border-none">
                     <div class="w-9 h-9 rounded-full bg-[#f27224] text-white font-bold flex items-center justify-center text-xs shrink-0 select-none">
                         MR
                     </div>
