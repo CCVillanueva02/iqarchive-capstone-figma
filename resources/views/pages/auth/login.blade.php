@@ -70,6 +70,16 @@
                 {{ __('Contact your IQA Administrator') }}
             </span>
         </div>
+
+        <!-- @if (app()->environment('local'))
+            <div class="mt-2 p-3 bg-orange-50/50 border border-orange-100 rounded-lg dark:bg-orange-950/10 dark:border-orange-900/30 text-xs">
+                <div class="font-bold text-orange-600 dark:text-orange-400 mb-1">Local Dev Credentials:</div>
+                <div class="text-zinc-600 dark:text-zinc-400">
+                    Email: <span class="font-mono select-all">test@example.com</span><br>
+                    Password: <span class="font-mono select-all font-semibold">password</span>
+                </div>
+            </div>
+        @endif -->
     </div>
 
     <!-- Copyright Footer -->
