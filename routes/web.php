@@ -5,7 +5,23 @@ use Illuminate\Support\Facades\Route;
 Route::view('/', 'welcome')->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::view('dashboard', 'pages.development')->name('dashboard');
+    Route::get('dashboard', function () {
+        $role = auth()->user()->role;
+        
+        // IQA Admin lands directly on the custom Documents view
+        if ($role === 'iqa-admin') {
+            return redirect()->route('documents.index');
+        }
+        
+        // Other roles land on their respective dashboard stubs
+        $viewName = 'pages.roles.' . $role;
+        if (view()->exists($viewName)) {
+            return view($viewName);
+        }
+        
+        return view('pages.development');
+    })->name('dashboard');
+    
     Route::view('documents', 'pages.documents.index')->name('documents.index');
     
     // Stub views for other sections

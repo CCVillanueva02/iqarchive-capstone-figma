@@ -15,11 +15,47 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $roles = [
+            'system-administrator' => [
+                'name' => 'System Administrator',
+                'email' => 'sysadmin@example.com',
+            ],
+            'iqa-admin' => [
+                'name' => 'Maria Reyes', // Matches the mockup's IQA Staff/Admin profile
+                'email' => 'iqaadmin@example.com',
+            ],
+            'iqa-member' => [
+                'name' => 'IQA Staff Member',
+                'email' => 'iqamember@example.com',
+            ],
+            'accreditor' => [
+                'name' => 'AACCUP Accreditor',
+                'email' => 'accreditor@example.com',
+            ],
+            'university-administrator' => [
+                'name' => 'BU Executive Admin',
+                'email' => 'buadmin@example.com',
+            ],
+            'task-force' => [
+                'name' => 'QA Task Force Lead',
+                'email' => 'taskforce@example.com',
+            ],
+            'program-chair' => [
+                'name' => 'BU Program Chair',
+                'email' => 'chair@example.com',
+            ],
+            'faculty-member' => [
+                'name' => 'BU Faculty Member',
+                'email' => 'faculty@example.com',
+            ],
+        ];
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        foreach ($roles as $role => $data) {
+            User::factory()->create([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'role' => $role,
+            ]);
+        }
     }
 }

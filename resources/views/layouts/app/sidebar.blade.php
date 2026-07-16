@@ -70,17 +70,30 @@
                 </a>
             </div>
 
-            <flux:spacer />
+            @php
+                $user = auth()->user();
+                $roleLabel = match($user?->role) {
+                    'system-administrator' => 'System Admin',
+                    'iqa-admin' => 'IQA Admin',
+                    'iqa-member' => 'IQA Staff',
+                    'accreditor' => 'Accreditor',
+                    'university-administrator' => 'BU Admin/Exec',
+                    'task-force' => 'Task Force',
+                    'program-chair' => 'Program Chair',
+                    'faculty-member' => 'Faculty Member',
+                    default => 'User'
+                };
+            @endphp
 
             <!-- Profile Dropdown Component matching Mockup -->
             <flux:dropdown position="top" align="start" class="w-full">
                 <button type="button" class="w-[calc(100%-32px)] text-left p-3 bg-[#133054] hover:bg-[#183a64] cursor-pointer rounded-xl mx-4 mb-6 flex items-center gap-3 transition focus:outline-none border-none">
                     <div class="w-9 h-9 rounded-full bg-[#f27224] text-white font-bold flex items-center justify-center text-xs shrink-0 select-none">
-                        MR
+                        {{ $user?->initials() }}
                     </div>
                     <div class="flex-1 min-w-0">
-                        <div class="text-xs font-bold text-white truncate">Maria Reyes</div>
-                        <div class="text-[10px] text-[#93c5fd] truncate">IQA Staff</div>
+                        <div class="text-xs font-bold text-white truncate">{{ $user?->name }}</div>
+                        <div class="text-[10px] text-[#93c5fd] truncate">{{ $roleLabel }}</div>
                     </div>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5 text-[#93c5fd] ml-auto shrink-0">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
