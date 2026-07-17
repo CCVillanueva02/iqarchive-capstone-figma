@@ -58,7 +58,7 @@
             </div>
 
             <!-- Log In Button -->
-            <flux:button type="submit" class="w-full bg-[#f27224] hover:bg-[#d65f1a] text-white py-2.5 rounded-lg font-semibold border-none shadow-xs" data-test="login-button">
+            <flux:button type="submit" variant="primary" style="--color-accent: #F47920; --color-accent-foreground: #ffffff;" class="w-full text-white py-2.5 rounded-lg font-semibold border-none shadow-xs" data-test="login-button">
                 {{ __('Log In') }}
             </flux:button>
         </form>
