@@ -17,7 +17,12 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 
 /**
  * @property int $id
- * @property string $name
+ * @property int $role_id
+ * @property int|null $program_id
+ * @property int|null $college_id
+ * @property string $first_name
+ * @property string|null $middle_name
+ * @property string $last_name
  * @property string $email
  * @property Carbon|null $email_verified_at
  * @property string $password
@@ -25,11 +30,11 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  * @property string|null $two_factor_recovery_codes
  * @property Carbon|null $two_factor_confirmed_at
  * @property string|null $remember_token
- * @property string $role
+ * @property string $status
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['name', 'email', 'password', 'role'])]
+#[Fillable(['role_id', 'program_id', 'college_id', 'first_name', 'middle_name', 'last_name', 'email', 'password', 'status'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable implements PasskeyUser
 {
@@ -50,11 +55,76 @@ class User extends Authenticatable implements PasskeyUser
     }
 
     /**
+     * Relationships
+     */
+    
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    public function program()
+    {
+        return $this->belongsTo(Program::class);
+    }
+
+    public function college()
+    {
+        return $this->belongsTo(College::class);
+    }
+
+    public function uploadedDocuments()
+    {
+        return $this->hasMany(Document::class, 'uploaded_by');
+    }
+
+    public function confirmedDocuments()
+    {
+        return $this->hasMany(Document::class, 'confirmed_by');
+    }
+
+    public function ocrValidations()
+    {
+        return $this->hasMany(DocumentOCRValidation::class, 'validated_by');
+    }
+
+    public function documentReviews()
+    {
+        return $this->hasMany(DocumentReview::class, 'reviewed_by');
+    }
+
+    public function taskForceAssignments()
+    {
+        return $this->hasMany(TaskForceAssignment::class);
+    }
+
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
+
+    public function auditLogs()
+    {
+        return $this->hasMany(AuditLog::class);
+    }
+
+    public function requestedAccesses()
+    {
+        return $this->hasMany(DocumentAccessRequest::class, 'requested_by');
+    }
+
+    public function approvedAccesses()
+    {
+        return $this->hasMany(DocumentAccessRequest::class, 'approved_by');
+    }
+
+    /**
      * Get the user's initials
      */
     public function initials(): string
     {
-        $initials = Str::initials($this->name, true);
+        $fullName = trim($this->first_name . ' ' . $this->last_name);
+        $initials = Str::initials($fullName, true);
 
         return Str::length($initials) > 1
             ? Str::substr($initials, 0, 1).Str::substr($initials, -1)
