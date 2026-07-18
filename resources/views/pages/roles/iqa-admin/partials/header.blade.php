@@ -5,13 +5,13 @@
         <div x-show="activeTab === 'common'">
             <template x-if="selectedCategory === null">
                 <div>
-                    <h1 class="text-2xl font-bold text-[#1b355a]">Common Documents</h1>
-                    <p class="text-xs text-zinc-500 mt-1">Manage your common documents</p>
+                    <h1 class="text-3xl font-bold text-[#1b355a]">Common Documents</h1>
+                    <p class="text-sm text-zinc-500 mt-1">Manage your common documents</p>
                 </div>
             </template>
             <template x-if="selectedCategory !== null">
                 <div class="flex items-center gap-3">
-                    <button @click="selectCategory(null)" class="flex items-center justify-center p-2 rounded-lg bg-white border border-slate-200 hover:bg-slate-50 text-[#1b355a] transition shadow-3xs cursor-pointer">
+                    <button @click="selectCategory(null)" class="flex items-center justify-center p-2.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-50 text-[#1b355a] transition shadow-3xs cursor-pointer">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
                         </svg>
@@ -22,7 +22,7 @@
                             <span>&gt;</span>
                             <span class="text-zinc-600 font-semibold" x-text="selectedCategory"></span>
                         </div>
-                        <h1 class="text-xl font-bold text-[#1b355a] mt-0.5" x-text="selectedCategory"></h1>
+                        <h1 class="text-2xl font-bold text-[#1b355a] mt-0.5" x-text="selectedCategory"></h1>
                     </div>
                 </div>
             </template>
@@ -30,22 +30,22 @@
 
         <!-- Accreditation Tab Header -->
         <div x-show="activeTab === 'accreditation'">
-            <h1 class="text-2xl font-bold text-[#1b355a]">Accreditation Documents</h1>
-            <p class="text-xs text-zinc-500 mt-1">Manage your self-survey accreditation compliance files</p>
+            <h1 class="text-3xl font-bold text-[#1b355a]">Accreditation Documents</h1>
+            <p class="text-sm text-zinc-500 mt-1">Manage your self-survey accreditation compliance files</p>
         </div>
     </div>
     
     <div class="flex items-center gap-3 self-end md:self-auto">
         <!-- Toggle Tab Switcher -->
-        <div class="bg-slate-100 border border-slate-200/60 rounded-lg p-0.5 flex gap-1 text-[11px]">
+        <div class="bg-slate-100 border border-slate-200/60 rounded-lg p-0.5 flex gap-1 text-[13px]">
             <button type="button" 
-                    class="px-4 py-1.5 rounded-md transition cursor-pointer"
+                    class="px-4.5 py-2 rounded-md transition cursor-pointer"
                     :class="activeTab === 'common' ? 'font-bold bg-white border border-slate-200/50 shadow-2xs text-[#1b355a]' : 'font-medium text-zinc-500 hover:text-[#1b355a]'"
                     @click="activeTab = 'common'">
                 Common Documents
             </button>
             <button type="button" 
-                    class="px-4 py-1.5 rounded-md transition cursor-pointer"
+                    class="px-4.5 py-2 rounded-md transition cursor-pointer"
                     :class="activeTab === 'accreditation' ? 'font-bold bg-white border border-slate-200/50 shadow-2xs text-[#1b355a]' : 'font-medium text-zinc-500 hover:text-[#1b355a]'"
                     @click="activeTab = 'accreditation'">
                 Accreditation
