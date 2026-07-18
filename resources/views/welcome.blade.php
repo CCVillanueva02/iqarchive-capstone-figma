@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="light">
-    <head>
-        @include('partials.head', ['title' => 'Bicol University IQA Office'])
-    </head>
-    
-    <body class="bg-[#FDFDFC] antialiased text-zinc-800 font-sans min-h-screen flex flex-col justify-between">
+<x-layouts::html :title="'Bicol University IQA Office'" html-class="light" body-class="bg-[#FDFDFC] antialiased text-zinc-800 font-sans min-h-screen flex flex-col justify-between">
         <!-- Top Navbar -->
         <header class="w-full max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -115,5 +109,4 @@
                 <span class="hover:underline cursor-pointer">User Access Policy</span>
             </div>
         </footer>
-    </body>
-</html>
+</x-layouts::html>

@@ -1,9 +1,4 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        @include('partials.head')
-    </head>
-    <body class="min-h-screen bg-white dark:bg-zinc-800">
+<x-layouts::html :title="$title ?? null" body-class="min-h-screen bg-white dark:bg-zinc-800">
         <flux:header container class="border-b border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
             <flux:sidebar.toggle class="lg:hidden mr-2" icon="bars-2" inset="left" />
 
@@ -73,12 +68,4 @@
 
         {{ $slot }}
 
-        @persist('toast')
-            <flux:toast.group>
-                <flux:toast />
-            </flux:toast.group>
-        @endpersist
-
-        @fluxScripts
-    </body>
-</html>
+</x-layouts::html>

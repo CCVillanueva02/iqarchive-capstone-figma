@@ -1,11 +1,4 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="light">
-
-<head>
-    @include('partials.head')
-</head>
-
-<body class="min-h-screen bg-[#f4f6fa] antialiased text-zinc-800">
+<x-layouts::html :title="$title ?? null" html-class="light" body-class="min-h-screen bg-[#f4f6fa] antialiased text-zinc-800">
     <flux:sidebar sticky collapsible="mobile" class="border-none text-white flex flex-col gap-0 !p-0 min-h-screen h-screen" style="background: linear-gradient(180deg, #002B61 0%, #003E8A 100%) !important;">
         <flux:sidebar.header class="flex flex-col gap-3 px-[20px] py-[24px] border-b border-white/10">
             <!-- <div class="flex gap-3">
@@ -136,13 +129,4 @@
 
     {{ $slot }}
 
-    @persist('toast')
-    <flux:toast.group>
-        <flux:toast />
-    </flux:toast.group>
-    @endpersist
-
-    @fluxScripts
-</body>
-
-</html>
+</x-layouts::html>
