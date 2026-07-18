@@ -12,5 +12,10 @@ test('authenticated users can visit the dashboard', function () {
     $this->actingAs($user);
 
     $response = $this->get(route('dashboard'));
-    $response->assertOk();
+    
+    $expectedRoute = $user->role === 'iqa-admin' 
+        ? route('documents.iqa-admin') 
+        : route('dashboard.' . $user->role);
+        
+    $response->assertRedirect($expectedRoute);
 });

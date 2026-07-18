@@ -34,7 +34,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['role_id', 'program_id', 'college_id', 'first_name', 'middle_name', 'last_name', 'email', 'password', 'status'])]
+#[Fillable(['role_id', 'program_id', 'college_id', 'first_name', 'middle_name', 'last_name', 'name', 'email', 'password', 'status'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable implements PasskeyUser
 {
@@ -71,6 +71,13 @@ class User extends Authenticatable implements PasskeyUser
     public function getNameAttribute(): string
     {
         return trim($this->first_name . ' ' . $this->last_name);
+    }
+
+    public function setNameAttribute($value): void
+    {
+        $parts = explode(' ', trim($value), 2);
+        $this->first_name = $parts[0] ?? '';
+        $this->last_name = $parts[1] ?? '';
     }
 
     public function program()

@@ -25,6 +25,20 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
+            'role_id' => function () {
+                $predefinedRoles = [
+                    'system-administrator',
+                    'iqa-admin',
+                    'iqa-member',
+                    'accreditor',
+                    'university-administrator',
+                    'task-force',
+                    'program-chair',
+                    'faculty-member',
+                ];
+                $roleName = fake()->randomElement($predefinedRoles);
+                return \App\Models\Role::firstOrCreate(['role_name' => $roleName])->id;
+            },
             'first_name' => fake()->firstName(),
             'middle_name' => fake()->optional()->lastName(),
             'last_name' => fake()->lastName(),

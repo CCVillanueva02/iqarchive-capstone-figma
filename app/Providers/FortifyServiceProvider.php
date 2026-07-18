@@ -29,10 +29,51 @@ class FortifyServiceProvider extends ServiceProvider
         $this->configureActions();
         $this->configureViews();
         $this->configureRateLimiting();
+        $this->configureAuthentication();
     }
 
     /**
-     * Configure Fortify actions.
+     * Configure authentication callbacks, validation and sanitization.
+     */
+    private function configureAuthentication(): void
+    {
+        Fortify::authenticateUsing(function (Request $request) {
+            // 1. Sanitize the input
+            $email = trim(filter_var($request->input('email'), FILTER_SANITIZE_EMAIL));
+            $password = $request->input('password');
+
+            // 2. Validate user input
+            $request->validate([
+                'email' => ['required', 'string', 'email', 'max:255'],
+                'password' => ['required', 'string'],
+            ], [
+                'email.required' => 'Please enter your email address to continue.',
+                'email.email' => 'The email format you provided is invalid.',
+                'password.required' => 'A password is required to authenticate.',
+            ]);
+
+            // 3. Retrieve user
+            $user = \App\Models\User::where('email', $email)->first();
+
+            // 4. Authenticate and verify status
+            if ($user && \Illuminate\Support\Facades\Hash::check($password, $user->password)) {
+                if ($user->status !== 'active') {
+                    throw \Illuminate\Validation\ValidationException::withMessages([
+                        'email' => ['Your account has been deactivated. Please contact an IQA Administrator.'],
+                    ]);
+                }
+                return $user;
+            }
+
+            // 5. Enhanced error response
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'email' => ['These credentials do not match our records. Please double-check your email and password.'],
+            ]);
+        });
+    }
+
+    /**
+     * Configure Actions.
      */
     private function configureActions(): void
     {
