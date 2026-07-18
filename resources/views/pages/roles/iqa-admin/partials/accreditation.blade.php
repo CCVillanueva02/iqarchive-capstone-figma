@@ -1,6 +1,6 @@
 <!-- ================= TAB: ACCREDITATION ================= -->
 <div x-show="activeTab === 'accreditation'" x-transition class="flex flex-col gap-6">
-    
+
     <!-- Breadcrumbs Nav for Accreditation -->
     <div>
         <!-- Level 1 Breadcrumbs -->
@@ -56,7 +56,7 @@
             <div>
                 <h3 class="text-lg font-bold text-[#1b355a]">Program Accreditation</h3>
                 <p class="text-sm text-zinc-500 mt-2 leading-relaxed max-w-sm">
-                    Evaluate specific degree programs (e.g. BSCS, BSIT, BSEE) for academic quality, faculty portfolio, and student facilities.
+                    Evaluate specific degree programs for academic quality, faculty portfolio, and student facilities.
                 </p>
             </div>
             <button type="button" @click="accredLevel = 'program'; accredCategory = null" class="w-full mt-2 bg-[#1b355a] hover:bg-[#112239] text-white py-3 rounded-lg font-bold text-sm shadow-2xs transition cursor-pointer">
@@ -74,7 +74,7 @@
             <div>
                 <h3 class="text-lg font-bold text-[#1b355a]">Institutional Accreditation</h3>
                 <p class="text-sm text-zinc-500 mt-2 leading-relaxed max-w-sm">
-                    Evaluate university-wide administration, leadership, fiscal soundness, and governance structure (Area I to VIII).
+                    Evaluate university-wide administration, leadership, fiscal soundness, and governance structure.
                 </p>
             </div>
             <button type="button" @click="accredLevel = 'institutional'; accredCategory = null" class="w-full mt-2 bg-[#f27224] hover:bg-[#d65f1a] text-white py-3 rounded-lg font-bold text-sm shadow-2xs transition cursor-pointer">
@@ -151,10 +151,10 @@
         <!-- Area Selector Horizontal Tablist -->
         <div class="flex overflow-x-auto gap-3 pb-2 w-full select-none">
             <template x-for="area in activeAccredData?.areas" :key="area.id">
-                <button type="button" 
-                        class="flex-1 shrink-0 min-w-[200px] bg-white rounded-xl border p-4 text-left shadow-3xs transition cursor-pointer flex flex-col justify-between h-24"
-                        :class="accredActiveAreaId === area.id ? 'border-[#1b355a] ring-1 ring-[#1b355a]/30 shadow-xs' : 'border-slate-200/60 hover:border-slate-350'"
-                        @click="selectArea(area.id)">
+                <button type="button"
+                    class="flex-1 shrink-0 min-w-[200px] bg-white rounded-xl border p-4 text-left shadow-3xs transition cursor-pointer flex flex-col justify-between h-24"
+                    :class="accredActiveAreaId === area.id ? 'border-[#1b355a] ring-1 ring-[#1b355a]/30 shadow-xs' : 'border-slate-200/60 hover:border-slate-350'"
+                    @click="selectArea(area.id)">
                     <div>
                         <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block" x-text="area.code"></span>
                         <span class="text-sm font-bold text-[#1b355a] mt-1 leading-tight line-clamp-2 block" x-text="area.title"></span>
@@ -167,7 +167,7 @@
                 </button>
             </template>
         </div>
-        
+
         <!-- Main workspace split panel -->
         <div class="flex flex-col lg:flex-row gap-5 items-start w-full">
             <!-- Left Pane: Parameters Available -->
@@ -175,10 +175,10 @@
                 <span class="text-sm font-bold text-[#1b355a] tracking-wide px-1">Parameters Available</span>
                 <div class="flex flex-col gap-1.5">
                     <template x-for="param in activeArea?.parameters" :key="param.id">
-                        <button type="button" 
-                                class="w-full text-left p-3 rounded-lg text-sm font-semibold flex flex-col gap-1 transition cursor-pointer relative overflow-hidden"
-                                :class="accredActiveParamId === param.id ? 'bg-slate-50 text-[#1b355a] border-l-4 border-[#1b355a] pl-2.5 shadow-3xs' : 'text-zinc-500 hover:bg-slate-50/30 hover:text-[#1b355a] pl-3.5 border-l-4 border-transparent'"
-                                @click="accredActiveParamId = param.id; accredActiveSection = 'systems'">
+                        <button type="button"
+                            class="w-full text-left p-3 rounded-lg text-sm font-semibold flex flex-col gap-1 transition cursor-pointer relative overflow-hidden"
+                            :class="accredActiveParamId === param.id ? 'bg-slate-50 text-[#1b355a] border-l-4 border-[#1b355a] pl-2.5 shadow-3xs' : 'text-zinc-500 hover:bg-slate-50/30 hover:text-[#1b355a] pl-3.5 border-l-4 border-transparent'"
+                            @click="accredActiveParamId = param.id; accredActiveSection = 'systems'">
                             <div class="flex items-center justify-between">
                                 <span class="font-bold text-[#1b355a] text-[10px] uppercase tracking-wide" x-text="param.code"></span>
                                 <span class="text-[10px] font-bold text-emerald-600" x-text="param.progress + '%'"></span>
@@ -188,7 +188,7 @@
                     </template>
                 </div>
             </div>
-            
+
             <!-- Right Pane: Parameters checklist workspace -->
             <div class="flex-1 bg-white border border-slate-200/60 rounded-xl p-6 shadow-3xs flex flex-col gap-6 w-full">
                 <!-- Parameter Title & Stats Header Block -->
@@ -198,7 +198,7 @@
                             <span class="text-[10px] font-bold text-[#1b355a] uppercase tracking-wider" x-text="activeParam?.code"></span>
                             <h2 class="text-base font-extrabold text-[#1b355a] mt-1" x-text="activeParam?.code + ' - ' + activeParam?.title"></h2>
                         </div>
-                        
+
                         <!-- Stats Grid -->
                         <div class="flex items-center gap-6 shrink-0 text-right">
                             <div>
@@ -217,7 +217,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Large progress line at the bottom of header block -->
                     <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden mt-1">
                         <div class="h-full bg-emerald-500 rounded-full transition-all duration-300" :style="'width: ' + activeParam?.progress + '%'"></div>
@@ -226,28 +226,28 @@
 
                 <!-- Section Navigation Tabs -->
                 <div class="flex border-b border-slate-200 gap-6 text-sm font-bold -mt-2">
-                    <button type="button" 
-                            class="pb-3 border-b-2 transition cursor-pointer whitespace-nowrap"
-                            :class="accredActiveSection === 'systems' ? 'border-[#1b355a] text-[#1b355a]' : 'border-transparent text-zinc-450 hover:text-zinc-650'"
-                            @click="accredActiveSection = 'systems'">
+                    <button type="button"
+                        class="pb-3 border-b-2 transition cursor-pointer whitespace-nowrap"
+                        :class="accredActiveSection === 'systems' ? 'border-[#1b355a] text-[#1b355a]' : 'border-transparent text-zinc-450 hover:text-zinc-650'"
+                        @click="accredActiveSection = 'systems'">
                         Systems - Inputs & Processes
                     </button>
-                    <button type="button" 
-                            class="pb-3 border-b-2 transition cursor-pointer whitespace-nowrap"
-                            :class="accredActiveSection === 'implementation' ? 'border-[#1b355a] text-[#1b355a]' : 'border-transparent text-zinc-450 hover:text-zinc-650'"
-                            @click="accredActiveSection = 'implementation'">
+                    <button type="button"
+                        class="pb-3 border-b-2 transition cursor-pointer whitespace-nowrap"
+                        :class="accredActiveSection === 'implementation' ? 'border-[#1b355a] text-[#1b355a]' : 'border-transparent text-zinc-450 hover:text-zinc-650'"
+                        @click="accredActiveSection = 'implementation'">
                         Implementation
                     </button>
-                    <button type="button" 
-                            class="pb-3 border-b-2 transition cursor-pointer whitespace-nowrap"
-                            :class="accredActiveSection === 'outcomes' ? 'border-[#1b355a] text-[#1b355a]' : 'border-transparent text-zinc-455 hover:text-zinc-655'"
-                            @click="accredActiveSection = 'outcomes'">
+                    <button type="button"
+                        class="pb-3 border-b-2 transition cursor-pointer whitespace-nowrap"
+                        :class="accredActiveSection === 'outcomes' ? 'border-[#1b355a] text-[#1b355a]' : 'border-transparent text-zinc-455 hover:text-zinc-655'"
+                        @click="accredActiveSection = 'outcomes'">
                         Outcomes
                     </button>
-                    <button type="button" 
-                            class="pb-3 border-b-2 transition cursor-pointer whitespace-nowrap"
-                            :class="accredActiveSection === 'bestpractices' ? 'border-[#1b355a] text-[#1b355a]' : 'border-transparent text-zinc-455 hover:text-zinc-655'"
-                            @click="accredActiveSection = 'bestpractices'">
+                    <button type="button"
+                        class="pb-3 border-b-2 transition cursor-pointer whitespace-nowrap"
+                        :class="accredActiveSection === 'bestpractices' ? 'border-[#1b355a] text-[#1b355a]' : 'border-transparent text-zinc-455 hover:text-zinc-655'"
+                        @click="accredActiveSection = 'bestpractices'">
                         Best Practices
                     </button>
                 </div>
@@ -270,7 +270,7 @@
                             <template x-if="accredActiveSection !== 'bestpractices'">
                                 <div class="pl-12 flex flex-col gap-3">
                                     <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider" x-text="'Supporting Documents Attached (' + (item.documents ? item.documents.length : 0) + ')'"></span>
-                                    
+
                                     <!-- Linked documents list -->
                                     <template x-if="item.documents && item.documents.length > 0">
                                         <div class="flex flex-col gap-2">
@@ -287,8 +287,8 @@
                                                     </div>
                                                     <div class="flex items-center gap-4 shrink-0">
                                                         <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-100"
-                                                              :class="doc.status === 'Verified' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-amber-50 text-amber-700 border-amber-100'"
-                                                              x-text="doc.status"></span>
+                                                            :class="doc.status === 'Verified' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-amber-50 text-amber-700 border-amber-100'"
+                                                            x-text="doc.status"></span>
                                                         <button type="button" class="text-sm font-bold text-blue-650 hover:underline cursor-pointer" @click="openDoc(doc)">
                                                             View Drawer
                                                         </button>
@@ -302,7 +302,7 @@
                                             </template>
                                         </div>
                                     </template>
-                                    
+
                                     <!-- No documents linked -> Upload button -->
                                     <template x-if="!item.documents || item.documents.length === 0">
                                         <button type="button" class="border border-dashed border-slate-300 hover:border-slate-400 bg-slate-50/50 hover:bg-slate-50 text-[#1b355a] text-sm font-bold px-4 py-3 rounded-lg flex items-center justify-center gap-2 cursor-pointer transition w-full" @click="alert('Upload & link files for: ' + item.statement)">
