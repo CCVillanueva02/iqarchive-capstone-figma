@@ -5,7 +5,7 @@
 @endphp
 
 <x-layouts::html :title="$title ?? null" :html-class="$htmlClass" :body-class="$bodyClass">
-    @if($role === 'iqa-admin')
+    @if($role === 'iqa-admin' || $role === 'system-administrator')
         <x-layouts::app.sidebar>
             <flux:main>
                 {{ $slot }}
