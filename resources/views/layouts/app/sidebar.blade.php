@@ -91,6 +91,12 @@
                 </button>
 
                 <flux:menu>
+                    <flux:menu.item :href="route('profile.edit')" icon="cog" wire:navigate class="text-xs cursor-pointer">
+                        {{ __('Settings') }}
+                    </flux:menu.item>
+
+                    <flux:menu.separator />
+
                     <form method="POST" action="{{ route('logout') }}" class="w-full">
                         @csrf
                         <flux:menu.item
