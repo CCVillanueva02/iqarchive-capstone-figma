@@ -1,11 +1,33 @@
 <div class="flex flex-col gap-6">
+    <!-- Tabbed Navigation Control -->
+    <div class="flex border-b border-slate-150 gap-6 select-none bg-white px-6 pt-4 rounded-2xl border border-slate-200/60 shadow-3xs -mb-2">
+        <button 
+            wire:click="$set('tab', 'general')" 
+            class="pb-3.5 text-xs font-bold uppercase tracking-wider border-b-2 cursor-pointer transition focus:outline-none {{ $tab === 'general' ? 'border-[#F47920] text-[#1b355a]' : 'border-transparent text-zinc-400 hover:text-zinc-600' }}"
+        >
+            General Logs
+        </button>
+        <button 
+            wire:click="$set('tab', 'authentication')" 
+            class="pb-3.5 text-xs font-bold uppercase tracking-wider border-b-2 cursor-pointer transition focus:outline-none {{ $tab === 'authentication' ? 'border-[#F47920] text-[#1b355a]' : 'border-transparent text-zinc-400 hover:text-zinc-600' }}"
+        >
+            Access & Sessions
+        </button>
+        <button 
+            wire:click="$set('tab', 'documents')" 
+            class="pb-3.5 text-xs font-bold uppercase tracking-wider border-b-2 cursor-pointer transition focus:outline-none {{ $tab === 'documents' ? 'border-[#F47920] text-[#1b355a]' : 'border-transparent text-zinc-400 hover:text-zinc-600' }}"
+        >
+            File Modifications & Approvals
+        </button>
+    </div>
+
     <!-- Filter Bar -->
     <div class="bg-white border border-slate-200/60 rounded-2xl p-5 shadow-3xs flex flex-col md:flex-row gap-4 items-end">
         <div class="flex-1 w-full">
             <flux:input 
                 wire:model.live.debounce.300ms="search" 
-                label="Search Logs" 
-                placeholder="Search action or target type..." 
+                label="Search" 
+                placeholder="Search action or target..." 
                 icon="magnifying-glass" 
             />
         </div>
@@ -59,11 +81,11 @@
                     @forelse($logs as $log)
                         @php
                             $badgeColor = match (true) {
-                                str_contains($log->action, 'login') => 'bg-blue-50 text-blue-700',
-                                str_contains($log->action, 'logout') => 'bg-slate-50 text-slate-700',
-                                str_contains($log->action, 'create') || str_contains($log->action, 'upload') || str_contains($log->action, 'approve') => 'bg-emerald-50 text-emerald-700',
-                                str_contains($log->action, 'delete') || str_contains($log->action, 'reject') => 'bg-rose-50 text-rose-700',
-                                default => 'bg-amber-50 text-amber-700'
+                                str_contains($log->action, 'login') => 'bg-blue-50 text-blue-700 border border-blue-200/50',
+                                str_contains($log->action, 'logout') => 'bg-slate-50 text-slate-700 border border-slate-250',
+                                str_contains($log->action, 'upload') || str_contains($log->action, 'approve') => 'bg-emerald-50 text-emerald-700 border border-emerald-250',
+                                str_contains($log->action, 'delete') || str_contains($log->action, 'reject') => 'bg-rose-50 text-rose-700 border border-rose-250',
+                                default => 'bg-amber-50 text-amber-700 border border-amber-250'
                             };
                         @endphp
                         <tr class="hover:bg-slate-50/40 transition">
@@ -84,8 +106,8 @@
                             </td>
                             <!-- Action Badge -->
                             <td class="py-4 px-6 whitespace-nowrap">
-                                <span class="px-2.5 py-0.5 rounded text-[11px] font-bold uppercase tracking-wide inline-block {{ $badgeColor }}">
-                                    {{ $log->action }}
+                                <span class="px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide inline-block {{ $badgeColor }}">
+                                    {{ str_replace('_', ' ', $log->action) }}
                                 </span>
                             </td>
                             <!-- Target -->
@@ -111,7 +133,7 @@
                             <td colspan="5" class="py-12 px-6 text-center">
                                 <div class="flex flex-col items-center justify-center gap-3">
                                     <x-lucide-info class="w-8 h-8 text-zinc-300" />
-                                    <span class="text-sm text-zinc-400 font-medium">No audit logs found matching the filters.</span>
+                                    <span class="text-sm text-zinc-400 font-medium">No audit logs found matching the active filters.</span>
                                 </div>
                             </td>
                         </tr>

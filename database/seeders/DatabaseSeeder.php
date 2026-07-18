@@ -186,5 +186,24 @@ class DatabaseSeeder extends Seeder
                 'college_id' => $collegeId,
             ]);
         }
+
+        // 6. Seed Audit Logs
+        $users = User::all();
+        $actions = [
+            'login', 'logout', 'document_upload', 'document_approve', 'document_reject', 'document_delete'
+        ];
+
+        foreach (range(1, 25) as $index) {
+            $user = $users->random();
+            $action = fake()->randomElement($actions);
+            
+            \App\Models\AuditLog::create([
+                'user_id' => $user->id,
+                'action' => $action,
+                'target_type' => str_contains($action, 'document') ? \App\Models\Document::class : \App\Models\User::class,
+                'target_id' => fake()->numberBetween(1, 50),
+                'timestamp' => now()->subMinutes(fake()->numberBetween(1, 10000)),
+            ]);
+        }
     }
 }

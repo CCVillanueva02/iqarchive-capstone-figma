@@ -11,11 +11,13 @@ class AuditTrail extends Component
 {
     use WithPagination;
 
+    public $tab = 'general'; // general, authentication, documents
     public $search = '';
     public $userId = '';
     public $actionType = '';
 
     protected $queryString = [
+        'tab' => ['except' => 'general'],
         'search' => ['except' => ''],
         'userId' => ['except' => ''],
         'actionType' => ['except' => ''],
@@ -36,6 +38,12 @@ class AuditTrail extends Component
         $this->resetPage();
     }
 
+    public function updatedTab()
+    {
+        $this->resetPage();
+        $this->reset(['search', 'userId', 'actionType']);
+    }
+
     public function clearFilters()
     {
         $this->reset(['search', 'userId', 'actionType']);
@@ -45,6 +53,12 @@ class AuditTrail extends Component
     public function render()
     {
         $logs = AuditLog::with('user')
+            ->when($this->tab === 'authentication', function ($query) {
+                $query->whereIn('action', ['login', 'logout']);
+            })
+            ->when($this->tab === 'documents', function ($query) {
+                $query->where('action', 'like', 'document_%');
+            })
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
                     $q->where('action', 'like', '%' . $this->search . '%')
@@ -63,10 +77,14 @@ class AuditTrail extends Component
 
         $users = User::orderBy('first_name')->get();
         
-        $actions = AuditLog::select('action')
-            ->distinct()
-            ->orderBy('action')
-            ->pluck('action');
+        // Populate distinct action choices filtered by the active tab category
+        $actionsQuery = AuditLog::select('action')->distinct()->orderBy('action');
+        if ($this->tab === 'authentication') {
+            $actionsQuery->whereIn('action', ['login', 'logout']);
+        } elseif ($this->tab === 'documents') {
+            $actionsQuery->where('action', 'like', 'document_%');
+        }
+        $actions = $actionsQuery->pluck('action');
 
         return view('livewire.system-administrator.audit-trail', [
             'logs' => $logs,

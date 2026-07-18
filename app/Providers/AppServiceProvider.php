@@ -24,6 +24,85 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureDefaults();
+        $this->configureAuditTrails();
+    }
+
+    /**
+     * Configure event listeners to automatically generate audit logs.
+     */
+    protected function configureAuditTrails(): void
+    {
+        // 1. Successful Authentication Logins
+        \Illuminate\Support\Facades\Event::listen(
+            \Illuminate\Auth\Events\Login::class,
+            function (\Illuminate\Auth\Events\Login $event) {
+                \App\Models\AuditLog::create([
+                    'user_id' => $event->user->id,
+                    'action' => 'login',
+                    'target_type' => \App\Models\User::class,
+                    'target_id' => $event->user->id,
+                    'timestamp' => now(),
+                ]);
+            }
+        );
+
+        // 2. Authentication Logouts
+        \Illuminate\Support\Facades\Event::listen(
+            \Illuminate\Auth\Events\Logout::class,
+            function (\Illuminate\Auth\Events\Logout $event) {
+                if ($event->user) {
+                    \App\Models\AuditLog::create([
+                        'user_id' => $event->user->id,
+                        'action' => 'logout',
+                        'target_type' => \App\Models\User::class,
+                        'target_id' => $event->user->id,
+                        'timestamp' => now(),
+                    ]);
+                }
+            }
+        );
+
+        // 3. Document Eloquent Observers
+        \App\Models\Document::created(function (\App\Models\Document $document) {
+            \App\Models\AuditLog::create([
+                'user_id' => auth()->id() ?? $document->uploaded_by,
+                'action' => 'document_upload',
+                'target_type' => \App\Models\Document::class,
+                'target_id' => $document->id,
+                'timestamp' => now(),
+            ]);
+        });
+
+        \App\Models\Document::updated(function (\App\Models\Document $document) {
+            $action = 'document_update';
+
+            if ($document->isDirty('status')) {
+                $status = $document->status;
+                if ($status === 'approved') {
+                    $action = 'document_approve';
+                } elseif ($status === 'rejected') {
+                    $action = 'document_reject';
+                }
+            }
+
+            \App\Models\AuditLog::create([
+                'user_id' => auth()->id() ?? $document->confirmed_by ?? $document->uploaded_by,
+                'action' => $action,
+                'target_type' => \App\Models\Document::class,
+                'target_id' => $document->id,
+                'timestamp' => now(),
+            ]);
+        });
+
+        \App\Models\Document::deleted(function (\App\Models\Document $document) {
+            \App\Models\AuditLog::create([
+                'user_id' => auth()->id() ?? $document->uploaded_by,
+                'action' => 'document_delete',
+                'target_type' => \App\Models\Document::class,
+                'target_id' => $document->id,
+                'timestamp' => now(),
+            ]);
+        });
     }
 
     /**
