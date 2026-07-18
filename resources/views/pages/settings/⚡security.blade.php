@@ -48,6 +48,93 @@ new #[Title('Security settings')] class extends Component {
     public string $deletingPasskeyName = '';
     /* @end-chisel-passkeys */
 
+    public string $confirm_password = '';
+    public bool $showConfirmLogoutModal = false;
+
+    public function confirmLogout(): void
+    {
+        $this->confirm_password = '';
+        $this->showConfirmLogoutModal = true;
+    }
+
+    public function logoutOtherBrowserSessions(): void
+    {
+        if (! \Illuminate\Support\Facades\Hash::check($this->confirm_password, Auth::user()->password)) {
+            throw ValidationException::withMessages([
+                'confirm_password' => [__('This password does not match our records.')],
+            ]);
+        }
+
+        \Illuminate\Support\Facades\DB::table('sessions')
+            ->where('user_id', Auth::user()->getAuthIdentifier())
+            ->where('id', '!=', request()->session()->getId())
+            ->delete();
+
+        $this->reset('confirm_password');
+        $this->showConfirmLogoutModal = false;
+
+        Flux::toast(variant: 'success', text: __('Other browser sessions logged out.'));
+    }
+
+    public function getSessions()
+    {
+        return \Illuminate\Support\Facades\DB::table('sessions')
+            ->where('user_id', Auth::user()->getAuthIdentifier())
+            ->orderBy('last_activity', 'desc')
+            ->get()
+            ->map(function ($session) {
+                $agent = $this->parseUserAgent($session->user_agent);
+                return [
+                    'platform' => $agent->platform,
+                    'browser' => $agent->browser,
+                    'is_desktop' => $agent->is_desktop,
+                    'ip_address' => $session->ip_address,
+                    'is_current_device' => $session->id === request()->session()->getId(),
+                    'last_active' => \Illuminate\Support\Carbon::createFromTimestamp($session->last_activity)->diffForHumans(),
+                ];
+            })
+            ->toArray();
+    }
+
+    protected function parseUserAgent($userAgent)
+    {
+        $platform = 'Unknown OS';
+        $browser = 'Unknown Browser';
+
+        if (preg_match('/Windows/i', $userAgent)) {
+            $platform = 'Windows';
+        } elseif (preg_match('/Macintosh|Mac OS X/i', $userAgent)) {
+            $platform = 'macOS';
+        } elseif (preg_match('/Linux/i', $userAgent)) {
+            $platform = 'Linux';
+        } elseif (preg_match('/iPhone|iPad|iPod/i', $userAgent)) {
+            $platform = 'iOS';
+        } elseif (preg_match('/Android/i', $userAgent)) {
+            $platform = 'Android';
+        }
+
+        if (preg_match('/Chrome/i', $userAgent)) {
+            $browser = 'Chrome';
+            if (preg_match('/Edg/i', $userAgent)) {
+                $browser = 'Edge';
+            } elseif (preg_match('/OPR/i', $userAgent)) {
+                $browser = 'Opera';
+            }
+        } elseif (preg_match('/Safari/i', $userAgent)) {
+            $browser = 'Safari';
+        } elseif (preg_match('/Firefox/i', $userAgent)) {
+            $browser = 'Firefox';
+        } elseif (preg_match('/MSIE|Trident/i', $userAgent)) {
+            $browser = 'Internet Explorer';
+        }
+
+        return (object) [
+            'platform' => $platform,
+            'browser' => $browser,
+            'is_desktop' => !preg_match('/Mobile|Android|iPhone|iPad/i', $userAgent),
+        ];
+    }
+
     /**
      * Mount the component.
      */
@@ -326,6 +413,54 @@ new #[Title('Security settings')] class extends Component {
             </section>
         @endif
         {{-- @end-chisel-passkeys --}}
+
+        {{-- Browser Sessions --}}
+        <section class="mt-12 pt-12 border-t border-zinc-200">
+            <flux:heading>{{ __('Browser sessions') }}</flux:heading>
+            <flux:subheading>{{ __('Manage and log out your active sessions on other browsers and devices.') }}</flux:subheading>
+
+            <flux:text variant="subtle" class="mt-4">
+                {{ __('If necessary, you may log out of all of your other browser sessions across all of your devices. Some of your recent sessions are listed below; however, this list may not be exhaustive. If you feel your account has been compromised, you should also update your password.') }}
+            </flux:text>
+
+            <div class="mt-6 flex flex-col w-full mx-auto space-y-6 text-sm" wire:cloak>
+                <div class="space-y-6">
+                    @foreach ($this->getSessions() as $session)
+                        <div class="flex items-center gap-4">
+                            <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-zinc-100 text-zinc-500">
+                                @if ($session['is_desktop'])
+                                    <x-lucide-computer class="size-5" />
+                                @else
+                                    <x-lucide-smartphone class="size-5" />
+                                @endif
+                            </div>
+                            <div class="space-y-0.5">
+                                <div class="text-sm font-medium tracking-tight text-zinc-800">
+                                    {{ $session['platform'] }} - {{ $session['browser'] }}
+                                </div>
+                                <div class="text-xs text-zinc-400 font-semibold">
+                                    {{ $session['ip_address'] }} — 
+                                    @if ($session['is_current_device'])
+                                        <span class="text-green-600 font-bold">{{ __('This device') }}</span>
+                                    @else
+                                        <span>{{ __('Last active') }} {{ $session['last_active'] }}</span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
+                <div class="flex justify-start">
+                    <flux:button
+                        variant="subtle"
+                        wire:click="confirmLogout"
+                    >
+                        {{ __('Log Out Other Browser Sessions') }}
+                    </flux:button>
+                </div>
+            </div>
+        </section>
     </x-pages::settings.layout>
 
     {{-- @chisel-passkeys --}}
@@ -360,4 +495,44 @@ new #[Title('Security settings')] class extends Component {
         </div>
     </flux:modal>
     {{-- @end-chisel-passkeys --}}
+
+    {{-- Confirm Logout Other Devices Modal --}}
+    <flux:modal
+        name="confirm-logout-modal"
+        class="max-w-md md:min-w-md"
+        wire:model="showConfirmLogoutModal"
+    >
+        <form wire:submit="logoutOtherBrowserSessions" class="space-y-6">
+            <div class="space-y-2">
+                <flux:heading size="lg">{{ __('Log Out Other Browser Sessions') }}</flux:heading>
+                <flux:text>
+                    {{ __('Please enter your password to confirm you would like to log out of your other browser sessions across all of your devices.') }}
+                </flux:text>
+            </div>
+
+            <flux:input
+                wire:model="confirm_password"
+                type="password"
+                required
+                placeholder="{{ __('Password') }}"
+                :label="__('Password')"
+                viewable
+            />
+
+            <div class="flex gap-3 justify-end">
+                <flux:button
+                    variant="outline"
+                    wire:click="$set('showConfirmLogoutModal', false)"
+                >
+                    {{ __('Cancel') }}
+                </flux:button>
+                <flux:button
+                    variant="danger"
+                    type="submit"
+                >
+                    {{ __('Log Out Other Browser Sessions') }}
+                </flux:button>
+            </div>
+        </form>
+    </flux:modal>
 </section>
