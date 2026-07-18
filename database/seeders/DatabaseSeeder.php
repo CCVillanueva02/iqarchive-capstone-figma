@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
                 'email' => 'sysadmin@example.com',
             ],
             'iqa-admin' => [
-                'name' => 'Maria Reyes', // Matches the mockup's IQA Staff/Admin profile
+                'name' => 'IQA Admin', 
                 'email' => 'iqaadmin@example.com',
             ],
             'iqa-member' => [
