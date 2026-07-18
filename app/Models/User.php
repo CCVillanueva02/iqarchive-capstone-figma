@@ -58,9 +58,19 @@ class User extends Authenticatable implements PasskeyUser
      * Relationships
      */
     
-    public function role()
+    public function roleRelation()
     {
-        return $this->belongsTo(Role::class);
+        return $this->belongsTo(Role::class, 'role_id');
+    }
+
+    public function getRoleAttribute(): string
+    {
+        return $this->roleRelation ? $this->roleRelation->role_name : '';
+    }
+
+    public function getNameAttribute(): string
+    {
+        return trim($this->first_name . ' ' . $this->last_name);
     }
 
     public function program()

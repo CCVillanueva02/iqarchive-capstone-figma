@@ -2,10 +2,8 @@
     <div class="w-full max-w-[440px] bg-white dark:bg-stone-900 border border-slate-200 dark:border-stone-800 rounded-2xl shadow-xs p-8 md:p-10 flex flex-col gap-6">
         <div class="text-center flex flex-col items-center">
             <!-- University/Office Logo Icon -->
-            <div class="flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 dark:bg-stone-800 border border-slate-200 dark:border-stone-700 mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-[#586A85] dark:text-slate-300">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 21V8.25M15.75 21V8.25M8.25 21V8.25M3 9L12 3L21 9M19.5 21V12M4.5 21V12M2.25 21h19.5" />
-                </svg>
+            <div class="flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 border border-slate-200 mb-4">
+                <x-lucide-landmark class="w-8 h-8 text-[#586A85]" />
             </div>
 
             <!-- Title & Subtitle -->

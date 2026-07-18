@@ -1,6 +1,6 @@
 @php
     $role = auth()->user()?->role;
-    $htmlClass = $role === 'iqa-admin' ? 'light' : null;
+    $htmlClass = 'light';
     $bodyClass = 'min-h-screen bg-[#f4f6fa] antialiased text-zinc-800';
 @endphp
 

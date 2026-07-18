@@ -48,10 +48,7 @@
         <!-- Program Accreditation Card -->
         <div class="bg-white border border-slate-200/70 rounded-2xl p-6 shadow-3xs hover:shadow-md transition-all duration-300 flex flex-col items-center text-center gap-4">
             <div class="w-16 h-16 rounded-full bg-blue-50 text-[#1b355a] flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-8 h-8">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.19a.75.75 0 01.44-.92l8-3a.75.75 0 01.56 0l8 3a.75.75 0 010 1.41l-8 3a.75.75 0 01-.56 0l-8-3a.75.75 0 01-.44-.92z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.19v6.26a1.5 1.5 0 001.07 1.43l7.5 2.14a1.5 1.5 0 00.84 0l7.5-2.14a1.5 1.5 0 001.07-1.43v-6.26" />
-                </svg>
+                <x-lucide-graduation-cap class="w-8 h-8" />
             </div>
             <div>
                 <h3 class="text-lg font-bold text-[#1b355a]">Program Accreditation</h3>
@@ -67,9 +64,7 @@
         <!-- Institutional Accreditation Card -->
         <div class="bg-white border border-slate-200/70 rounded-2xl p-6 shadow-3xs hover:shadow-md transition-all duration-300 flex flex-col items-center text-center gap-4">
             <div class="w-16 h-16 rounded-full bg-blue-50 text-[#f27224] flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-8 h-8">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.33A2.25 2.25 0 0018 8.08H6A2.25 2.25 0 003.75 10.33V21h16.5z" />
-                </svg>
+                <x-lucide-landmark class="w-8 h-8" />
             </div>
             <div>
                 <h3 class="text-lg font-bold text-[#1b355a]">Institutional Accreditation</h3>
@@ -89,9 +84,7 @@
         <div class="bg-white border border-slate-200/70 rounded-2xl p-6 shadow-3xs hover:shadow-md transition-all duration-300 flex flex-col justify-between gap-5">
             <div class="flex flex-col gap-4">
                 <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5m-16.5 3.75h16.5m-16.5-11.25h16.5m-16.5-3.75h16.5" />
-                    </svg>
+                    <x-lucide-clipboard-check class="w-6 h-6" />
                 </div>
                 <div>
                     <h3 class="text-base font-bold text-[#1b355a]">Self-Survey Documents</h3>
@@ -109,9 +102,7 @@
         <div class="bg-white border border-slate-200/70 rounded-2xl p-6 shadow-3xs hover:shadow-md transition-all duration-300 flex flex-col justify-between gap-5">
             <div class="flex flex-col gap-4">
                 <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
-                    </svg>
+                    <x-lucide-file-badge class="w-6 h-6" />
                 </div>
                 <div>
                     <h3 class="text-base font-bold text-[#1b355a]">Compliance Reports</h3>
@@ -129,9 +120,7 @@
         <div class="bg-white border border-slate-200/70 rounded-2xl p-6 shadow-3xs hover:shadow-md transition-all duration-300 flex flex-col justify-between gap-5">
             <div class="flex flex-col gap-4">
                 <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
-                    </svg>
+                    <x-lucide-files class="w-6 h-6" />
                 </div>
                 <div>
                     <h3 class="text-base font-bold text-[#1b355a]">Supporting Documents</h3>
