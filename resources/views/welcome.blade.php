@@ -1,36 +1,5 @@
 <x-layouts::html :title="'Bicol University IQA Office'" html-class="light" body-class="bg-[#FDFDFC] antialiased text-zinc-800 font-sans min-h-screen flex flex-col justify-between">
-        <!-- Top Navbar -->
-        <header class="w-full max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
-            <div class="flex items-center gap-3">
-                <div class="flex items-center justify-center w-10 h-10 rounded-full bg-slate-100 border border-slate-200 text-[#586A85]">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 21V8.25M15.75 21V8.25M8.25 21V8.25M3 9L12 3L21 9M19.5 21V12M4.5 21V12M2.25 21h19.5" />
-                    </svg>
-                </div>
-                <div>
-                    <span class="font-bold text-lg text-[#1b355a] tracking-tight">IQArchive</span>
-                    <span class="block text-[10px] text-zinc-400 font-medium uppercase tracking-wider -mt-1">IQA Office</span>
-                </div>
-            </div>
-
-            <nav class="flex items-center gap-4">
-                @auth
-                    <a
-                        href="{{ route('dashboard') }}"
-                        class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-semibold rounded-lg bg-[#f27224] text-white hover:bg-[#d65f1a] transition shadow-2xs"
-                    >
-                        Go to Dashboard
-                    </a>
-                @else
-                    <a
-                        href="{{ route('login') }}"
-                        class="inline-flex items-center px-4 py-2 border border-zinc-200 text-sm font-semibold rounded-lg text-[#1b355a] hover:bg-slate-50 transition"
-                    >
-                        Log In
-                    </a>
-                @endauth
-            </nav>
-        </header>
+        @include('partials.header')
 
         <!-- Hero Section -->
         <main class="flex-1 flex flex-col items-center justify-center max-w-5xl mx-auto px-6 py-12 text-center gap-8">
@@ -99,14 +68,5 @@
             </div>
         </main>
 
-        <!-- Footer -->
-        <footer class="w-full max-w-7xl mx-auto px-6 py-6 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between text-xs text-zinc-400 gap-4 mt-12">
-            <div>
-                &copy; {{ date('Y') }} Bicol University — Internal Quality Assurance Office
-            </div>
-            <div class="flex gap-4">
-                <span class="hover:underline cursor-pointer">Security Protocol</span>
-                <span class="hover:underline cursor-pointer">User Access Policy</span>
-            </div>
-        </footer>
+        @include('partials.footer')
 </x-layouts::html>

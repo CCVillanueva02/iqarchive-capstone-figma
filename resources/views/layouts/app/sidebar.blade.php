@@ -1,13 +1,5 @@
-<x-layouts::html :title="$title ?? null" html-class="light" body-class="min-h-screen bg-[#f4f6fa] antialiased text-zinc-800">
-    <flux:sidebar sticky collapsible="mobile" class="border-none text-white flex flex-col gap-0 !p-0 min-h-screen h-screen" style="background: linear-gradient(180deg, #002B61 0%, #003E8A 100%) !important;">
+<flux:sidebar sticky collapsible="mobile" class="border-none text-white flex flex-col gap-0 !p-0 min-h-screen h-screen" style="background: linear-gradient(180deg, #002B61 0%, #003E8A 100%) !important;">
         <flux:sidebar.header class="flex flex-col gap-3 px-[20px] py-[24px] border-b border-white/10">
-            <!-- <div class="flex gap-3">
-                    <img src="/bulogo.png" alt="BU Logo" class="w-10 h-10 object-contain shrink-0 select-none" />
-                    <div class="text-left flex flex-col">
-                        <span class="block font-bold text-[20px] tracking-[0.5px] leading-tight text-white">IQArchive</span>
-                        <span class="block text-[10px] text-white/70 font-semibold uppercase tracking-wider mt-0.5 select-none">IQA Office &bull; BU</span>
-                    </div>
-                </div> -->
             <div class="flex items-center justify-start gap-3 mr-auto text-left w-full">
                 <img src="/bulogo.png" alt="BU Logo" class="w-10 h-10 object-contain shrink-0 select-none" />
                 <div class="flex flex-col">
@@ -128,5 +120,3 @@
     </flux:header>
 
     {{ $slot }}
-
-</x-layouts::html>
