@@ -61,6 +61,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
             return view("pages.roles.{$role}.settings");
         })->name("settings.{$role}");
     }
+
+    Route::get('roles/iqa-admin/accounts', \App\Livewire\IqaAdmin\Accounts::class)
+        ->name('accounts.iqa-admin');
 });
 
 // Dev helper to switch user role in session
