@@ -69,4 +69,22 @@ Route::get('/dev/switch-role/{role}', function ($role) {
     return back();
 })->name('dev.switch-role');
 
+if (app()->environment('local')) {
+    Route::get('/dev/preview-auth/{page}', function ($page) {
+        if ($page === 'confirm-password') {
+            return view('pages.auth.confirm-password');
+        }
+        if ($page === 'two-factor-challenge') {
+            return view('pages.auth.two-factor-challenge');
+        }
+        if ($page === 'verify-email') {
+            return view('pages.auth.verify-email');
+        }
+        if ($page === 'reset-password') {
+            return view('pages.auth.reset-password');
+        }
+        abort(404);
+    })->name('dev.preview-auth');
+}
+
 require __DIR__.'/settings.php';
