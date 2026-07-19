@@ -312,7 +312,7 @@ new #[Title('Security settings')] class extends Component {
             />
 
             <div class="flex items-center gap-4">
-                <flux:button variant="primary" type="submit" data-test="update-password-button">
+                <flux:button variant="primary" type="submit" style="--color-accent: #F47920; --color-accent-foreground: #ffffff;" class="text-white font-semibold border-none shadow-xs" data-test="update-password-button">
                     {{ __('Save') }}
                 </flux:button>
             </div>
@@ -351,6 +351,8 @@ new #[Title('Security settings')] class extends Component {
                             <flux:modal.trigger name="two-factor-setup-modal">
                                 <flux:button
                                     variant="primary"
+                                    style="--color-accent: #F47920; --color-accent-foreground: #ffffff;"
+                                    class="text-white font-semibold border-none shadow-xs"
                                     wire:click="$dispatch('start-two-factor-setup')"
                                 >
                                     {{ __('Enable 2FA') }}
@@ -376,8 +378,8 @@ new #[Title('Security settings')] class extends Component {
                         @forelse ($passkeys as $passkey)
                             <div class="flex items-center justify-between p-4 {{ ! $loop->last ? 'border-b border-zinc-200 dark:border-zinc-700' : '' }}">
                                 <div class="flex items-center gap-4">
-                                    <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-zinc-100 dark:bg-zinc-800">
-                                        <flux:icon.key class="size-5 text-zinc-500 dark:text-zinc-400" />
+                                    <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 dark:bg-stone-800 border border-slate-200 dark:border-stone-800">
+                                        <flux:icon.key class="size-5 text-[#586A85]" />
                                     </div>
                                     <div class="space-y-1">
                                         <div class="flex items-center gap-2.5">
@@ -407,9 +409,9 @@ new #[Title('Security settings')] class extends Component {
                             </div>
                         @empty
                             <div class="p-8 text-center">
-                                <div class="mx-auto mb-4 flex size-14 items-center justify-center rounded-2xl bg-zinc-100 dark:bg-zinc-800">
-                                    <flux:icon.key class="size-7 text-zinc-400 dark:text-zinc-500" />
-                                </div>
+                                    <div class="mx-auto mb-4 flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 dark:bg-stone-800 border border-slate-200 dark:border-stone-800">
+                                        <flux:icon.key class="w-8 h-8 text-[#586A85]" />
+                                    </div>
                                 <p class="font-medium">{{ __('No passkeys yet') }}</p>
                                 <flux:text class="mt-1">{{ __('Add a passkey to sign in without a password') }}</flux:text>
                             </div>
@@ -435,7 +437,7 @@ new #[Title('Security settings')] class extends Component {
                 <div class="space-y-6">
                     @foreach ($this->getSessions() as $session)
                         <div class="flex items-center gap-4">
-                            <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-zinc-100 text-zinc-500">
+                                <div class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 dark:bg-stone-800 border border-slate-200 dark:border-stone-800 text-[#586A85]">
                                 @if ($session['is_desktop'])
                                     <x-lucide-computer class="size-5" />
                                 @else
@@ -443,7 +445,7 @@ new #[Title('Security settings')] class extends Component {
                                 @endif
                             </div>
                             <div class="space-y-0.5">
-                                <div class="text-sm font-medium tracking-tight text-zinc-800">
+                                    <div class="text-sm font-medium tracking-tight text-slate-800 dark:text-stone-200">
                                     {{ $session['platform'] }} - {{ $session['browser'] }}
                                 </div>
                                 <div class="text-xs text-zinc-400 font-semibold">
@@ -462,6 +464,8 @@ new #[Title('Security settings')] class extends Component {
                 <div class="flex justify-start">
                     <flux:button
                         variant="subtle"
+                        style="--color-accent: #F47920; --color-accent-foreground: #ffffff;"
+                        class="font-semibold text-xs hover:border-[#F47920] hover:text-[#F47920]"
                         wire:click="confirmLogout"
                     >
                         {{ __('Log Out Other Browser Sessions') }}
