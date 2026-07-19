@@ -182,6 +182,14 @@ new #[Title('Security settings')] class extends Component {
             'password' => $validated['password'],
         ]);
 
+        \App\Models\AuditLog::create([
+            'user_id' => Auth::id(),
+            'action' => 'password_change',
+            'target_type' => \App\Models\User::class,
+            'target_id' => Auth::id(),
+            'timestamp' => now(),
+        ]);
+
         $this->reset('current_password', 'password', 'password_confirmation');
 
         Flux::toast(variant: 'success', text: __('Password updated.'));

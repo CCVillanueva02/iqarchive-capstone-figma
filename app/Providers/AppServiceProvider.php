@@ -62,7 +62,21 @@ class AppServiceProvider extends ServiceProvider
             }
         );
 
-        // 3. Document Eloquent Observers
+        // 3. Password Resets
+        \Illuminate\Support\Facades\Event::listen(
+            \Illuminate\Auth\Events\PasswordReset::class,
+            function (\Illuminate\Auth\Events\PasswordReset $event) {
+                \App\Models\AuditLog::create([
+                    'user_id' => $event->user->id,
+                    'action' => 'password_reset',
+                    'target_type' => \App\Models\User::class,
+                    'target_id' => $event->user->id,
+                    'timestamp' => now(),
+                ]);
+            }
+        );
+
+        // 4. Document Eloquent Observers
         \App\Models\Document::created(function (\App\Models\Document $document) {
             \App\Models\AuditLog::create([
                 'user_id' => auth()->id() ?? $document->uploaded_by,
