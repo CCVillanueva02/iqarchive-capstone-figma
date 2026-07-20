@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\IqaAdmin;
+namespace App\Livewire\SystemAdministrator;
 
 use App\Models\User;
 use App\Models\Role;
@@ -48,17 +48,9 @@ class Accounts extends Component
 
     public function mount()
     {
-        if (auth()->user()->role !== 'iqa-admin') {
+        if (auth()->user()->role !== 'system-administrator') {
             abort(403, 'Unauthorized action.');
         }
-    }
-
-    /**
-     * Get the system-administrator role ID to exclude from all operations.
-     */
-    private function getSystemAdminRoleId(): ?int
-    {
-        return Role::where('role_name', 'system-administrator')->value('id');
     }
 
     public function updatingSearch()
@@ -110,12 +102,6 @@ class Accounts extends Component
             'program_id' => 'nullable|exists:programs,id',
         ]);
 
-        // Block creation of system-administrator accounts
-        $sysAdminRoleId = $this->getSystemAdminRoleId();
-        if ($sysAdminRoleId && (int) $this->role_id === $sysAdminRoleId) {
-            abort(403, 'Unauthorized action.');
-        }
-
         User::create([
             'first_name' => $this->first_name,
             'middle_name' => $this->middle_name,
@@ -145,11 +131,6 @@ class Accounts extends Component
     {
         $this->resetForm();
         $user = User::findOrFail($id);
-
-        // Block editing system-administrator accounts
-        if ($user->role === 'system-administrator') {
-            abort(403, 'Unauthorized action.');
-        }
 
         $this->userId = $user->id;
         $this->first_name = $user->first_name;
@@ -184,17 +165,6 @@ class Accounts extends Component
         ]);
 
         $user = User::findOrFail($this->userId);
-
-        // Block editing system-administrator accounts
-        if ($user->role === 'system-administrator') {
-            abort(403, 'Unauthorized action.');
-        }
-
-        // Block changing role to system-administrator
-        $sysAdminRoleId = $this->getSystemAdminRoleId();
-        if ($sysAdminRoleId && (int) $this->role_id === $sysAdminRoleId) {
-            abort(403, 'Unauthorized action.');
-        }
         
         $data = [
             'first_name' => $this->first_name,
@@ -227,14 +197,8 @@ class Accounts extends Component
      */
     public function openDeleteModal($id)
     {
-        $user = User::findOrFail($id);
-
-        // Block toggling system-administrator accounts
-        if ($user->role === 'system-administrator') {
-            abort(403, 'Unauthorized action.');
-        }
-
         $this->userId = $id;
+        $user = User::findOrFail($id);
         $this->targetUserStatus = $user->status;
         $this->showDeleteModal = true;
     }
@@ -286,13 +250,7 @@ class Accounts extends Component
 
     public function render()
     {
-        $sysAdminRoleId = $this->getSystemAdminRoleId();
-
         $users = User::with(['roleRelation', 'program', 'college'])
-            // Exclude system-administrator accounts from all queries
-            ->when($sysAdminRoleId, function ($query) use ($sysAdminRoleId) {
-                $query->where('role_id', '!=', $sysAdminRoleId);
-            })
             ->when($this->statusFilter, function ($query) {
                 $query->where('status', $this->statusFilter);
             })
@@ -311,18 +269,17 @@ class Accounts extends Component
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
-        // Exclude system-administrator role from role dropdowns
-        $roles = Role::where('role_name', '!=', 'system-administrator')->get();
+        // No role restrictions for system administrator — all roles available
+        $roles = Role::all();
         $colleges = College::all();
         $programs = Program::when($this->college_id, fn($q) => $q->where('college_id', $this->college_id))->get();
 
-        // Calculate counts (excluding system-administrator accounts)
-        $excludeQuery = User::when($sysAdminRoleId, fn($q) => $q->where('role_id', '!=', $sysAdminRoleId));
-        $activeCount = (clone $excludeQuery)->where('status', 'active')->count();
-        $inactiveCount = (clone $excludeQuery)->where('status', 'inactive')->count();
+        // Calculate counts
+        $activeCount = User::where('status', 'active')->count();
+        $inactiveCount = User::where('status', 'inactive')->count();
         $totalCount = $activeCount + $inactiveCount;
 
-        return view('pages.roles.iqa-admin.accounts', [
+        return view('pages.roles.system-administrator.accounts', [
             'users' => $users,
             'roles' => $roles,
             'colleges' => $colleges,

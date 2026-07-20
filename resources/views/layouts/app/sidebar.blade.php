@@ -59,9 +59,9 @@
                 <span>{{ $role === 'system-administrator' ? 'Audit Trail' : 'Reports' }}</span>
             </a>
 
-            @if ($role === 'iqa-admin')
+            @if ($role === 'iqa-admin' || $role === 'system-administrator')
             <!-- Accounts -->
-            <a href="{{ route('accounts.iqa-admin') }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-sm font-semibold transition-all {{ request()->routeIs('accounts.iqa-admin') ? 'bg-white/10 text-white border-l-[#F47920]' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
+            <a href="{{ route('accounts.' . $role) }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-sm font-semibold transition-all {{ request()->routeIs('accounts.' . $role) ? 'bg-white/10 text-white border-l-[#F47920]' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                     <circle cx="9" cy="7" r="4"></circle>
