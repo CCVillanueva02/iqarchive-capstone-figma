@@ -7,6 +7,20 @@
 <x-layouts::html :title="$title ?? null" :html-class="$htmlClass" :body-class="$bodyClass">
     @if($role === 'iqa-admin' || $role === 'system-administrator')
         <x-layouts::app.sidebar>
+            @if($role === 'system-administrator')
+                <div class="sticky top-0 z-50 bg-emerald-600 border-b border-emerald-700 text-white text-xs font-semibold py-2 px-6 flex items-center justify-between shadow-xs select-none">
+                    <div class="flex items-center gap-2">
+                        <span class="relative flex h-2 w-2">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-300"></span>
+                        </span>
+                        <span>Logged in as <strong>System Administrator</strong> &bull; Superuser Mode</span>
+                    </div>
+                    <div class="text-[10px] bg-white/20 px-2 py-0.5 rounded font-mono uppercase tracking-wider">
+                        System Admin Panel
+                    </div>
+                </div>
+            @endif
             <flux:main>
                 {{ $slot }}
             </flux:main>
