@@ -29,7 +29,6 @@ class DatabaseSeeder extends Seeder
             'task-force' => 'QA Task Force Lead',
             'college-head' => 'College Head (Dean)',
             'program-chair' => 'BU Program Chair',
-            'faculty-member' => 'BU Faculty Member',
         ];
 
         $roles = [];
@@ -159,14 +158,6 @@ class DatabaseSeeder extends Seeder
                 'last_name' => 'Chair',
                 'email' => 'chair@example.com',
                 'role' => 'program-chair',
-                'program' => 'BSCS',
-                'college' => null,
-            ],
-            [
-                'first_name' => 'BU Faculty',
-                'last_name' => 'Member',
-                'email' => 'faculty@example.com',
-                'role' => 'faculty-member',
                 'program' => 'BSCS',
                 'college' => null,
             ],

@@ -11,6 +11,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         if ($role === 'iqa-admin') {
             return redirect()->route('documents.iqa-admin');
         }
+        if ($role === 'college-head') {
+            return redirect()->route('dashboard.program-chair');
+        }
         return redirect()->route('dashboard.' . $role);
     })->name('dashboard');
 
@@ -22,40 +25,44 @@ Route::middleware(['auth', 'verified'])->group(function () {
         'university-administrator',
         'task-force',
         'program-chair',
-        'faculty-member',
     ];
 
     foreach ($roles as $role) {
         Route::get("roles/{$role}/dashboard", function () use ($role) {
-            if ($role !== auth()->user()->role) {
+            $userRole = auth()->user()->role;
+            if ($role !== $userRole && !($role === 'program-chair' && $userRole === 'college-head')) {
                 abort(403, 'Unauthorized action.');
             }
             return view("pages.roles.{$role}.dashboard");
         })->name("dashboard.{$role}");
 
         Route::get("roles/{$role}/documents", function () use ($role) {
-            if ($role !== auth()->user()->role) {
+            $userRole = auth()->user()->role;
+            if ($role !== $userRole && !($role === 'program-chair' && $userRole === 'college-head')) {
                 abort(403, 'Unauthorized action.');
             }
             return view("pages.roles.{$role}.documents");
         })->name("documents.{$role}");
 
         Route::get("roles/{$role}/submissions", function () use ($role) {
-            if ($role !== auth()->user()->role) {
+            $userRole = auth()->user()->role;
+            if ($role !== $userRole && !($role === 'program-chair' && $userRole === 'college-head')) {
                 abort(403, 'Unauthorized action.');
             }
             return view("pages.roles.{$role}.submissions");
         })->name("submissions.{$role}");
 
         Route::get("roles/{$role}/reports", function () use ($role) {
-            if ($role !== auth()->user()->role) {
+            $userRole = auth()->user()->role;
+            if ($role !== $userRole && !($role === 'program-chair' && $userRole === 'college-head')) {
                 abort(403, 'Unauthorized action.');
             }
             return view("pages.roles.{$role}.reports");
         })->name("reports.{$role}");
 
         Route::get("roles/{$role}/settings", function () use ($role) {
-            if ($role !== auth()->user()->role) {
+            $userRole = auth()->user()->role;
+            if ($role !== $userRole && !($role === 'program-chair' && $userRole === 'college-head')) {
                 abort(403, 'Unauthorized action.');
             }
             return view("pages.roles.{$role}.settings");

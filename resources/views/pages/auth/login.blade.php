@@ -74,7 +74,6 @@
                 <div class="font-bold text-orange-600 dark:text-orange-400 mb-1">Local Dev Credentials (Password: <span class="font-mono font-bold select-all">password</span>):</div>
                 <div class="text-zinc-600 dark:text-zinc-400 space-y-0.5">
                     <div>• IQA Admin: <span class="font-mono select-all font-semibold">iqaadmin@example.com</span></div>
-                    <div>• Faculty Member: <span class="font-mono select-all font-semibold">faculty@example.com</span></div>
                     <div>• Accreditor: <span class="font-mono select-all font-semibold">accreditor@example.com</span></div>
                     <div>• Sysadmin: <span class="font-mono select-all font-semibold">sysadmin@example.com</span></div>
                 </div>

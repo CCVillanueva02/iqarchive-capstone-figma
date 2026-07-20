@@ -15,7 +15,7 @@
             </div>
             <flux:heading size="lg" class="font-extrabold text-zinc-900">Welcome, {{ auth()->user()->name }}!</flux:heading>
             <flux:text class="text-sm text-zinc-500 max-w-md">
-                You have accessed the <strong>Dashboard</strong> workspace for the <strong>BU Program Chair</strong>. This page is currently under development.
+                You have accessed the <strong>Dashboard</strong> workspace for the <strong> {{ auth()->user()->roleRelation->description ?? auth()->user()->role }} </strong>. This page is currently under development.
             </flux:text>
         </div>
     </div>

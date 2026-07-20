@@ -11,6 +11,9 @@
 
     @php
     $role = auth()->user()->role;
+    if ($role === 'college-head') {
+        $role = 'program-chair';
+    }
     @endphp
     <!-- Navigation Links -->
     <div class="flex flex-col gap-[6px] flex-1 py-6">
@@ -105,7 +108,7 @@
     'university-administrator' => 'BU Admin/Exec',
     'task-force' => 'Task Force',
     'program-chair' => 'Program Chair',
-    'faculty-member' => 'Faculty Member',
+    'college-head' => 'College Head',
     default => 'User'
     };
     @endphp
