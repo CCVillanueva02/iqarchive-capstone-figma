@@ -55,7 +55,7 @@
     <!-- Accounts Table Card -->
     <div class="bg-white border border-slate-200/60 rounded-2xl shadow-3xs overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse text-sm">
+            <table class="w-full text-left border-collapse text-xs">
                 <thead>
                     <tr class="border-b border-slate-100 bg-slate-50/70 text-slate-500 font-semibold">
                         <th class="p-4 pl-6">Name</th>
@@ -63,6 +63,7 @@
                         <th class="p-4">Role</th>
                         <th class="p-4">Department / College</th>
                         <th class="p-4">Status</th>
+                        <th class="p-4">Last Edited</th>
                         <th class="p-4 pr-6 text-right">Actions</th>
                     </tr>
                 </thead>
@@ -75,16 +76,16 @@
                                 <div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 text-[#586A85] font-bold flex items-center justify-center text-xs shrink-0 select-none">
                                     {{ $user->initials() }}
                                 </div>
-                                <span class="text-[#1b355a] font-semibold text-sm">{{ $user->name }}</span>
+                                <span class="text-[#1b355a] font-semibold text-xs">{{ $user->name }}</span>
                             </div>
                         </td>
 
                         <!-- Email -->
-                        <td class="p-4 text-zinc-600 font-mono text-xs">{{ $user->email }}</td>
+                        <td class="p-4 text-zinc-600 font-mono text-[11px]">{{ $user->email }}</td>
 
                         <!-- Role -->
                         <td class="p-4">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-800 border border-blue-100">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-50 text-blue-800 border border-blue-100">
                                 {{ $user->roleRelation->description ?? $user->role }}
                             </span>
                         </td>
@@ -96,22 +97,34 @@
                             @elseif($user->college)
                             {{ $user->college->name }} ({{ $user->college->code }})
                             @else
-                            <span class="text-zinc-400 text-xs">—</span>
+                            <span class="text-zinc-400">—</span>
                             @endif
                         </td>
 
                         <!-- Status -->
                         <td class="p-4">
                             @if($user->status === 'active')
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 border border-emerald-100">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 mr-1.5"></span>
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-100">
+                                    <span class="w-1 h-1 rounded-full bg-emerald-600 mr-1"></span>
                                     {{ __('Active') }}
                                 </span>
                             @else
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-50 text-red-800 border border-red-100">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-red-600 mr-1.5"></span>
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-red-50 text-red-800 border border-red-100">
+                                    <span class="w-1 h-1 rounded-full bg-red-600 mr-1"></span>
                                     {{ __('Deactivated') }}
                                 </span>
+                            @endif
+                        </td>
+
+                        <!-- Last Edited -->
+                        <td class="p-4 text-zinc-500">
+                            @if($user->updated_at)
+                                <div class="flex flex-col">
+                                    <span class="font-medium text-slate-700">{{ $user->updated_at->diffForHumans() }}</span>
+                                    <span class="text-[9px] text-zinc-400 font-mono">{{ $user->updated_at->format('M d, Y h:i A') }}</span>
+                                </div>
+                            @else
+                                <span class="text-zinc-400">—</span>
                             @endif
                         </td>
 
@@ -127,7 +140,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="p-12 text-center text-zinc-400">
+                        <td colspan="7" class="p-12 text-center text-zinc-400">
                             <div class="flex flex-col items-center justify-center gap-3">
                                 <div class="w-12 h-12 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-zinc-400">
