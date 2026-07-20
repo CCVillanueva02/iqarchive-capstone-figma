@@ -18,15 +18,7 @@
     <!-- Navigation Links -->
     <div class="flex flex-col gap-[6px] flex-1 py-6">
 
-    @if ($role === 'iqa-admin')
-        <!-- Audit Trail (IQA Admin) -->
-        <a href="{{ route('audit-trail.iqa-admin') }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-sm font-semibold transition-all {{ request()->routeIs('audit-trail.iqa-admin') ? 'bg-white/10 text-white border-l-[#F47920]' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10"></circle>
-                <polyline points="12 6 12 12 16 14"></polyline>
-            </svg>
-            <span>Audit Trail</span>
-        </a>
+    @if ($role === 'iqa-admin' || $role === 'iqa-member')
         <!-- Dashboard -->
         <a href="{{ route('dashboard.' . $role) }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-sm font-semibold transition-all {{ request()->routeIs('dashboard.' . $role) ? 'bg-white/10 text-white border-l-[#F47920]' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -56,6 +48,9 @@
         </a>
         @endif
 
+        
+
+        @if ($role !== 'iqa-member')
         <!-- Reports / Audit Trail -->
         <a href="{{ route('reports.' . $role) }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-sm font-semibold transition-all {{ request()->routeIs('reports.' . $role) ? 'bg-white/10 text-white border-l-[#F47920]' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
             @if($role === 'system-administrator')
@@ -72,6 +67,7 @@
             @endif
             <span>{{ $role === 'system-administrator' ? 'Audit Trail' : 'Reports' }}</span>
         </a>
+        @endif
         
         @if ($role === 'iqa-admin')
         <!-- Audit Trail (IQA Admin) -->
