@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Role;
 use App\Models\College;
 use App\Models\Program;
+use App\Models\AuditLog;
 use Flux\Flux;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -116,7 +117,7 @@ class Accounts extends Component
             abort(403, 'Unauthorized action.');
         }
 
-        User::create([
+        $newUser = User::create([
             'first_name' => $this->first_name,
             'middle_name' => $this->middle_name,
             'last_name' => $this->last_name,
@@ -126,6 +127,14 @@ class Accounts extends Component
             'college_id' => $this->college_id ?: null,
             'program_id' => $this->program_id ?: null,
             'status' => 'active',
+        ]);
+
+        AuditLog::create([
+            'user_id' => auth()->id(),
+            'action' => 'account_create',
+            'target_type' => User::class,
+            'target_id' => $newUser->id,
+            'timestamp' => now(),
         ]);
 
         $this->showCreateModal = false;
@@ -212,6 +221,14 @@ class Accounts extends Component
 
         $user->update($data);
 
+        AuditLog::create([
+            'user_id' => auth()->id(),
+            'action' => 'account_update',
+            'target_type' => User::class,
+            'target_id' => $user->id,
+            'timestamp' => now(),
+        ]);
+
         $this->showEditModal = false;
         $this->resetForm();
 
@@ -252,6 +269,14 @@ class Accounts extends Component
             $newStatus = $user->status === 'active' ? 'inactive' : 'active';
             
             $user->update(['status' => $newStatus]);
+
+            AuditLog::create([
+                'user_id' => auth()->id(),
+                'action' => $newStatus === 'active' ? 'account_activate' : 'account_deactivate',
+                'target_type' => User::class,
+                'target_id' => $user->id,
+                'timestamp' => now(),
+            ]);
             
             $this->showDeleteModal = false;
             $this->userId = null;

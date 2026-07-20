@@ -62,6 +62,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         })->name("settings.{$role}");
     }
 
+    Route::get('roles/iqa-admin/audit-trail', function () {
+        if (auth()->user()->role !== 'iqa-admin') {
+            abort(403, 'Unauthorized action.');
+        }
+        return view('pages.roles.iqa-admin.audit-trail');
+    })->name('audit-trail.iqa-admin');
+
     Route::get('roles/iqa-admin/accounts', \App\Livewire\IqaAdmin\Accounts::class)
         ->name('accounts.iqa-admin');
 
