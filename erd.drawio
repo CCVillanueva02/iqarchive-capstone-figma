@@ -149,29 +149,6 @@
           <mxGeometry y="126" width="220" height="20" as="geometry" />
         </mxCell>
 
-        <!-- TABLE: passkeys -->
-        <mxCell id="table_passkeys" value="passkeys" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;html=1;fontStyle=1;align=center;fillColor=#1b355a;strokeColor=#1b355a;fontColor=#ffffff;" parent="1" vertex="1">
-          <mxGeometry x="400" y="700" width="220" height="146" as="geometry" />
-        </mxCell>
-        <mxCell id="passkeys_id" value="+ id: bigint [PK]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="table_passkeys" vertex="1">
-          <mxGeometry y="26" width="220" height="20" as="geometry" />
-        </mxCell>
-        <mxCell id="passkeys_user_id" value="+ user_id: bigint [FK -> users.id]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="table_passkeys" vertex="1">
-          <mxGeometry y="46" width="220" height="20" as="geometry" />
-        </mxCell>
-        <mxCell id="passkeys_name" value="+ name: string" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="table_passkeys" vertex="1">
-          <mxGeometry y="66" width="220" height="20" as="geometry" />
-        </mxCell>
-        <mxCell id="passkeys_credential_id" value="+ credential_id: string [Unique]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="table_passkeys" vertex="1">
-          <mxGeometry y="86" width="220" height="20" as="geometry" />
-        </mxCell>
-        <mxCell id="passkeys_credential" value="+ credential: json" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="table_passkeys" vertex="1">
-          <mxGeometry y="106" width="220" height="20" as="geometry" />
-        </mxCell>
-        <mxCell id="passkeys_last_used_at" value="+ last_used_at: timestamp [Nullable]" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;" parent="table_passkeys" vertex="1">
-          <mxGeometry y="126" width="220" height="20" as="geometry" />
-        </mxCell>
-
         <!-- TABLE: audit_logs -->
         <mxCell id="table_audit_logs" value="audit_logs" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;html=1;fontStyle=1;align=center;fillColor=#1b355a;strokeColor=#1b355a;fontColor=#ffffff;" parent="1" vertex="1">
           <mxGeometry x="740" y="500" width="220" height="146" as="geometry" />
@@ -219,11 +196,6 @@
 
         <!-- users (1) -> sessions (Many) -->
         <mxCell id="rel_users_sessions" value="" style="edgeStyle=orthogonalEdgeStyle;fontSize=12;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="table_users" target="table_sessions" edge="1">
-          <mxGeometry relative="1" as="geometry" />
-        </mxCell>
-
-        <!-- users (1) -> passkeys (Many) -->
-        <mxCell id="rel_users_passkeys" value="" style="edgeStyle=orthogonalEdgeStyle;fontSize=12;html=1;endArrow=ERmany;endFill=0;startArrow=ERone;startFill=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="table_users" target="table_passkeys" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 

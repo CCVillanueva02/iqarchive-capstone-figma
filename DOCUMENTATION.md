@@ -335,24 +335,23 @@ protected function passwordRules(): array
 
 ---
 
-### 7. Two-Factor Authentication (2FA) & Passkeys
+### 7. Two-Factor Authentication (2FA)
 
 **What it does:**
-Users can enable TOTP-based two-factor authentication from the Security settings page. When enabled, after entering their password, they must also provide a 6-digit code from their authenticator app. Recovery codes are generated for backup. Additionally, the system supports **passkeys** (WebAuthn) for passwordless sign-in.
+Users can enable TOTP-based two-factor authentication from the Security settings page. When enabled, after entering their password, they must also provide a 6-digit code from their authenticator app. Recovery codes are generated for backup.
 
 **How we implemented it:**
 - 2FA is provided by Laravel Fortify's `TwoFactorAuthenticatable` trait on the User model.
 - The 2FA secret and recovery codes are stored encrypted in the `users` table.
-- Passkeys use the WebAuthn standard via `PasskeyAuthenticatable` trait, with credentials stored in the `passkeys` table.
 
 **Key Code Snippet — User Model Traits:**
 
 ```php
 // app/Models/User.php
 
-class User extends Authenticatable implements PasskeyUser
+class User extends Authenticatable
 {
-    use HasFactory, Notifiable, PasskeyAuthenticatable, TwoFactorAuthenticatable;
+    use HasFactory, Notifiable, TwoFactorAuthenticatable;
 }
 ```
 
@@ -382,7 +381,6 @@ RateLimiter::for('two-factor', function (Request $request) {
 - 2FA secrets are stored **encrypted** in the database (not plaintext).
 - Recovery codes provide a backup mechanism if the user loses their authenticator device.
 - Rate limiting on 2FA attempts (5 per minute) prevents brute-force attacks on TOTP codes.
-- Passkeys implement the FIDO2/WebAuthn standard, providing phishing-resistant authentication.
 
 ---
 
@@ -445,7 +443,7 @@ $logs = AuditLog::with('user')
 Login and 2FA endpoints are rate-limited to prevent brute-force and credential-stuffing attacks.
 
 **How we implemented it:**
-Laravel's `RateLimiter` is used to define per-minute limits. Login attempts are throttled by email + IP, 2FA by session ID, and passkeys by credential ID + IP.
+Laravel's `RateLimiter` is used to define per-minute limits. Login attempts are throttled by email + IP, and 2FA attempts are throttled by session ID.
 
 **Key Code Snippet — Login Rate Limiting:**
 
@@ -587,7 +585,7 @@ MAIL_FROM_NAME="IQAtestmail"
 
 ### Entity-Relationship Overview
 
-This project focuses on the authentication, authorization, session management, auditing, and role-based access control subsystems of the IQArchive application. The following Entity-Relationship Diagram (ERD) describes only the 8 tables and relationships actively utilized for these features.
+This project focuses on the authentication, authorization, session management, auditing, and role-based access control subsystems of the IQArchive application. The following Entity-Relationship Diagram (ERD) describes only the 7 tables and relationships actively utilized for these features (passkeys have been excluded).
 
 ```mermaid
 erDiagram
@@ -637,14 +635,6 @@ erDiagram
         longtext payload
         integer last_activity
     }
-    passkeys {
-        bigint id PK
-        bigint user_id FK
-        string name
-        string credential_id UK
-        json credential
-        timestamp last_used_at
-    }
     audit_logs {
         bigint id PK
         bigint user_id FK
@@ -659,7 +649,6 @@ erDiagram
     programs ||--o{ users : "hosts"
     roles ||--o{ users : "assigns"
     users ||--o{ sessions : "establishes"
-    users ||--o{ passkeys : "authenticates"
     users ||--o{ audit_logs : "triggers"
     users ||--o| password_reset_tokens : "requests"
 ```
@@ -674,102 +663,102 @@ erDiagram
 | 4 | `users` | User accounts, credentials, and state (active/inactive, 2FA settings, role & program affiliations) |
 | 5 | `password_reset_tokens` | Secure, expiring, hashed tokens for forgot-password account recovery flows |
 | 6 | `sessions` | Server-side database sessions tracking login status, IP addresses, and user agents |
-| 7 | `passkeys` | WebAuthn credentials for phishing-resistant passwordless authentication |
-| 8 | `audit_logs` | Immutable audit trail mapping administrative actions, logins, logouts, and password updates |
-
-### Key Table Schemas
-
-**`users` table:**
-
-| Column | Type | Constraint |
-|---|---|---|
-| `id` | bigint (PK) | auto-increment |
-| `role_id` | FK → `roles.id` | `onDelete('restrict')` |
-| `program_id` | FK → `programs.id` | nullable, `onDelete('set null')` |
-| `college_id` | FK → `colleges.id` | nullable, `onDelete('set null')` |
-| `first_name` | string | required |
-| `middle_name` | string | nullable |
-| `last_name` | string | required |
-| `email` | string | unique |
-| `email_verified_at` | timestamp | nullable |
-| `password` | string | bcrypt-hashed |
-| `two_factor_secret` | text | nullable, encrypted |
-| `two_factor_recovery_codes` | text | nullable, encrypted |
-| `two_factor_confirmed_at` | timestamp | nullable |
-| `status` | string | default `'active'` |
-| `remember_token` | string | nullable |
-| `created_at` / `updated_at` | timestamps | — |
-
-**`roles` table:**
-
-| Column | Type | Constraint |
-|---|---|---|
-| `id` | bigint (PK) | auto-increment |
-| `role_name` | string | unique |
-| `description` | text | nullable |
-| `created_at` / `updated_at` | timestamps | — |
-
-**`colleges` table:**
-
-| Column | Type | Constraint |
-|---|---|---|
-| `id` | bigint (PK) | auto-increment |
-| `name` | string | required |
-| `code` | string | unique |
-| `created_at` / `updated_at` | timestamps | — |
-
-**`programs` table:**
-
-| Column | Type | Constraint |
-|---|---|---|
-| `id` | bigint (PK) | auto-increment |
-| `college_id` | FK → `colleges.id` | `onDelete('cascade')` |
-| `name` | string | required |
-| `code` | string | unique |
-| `created_at` / `updated_at` | timestamps | — |
-
-**`sessions` table:**
-
-| Column | Type | Constraint |
-|---|---|---|
-| `id` | string (PK) | session identifier |
-| `user_id` | FK → `users.id` | nullable, indexed |
-| `ip_address` | string(45) | nullable (IPv4/IPv6) |
-| `user_agent` | text | nullable |
-| `payload` | longText | encrypted session data |
-| `last_activity` | integer | unix timestamp, indexed |
-
-**`passkeys` table:**
-
-| Column | Type | Constraint |
-|---|---|---|
-| `id` | bigint (PK) | auto-increment |
-| `user_id` | FK → `users.id` | `onDelete('cascade')`, indexed |
-| `name` | string | required |
-| `credential_id` | string | unique |
-| `credential` | json | JSON representation of WebAuthn public key credential |
-| `last_used_at` | timestamp | nullable |
-| `created_at` / `updated_at` | timestamps | — |
-
-**`password_reset_tokens` table:**
-
-| Column | Type | Constraint |
-|---|---|---|
-| `email` | string (PK) | FK → `users.email` (logical, unique) |
-| `token` | string | secure hashed reset token |
-| `created_at` | timestamp | nullable |
-
-**`audit_logs` table:**
-
-| Column | Type | Constraint |
-|---|---|---|
-| `id` | bigint (PK) | auto-increment |
-| `user_id` | FK → `users.id` | nullable, `onDelete('set null')` |
-| `action` | string | e.g. `login`, `logout`, `account_create`, `password_change` |
-| `target_type` | string | nullable (model class name) |
-| `target_id` | bigint | nullable (model ID) |
-| `timestamp` | timestamp | `useCurrent()` |
+| 7 | `audit_logs` | Immutable audit trail mapping administrative actions, logins, logouts, and password updates |
 
 ---
 
-> **All members must present. Grading is both GROUP and INDIVIDUAL.**
+### Data Dictionary
+
+This data dictionary defines the structure, data types, constraints, and business/security descriptions of the tables supporting the security and identity architecture.
+
+#### 1. `roles` Table
+Stores role definitions that govern system-wide authorization and access control.
+
+| Column Name | Data Type | Nullability | Constraints | Description & Security Notes |
+|:---|:---|:---|:---|:---|
+| `id` | BIGINT UNSIGNED | NOT NULL | PK, Auto-Increment | Unique identifier for each role. |
+| `role_name` | VARCHAR(255) | NOT NULL | Unique | The programmatic name/slug of the role (e.g., `system-administrator`, `iqa-admin`). |
+| `description` | TEXT | NULL | — | Human-readable explanation of the role's permissions and scope. |
+| `created_at` | TIMESTAMP | NULL | — | Laravel default timestamp indicating when the role record was created. |
+| `updated_at` | TIMESTAMP | NULL | — | Laravel default timestamp indicating when the role record was last updated. |
+
+#### 2. `colleges` Table
+Represents administrative academic divisions (colleges/departments) within the university.
+
+| Column Name | Data Type | Nullability | Constraints | Description & Security Notes |
+|:---|:---|:---|:---|:---|
+| `id` | BIGINT UNSIGNED | NOT NULL | PK, Auto-Increment | Unique identifier for each college. |
+| `name` | VARCHAR(255) | NOT NULL | — | Official name of the college (e.g., "College of Science"). |
+| `code` | VARCHAR(255) | NOT NULL | Unique | Short acronym or code representing the college (e.g., "CS", "CBEM"). |
+| `created_at` | TIMESTAMP | NULL | — | Laravel default creation timestamp. |
+| `updated_at` | TIMESTAMP | NULL | — | Laravel default modification timestamp. |
+
+#### 3. `programs` Table
+Represents academic degree programs hosted within a specific college.
+
+| Column Name | Data Type | Nullability | Constraints | Description & Security Notes |
+|:---|:---|:---|:---|:---|
+| `id` | BIGINT UNSIGNED | NOT NULL | PK, Auto-Increment | Unique identifier for each academic program. |
+| `college_id` | BIGINT UNSIGNED | NOT NULL | FK → `colleges.id` | The parent college hosting the program. Cascade delete applies (`onDelete('cascade')`). |
+| `name` | VARCHAR(255) | NOT NULL | — | Official name of the academic program (e.g., "BS Information Technology"). |
+| `code` | VARCHAR(255) | NOT NULL | Unique | Academic code representing the program (e.g., "BSIT"). |
+| `created_at` | TIMESTAMP | NULL | — | Laravel default creation timestamp. |
+| `updated_at` | TIMESTAMP | NULL | — | Laravel default modification timestamp. |
+
+#### 4. `users` Table
+Stores user profile information, authentication credentials, 2FA states, and organization/role keys.
+
+| Column Name | Data Type | Nullability | Constraints | Description & Security Notes |
+|:---|:---|:---|:---|:---|
+| `id` | BIGINT UNSIGNED | NOT NULL | PK, Auto-Increment | Unique identifier for the user account. |
+| `role_id` | BIGINT UNSIGNED | NOT NULL | FK → `roles.id` | Assigned role that determines authorization level. Cannot delete if users exist (`onDelete('restrict')`). |
+| `program_id` | BIGINT UNSIGNED | NULL | FK → `programs.id` | Associated academic program. Null for college/university-level roles. Set to null on delete (`onDelete('set null')`). |
+| `college_id` | BIGINT UNSIGNED | NULL | FK → `colleges.id` | Associated college. Null for university-level roles (e.g. system admins). Set to null on delete (`onDelete('set null')`). |
+| `first_name` | VARCHAR(255) | NOT NULL | — | The user's first name. |
+| `middle_name` | VARCHAR(255) | NULL | — | The user's middle name (optional). |
+| `last_name` | VARCHAR(255) | NOT NULL | — | The user's last name. |
+| `email` | VARCHAR(255) | NOT NULL | Unique | User's email address, used as the primary login identifier. |
+| `email_verified_at`| TIMESTAMP | NULL | — | Timestamp indicating when the email was verified. |
+| `password` | VARCHAR(255) | NOT NULL | — | **Bcrypt-hashed password** (cost factor 12) for secure authentication. Hidden from JSON. |
+| `two_factor_secret` | TEXT | NULL | — | **Encrypted** shared TOTP secret key for multi-factor authentication (using AES-256). |
+| `two_factor_recovery_codes`| TEXT | NULL | — | **Encrypted** recovery codes used for login if the TOTP device is lost. |
+| `two_factor_confirmed_at` | TIMESTAMP | NULL | — | Verification timestamp confirming when the user completed MFA setup. |
+| `status` | VARCHAR(255) | NOT NULL | Default: `'active'` | Accounts set to `'inactive'` are immediately blocked at the authentication layer. |
+| `remember_token` | VARCHAR(100) | NULL | — | Secure token used for "Remember Me" session persistence. |
+| `created_at` | TIMESTAMP | NULL | — | Account creation timestamp. |
+| `updated_at` | TIMESTAMP | NULL | — | Account modification timestamp. |
+
+#### 5. `password_reset_tokens` Table
+Temporarily stores secure tokens generated during the self-service forgot password process.
+
+| Column Name | Data Type | Nullability | Constraints | Description & Security Notes |
+|:---|:---|:---|:---|:---|
+| `email` | VARCHAR(255) | NOT NULL | PK, Logical FK → `users.email` | The email address requesting the reset. Serves as the primary key. |
+| `token` | VARCHAR(255) | NOT NULL | — | **Securely hashed** one-time token sent to the user via email. |
+| `created_at` | TIMESTAMP | NULL | — | Timestamp when the reset token was created. Used to enforce a 60-minute expiration policy. |
+
+#### 6. `sessions` Table
+Stores active user session records to support server-side session management, remote logging out, and timeout tracking.
+
+| Column Name | Data Type | Nullability | Constraints | Description & Security Notes |
+|:---|:---|:---|:---|:---|
+| `id` | VARCHAR(255) | NOT NULL | PK | Unique session identifier (random cryptographic string). |
+| `user_id` | BIGINT UNSIGNED | NULL | FK → `users.id`, Indexed | Associated user. Nullable to support anonymous/guest visitors. |
+| `ip_address` | VARCHAR(45) | NULL | — | Client's IP address (supports both IPv4 and IPv6). Used for security monitoring. |
+| `user_agent` | TEXT | NULL | — | Browser and device user agent string. Used to display active sessions. |
+| `payload` | LONGTEXT | NOT NULL | — | Base64-encoded serialized session variables and payload. |
+| `last_activity` | INT | NOT NULL | Indexed | Unix timestamp of the last request. Used to trigger session timeouts after 30 minutes of inactivity. |
+
+#### 7. `audit_logs` Table
+Maintains an immutable record of system audits and security-sensitive events.
+
+| Column Name | Data Type | Nullability | Constraints | Description & Security Notes |
+|:---|:---|:---|:---|:---|
+| `id` | BIGINT UNSIGNED | NOT NULL | PK, Auto-Increment | Unique identifier for each log entry. |
+| `user_id` | BIGINT UNSIGNED | NULL | FK → `users.id` | The user who performed the action. If user is deleted, key is set to null (`onDelete('set null')`) to preserve audit history. |
+| `action` | VARCHAR(255) | NOT NULL | — | The action performed (e.g., `login`, `logout`, `password_change`, `document_upload`). |
+| `target_type` | VARCHAR(255) | NULL | — | The class/model of the modified resource (if applicable, e.g., `App\Models\Document`). |
+| `target_id` | BIGINT UNSIGNED | NULL | — | The specific ID of the modified resource (if applicable). |
+| `timestamp` | TIMESTAMP | NOT NULL | Default: `CURRENT_TIMESTAMP` | Server-authoritative time indicating precisely when the event occurred. |
+
+---
