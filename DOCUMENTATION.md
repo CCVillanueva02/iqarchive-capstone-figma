@@ -166,7 +166,7 @@ SESSION_LIFETIME=120
 ### 4. Role-Based Access Control (RBAC)
 
 **What it does:**
-The system defines **9 distinct roles**, each with access to specific views and functionalities. Users can only access pages assigned to their role. Unauthorized access to other roles' pages returns a 403 Forbidden error.
+The system defines **8 distinct roles**, each with access to specific views and functionalities. Users can only access pages assigned to their role. Unauthorized access to other roles' pages returns a 403 Forbidden error.
 
 | Role Slug | Description |
 |---|---|
@@ -178,7 +178,6 @@ The system defines **9 distinct roles**, each with access to specific views and 
 | `task-force` | QA task force lead |
 | `college-head` | College head (Dean) |
 | `program-chair` | Program chair |
-| `faculty-member` | Faculty member |
 
 **How we implemented it:**
 Roles are stored in a dedicated `roles` table. Each user has a `role_id` foreign key. Route-level authorization checks the authenticated user's role against the expected role for the route.
@@ -503,55 +502,180 @@ public function toggleAccountStatus()
 
 ---
 
+### 11. Session Timeout
+
+**What it does:**
+To protect user sessions from unauthorized access when a user leaves their computer unattended, the system enforces a strict idle session timeout. After 30 minutes of inactivity, the user's session is automatically invalidated and destroyed. The next request redirects them to the login page, requiring re-authentication.
+
+**How we implemented it:**
+Laravel's session management handles this configuration-driven security control. We set the session lifetime in the application environment configuration and configured the session driver to be stored in the database.
+
+**Key Code Snippet — Session Lifetime Configuration:**
+
+```env
+# .env
+SESSION_DRIVER=database
+SESSION_LIFETIME=30
+```
+
+**Key Code Snippet — Session Lifetime Mapping:**
+
+```php
+// config/session.php
+
+'driver' => env('SESSION_DRIVER', 'database'),
+'lifetime' => (int) env('SESSION_LIFETIME', 120),
+'expire_on_close' => env('SESSION_EXPIRE_ON_CLOSE', false),
+```
+
+**Security decisions:**
+- **Short Lifetime (30 minutes):** Limits the window of opportunity for session hijacking or unauthorized physical access to unattended terminals.
+- **Database Session Store:** Active session identifiers and payloads are kept server-side in the `sessions` table (unlike client-side cookie stores), preventing session payload tampering and easing session invalidation.
+- **Session ID Regeneration:** Laravel automatically regenerates the session ID upon login (`$request->session()->regenerate()`) to prevent session fixation attacks.
+
+---
+
+### 12. Working Email
+
+**What it does:**
+The system contains a fully functional transactional email system. It enables secure, automated delivery of password reset links and verification emails to users, ensuring the integrity of the account recovery workflow.
+
+**How we implemented it:**
+We integrated the Laravel Mail component with Gmail SMTP, authenticating securely using a dedicated Google App Password. Email delivery runs over Transport Layer Security (TLS).
+
+**Key Code Snippet — SMTP Mail Configuration:**
+
+```env
+# .env
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=official.hirehub.01@gmail.com
+MAIL_PASSWORD="vkxu eymc gxug pyuj"
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=official.hirehub.01@gmail.com
+MAIL_FROM_NAME="IQAtestmail"
+```
+
+**Key Code Snippet — Mail Service Configuration:**
+
+```php
+// config/mail.php
+
+'mailers' => [
+    'smtp' => [
+        'transport' => 'smtp',
+        'host' => env('MAIL_HOST', '127.0.0.1'),
+        'port' => env('MAIL_PORT', 587),
+        'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+        'username' => env('MAIL_USERNAME'),
+        'password' => env('MAIL_PASSWORD'),
+        'timeout' => null,
+        'local_domain' => env('MAIL_EHLO_DOMAIN'),
+    ],
+],
+```
+
+**Security decisions:**
+- **Transport Layer Security (TLS):** SMTP traffic is encrypted using TLS over port 587, protecting sensitive user data (like reset tokens) from man-in-the-middle (MITM) interception.
+- **Google App Password:** Authentication is done using an isolated, 16-character App Password rather than the primary Google account credentials, limiting security exposure.
+- **Authoritative Sender Field:** The sender address is hardcoded to the verified system email address (`MAIL_FROM_ADDRESS`), preventing malicious email spoofing or unauthorized relay usage.
+
+---
+
 ## IV. Database Design
 
 ### Entity-Relationship Overview
 
-```
-roles ──────────< users >──────────── colleges
-                   │  │                   │
-                   │  └──── programs ─────┘
-                   │
-        ┌──────────┼──────────────────┐
-        │          │                  │
-   audit_logs   sessions   password_reset_tokens
-        │
-   documents ──────────< document_categories
-     │  │  │
-     │  │  └── document_reviews
-     │  └── document_ocr_validations
-     │
-     ├── accreditation_document_links ──< compliance_requirements ──< instruments
-     ├── document_access_requests                                      │
-     └── notifications                                          instrument_areas
-                                  
-   task_force_assignments (users ←→ programs)
-   passkeys (users)
+This project focuses on the authentication, authorization, session management, auditing, and role-based access control subsystems of the IQArchive application. The following Entity-Relationship Diagram (ERD) describes only the 8 tables and relationships actively utilized for these features.
+
+```mermaid
+erDiagram
+    roles {
+        bigint id PK
+        string role_name UK
+        text description
+    }
+    colleges {
+        bigint id PK
+        string name
+        string code UK
+    }
+    programs {
+        bigint id PK
+        bigint college_id FK
+        string name
+        string code UK
+    }
+    users {
+        bigint id PK
+        bigint role_id FK
+        bigint program_id FK
+        bigint college_id FK
+        string first_name
+        string middle_name
+        string last_name
+        string email UK
+        timestamp email_verified_at
+        string password
+        text two_factor_secret
+        text two_factor_recovery_codes
+        timestamp two_factor_confirmed_at
+        string status
+        string remember_token
+    }
+    password_reset_tokens {
+        string email PK
+        string token
+        timestamp created_at
+    }
+    sessions {
+        string id PK
+        bigint user_id FK
+        string ip_address
+        text user_agent
+        longtext payload
+        integer last_activity
+    }
+    passkeys {
+        bigint id PK
+        bigint user_id FK
+        string name
+        string credential_id UK
+        json credential
+        timestamp last_used_at
+    }
+    audit_logs {
+        bigint id PK
+        bigint user_id FK
+        string action
+        string target_type
+        bigint target_id
+        timestamp timestamp
+    }
+
+    colleges ||--o{ programs : "contains"
+    colleges ||--o{ users : "governs"
+    programs ||--o{ users : "hosts"
+    roles ||--o{ users : "assigns"
+    users ||--o{ sessions : "establishes"
+    users ||--o{ passkeys : "authenticates"
+    users ||--o{ audit_logs : "triggers"
+    users ||--o| password_reset_tokens : "requests"
 ```
 
-### All Tables
+### All Active Tables
 
 | # | Table Name | Purpose |
 |---|---|---|
-| 1 | `roles` | Stores role definitions (e.g., `iqa-admin`, `faculty-member`) |
-| 2 | `colleges` | University colleges (e.g., College of Science) |
-| 3 | `programs` | Academic programs under colleges (e.g., BS Computer Science) |
-| 4 | `users` | User accounts with role, program, college affiliations, status |
-| 5 | `password_reset_tokens` | Hashed tokens for the forgot-password workflow |
-| 6 | `sessions` | Server-side session storage with IP/user-agent tracking |
-| 7 | `passkeys` | WebAuthn/FIDO2 passkey credentials for passwordless login |
-| 8 | `document_categories` | Classification categories for uploaded documents |
-| 9 | `documents` | Uploaded accreditation documents with status and visibility |
-| 10 | `document_ocr_validations` | OCR extraction results and validation status |
-| 11 | `document_reviews` | Review decisions (approve/reject) with remarks |
-| 12 | `instruments` | AACCUP accreditation instruments |
-| 13 | `instrument_areas` | Areas within each accreditation instrument |
-| 14 | `compliance_requirements` | Program compliance requirements per instrument |
-| 15 | `accreditation_document_links` | Links documents to compliance requirements |
-| 16 | `task_force_assignments` | Assigns task force members to programs |
-| 17 | `notifications` | In-app notifications for users |
-| 18 | `audit_logs` | Immutable record of all user actions for accountability |
-| 19 | `document_access_requests` | Requests and approvals for restricted document access |
+| 1 | `roles` | Stores role definitions and descriptors (e.g., `system-administrator`, `iqa-admin`) |
+| 2 | `colleges` | University colleges within Bicol University (e.g., BU College of Science) |
+| 3 | `programs` | Academic programs assigned under respective colleges (e.g., BS Computer Science) |
+| 4 | `users` | User accounts, credentials, and state (active/inactive, 2FA settings, role & program affiliations) |
+| 5 | `password_reset_tokens` | Secure, expiring, hashed tokens for forgot-password account recovery flows |
+| 6 | `sessions` | Server-side database sessions tracking login status, IP addresses, and user agents |
+| 7 | `passkeys` | WebAuthn credentials for phishing-resistant passwordless authentication |
+| 8 | `audit_logs` | Immutable audit trail mapping administrative actions, logins, logouts, and password updates |
 
 ### Key Table Schemas
 
@@ -576,16 +700,33 @@ roles ──────────< users >───────────�
 | `remember_token` | string | nullable |
 | `created_at` / `updated_at` | timestamps | — |
 
-**`audit_logs` table:**
+**`roles` table:**
 
 | Column | Type | Constraint |
 |---|---|---|
 | `id` | bigint (PK) | auto-increment |
-| `user_id` | FK → `users.id` | nullable, `onDelete('set null')` |
-| `action` | string | e.g. `login`, `document_upload` |
-| `target_type` | string | nullable (model class) |
-| `target_id` | bigint | nullable |
-| `timestamp` | timestamp | `useCurrent()` |
+| `role_name` | string | unique |
+| `description` | text | nullable |
+| `created_at` / `updated_at` | timestamps | — |
+
+**`colleges` table:**
+
+| Column | Type | Constraint |
+|---|---|---|
+| `id` | bigint (PK) | auto-increment |
+| `name` | string | required |
+| `code` | string | unique |
+| `created_at` / `updated_at` | timestamps | — |
+
+**`programs` table:**
+
+| Column | Type | Constraint |
+|---|---|---|
+| `id` | bigint (PK) | auto-increment |
+| `college_id` | FK → `colleges.id` | `onDelete('cascade')` |
+| `name` | string | required |
+| `code` | string | unique |
+| `created_at` / `updated_at` | timestamps | — |
 
 **`sessions` table:**
 
@@ -597,6 +738,37 @@ roles ──────────< users >───────────�
 | `user_agent` | text | nullable |
 | `payload` | longText | encrypted session data |
 | `last_activity` | integer | unix timestamp, indexed |
+
+**`passkeys` table:**
+
+| Column | Type | Constraint |
+|---|---|---|
+| `id` | bigint (PK) | auto-increment |
+| `user_id` | FK → `users.id` | `onDelete('cascade')`, indexed |
+| `name` | string | required |
+| `credential_id` | string | unique |
+| `credential` | json | JSON representation of WebAuthn public key credential |
+| `last_used_at` | timestamp | nullable |
+| `created_at` / `updated_at` | timestamps | — |
+
+**`password_reset_tokens` table:**
+
+| Column | Type | Constraint |
+|---|---|---|
+| `email` | string (PK) | FK → `users.email` (logical, unique) |
+| `token` | string | secure hashed reset token |
+| `created_at` | timestamp | nullable |
+
+**`audit_logs` table:**
+
+| Column | Type | Constraint |
+|---|---|---|
+| `id` | bigint (PK) | auto-increment |
+| `user_id` | FK → `users.id` | nullable, `onDelete('set null')` |
+| `action` | string | e.g. `login`, `logout`, `account_create`, `password_change` |
+| `target_type` | string | nullable (model class name) |
+| `target_id` | bigint | nullable (model ID) |
+| `timestamp` | timestamp | `useCurrent()` |
 
 ---
 
