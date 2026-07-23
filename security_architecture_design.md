@@ -1,6 +1,7 @@
 # IQArchive — Security Architecture Design & VAPT Verification Document
+
 **System Name:** IQArchive (Institutional Quality Assurance Document Archive System)  
-**Framework & Tech Stack:** PHP 8.3 / Laravel 12 (Livewire 3, Fortify, Flux UI, Tailwind CSS 4, MariaDB/MySQL)  
+**Framework & Tech Stack:** PHP 8.3+ / Laravel 12 (Vite, Livewire 3, Fortify, Flux UI, Tailwind CSS, MariaDB/MySQL)  
 **Institutional Context:** Bicol University Quality Assurance & AACCUP Accreditation Subsystem  
 **Document Purpose:** System-Specific Security Controls, Architectural Design & VAPT Specification  
 
@@ -8,7 +9,9 @@
 
 ## Executive Summary
 
-IQArchive is an Institutional Quality Assurance Document Archive System designed to store, manage, validate, and audit sensitive university accreditation materials, faculty submissions, compliance reports, and AACCUP evaluation instruments. Given the high confidentiality, integrity, and availability requirements of institutional accreditation records, this document outlines a defense-in-depth security architecture spanning **Identity & Access Fortification (Module A)**, **Cryptographic Data Protection (Module B)**, and **API & Perimeter Defense (Module C)**, followed by a corresponding **Vulnerability Assessment and Penetration Testing (VAPT) Plan (Part 2)**.
+IQArchive is an Institutional Quality Assurance Document Archive System designed to store, manage, validate, and audit sensitive university accreditation materials, faculty submissions, compliance reports, and AACCUP evaluation instruments. Given the high confidentiality, integrity, and availability requirements of institutional accreditation records, this document outlines a defense-in-depth security architecture spanning **Identity & Access Fortification (Module A)** and **Cryptographic Data Protection (Module B)**, followed by a corresponding **Vulnerability Assessment and Penetration Testing (VAPT) Plan (Part 2)**. 
+
+*Note: The database schema of IQArchive is currently under development and is subject to change. The fields and tables designed for cryptographic protections in this document represent the planned architectural baseline and will be adapted as the schema is finalized.*
 
 ---
 
@@ -16,109 +19,150 @@ IQArchive is an Institutional Quality Assurance Document Archive System designed
 
 # Module A: Identity & Access Fortification
 
-## 1. Multi-Factor Authentication (MFA) Design using TOTP
+## 1. Multi-Factor Authentication (MFA) Design using Google OAuth + App-level TOTP
 
-### 1.1 Technical Specification & Provisioning Architecture
-IQArchive enforces Time-based One-Time Password (TOTP) authentication conforming to **RFC 6238** (extension of RFC 4226 HOTP) using Laravel Fortify integrated with the `TwoFactorAuthenticatable` trait on the `User` model.
+To satisfy both federated identity requirements (Bicol University Workspace login) and security rubrics (direct control over MFA secret provisioning and validation), IQArchive implements a **two-layer identity model**.
 
-1. **Secret Provisioning Flow:**
-   - **Secret Generation:** Upon user request in `settings.iqa-admin` or user profile security settings, the backend generates a cryptographically secure, 160-bit (20-byte) pseudo-random secret string encoded in Base32 (264 bits formatted as 32 uppercase characters).
-   - **Secret Encryption:** The raw Base32 secret string is encrypted prior to database persistence using Laravel's `Crypt::encryptString()` (AES-256-CBC with HMAC-SHA256 payload integrity check) and stored in the `users.two_factor_secret` text column.
+```
++-----------------------------------------------------------------------+
+| Layer 1: Google OAuth 2.0 / OIDC Federated Login                      |
+| (BU email validation, passwordless local account mapping)             |
++------------------------------------+----------------------------------+
+                                     |
+                                     v
++------------------------------------+----------------------------------+
+| Layer 2: App-Level Step-Up TOTP Multi-Factor Authentication           |
+| (Required for IQA Admin/SysAdmin & sensitive state-changing actions)  |
++-----------------------------------------------------------------------+
+```
+
+### 1.1 Layer 1: Federated Identity via Google OAuth 2.0 / OIDC
+IQArchive delegates primary authentication to the Bicol University Google Workspace identity provider. 
+1. **Identity Provider Delegation:** IQArchive never handles or stores user passwords for Bicol University accounts.
+2. **OIDC Validation Flow:**
+   - The user requests login and is redirected to Google's OIDC gateway.
+   - Upon successful login, Google returns an encrypted authorization code.
+   - The IQArchive backend exchanges the code for a JWT ID Token (signed via RS256 by Google's public keys: `https://www.googleapis.com/oauth2/v3/certs`).
+   - The server verifies the token signature, audience (`aud` matches IQArchive's client ID), issuer (`iss` is `https://accounts.google.com`), and expiration.
+   - If valid, the verified email is extracted and mapped to a local database `users` record (retaining `role_id`, `college_id`, and `program_id` foreign keys).
+   - If no record exists, the system rejects access or creates a pending account for authorization.
+
+### 1.2 Layer 2: App-level TOTP Step-Up MFA
+To maintain strict administrative oversight and meet strict compliance rules, IQArchive enforces a secondary, independent TOTP-based MFA factor controlled directly by the application (using `pragmarx/google2fa-laravel`). 
+
+1. **Step-Up Execution Boundaries:**
+   - App-level TOTP is mandatory for users assigned to privileged administrative roles: `System Administrator` and `IQA Admin`.
+   - In addition, any user attempting a **sensitive, state-changing action** (such as approving accreditation submissions, modifying RBAC matrices, executing database exports, or granting access requests) must complete a step-up challenge if they haven't verified their TOTP within the current session window (e.g., last 2 hours).
+
+2. **Secret Provisioning Flow:**
+   - **Secret Generation:** The server generates a cryptographically secure 160-bit (20-byte) pseudo-random secret string encoded in Base32 (264 bits formatted as 32 uppercase characters).
+   - **Secret Encryption:** The raw Base32 secret string is encrypted prior to database persistence using Laravel's `Crypt::encryptString()` (AES-256-GCM under the hood with a separate `DB_ENCRYPTION_KEY`) and stored in the `users.two_factor_secret` text column.
    - **QR Code & Provisioning URI:** The server constructs an `otpauth://` URI:
-     $$\text{otpauth://totp/IQArchive:user@bicol-u.edu.ph?secret=JBSWY3DPEHPK3PXP&issuer=IQArchive&algorithm=SHA1&digits=6&period=30}$$
-     This URI is rendered client-side as an inline SVG QR code using `BaconQrCode`. The secret key is never sent unencrypted or stored in client-side cookies.
-   - **Recovery Code Generation:** 8 single-use recovery codes (10-character random alphanumeric strings) are generated, hashed/encrypted via `Crypt::encryptString()`, and stored in `users.two_factor_recovery_codes` as an encrypted JSON array.
+     $$\text{otpauth://totp/IQArchive:user@bicol-u.edu.ph?secret=JBSWY3DPEHPK3PXP&issuer=IQArchive&algorithm=SHA256&digits=6&period=30}$$
+     This URI is rendered client-side as an inline SVG QR code. The raw secret is never exposed in client cookies or local storage.
+   - **Recovery Code Generation:** 8 single-use recovery codes (10-character alphanumeric strings) are generated, hashed using `bcrypt` (cost factor 12), and stored in `users.two_factor_recovery_codes` as a JSON array.
 
-2. **Validation & Verification Flow:**
+3. **Validation & Verification Flow:**
    - **Time Step Calculation:** The 6-digit passcode $C$ is generated based on a 30-second time window $X$:
      $$T = \left\lfloor \frac{\text{Current Unix Timestamp} - T_0}{X} \right\rfloor \quad \text{where } T_0 = 0, \, X = 30$$
-     $$C = \text{HOTP}(K, T) = \text{Truncate}(\text{HMAC-SHA-1}(K, T)) \pmod{10^6}$$
-   - **Verification Algorithm:** When a user submits a 6-digit code during authentication via `pages.auth.two-factor-challenge`, the backend decrypts `two_factor_secret` and computes expected TOTP codes across a drift window $W \in [T-1, T, T+1]$ (to account for $\pm 30\text{s}$ client-server clock skew).
+     $$C = \text{HOTP}(K, T) = \text{Truncate}(\text{HMAC-SHA-256}(K, T)) \pmod{10^6}$$
+   - **Verification Algorithm:** When a user submits a 6-digit code, the backend decrypts `two_factor_secret` and computes the expected TOTP codes across a drift window $W \in [T-1, T, T+1]$ (to account for $\pm 30\text{s}$ client-server clock skew).
    - **Constant-Time Comparison:** The submitted code is compared against calculated valid codes using `hash_equals()` to prevent timing side-channel attacks.
-   - **State Persistence & Replay Protection:** Upon successful verification, `two_factor_confirmed_at` timestamp is updated in `users`, and the session key `auth.two_factor_confirmed_at` is set. Replay attacks within the 30-second window are blocked by logging verified counter timestamps in Redis cache (`mfa_used_counter:{user_id}:{timestamp}`).
+   - **State Persistence & Replay Protection:** Upon validation, the timestamp `two_factor_confirmed_at` is updated in the database. Replay attacks are blocked by caching verified tokens in Redis (`mfa_used_tokens:{user_id}:{token}`) for 30 seconds.
 
-### 1.2 TOTP Enrollment and Verification Sequence Diagram
+---
+
+### 1.3 TOTP Enrollment and Verification Sequence Diagram
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor User as IQArchive User
+    actor User as IQArchive User (Privileged)
     participant Browser as Client Browser (Livewire/Flux)
-    participant Fortify as Auth Controller / Fortify
-    participant Engine as MFA Engine (RFC 6238)
+    participant OAuth as Google Identity Provider (OIDC)
+    participant App as Laravel Web App (IQArchive)
     participant DB as MariaDB (`users` table)
     participant AuthApp as Authenticator App (Google/Microsoft)
 
-    Note over User, DB: Phase 1: TOTP Enrollment Flow
-    User->>Browser: Click "Enable 2FA" in Security Settings
-    Browser->>Fortify: POST /user/two-factor-authentication
-    Fortify->>Engine: Generate 160-bit Base32 Secret Key (K) & 8 Recovery Codes
-    Engine-->>Fortify: Return Secret Key (K) & Recovery Codes
-    Fortify->>DB: UPDATE users SET two_factor_secret = Crypt::encrypt(K), two_factor_recovery_codes = Crypt::encrypt(JSON)
-    Fortify-->>Browser: Render SVG QR Code (otpauth://) & Show Recovery Codes
+    Note over User, DB: Phase 1: Federated Login & OIDC Mapping
+    User->>Browser: Access login page & click "Login with BU Google Mail"
+    Browser->>OAuth: Redirect to Google OAuth Consent Page
+    User->>OAuth: Authenticate with @bicol-u.edu.ph credentials
+    OAuth-->>Browser: Redirect to callback route with Auth Code
+    Browser->>App: GET /auth/google/callback?code=AUTH_CODE
+    App->>OAuth: Exchange code for JWT ID Token
+    OAuth-->>App: Return Signed ID Token (RS256)
+    App->>App: Validate ID Token Signature & Map Email to local user
+    App->>DB: SELECT * FROM users WHERE email = mapped_email
+    DB-->>App: Return User Record (Role: IQA Admin)
+    App->>App: Grant Session Cookie (MFA flag is false/unset)
+
+    Note over User, DB: Phase 2: App-level TOTP Enrollment (First Time)
+    User->>Browser: Request privileged dashboard (Trigger Step-Up MFA enrollment)
+    Browser->>App: GET /admin/dashboard
+    App->>App: Detect role is privileged but MFA is unconfigured
+    App->>App: Generate 160-bit Base32 Secret Key (K) & 8 Recovery Codes
+    App->>DB: UPDATE users SET two_factor_secret = Crypt::encrypt(K)
+    App-->>Browser: Render SVG QR Code & Show Recovery Codes
     User->>AuthApp: Scan QR Code with Smartphone
     AuthApp-->>User: Display 6-digit TOTP Token
     User->>Browser: Enter 6-digit Code to Confirm
-    Browser->>Fortify: POST /user/confirmed-two-factor-authentication (code)
-    Fortify->>Engine: Verify TOTP(K, T)
-    Engine-->>Fortify: Valid Match
-    Fortify->>DB: UPDATE users SET two_factor_confirmed_at = NOW()
-    Fortify-->>Browser: 2FA Enrollment Confirmed
+    Browser->>App: POST /user/confirm-two-factor (code)
+    App->>App: Decrypt K & Validate hash_equals(TOTP(K, T), input)
+    App->>DB: UPDATE users SET two_factor_confirmed_at = NOW()
+    App-->>Browser: Enrollment Confirmed! Redirect to Dashboard
 
-    Note over User, DB: Phase 2: Login Verification Flow
-    User->>Browser: Submit Email & Password
-    Browser->>Fortify: POST /login
-    Fortify->>DB: Validate Password & Check status == 'active'
-    DB-->>Fortify: Password Correct, status active
-    Fortify-->>Browser: Redirect to /two-factor-challenge (Set Session login.id)
-    User->>Browser: Submit 6-Digit TOTP Code
-    Browser->>Fortify: POST /two-factor-challenge (code)
-    Fortify->>DB: SELECT two_factor_secret FROM users WHERE id = login.id
-    DB-->>Fortify: Encrypted Secret Key
-    Fortify->>Engine: Decrypt(K) & Validate hash_equals(TOTP(K, T), input)
-    alt Valid Code
-        Engine-->>Fortify: Verification Success
-        Fortify->>DB: Write Audit Log ('login_mfa_success')
-        Fortify-->>Browser: Auth Session Granted -> Redirect to Role Dashboard
-    else Invalid Code / Rate Exceeded
-        Engine-->>Fortify: Verification Failed
-        Fortify-->>Browser: HTTP 422 "Invalid Two-Factor Code" (Max 5 attempts/min)
+    Note over User, DB: Phase 3: Privileged State Action Verification (Step-Up)
+    User->>Browser: Click "Approve Accreditation Document" (Sensitive Action)
+    Browser->>App: POST /documents/{id}/approve
+    App->>App: Check Step-up Cache: MFA session expired?
+    alt MFA session expired / not verified in last 2 hours
+        App-->>Browser: Prompt 6-digit step-up challenge popup
+        User->>Browser: Enter current 6-digit TOTP Code
+        Browser->>App: POST /auth/mfa-stepup (code)
+        App->>DB: SELECT two_factor_secret FROM users WHERE id = session.user_id
+        DB-->>App: Encrypted Secret Key
+        App->>App: Decrypt K & Validate TOTP(K, T)
+        App->>App: Set session `auth.mfa_stepup_verified_at` = NOW()
+        App-->>Browser: Challenge verified
     end
+    App->>DB: Update Document status = 'approved' (Write Audit Log)
+    App-->>Browser: Document approved successfully
 ```
 
 ---
 
 ## 2. Complete Role-Based Access Control (RBAC) Matrix
 
-IQArchive defines **8 explicit system roles** to uphold Separation of Duties across Bicol University quality assurance workflows:
-1. `system-administrator` (SysAdmin)
-2. `iqa-admin` (IQA Administrator)
-3. `iqa-member` (IQA Member / Verification Staff)
-4. `accreditor` (External/Internal AACCUP Accreditor)
-5. `university-administrator` (BU Executive / VP Academic Affairs)
-6. `task-force` (College Task Force Lead)
-7. `college-head` (Dean of College)
-8. `program-chair` (Academic Program Chair)
+IQArchive defines **7 explicit system roles** to uphold Separation of Duties across Bicol University quality assurance workflows, matching the system's Context Flow Diagram (CFD).
+
+1. **System Administrator:** Full administrative rights. Manages user provisioning, system configurations, and views the global audit log. Does not participate in document workflows or review actions.
+2. **IQA Admin:** The IQA Office Director/Lead. Full functional control over document categories, document requests, accreditation deadlines, template generation, and overall document approval.
+3. **IQA Member:** IQA Office staff. Performs OCR validations, reviews uploaded documents (verification status), and monitors college submissions.
+4. **Accreditor:** External or internal AACCUP evaluator. Granted temporary, read-only access to specific compliance items and documents linked to their assigned areas.
+5. **University Administrator/Executive:** Bicol University officials (e.g., VP of Academic Affairs, University President). Granted read-only access to high-level compliance dashboards, compliance reports, and system-wide audit statistics.
+6. **Task Force:** Members of the College Accreditation Committee. Responsible for compiling and linking files to specific accreditation areas.
+7. **College/Department Head and Program Chair:** Deans, Department Heads, and Program Chairs. They upload documents, submit requests for department files, assign task forces, and monitor the compliance status of their respective academic programs.
 
 ### RBAC Permission Matrix (Roles $\times$ Resources $\times$ Permitted Actions)
 
-| Resource Domain | Specific Entity / Feature | SysAdmin | IQA Admin | IQA Member | Accreditor | Univ Admin | Task Force | College Head | Program Chair |
-| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **User & Role Management** | User Accounts (`users`) | CRUD (Global) | CRUD (Dept) | Read | Denied | Read | Denied | Read (Dept) | Denied |
-| | Role Assignment (`roles`) | C, U | C, U (Restricted) | Read | Denied | Read | Denied | Denied | Denied |
-| | Session Mgmt (`sessions`) | Full Control | Revoke Dept | Self Only | Self Only | Self Only | Self Only | Self Only | Self Only |
-| **QA Documents** | Document Upload (`documents`) | Denied | Create | Create | Denied | Denied | Create | Create | Create |
-| | Document View/Read | Read (All) | Read (All) | Read (All) | Read (Assigned) | Read (Summary) | Read (Dept) | Read (College) | Read (Program) |
-| | Document Update/Delete | Denied | C, U, D | U (Drafts) | Denied | Denied | U (Drafts) | U (College) | U (Program) |
-| | Document Review & Approval | Denied | Approve | Verify | Evaluate | Denied | Review | Approve | Submit/Review |
-| | OCR Validation (`document_ocr_validations`) | Denied | Manage | Perform/Verify | Read | Read | Read | Read | Read |
-| | Access Request (`document_access_requests`) | Denied | Approve/Deny | Read | Request/View | Denied | Request/View | Approve (College) | Request/View |
-| **Accreditation Engine** | Instruments (`instruments`, `instrument_areas`) | Read | CRUD | Read | Read | Read | Read | Read | Read |
-| | Compliance Requirements (`compliance_requirements`) | Read | Create/Assign | Read | Read | Read | Comply/Update | Read | Comply/Update |
-| | Doc Linking (`accreditation_document_links`) | Denied | Manage | Manage | Read | Read | Link/Unlink | Read | Link/Unlink |
-| | Task Force Assignments | Denied | Assign | Read | Denied | Read | Self View | Assign Dept | Assign Member |
-| **Audit & Monitoring** | Audit Trail (`audit_logs`) | Read (Full) | Read (Dept) | Denied | Denied | Read (Summary) | Denied | Denied | Denied |
-| | System Diagnostics & Environment | Full | Denied | Denied | Denied | Denied | Denied | Denied | Denied |
+| Resource Domain | Specific Entity / Feature | System Admin | IQA Admin | IQA Member | Accreditor | Univ Admin / Executive | Task Force | College/Dept Head & Program Chair |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Identity & Access** | User Accounts (`users`) | CRUD | CRU (Dept) | Read | Denied | Read | Denied | Read (Dept) |
+| | Roles & Perms (`roles`) | C, U | Read | Read | Denied | Read | Denied | Denied |
+| | Sessions (`sessions`) | Full Control | Revoke Dept | Self Only | Self Only | Self Only | Self Only | Self Only |
+| **QA Documents** | Document Upload (`documents`) | Denied | Create | Create | Denied | Denied | Create | Create |
+| | Document View/Read | Read (Audit) | Read (All) | Read (All) | Read (Assigned) | Read (Summary) | Read (Dept) | Read (College) |
+| | Document Update/Delete | Denied | C, U, D | U (Drafts) | Denied | Denied | U (Drafts) | U (College) |
+| | Document Verification | Denied | Approve | Verify | Evaluate | Denied | Review | Approve |
+| | OCR Validation (`ocr_validations`)| Denied | Manage | Perform/Verify| Read | Read | Read | Read |
+| | Access Request (`access_requests`)| Denied | Approve/Deny | Read | Request/View | Denied | Request/View | Approve (College) |
+| **Accreditation Engine**| Instruments (`instruments`) | Read | CRUD | Read | Read | Read | Read | Read |
+| | Requirements (`compliance_reqs`)| Read | Create/Assign | Read | Read | Read | Comply/Update | Read |
+| | Document Linkage (`doc_links`) | Denied | Manage | Manage | Read | Read | Link/Unlink | Link/Unlink |
+| | Task Force Assignments | Denied | Assign | Read | Denied | Read | Self View | Assign Dept |
+| **Audit & Logs** | System Audit Logs (`audit_logs`) | Read (Full) | Read (Dept) | Denied | Denied | Read (Summary) | Denied | Denied |
+| | Configuration & Diagnostics | Full Control | Denied | Denied | Denied | Denied | Denied | Denied |
 
 *Legend: **C** = Create, **R** = Read, **U** = Update, **D** = Delete, **CRUD** = Full Lifecycle Management.*
 
@@ -126,69 +170,85 @@ IQArchive defines **8 explicit system roles** to uphold Separation of Duties acr
 
 ## 3. Design Rationale: Cryptographic Primitives & Privilege Management
 
-### Cryptographic Foundation (Hashing & MAC Connections)
-The MFA and session architecture directly implements Week 3 cryptographic primitives:
-- **HMAC (Hash-based Message Authentication Code):** TOTP generation uses $\text{HMAC-SHA1}$ / $\text{HMAC-SHA256}$ to bind the shared secret $K$ with moving time factor $T$. HMAC guarantees message authenticity and non-forgeability; without knowing $K$, an attacker cannot calculate $C = \text{HMAC}(K, T)$ even if $T$ is publicly known.
-- **Timing Attack Resistance:** Verification uses PHP’s constant-time string comparison function `hash_equals($calculated_totp, $user_input)`. Standard string comparison (`==`) terminates early upon the first mismatched byte, creating a timing side-channel that allows attackers to iteratively guess 6-digit codes. `hash_equals` executes in constant time regardless of match correctness, eliminating timing leak vulnerabilities.
-- **Password & Secret Storage Integrity:** Passwords are hashed using `bcrypt` (adaptive key-derivation function based on Blowfish cipher with cost factor 12), ensuring pre-image resistance and slow computation against brute-force attacks. MFA secrets stored at rest use AES-256-CBC cipher with HMAC-SHA256 authenticated encryption (Encrypt-then-MAC), preventing ciphertext tampering.
+### 3.1 Cryptographic Foundation (Hashing & MAC Connections)
+The two-layer identity architecture implements core cryptographic primitives:
+- **Asymmetric Signature Verification (OIDC):** Google OIDC authentication uses asymmetric cryptography. Google signs its ID token payloads with its private key (using RS256 - RSA Signature with SHA-256). IQArchive downloads Google's JSON Web Key Set (JWKS), computes the signature hash, and verifies it with the corresponding public key. This validates the identity claim without exposing credentials to the network.
+- **HMAC (Hash-based Message Authentication Code):** The step-up TOTP generation utilizes $\text{HMAC-SHA-256}$ to bind the Base32 shared key $K$ to the moving counter $T$ (30-second increments). Because HMAC is one-way and collision-resistant, an attacker cannot forge $C = \text{HMAC}(K, T)$ without knowledge of $K$.
+- **Timing Attack Resistance:** During step-up authentication, the submitted 6-digit passcode is checked using a constant-time comparison algorithm (`hash_equals`). Standard string comparison (`==`) terminates execution immediately upon finding a mismatched character, allowing attackers to measure microsecond timing discrepancies and guess digits. `hash_equals` processes strings completely regardless of value matches, neutralizing timing side-channel attacks.
 
-### Privilege Management & Defense-in-Depth
-- **Principle of Least Privilege (PoLP):** Role permissions are tightly scoped. For instance, `accreditor` accounts have read-only access strictly restricted to documents explicitly linked to their assigned compliance requirements via `document_access_requests`. System Administrators can inspect system audit logs but are explicitly barred from approving or altering QA document contents, enforcing strict Separation of Duties (SoD).
-- **Defense-in-Depth Enforcement:** Authorization is enforced across three distinct software layers:
-  1. *Route Middleware Layer:* `Route::middleware(['auth', 'verified'])` and custom role-check closures in `routes/web.php`.
-  2. *Livewire Component Mount Layer:* Component execution guards (`if (auth()->user()->role !== 'iqa-admin') abort(403);`) inside `mount()` methods.
-  3. *Database Domain Layer:* Eloquent Policies (`DocumentPolicy`, `AccessRequestPolicy`) restricting query results by `college_id` and `program_id`.
-
----
-
-## 4. Architectural Synthesis (Module A)
-
-By coupling RFC 6238 TOTP authentication with triple-layer RBAC enforcement, IQArchive fortifies its identity perimeter against credential stuffing, session hijacking, and privilege escalation attacks. MFA ensures that stolen passwords alone cannot grant system access, while strict RBAC boundaries guarantee that compromised user accounts cannot execute unauthorized administrative, approval, or deletion operations across Bicol University quality assurance repositories.
+### 3.2 Privilege Management & Defense-in-Depth
+- **Separation of Duties (SoD):** System Administrators manage accounts and system backups but are programmatically blocked from reading document contents or approving compliance submissions. Conversely, IQA Admins manage quality assurance records but lack database management permissions.
+- **Three-Layer Authorization:** RBAC is enforced at multiple check-points:
+  1. *Routing Middleware:* Gates incoming requests based on user role assignments.
+  2. *Livewire Component Mounting:* Checks authorization rules during the component lifecycle.
+  3. *Eloquent Policies:* Restricts raw query results using user attributes (e.g., scoping document retrievals based on a user's `college_id`).
 
 ---
 
 # Module B: Cryptographic Data Protection
 
-## 1. AES-256 Encryption-at-Rest Design
+## 1. Application-Layer AES-256 Encryption-at-Rest Design
+
+To secure personally identifiable information (PII) and sensitive quality assurance data against unauthorized database access, server breaches, or backup theft, IQArchive designs application-layer encryption. 
 
 ### 1.1 Sensitive Data Identification & Scheme Selection
-IQArchive processes sensitive personal identifiers (PII), evaluator remarks, OCR-extracted accreditation contents, and MFA credentials. To ensure data privacy even in the event of database backup exposure or storage medium theft, sensitive schema fields are encrypted at the application layer using **AES-256-CBC with HMAC-SHA256 signature verification** (Laravel `Crypt` / Encrypted Eloquent Casting).
+*Note: Due to the database schema not being finalized and subject to change, this field list represents the current planned schema baseline.*
 
-### Encrypted Database Fields Specification
-
-| Database Table | Column Name | Sensitive Data Classification | Plaintext Sample | Ciphertext Storage Format |
+| Database Table | Column Name | Sensitive Data Classification | Plaintext Sample | Ciphertext Storage Format (Base64 JSON) |
 | :--- | :--- | :--- | :--- | :--- |
-| `users` | `two_factor_secret` | High Security Credential | `JBSWY3DPEHPK3PXP` | `eyJpdiI6Il...` (Base64 Encrypted Payload) |
-| `users` | `two_factor_recovery_codes` | Backup Credential | `["a1b2-c3d4", ...]` | `eyJpdiI6Il...` (Base64 Encrypted JSON) |
-| `users` | `first_name`, `last_name` | Personally Identifiable (PII) | `Juan`, `Dela Cruz` | `eyJpdiI6Il...` (Encrypted String) |
-| `users` | `email` | Login PII / Identifier | `juan@bicol-u.edu.ph` | `eyJpdiI6Il...` (Encrypted + Blind Index) |
-| `document_ocr_validations` | `extracted_data` | Confidential QA Text | `{"score": 98.5, ...}` | `eyJpdiI6Il...` (Encrypted LongText) |
-| `document_access_requests` | `remarks` | Sensitive Evaluator Notes | `Granted for AACCUP survey` | `eyJpdiI6Il...` (Encrypted Text) |
-| `document_reviews` | `remarks` | Internal Review Feedback | `Deficiencies in Criterion 3` | `eyJpdiI6Il...` (Encrypted Text) |
+| `users` | `first_name`, `last_name` | PII (Personally Identifiable) | `Juan`, `Dela Cruz` | `{"iv":"...", "value":"...", "mac":"..."}` |
+| `users` | `email` | Unique login identifier (PII) | `juan@bicol-u.edu.ph` | `{"iv":"...", "value":"...", "mac":"..."}` + Local Blind Index |
+| `users` | `two_factor_secret` | High-Security MFA Secret | `JBSWY3DPEHPK3PXP` | `{"iv":"...", "value":"...", "mac":"..."}` |
+| `documents` | `title` | Confidential Institutional Data | `CS BSIT Board Review Data` | `{"iv":"...", "value":"...", "mac":"..."}` |
+| `documents` | `file_path` | Target File storage reference | `uploads/CS_BSIT_Report.pdf`| `{"iv":"...", "value":"...", "mac":"..."}` |
+| `document_ocr_validations` | `extracted_data` | Extracted Text Data (PII/Scores) | `{"faculty_load": 18, ...}` | `{"iv":"...", "value":"...", "mac":"..."}` |
+| `document_reviews` | `remarks` | Evaluator feedback notes | `Failed to meet BSIT Area 3` | `{"iv":"...", "value":"...", "mac":"..."}` |
+| `document_access_requests` | `remarks` | Reason for document requests | `Required for AACCUP Level IV` | `{"iv":"...", "value":"...", "mac":"..."}` |
+| `compliance_requirements` | `description` | Specific compliance requirements | `Submit faculty qualifications` | `{"iv":"...", "value":"...", "mac":"..."}` |
 
-*Note on Email Searching:* To support exact-match database queries on encrypted emails without decrypting the entire table, a HMAC-SHA256 blind index (`email_bindex = HMAC-SHA256(email, blind_index_key)`) is stored alongside the encrypted email field.
+### 1.2 Cryptographic Execution
+- **Algorithm:** **AES-256-GCM** (Galois/Counter Mode). This authenticated encryption cipher ensures both confidentiality and plaintext integrity check (providing built-in tag validation, making separate HMAC calculations redundant).
+- **Laravel casting:** Eloquent cast classes use Laravel's default cryptor:
+  ```php
+  protected function casts(): array {
+      return [
+          'first_name' => 'encrypted',
+          'last_name' => 'encrypted',
+          'email' => 'encrypted',
+          'extracted_data' => 'encrypted:json',
+      ];
+  }
+  ```
+- **Blind Index Strategy for Querying Encrypted Emails:** Because `email` fields are encrypted and store dynamic Initialization Vectors (IVs) yielding distinct ciphertext outputs, raw database indexing is blocked. To allow exact-match queries (e.g., `WHERE email = ?` on login lookup), IQArchive stores a **blind index** value in the database alongside the ciphertext:
+  $$\text{email\_bindex} = \text{HMAC-SHA-256}(\text{plaintext\_email}, \text{BLIND\_INDEX\_KEY})$$
+  The database queries match the computed blind index hash instead of the encrypted string, enabling high-performance searches while keeping raw email strings unreadable.
+- **Uploaded Document Encryption:** When files are uploaded, their raw binary payloads are encrypted using Laravel's file system wrapper with `AES-256-GCM` streams before being written to private storage disks.
 
 ---
 
 ## 2. Key Management Approach (Lifecycle & Rotation)
 
-### 2.1 Storage Architecture
-- **Master Encryption Key (MEK):** Stored outside the web root and database within host environment variables (`APP_KEY=base64:32_byte_random_string`) or managed via an external Key Management Service (e.g., AWS KMS / HashiCorp Vault).
-- **Envelope Encryption (Design for Scalability):** The Master Key (MEK) encrypts individual Data Encryption Keys (DEK). The DEK encrypts table rows. The encrypted DEK is stored alongside dataset metadata.
+To prevent a single server leak from compromising all system secrets, IQArchive isolates database encryption keys and details a lifecycle plan.
 
-### 2.2 Key Rotation & Zeroization Policy
-- **Automated 90-Day Key Rotation:** Key rotation executes without application downtime using Laravel 12's multi-key re-encryption mechanism (`APP_PREVIOUS_KEYS`):
-  1. A new primary key $K_{\text{new}}$ is generated and added to `APP_KEY`.
-  2. The retired key $K_{\text{old}}$ is appended to `APP_PREVIOUS_KEYS` in `.env`.
-  3. Decryption requests fall back to `APP_PREVIOUS_KEYS` if $K_{\text{new}}$ fails MAC verification.
-  4. An asynchronous console job (`php artisan reencrypt:database-fields`) reads records encrypted with $K_{\text{old}}$, decrypts them, re-encrypts with $K_{\text{new}}$, and updates the records.
-- **Zeroization & Memory Hygiene:** In-memory key handles are un-set and cleared upon script termination to prevent memory dump extraction.
+### 2.1 Key Separation & Storage Architecture
+- **Isolated Key Store:** The encryption key for database data (`DB_ENCRYPTION_KEY`) is isolated from the application runner key (`APP_KEY` which is used for session cookies).
+- **Environment Separation:** In the initial phase, `DB_ENCRYPTION_KEY` is loaded from a system-level environment variable.
+- **Key Management Service (KMS) Integration Path:** For production deployments, key storage will transition to an external key server (such as HashiCorp Vault or AWS KMS). The application will request data encryption keys dynamically over an internal, TLS-validated loopback API, keeping the master key off the application host memory space.
+
+### 2.2 Key Rotation Policies
+- **Scheduled Rotation:** Keys are rotated automatically every 90 days.
+- **Multi-Key Fallback Decryption:** To avoid service interruptions during database re-encryption, the backend utilizes Laravel's fallback array configuration (`DB_PREVIOUS_ENCRYPTION_KEYS`). If decryption using the active key fails signature/integrity checks, the system attempts decryption sequentially using legacy keys.
+- **Emergency Key Rotation & Re-encryption Plan:**
+  If the `DB_ENCRYPTION_KEY` is compromised:
+  1. A security incident triggers the generation of a new key $K_{\text{new}}$ and pushes the leaked key $K_{\text{leaked}}$ to the fallback array.
+  2. The system triggers an asynchronous queue command: `php artisan iqarchive:rekey`.
+  3. The task worker reads database rows using fallback keys, decrypts data in-memory, re-encrypts using $K_{\text{new}}$, and writes updated rows back to disk.
 
 ---
 
 ## 3. TLS/HTTPS & Security Header Configuration Plan
 
-To protect data-in-transit and defend against Client-Side Injection, Clickjacking, and Cross-Site Scripting (XSS), the NGINX web server hosting IQArchive enforces TLS 1.3 encryption and injects HTTP response security headers.
+To protect quality assurance documents in transit and defend web clients against Clickjacking, UI Redressing, and Cross-Site Scripting (XSS) injections, NGINX is configured to enforce TLS 1.3 encryption and inject security headers.
 
 ### Security Headers Specification Table
 
@@ -206,6 +266,8 @@ To protect data-in-transit and defend against Client-Side Injection, Clickjackin
 
 ## 4. Cryptographic Data-Flow Diagram
 
+The diagram below shows the data-flow lifecycle for sensitive data inputs from client entry to database persistence, highlighting the application-layer encryption boundary.
+
 ```mermaid
 graph TD
     subgraph Client Layer [User Web Browser / Client]
@@ -219,9 +281,9 @@ graph TD
 
     subgraph Application Encryption Layer [IQArchive Application - PHP 8.3 / Laravel]
         D --> E{Sensitive Field?}
-        E -->|Yes: PII, TOTP, Remarks| F[App-Layer Encryptor: AES-256-CBC]
-        F -->|Master Key APP_KEY| G[Compute HMAC-SHA256 Signature]
-        G -->|Ciphertext + IV + MAC| H[Payload Serializer]
+        E -->|Yes: PII, TOTP, Remarks| F[App-Layer Encryptor: AES-256-GCM]
+        F -->|Database Key DB_ENCRYPTION_KEY| G[Compute AEAD Authenticated Payload]
+        G -->|Ciphertext + IV + Tag| H[Payload Serializer]
         E -->|No: Public Metadata| I[Plaintext String]
     end
 
@@ -231,199 +293,78 @@ graph TD
     end
 
     subgraph Key Management System [Secure Environment / AWS KMS]
-        K[Master Key APP_KEY] -.-> F
-        L[Previous Keys APP_PREVIOUS_KEYS] -.->|Rotation Fallback| F
+        K[Data Key DB_ENCRYPTION_KEY] -.-> F
+        L[Previous Keys DB_PREVIOUS_KEYS] -.->|Rotation Fallback| F
     end
 ```
 
 ---
 
-## 5. Architectural Synthesis (Module B)
-
-By pairing application-layer AES-256-CBC authenticated encryption at rest with strict TLS 1.3 and HSTS/CSP security header enforcement in transit, IQArchive guarantees confidentiality and integrity across the complete data lifecycle. Stolen database backups yield unreadable ciphertext without the out-of-band `APP_KEY`, while web application security headers insulate clients from MITM interception and browser-side code injection.
-
----
-
-# Module C: API & Perimeter Defense
-
-## 1. API Rate Limiting & Session Token Rotation/Blacklisting Design
-
-### 1.1 Throttling & Rate Limiting Architecture
-IQArchive implements dynamic rate limiting powered by Laravel’s `RateLimiter` facade (backed by Redis cache) to prevent denial-of-service (DoS), brute-force password attacks, and credential stuffing.
-
-- **Authentication Rate Limiter (`login`):**
-  - *Throttle Key:* `Str::transliterate(Str::lower($email) . '|' . $request->ip())`
-  - *Limit:* 5 attempts per minute. Upon exceeding, HTTP 429 (Too Many Requests) is returned with a `Retry-After` header.
-- **Two-Factor Challenge Limiter (`two-factor`):**
-  - *Throttle Key:* `session()->get('login.id')`
-  - *Limit:* 5 attempts per minute.
-- **RESTful API Rate Limiter (`api`):**
-  - *Throttle Key:* `auth:api` user ID or client IP address.
-  - *Limit:* 60 requests per minute.
-
-### 1.2 JWT / Sanctum Token Lifecycle & Blacklisting Strategy
-For mobile or external system integration (e.g., AACCUP API syncing), IQArchive utilizes Laravel Sanctum / JWT tokens:
-1. **Short-Lived Access Tokens:** Access tokens expire after 15 minutes (`TTL = 900s`).
-2. **Long-Lived Refresh Tokens with Single-Use Rotation:** Refresh tokens expire after 7 days (`TTL = 604800s`). Using a refresh token invalidates it immediately and issues a new pair (Refresh Token Rotation).
-3. **Instant Redis Token Blacklisting:** Upon logout, password reset, or admin revocation, token signatures (`jti` or Sanctum `tokenable_id`) are pushed to a Redis Blacklist cluster with an expiration matching the token's remaining TTL. Middleware checks Redis before granting API route access:
-   $$\text{IsBlacklisted}(T_{\text{id}}) = \text{Redis::exists("token_blacklist:"} \cdot T_{\text{id}})$$
-
----
-
-## 2. Input Sanitization & Parameterized Query Strategy
-
-### 2.1 Parameterized Query Protection against SQL Injection
-1. **Eloquent ORM & PDO Binding:** All database interactions in IQArchive utilize Laravel’s Eloquent ORM or DB Query Builder, which construct PDO prepared statements under the hood:
-   ```php
-   // Secure Parameterized Execution
-   $documents = Document::where('program_id', '=', $programId)
-       ->where('status', '=', $status)
-       ->get();
-   ```
-   *Low-level PDO Execution:* `SELECT * FROM documents WHERE program_id = ? AND status = ?` (Parameters passed separately in binary transport protocol, preventing query structure alteration).
-
-### 2.2 Server-Side Input Sanitization & XSS Mitigation
-1. **Sanitizer Pipeline:** Request data passes through custom sanitization middleware prior to validation:
-   - `FILTER_SANITIZE_EMAIL` and `trim()` for email fields.
-   - HTML Purifier / `strip_tags()` for rich-text document descriptions.
-2. **Auto-Escaped Templating:** Blade templates exclusively use `{{ $variable }}` which invokes `htmlspecialchars($var, ENT_QUOTES, 'UTF-8')`.
-
----
-
-## 3. Extended Network ACL Rule Set with Wildcard Masks
-
-### 3.1 Network Architecture & Subnet Planning
-To establish network perimeter security, IQArchive backend infrastructure is partitioned across distinct VLANs:
-
-| Network Zone | Subnet Prefix / CIDR | Subnet Mask | Wildcard Mask Calculation | Wildcard Mask |
-| :--- | :--- | :--- | :--- | :--- |
-| **Public / Web Ingress Subnet** | `192.168.10.0/24` | `255.255.255.0` | `255.255.255.255 - 255.255.255.0` | `0.0.0.255` |
-| **App Server Subnet (Laravel)** | `10.0.1.0/28` | `255.255.255.240` | `255.255.255.255 - 255.255.255.240` | `0.0.0.15` |
-| **Database Subnet (MariaDB)** | `10.0.2.0/28` | `255.255.255.240` | `255.255.255.255 - 255.255.255.240` | `0.0.0.15` |
-| **Admin / Management Subnet** | `172.16.50.0/27` | `255.255.255.224` | `255.255.255.255 - 255.255.255.224` | `0.0.0.31` |
-
----
-
-### 3.2 Cisco IOS Extended ACL Table (`ACL 150 - IQArchive_Perimeter_Rules`)
-
-```text
-! Extended Access Control List 150 Configuration
-ip access-list extended IQArchive_Perimeter_Rules
- 10 permit tcp 192.168.10.0 0.0.0.255 10.0.1.0 0.0.0.15 eq 80
- 20 permit tcp 192.168.10.0 0.0.0.255 10.0.1.0 0.0.0.15 eq 443
- 30 permit tcp 10.0.1.0 0.0.0.15 10.0.2.0 0.0.0.15 eq 3306
- 40 permit tcp 10.0.1.0 0.0.0.15 10.0.2.0 0.0.0.15 eq 6379
- 50 permit tcp 172.16.50.0 0.0.0.31 10.0.1.0 0.0.0.15 eq 22
- 60 permit tcp 172.16.50.0 0.0.0.31 10.0.2.0 0.0.0.15 eq 22
- 70 deny ip any any log
-```
-
-### Rule-by-Rule Technical Breakdown
-
-| Rule # | Action | Protocol | Source Address & Wildcard Mask | Destination Address & Wildcard Mask | Dest Port | Technical Purpose & Rationale |
-| :---: | :---: | :---: | :--- | :--- | :---: | :--- |
-| **10** | `PERMIT` | `tcp` | `192.168.10.0 0.0.0.255` (Web Ingress) | `10.0.1.0 0.0.0.15` (App Server) | `80` (HTTP) | Allows HTTP ingress traffic from web clients to application reverse proxy for initial redirect to HTTPS. |
-| **20** | `PERMIT` | `tcp` | `192.168.10.0 0.0.0.255` (Web Ingress) | `10.0.1.0 0.0.0.15` (App Server) | `443` (HTTPS) | Allows encrypted HTTPS web traffic from public user subnet to IQArchive application cluster. |
-| **30** | `PERMIT` | `tcp` | `10.0.1.0 0.0.0.15` (App Server) | `10.0.2.0 0.0.0.15` (Database Subnet) | `3306` (MariaDB) | Permits application servers to execute SQL queries on the isolated database server. Public access to 3306 is explicitly blocked. |
-| **40** | `PERMIT` | `tcp` | `10.0.1.0 0.0.0.15` (App Server) | `10.0.2.0 0.0.0.15` (Database Subnet) | `6379` (Redis) | Allows app servers to access Redis cache for session management, token blacklisting, and rate limiting. |
-| **50** | `PERMIT` | `tcp` | `172.16.50.0 0.0.0.31` (Admin Subnet) | `10.0.1.0 0.0.0.15` (App Server) | `22` (SSH) | Restricts Secure Shell (SSH) administrative access to app servers strictly to authorized SysAdmin management workstations. |
-| **60** | `PERMIT` | `tcp` | `172.16.50.0 0.0.0.31` (Admin Subnet) | `10.0.2.0 0.0.0.15` (Database Subnet) | `22` (SSH) | Restricts SSH administrative access to database servers strictly to SysAdmin subnet. |
-| **70** | `DENY` | `ip` | `0.0.0.0 255.255.255.255` (`any`) | `0.0.0.0 255.255.255.255` (`any`) | `any` | Implicit Deny All: drops and logs all unauthorized cross-subnet IP traffic violating perimeter rules. |
-
----
-
-## 4. Endpoint-by-Endpoint Control Matrix
-
-| Endpoint Route | HTTP Method | Primary Threat / Risk Category | Security Controls Applied |
-| :--- | :---: | :--- | :--- |
-| `/login` | `POST` | Brute-force attacks, Credential Stuffing, User Enumeration | Rate Limiting (5 req/min per IP+Email), Generic Error Messaging, Input Sanitization (`FILTER_SANITIZE_EMAIL`), Audit Logging (`login_failed`/`login_success`). |
-| `/two-factor-challenge` | `POST` | TOTP Brute-Force, Replay Attacks | Session Rate Limiting (5 req/min), Constant-Time Comparison (`hash_equals`), Redis Replay Prevention, Short-Lived Challenge Session. |
-| `/roles/iqa-admin/accounts` | `POST / PUT` | Unauthorized Account Provisioning, Privilege Escalation | RBAC Middleware (`role:iqa-admin`), Component Guard in `mount()`, Server-side `FormRequest` Validation, Bcrypt Hashing, Soft Deactivation. |
-| `/roles/{role}/documents` | `POST` | Malicious File Upload, Unrestricted File Type Execution | MIME-Type Validation (`pdf,docx,xlsx`), Strict File Extension Checking, Disassembly in Isolated Directory outside Web Root, Parameterized PDO Queries. |
-| `/roles/{role}/audit-trail` | `GET` | Audit Log Tampering, Unauthorized Information Disclosure | Strict RBAC Guard (`role:system-administrator` / `iqa-admin`), Read-Only Livewire Component, Immutability Guarantee (`onDelete('set null')`). |
-| `/api/v1/documents/ocr` | `POST` | API Flooding, Stolen Token Exploitation | Rate Limiting (60 req/min), Short-Lived Sanctum Access Token (15 min), Redis Token Blacklisting check, Automated AES-256 Encryption on extracted text. |
-
----
-
-## 5. Design Rationale: OWASP Top 10 Risk Mapping
-
-The controls specified in Module C map directly to the **OWASP Top 10 (2021)** security risks:
-
-1. **A01:2021 – Broken Access Control:** Addressed by enforcing multi-layered RBAC middleware, Livewire component guards, policy restrictions on document visibility, and Extended ACL subnet isolation.
-2. **A02:2021 – Cryptographic Failures:** Mitigated through TLS 1.3 in transit, HSTS preloading, application-layer AES-256-CBC encryption for PII/MFA keys, and key rotation policies.
-3. **A03:2021 – Injection:** Eradicated across all endpoints via PDO parameterized queries in Eloquent ORM, HTML Purifier sanitization, and Blade output auto-escaping.
-4. **A07:2021 – Identification and Authentication Failures:** Neutralized using RFC 6238 TOTP MFA, strict login throttling (5 req/min), short-lived JWT token rotation, and single-use refresh tokens with Redis blacklisting.
-
----
-
-## 6. Architectural Synthesis (Module C)
-
-By coupling network perimeter ACL isolation with strict API rate limiting, JWT token rotation/blacklisting, and parameterized input validation, IQArchive forms a hardened defensive boundary. Malicious traffic is filtered at the network layer before reaching backend hosts, while application-layer sanitization and token management neutralize injection and session hijacking attacks before sensitive accreditation data can be accessed.
-
----
-
 # Part 2 - VAPT Verification Plan
 
-This Vulnerability Assessment and Penetration Testing (VAPT) plan specifically targets the security controls designed in **Module A (Identity & Access Fortification)**, **Module B (Cryptographic Data Protection)**, and **Module C (API & Perimeter Defense)** for the IQArchive system.
+This Vulnerability Assessment and Penetration Testing (VAPT) plan specifically targets the security controls designed in **Module A (Identity & Access Fortification)** and **Module B (Cryptographic Data Protection)** for the IQArchive system.
 
 ---
 
 ## 1. VAPT Test Plan
 
 ### 1.1 Scanners and Justification
-- **Burp Suite Professional (or Community Edition):** Chosen as the primary interception proxy and dynamic application security testing (DAST) tool. It is ideal for manipulating HTTP requests to test the RBAC matrix (e.g., swapping session cookies between roles), attempting to bypass the TOTP verification flow, and testing rate-limiting endpoints.
-- **OWASP ZAP (Zed Attack Proxy):** Used as an automated scanner to crawl the application, identify missing security headers (like HSTS and CSP designed in Module B), and flag weak session configurations.
-- **SSL Labs (Qualys) / testssl.sh:** A specialized scanner utilized specifically to verify the TLS 1.3 configuration, cipher suite strengths, and the correct deployment of HSTS, directly testing the perimeter defense designed in Module B.
+- **Burp Suite Professional:** The primary HTTP interception proxy and manual penetration testing tool. Essential for testing the enforcement of Google OIDC validations, attempting Step-Up TOTP bypasses, swapping session identifiers to test RBAC parameters, and checking parameterized SQL queries.
+- **OWASP ZAP:** Used as an automated application scanner to identify missing or misconfigured security headers (HSTS, CSP) and flag session attributes.
+- **testssl.sh:** A command-line tool used to verify server TLS configurations, verifying the exclusion of legacy TLS versions (1.0, 1.1, 1.2) and validating proper cipher suite matching.
 
 ### 1.2 Scope
-- **Endpoints:** All authentication and MFA endpoints (`/login`, `/two-factor-challenge`), role-based dashboards/settings, document upload/delete endpoints, OCR validation endpoints, audit trails, and user profile management (where PII is accessed).
-- **Network Segments:** The external-facing web application layer (HTTPS/443). The internal database subnet is out of scope for the external VAPT, but the application's handling of encrypted data at rest (Module B) will be verified through endpoint responses.
-- **Roles in Scope:** All 8 user roles, with a primary focus on `system-administrator`, `iqa-admin`, `accreditor`, and `program-chair` accounts provisioned for test validation.
+- **Target Components:** The web entry point (`port 443`), including authentication routes (`/auth/google/callback`, `/user/confirm-two-factor`, `/auth/mfa-stepup`), role-restricted routes, document upload pipelines, and database encryption boundaries.
+- **Tested Scenarios:** Federated token signature verification, privilege check scopes, data decryption routines, key rotation fallbacks, and security header compliance.
 
 ### 1.3 Expected Finding Categories
-- **Broken Object Level / Function Level Authorization (BOLA/BFLA):** If RBAC is improperly enforced on document access, user account management, or system diagnostic endpoints.
-- **Identification and Authentication Failures:** Weak session handling, lack of token invalidation after logout/MFA setup, or rate-limiting vulnerabilities on the login/TOTP challenge endpoints.
-- **Cryptographic Failures:** Missing or misconfigured security headers (CSP, HSTS), weak TLS cipher suites, or leaking of unencrypted sensitive fields.
-- **Injection:** SQL injection in custom search queries, HTML/script injection in document descriptions, or stored/reflected Cross-Site Scripting (XSS).
+- **Broken Object/Function Level Authorization (BOLA/BFLA):** Bypassing role-based routing or Eloquent policies to view/modify other college/program documents.
+- **Authentication & Identification Failures:** Missing JWT validation checks, session expiration issues, or TOTP challenge bypasses.
+- **Cryptographic Failures:** Leaked encryption keys, SQL error messages exposing unencrypted fields, or missing security response headers.
 
 ---
 
 ## 2. Manual Test-Case Write-Ups
 
-### Test Case 1: TOTP Replay and Brute Force Attack (Targets Module A & C)
-*   **Objective:** Verify that the system prevents an attacker from reusing a previously intercepted TOTP code (Replay Attack) or brute-forcing the 6-digit code on the MFA challenge endpoint.
-*   **Method:** 
-    1. Log into the application using valid credentials to reach the MFA challenge screen.
-    2. Intercept the `/two-factor-challenge` request using Burp Suite.
-    3. Submit a valid TOTP code and capture the successful response.
-    4. Attempt to resubmit the exact same TOTP code immediately after the first success (Replay attempt).
-    5. Next, use Burp Intruder to send 1,000 rapid requests with sequential 6-digit codes to the challenge endpoint (Brute-force attempt).
-*   **Tools:** Burp Suite (Proxy and Intruder module).
-*   **Success Criteria:** The system must reject the replayed code with an error (e.g., "Code already used" or verification failure). The brute-force attempt must be blocked by rate-limiting (HTTP 429 Too Many Requests) after 5 failed attempts per minute.
-
-### Test Case 2: Vertical Privilege Escalation via RBAC Bypass (Targets Module A, B & C)
-*   **Objective:** Ensure that a lower-privileged user (e.g., `program-chair` or `task-force`) cannot access or modify resources designated for a higher-privileged user (e.g., `iqa-admin`), specifically targeting sensitive encrypted PII fields and administrative endpoints.
+### Test Case 1: Bypass of Step-up App-level TOTP on Privileged Action
+*   **Objective:** Verify that a user authenticated via Google OAuth cannot bypass the secondary App-level step-up TOTP verification to execute a restricted action (e.g., approving an accreditation submission or modifying RBAC).
 *   **Method:**
-    1. Log into the application as an `iqa-admin` and capture a valid request for a restricted action (e.g., `POST /roles/iqa-admin/accounts` or deleting a document).
-    2. Log out and log back in as a lower-privileged user.
-    3. Intercept a request from the lower-privileged user using Burp Suite.
-    4. Modify the HTTP method, headers, and URI to match the restricted action captured in Step 1, using the lower-privileged user's session token/cookie.
-    5. Forward the manipulated request to the server.
-*   **Tools:** Burp Suite (Repeater module).
-*   **Success Criteria:** The server must return an HTTP 403 Forbidden or HTTP 401 Unauthorized status, and the action must not execute. This proves that the RBAC matrix is strictly enforced on the server side (middleware, Livewire components, Eloquent policies) rather than relying on UI hiding.
+    1. Log into the system using a valid Bicol University Google Workspace account mapped to an `IQA Admin` role.
+    2. Do NOT perform the secondary app-level TOTP enrollment or login challenge.
+    3. Construct a raw HTTP request targeting a restricted action endpoint:
+       `POST /documents/12/approve`
+    4. Attach the active Google-authenticated session cookie (`laravel_session`) to the request headers.
+    5. Submit the request using Burp Suite Repeater.
+*   **Tools:** Burp Suite (Proxy and Repeater).
+*   **Success Criteria:** The server must intercept the request, recognize that the step-up TOTP flag is unset in the session context, reject the transaction with an `HTTP 403 Forbidden` status code, and redirect the browser to `/auth/mfa-stepup`. The document state must remain unchanged.
+
+### Test Case 2: SQL Injection & Plaintext Leakage Verification on Encrypted Database Fields
+*   **Objective:** Verify that potential SQL injection points do not expose plaintext sensitive data, and confirm that direct access to the database (e.g., raw backups or table dumps) yields only encrypted values.
+*   **Method:**
+    1. Identify input fields that interact with encrypted columns (such as the document search queries).
+    2. Inject standard SQL injection payloads (e.g., `' OR '1'='1`) into the search interface.
+    3. Analyze the application responses to verify if raw SQL exceptions reveal plaintext records.
+    4. Execute a direct SQL query against the database using a database terminal:
+       `SELECT first_name, email, two_factor_secret FROM users;`
+       `SELECT title, file_path FROM documents;`
+    5. Examine the printed outputs to verify encryption status.
+*   **Tools:** Burp Suite, sqlmap, MariaDB Database CLI.
+*   **Success Criteria:**
+    - Any SQL exceptions triggered by input validation errors must be generic and fail to leak database variables.
+    - Direct database queries must yield only base64-encoded encrypted JSON strings containing `iv`, `value`, and `mac` attributes for the targeted fields, proving that the encryption-at-rest design is fully functional and isolated at the application layer.
 
 ---
 
 ## 3. Risk Matrix
 
-This matrix maps anticipated vulnerabilities from the VAPT plan to their Likelihood and Impact, along with the specific mitigating controls designed in Part 1.
+This matrix maps anticipated system vulnerabilities to their likelihood, impact, and corresponding Module A & B controls.
 
 | Anticipated Vulnerability | Likelihood | Impact | Risk Level | Mitigating Control Designed (Part 1) |
 | :--- | :--- | :--- | :--- | :--- |
-| **Bypass of standard password auth (Credential Stuffing)** | High | High | **Critical** | **Module A:** TOTP Multi-Factor Authentication prevents login even if the password is compromised. |
-| **Vertical/Horizontal Privilege Escalation (RBAC Bypass)** | Medium | High | **High** | **Module A:** Strict RBAC matrix enforced at route middleware, Livewire mount check, and Eloquent policies. |
-| **Exposure of Faculty PII via Database Dump/SQLi** | Low | High | **High** | **Module B & C:** AES-256 Encryption-at-Rest with blind indexes, paired with Parameterized Queries in Eloquent/PDO. |
-| **Man-in-the-Middle (MITM) Downgrade Attack** | Medium | Medium | **Medium** | **Module B:** Strict-Transport-Security (HSTS) header forces HTTPS connections, preventing downgrade. |
-| **Cross-Site Scripting (XSS) stealing Session Tokens** | High | High | **Critical** | **Module B:** Content-Security-Policy (CSP) header restricts script origins and requires dynamically generated nonces. |
-| **API Denial-of-Service / Authentication Flooding** | High | Medium | **High** | **Module C:** Redis-backed authentication and API rate limiting (5 req/min for auth, 60 req/min for API). |
-| **Lateral Movement / Network Subnet Exposure** | Low | High | **High** | **Module C:** Subnet partitioning with Cisco IOS Extended ACL rules restricting traffic between public, app, database, and admin subnets. |
+| **Authentication bypass via forged Google ID Tokens** | Low | High | **High** | **Module A:** Cryptographic signature verification using Google's public key certificate set (RS256). |
+| **Bypass of Step-Up TOTP validation on administrative endpoints** | Medium | High | **High** | **Module A:** Endpoint step-up authentication checks at route and controller layers. |
+| **Horizontal privilege escalation (reading documents of another college)** | Medium | High | **High** | **Module A:** RBAC matric structures enforced by Eloquent policies and scoped query boundaries. |
+| **Exposure of faculty PII or OCR data via SQL injection leak** | Low | High | **High** | **Module B:** Application-layer AES-256-GCM encryption ensures database data remains encrypted. |
+| **Exposure of sensitive QA files via raw DB backups or backup leakage** | Low | High | **High** | **Module B:** AES-256-GCM encryption-at-rest for file paths and native binary payload encryption. |
+| **Session Hijacking via Man-in-the-Middle (MITM) Downgrade** | Medium | Medium | **Medium** | **Module B:** NGINX Strict-Transport-Security (HSTS) header rules forcing TLS 1.3 connections. |
+| **Session Cookie stealing via Cross-Site Scripting (XSS) vectors** | High | High | **Critical** | **Module B:** Content-Security-Policy (CSP) headers restricting inline scripts and using random nonces. |
