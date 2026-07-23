@@ -1,16 +1,18 @@
-# IQArchive — Security Architecture Design Document
+# IQArchive — Security Architecture Design & VAPT Verification Document
 **System Name:** IQArchive (Institutional Quality Assurance Document Archive System)  
 **Framework & Tech Stack:** PHP 8.3 / Laravel 12 (Livewire 3, Fortify, Flux UI, Tailwind CSS 4, MariaDB/MySQL)  
 **Institutional Context:** Bicol University Quality Assurance & AACCUP Accreditation Subsystem  
-**Document Purpose:** System-Specific Security Controls & Architectural Design Specification  
+**Document Purpose:** System-Specific Security Controls, Architectural Design & VAPT Specification  
 
 ---
 
 ## Executive Summary
 
-IQArchive is an Institutional Quality Assurance Document Archive System designed to store, manage, validate, and audit sensitive university accreditation materials, faculty submissions, compliance reports, and AACCUP evaluation instruments. Given the high confidentiality, integrity, and availability requirements of institutional accreditation records, this document outlines a defense-in-depth security architecture spanning **Identity & Access Fortification (Module A)**, **Cryptographic Data Protection (Module B)**, and **API & Perimeter Defense (Module C)**.
+IQArchive is an Institutional Quality Assurance Document Archive System designed to store, manage, validate, and audit sensitive university accreditation materials, faculty submissions, compliance reports, and AACCUP evaluation instruments. Given the high confidentiality, integrity, and availability requirements of institutional accreditation records, this document outlines a defense-in-depth security architecture spanning **Identity & Access Fortification (Module A)**, **Cryptographic Data Protection (Module B)**, and **API & Perimeter Defense (Module C)**, followed by a corresponding **Vulnerability Assessment and Penetration Testing (VAPT) Plan (Part 2)**.
 
 ---
+
+# Part 1 - Security Architecture Design
 
 # Module A: Identity & Access Fortification
 
@@ -23,7 +25,7 @@ IQArchive enforces Time-based One-Time Password (TOTP) authentication conforming
    - **Secret Generation:** Upon user request in `settings.iqa-admin` or user profile security settings, the backend generates a cryptographically secure, 160-bit (20-byte) pseudo-random secret string encoded in Base32 (264 bits formatted as 32 uppercase characters).
    - **Secret Encryption:** The raw Base32 secret string is encrypted prior to database persistence using Laravel's `Crypt::encryptString()` (AES-256-CBC with HMAC-SHA256 payload integrity check) and stored in the `users.two_factor_secret` text column.
    - **QR Code & Provisioning URI:** The server constructs an `otpauth://` URI:
-     $$\text{otpauth://totp/IQArchive:user@bicol-u.edu.ph?secret=JBSWY3DPEHPK3PXP\&issuer=IQArchive\&algorithm=SHA1\&digits=6\&period=30}$$
+     $$\text{otpauth://totp/IQArchive:user@bicol-u.edu.ph?secret=JBSWY3DPEHPK3PXP&issuer=IQArchive&algorithm=SHA1&digits=6&period=30}$$
      This URI is rendered client-side as an inline SVG QR code using `BaconQrCode`. The secret key is never sent unencrypted or stored in client-side cookies.
    - **Recovery Code Generation:** 8 single-use recovery codes (10-character random alphanumeric strings) are generated, hashed/encrypted via `Crypt::encryptString()`, and stored in `users.two_factor_recovery_codes` as an encrypted JSON array.
 
@@ -193,7 +195,7 @@ To protect data-in-transit and defend against Client-Side Injection, Clickjackin
 | Response Header Name | Configured Header Value | Security Purpose & Technical Rationale |
 | :--- | :--- | :--- |
 | `Strict-Transport-Security` | `max-age=63072000; includeSubDomains; preload` | Forces HTTPS for 2 years (63,072,000s). Prevents SSL Stripping attacks (e.g., Moxie Marlinspike's sslstrip) and MITM downgrades. |
-| `Content-Security-Policy` | `default-src 'self'; script-src 'self' 'nonce-rAnd0m123' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; object-src 'none'; frame-ancestors 'none';` | Restricts resources (scripts, styles, images) to trusted origins. Disallows inline script execution without valid nonces, mitigating Reflected and Stored XSS vectors. |
+| `Content-Security-Policy` | `default-src 'self'; script-src 'self' 'nonce-rAnd0m123' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; object-src 'none'; frame-ancestors 'none';` | Restricts resources (scripts, styles, images) to trusted origins. Disallows inline script execution without valid nonces, mitigating Reflected and Stored XSS vectors. *Note: The CSP nonce 'nonce-rAnd0m123' is a placeholder; it must be dynamically generated on every request lifecycle.* |
 | `X-Frame-Options` | `DENY` | Completely blocks framing of IQArchive in `<iframe>`, `<frame>`, or `<object>` elements, eliminating Clickjacking and UI Redressing attacks. |
 | `X-Content-Type-Options` | `nosniff` | Disables MIME-type sniffing. Forces browsers to strictly adhere to declared `Content-Type` headers, preventing executable script execution disguised as images/PDFs. |
 | `Referrer-Policy` | `strict-origin-when-cross-origin` | Limits cross-origin request referrer information to the origin domain only, preventing sensitive document URL leakages in HTTP Referer headers. |
@@ -357,3 +359,71 @@ The controls specified in Module C map directly to the **OWASP Top 10 (2021)** s
 ## 6. Architectural Synthesis (Module C)
 
 By coupling network perimeter ACL isolation with strict API rate limiting, JWT token rotation/blacklisting, and parameterized input validation, IQArchive forms a hardened defensive boundary. Malicious traffic is filtered at the network layer before reaching backend hosts, while application-layer sanitization and token management neutralize injection and session hijacking attacks before sensitive accreditation data can be accessed.
+
+---
+
+# Part 2 - VAPT Verification Plan
+
+This Vulnerability Assessment and Penetration Testing (VAPT) plan specifically targets the security controls designed in **Module A (Identity & Access Fortification)**, **Module B (Cryptographic Data Protection)**, and **Module C (API & Perimeter Defense)** for the IQArchive system.
+
+---
+
+## 1. VAPT Test Plan
+
+### 1.1 Scanners and Justification
+- **Burp Suite Professional (or Community Edition):** Chosen as the primary interception proxy and dynamic application security testing (DAST) tool. It is ideal for manipulating HTTP requests to test the RBAC matrix (e.g., swapping session cookies between roles), attempting to bypass the TOTP verification flow, and testing rate-limiting endpoints.
+- **OWASP ZAP (Zed Attack Proxy):** Used as an automated scanner to crawl the application, identify missing security headers (like HSTS and CSP designed in Module B), and flag weak session configurations.
+- **SSL Labs (Qualys) / testssl.sh:** A specialized scanner utilized specifically to verify the TLS 1.3 configuration, cipher suite strengths, and the correct deployment of HSTS, directly testing the perimeter defense designed in Module B.
+
+### 1.2 Scope
+- **Endpoints:** All authentication and MFA endpoints (`/login`, `/two-factor-challenge`), role-based dashboards/settings, document upload/delete endpoints, OCR validation endpoints, audit trails, and user profile management (where PII is accessed).
+- **Network Segments:** The external-facing web application layer (HTTPS/443). The internal database subnet is out of scope for the external VAPT, but the application's handling of encrypted data at rest (Module B) will be verified through endpoint responses.
+- **Roles in Scope:** All 8 user roles, with a primary focus on `system-administrator`, `iqa-admin`, `accreditor`, and `program-chair` accounts provisioned for test validation.
+
+### 1.3 Expected Finding Categories
+- **Broken Object Level / Function Level Authorization (BOLA/BFLA):** If RBAC is improperly enforced on document access, user account management, or system diagnostic endpoints.
+- **Identification and Authentication Failures:** Weak session handling, lack of token invalidation after logout/MFA setup, or rate-limiting vulnerabilities on the login/TOTP challenge endpoints.
+- **Cryptographic Failures:** Missing or misconfigured security headers (CSP, HSTS), weak TLS cipher suites, or leaking of unencrypted sensitive fields.
+- **Injection:** SQL injection in custom search queries, HTML/script injection in document descriptions, or stored/reflected Cross-Site Scripting (XSS).
+
+---
+
+## 2. Manual Test-Case Write-Ups
+
+### Test Case 1: TOTP Replay and Brute Force Attack (Targets Module A & C)
+*   **Objective:** Verify that the system prevents an attacker from reusing a previously intercepted TOTP code (Replay Attack) or brute-forcing the 6-digit code on the MFA challenge endpoint.
+*   **Method:** 
+    1. Log into the application using valid credentials to reach the MFA challenge screen.
+    2. Intercept the `/two-factor-challenge` request using Burp Suite.
+    3. Submit a valid TOTP code and capture the successful response.
+    4. Attempt to resubmit the exact same TOTP code immediately after the first success (Replay attempt).
+    5. Next, use Burp Intruder to send 1,000 rapid requests with sequential 6-digit codes to the challenge endpoint (Brute-force attempt).
+*   **Tools:** Burp Suite (Proxy and Intruder module).
+*   **Success Criteria:** The system must reject the replayed code with an error (e.g., "Code already used" or verification failure). The brute-force attempt must be blocked by rate-limiting (HTTP 429 Too Many Requests) after 5 failed attempts per minute.
+
+### Test Case 2: Vertical Privilege Escalation via RBAC Bypass (Targets Module A, B & C)
+*   **Objective:** Ensure that a lower-privileged user (e.g., `program-chair` or `task-force`) cannot access or modify resources designated for a higher-privileged user (e.g., `iqa-admin`), specifically targeting sensitive encrypted PII fields and administrative endpoints.
+*   **Method:**
+    1. Log into the application as an `iqa-admin` and capture a valid request for a restricted action (e.g., `POST /roles/iqa-admin/accounts` or deleting a document).
+    2. Log out and log back in as a lower-privileged user.
+    3. Intercept a request from the lower-privileged user using Burp Suite.
+    4. Modify the HTTP method, headers, and URI to match the restricted action captured in Step 1, using the lower-privileged user's session token/cookie.
+    5. Forward the manipulated request to the server.
+*   **Tools:** Burp Suite (Repeater module).
+*   **Success Criteria:** The server must return an HTTP 403 Forbidden or HTTP 401 Unauthorized status, and the action must not execute. This proves that the RBAC matrix is strictly enforced on the server side (middleware, Livewire components, Eloquent policies) rather than relying on UI hiding.
+
+---
+
+## 3. Risk Matrix
+
+This matrix maps anticipated vulnerabilities from the VAPT plan to their Likelihood and Impact, along with the specific mitigating controls designed in Part 1.
+
+| Anticipated Vulnerability | Likelihood | Impact | Risk Level | Mitigating Control Designed (Part 1) |
+| :--- | :--- | :--- | :--- | :--- |
+| **Bypass of standard password auth (Credential Stuffing)** | High | High | **Critical** | **Module A:** TOTP Multi-Factor Authentication prevents login even if the password is compromised. |
+| **Vertical/Horizontal Privilege Escalation (RBAC Bypass)** | Medium | High | **High** | **Module A:** Strict RBAC matrix enforced at route middleware, Livewire mount check, and Eloquent policies. |
+| **Exposure of Faculty PII via Database Dump/SQLi** | Low | High | **High** | **Module B & C:** AES-256 Encryption-at-Rest with blind indexes, paired with Parameterized Queries in Eloquent/PDO. |
+| **Man-in-the-Middle (MITM) Downgrade Attack** | Medium | Medium | **Medium** | **Module B:** Strict-Transport-Security (HSTS) header forces HTTPS connections, preventing downgrade. |
+| **Cross-Site Scripting (XSS) stealing Session Tokens** | High | High | **Critical** | **Module B:** Content-Security-Policy (CSP) header restricts script origins and requires dynamically generated nonces. |
+| **API Denial-of-Service / Authentication Flooding** | High | Medium | **High** | **Module C:** Redis-backed authentication and API rate limiting (5 req/min for auth, 60 req/min for API). |
+| **Lateral Movement / Network Subnet Exposure** | Low | High | **High** | **Module C:** Subnet partitioning with Cisco IOS Extended ACL rules restricting traffic between public, app, database, and admin subnets. |
