@@ -20,14 +20,31 @@ Route::middleware(['auth', 'verified'])->group(function () {
         if ($role === 'college-head') {
             return redirect()->route('dashboard.program-chair');
         }
+        if ($role === 'accreditor') {
+            return redirect()->route('submissions.accreditor');
+        }
         return redirect()->route('dashboard.' . $role);
     })->name('dashboard');
+
+    // Accreditor explicit route mapping (no sidebar, no header/footer, loads submission view)
+    Route::get("roles/accreditor/submission", function () {
+        if (auth()->user()->role !== 'accreditor') {
+            abort(403, 'Unauthorized action.');
+        }
+        return view("pages.roles.accreditor.submission");
+    })->name("submissions.accreditor");
+
+    Route::get("roles/accreditor/dashboard", function () {
+        if (auth()->user()->role !== 'accreditor') {
+            abort(403, 'Unauthorized action.');
+        }
+        return redirect()->route('submissions.accreditor');
+    })->name("dashboard.accreditor");
 
     $roles = [
         'system-administrator',
         'iqa-admin',
         'iqa-member',
-        'accreditor',
         'university-administrator',
         'task-force',
         'program-chair',
@@ -97,7 +114,7 @@ if (app()->environment('local')) {
 
     // Handle instant role login
     Route::get('/dev/login/{role}', function ($role) {
-        $email = match($role) {
+        $email = match ($role) {
             'system-administrator' => 'sysadmin@example.com',
             'iqa-admin' => 'iqaadmin@example.com',
             'iqa-member' => 'iqamember@example.com',

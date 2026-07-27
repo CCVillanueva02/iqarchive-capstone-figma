@@ -1,7 +1,7 @@
 <?php
- 
+
 namespace Database\Seeders;
- 
+
 use App\Models\User;
 use App\Models\Role;
 use App\Models\College;
@@ -9,11 +9,11 @@ use App\Models\Program;
 use App\Models\DocumentCategory;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
- 
+
 class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
- 
+
     /**
      * Seed the application's database.
      */
@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
             'college-head' => 'College Head (Dean)',
             'program-chair' => 'BU Program Chair',
         ];
- 
+
         $roles = [];
         foreach ($rolesData as $nameCode => $displayName) {
             $roles[$nameCode] = Role::create([
@@ -38,14 +38,14 @@ class DatabaseSeeder extends Seeder
                 'description' => $displayName,
             ]);
         }
- 
+
         // 2. Seed Colleges
         $collegesData = [
             'CS' => 'BU College of Science',
             'CENG' => 'BU College of Engineering',
             'CAL' => 'BU College of Arts and Letters',
         ];
- 
+
         $colleges = [];
         foreach ($collegesData as $code => $name) {
             $colleges[$code] = College::create([
@@ -53,7 +53,7 @@ class DatabaseSeeder extends Seeder
                 'code' => $code,
             ]);
         }
- 
+
         // 3. Seed Programs
         $programsData = [
             'CS' => [
@@ -66,7 +66,7 @@ class DatabaseSeeder extends Seeder
                 'BSME' => 'BS Mechanical Engineering',
             ],
         ];
- 
+
         $programs = [];
         foreach ($programsData as $collegeCode => $collegePrograms) {
             $college = $colleges[$collegeCode];
@@ -82,7 +82,7 @@ class DatabaseSeeder extends Seeder
         // Seed remaining programs programmatically to reach 126 (matches the Welcome Page)
         // We have 5 programs already seeded (BSCS, BSIT, BSBIO, BSCE, BSME)
         $colIds = array_values($colleges);
-        
+
         // 75 more Baccalaureate (to reach 80 total)
         for ($i = 6; $i <= 80; $i++) {
             $college = $colIds[$i % count($colIds)];
@@ -92,7 +92,7 @@ class DatabaseSeeder extends Seeder
                 'code' => "BSP" . $i,
             ]);
         }
-        
+
         // 39 Master's programs
         for ($i = 1; $i <= 39; $i++) {
             $college = $colIds[$i % count($colIds)];
@@ -102,7 +102,7 @@ class DatabaseSeeder extends Seeder
                 'code' => "MSP" . $i,
             ]);
         }
-        
+
         // 7 Doctoral programs
         for ($i = 1; $i <= 7; $i++) {
             $college = $colIds[$i % count($colIds)];
@@ -112,7 +112,7 @@ class DatabaseSeeder extends Seeder
                 'code' => "PHDP" . $i,
             ]);
         }
-        
+
         // 2 Post Bacc programs
         for ($i = 1; $i <= 2; $i++) {
             $college = $colIds[$i % count($colIds)];
@@ -122,7 +122,7 @@ class DatabaseSeeder extends Seeder
                 'code' => "PBP" . $i,
             ]);
         }
- 
+
         // 4. Seed Document Categories
         $categoriesData = [
             'Faculty Profile' => 'Faculty credentials, curriculum vitae, and loads.',
@@ -131,14 +131,14 @@ class DatabaseSeeder extends Seeder
             'College/Department Budget' => 'Financial allocations and expenditures reports.',
             'Student Performance' => 'Student achievement and grades summaries.',
         ];
- 
+
         foreach ($categoriesData as $name => $desc) {
             DocumentCategory::create([
                 'name' => $name,
                 'description' => $desc,
             ]);
         }
- 
+
         // 5. Seed Users
         $usersToSeed = [
             [
@@ -170,8 +170,8 @@ class DatabaseSeeder extends Seeder
                 'last_name' => 'Accreditor',
                 'email' => 'accreditor@example.com',
                 'role' => 'accreditor',
-                'program' => null,
-                'college' => null,
+                'program' => 'BSCS',
+                'college' => 'CS',
             ],
             [
                 'first_name' => 'BU Executive',
@@ -206,13 +206,13 @@ class DatabaseSeeder extends Seeder
                 'college' => null,
             ],
         ];
- 
+
         $seededUsers = [];
         foreach ($usersToSeed as $userData) {
             $roleId = $roles[$userData['role']]->id;
             $programId = $userData['program'] ? $programs[$userData['program']]->id : null;
             $collegeId = $userData['college'] ? $colleges[$userData['college']]->id : null;
- 
+
             $seededUsers[] = User::factory()->create([
                 'first_name' => $userData['first_name'],
                 'last_name' => $userData['last_name'],
@@ -232,20 +232,20 @@ class DatabaseSeeder extends Seeder
         // Total = 120 accredited/candidate programs
         $allPrograms = Program::all();
         $progIndex = 0;
-        
-        $seedAccreditation = function($levelName, $count, &$progIndex, $allPrograms) {
+
+        $seedAccreditation = function ($levelName, $count, &$progIndex, $allPrograms) {
             for ($i = 1; $i <= $count; $i++) {
                 if ($progIndex >= $allPrograms->count()) break;
-                
+
                 $program = $allPrograms[$progIndex++];
-                
+
                 $inst = \App\Models\Instrument::create([
                     'name' => "AACCUP {$levelName} Criteria for {$program->name}",
                     'code' => "INST-{$program->code}-" . strtoupper(str_replace(' ', '', $levelName)),
                     'level' => $levelName,
                     'description' => "Accreditation guidelines and evaluation areas for {$program->name} level {$levelName}.",
                 ]);
-                
+
                 // Seed a compliance requirement for this program and instrument
                 $status = 'complied';
                 if ($progIndex % 6 === 0) {
@@ -255,7 +255,7 @@ class DatabaseSeeder extends Seeder
                 } elseif ($progIndex % 20 === 0) {
                     $status = 'pending';
                 }
-                
+
                 \App\Models\ComplianceRequirement::create([
                     'instrument_id' => $inst->id,
                     'program_id' => $program->id,
@@ -265,7 +265,7 @@ class DatabaseSeeder extends Seeder
                 ]);
             }
         };
-        
+
         $seedAccreditation('Level IV', 11, $progIndex, $allPrograms);
         $seedAccreditation('Level III', 32, $progIndex, $allPrograms);
         $seedAccreditation('Level II', 35, $progIndex, $allPrograms);
@@ -275,19 +275,19 @@ class DatabaseSeeder extends Seeder
         // 7. Seed Documents & OCR Validations & Reviews & Requests
         $users = User::all();
         $categories = DocumentCategory::all();
-        
+
         for ($i = 1; $i <= 150; $i++) {
             $uploader = $users->random();
             $program = $allPrograms->random();
             $category = $categories->random();
-            
+
             $status = 'approved';
             if ($i <= 8) {
                 $status = 'pending';
             } elseif ($i <= 14) {
                 $status = 'rejected';
             }
-            
+
             $doc = \App\Models\Document::create([
                 'uploaded_by' => $uploader->id,
                 'program_id' => $program->id,
@@ -297,7 +297,7 @@ class DatabaseSeeder extends Seeder
                 'status' => $status,
                 'visibility' => $i % 4 === 0 ? 'public' : 'restricted',
             ]);
-            
+
             // Seed OCR validation record
             $ocrStatus = 'validated';
             if ($status === 'pending') {
@@ -305,14 +305,14 @@ class DatabaseSeeder extends Seeder
             } elseif ($i % 12 === 0) {
                 $ocrStatus = 'failed';
             }
-            
+
             \App\Models\DocumentOCRValidation::create([
                 'document_id' => $doc->id,
                 'validation_status' => $ocrStatus,
                 'validated_at' => $ocrStatus === 'validated' ? now()->subDays(rand(1, 10)) : null,
                 'extracted_data' => "Mock extracted OCR text content for compliance file {$doc->title}.",
             ]);
-            
+
             // Seed review record
             if ($status !== 'pending') {
                 \App\Models\DocumentReview::create([
@@ -323,7 +323,7 @@ class DatabaseSeeder extends Seeder
                     'reviewed_at' => now()->subDays(rand(1, 5)),
                 ]);
             }
-            
+
             // Seed access requests
             if ($i % 8 === 0) {
                 $requester = $users->where('role_id', $roles['accreditor']->id)->first();
@@ -340,16 +340,21 @@ class DatabaseSeeder extends Seeder
                 }
             }
         }
- 
+
         // 8. Seed Audit Logs
         $actions = [
-            'login', 'logout', 'document_upload', 'document_approve', 'document_reject', 'document_delete'
+            'login',
+            'logout',
+            'document_upload',
+            'document_approve',
+            'document_reject',
+            'document_delete'
         ];
- 
+
         foreach (range(1, 25) as $index) {
             $user = $users->random();
             $action = fake()->randomElement($actions);
-            
+
             \App\Models\AuditLog::create([
                 'user_id' => $user->id,
                 'action' => $action,

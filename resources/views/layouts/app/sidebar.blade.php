@@ -12,13 +12,13 @@
     @php
     $role = auth()->user()->role;
     if ($role === 'college-head') {
-        $role = 'program-chair';
+    $role = 'program-chair';
     }
     @endphp
     <!-- Navigation Links -->
     <div class="flex flex-col gap-[6px] flex-1 py-6">
 
-    @if ($role === 'iqa-admin' || $role === 'iqa-member' || $role === 'system-administrator')
+        @if ($role === 'iqa-admin' || $role === 'iqa-member' || $role === 'system-administrator')
         <!-- Dashboard -->
         <a href="{{ route('dashboard.' . $role) }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-sm font-semibold transition-all {{ request()->routeIs('dashboard.' . $role) ? 'bg-white/10 text-white border-l-[#F47920]' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -29,9 +29,9 @@
             </svg>
             <span>Dashboard</span>
         </a>
-    @endif
+        @endif
 
-    @if ($role === 'iqa-admin' || $role === 'iqa-member')
+        @if ($role === 'iqa-admin' || $role === 'iqa-member')
         <!-- Document -->
         <a href="{{ route('documents.' . $role) }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-sm font-semibold transition-all {{ request()->routeIs('documents.' . $role) ? 'bg-white/10 text-white border-l-[#F47920]' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -39,7 +39,9 @@
             </svg>
             <span>Document</span>
         </a>
+        @endif
 
+        @if ($role === 'iqa-admin' || $role === 'iqa-member')
         <!-- Submissions -->
         <a href="{{ route('submissions.' . $role) }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-sm font-semibold transition-all {{ request()->routeIs('submissions.' . $role) ? 'bg-white/10 text-white border-l-[#F47920]' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -48,9 +50,9 @@
             </svg>
             <span>Submissions</span>
         </a>
-    @endif
+        @endif
 
-        
+
 
         @if ($role !== 'iqa-member')
         <!-- Reports / Audit Trail -->
@@ -70,7 +72,7 @@
             <span>{{ $role === 'system-administrator' ? 'Audit Trail' : 'Reports' }}</span>
         </a>
         @endif
-        
+
         @if ($role === 'iqa-admin')
         <!-- Audit Trail (IQA Admin) -->
         <a href="{{ route('audit-trail.iqa-admin') }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-sm font-semibold transition-all {{ request()->routeIs('audit-trail.iqa-admin') ? 'bg-white/10 text-white border-l-[#F47920]' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>

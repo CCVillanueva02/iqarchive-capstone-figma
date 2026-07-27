@@ -12,10 +12,12 @@ test('authenticated users can visit the dashboard', function () {
     $this->actingAs($user);
 
     $response = $this->get(route('dashboard'));
-    
-    $expectedRoute = $user->role === 'iqa-admin' 
-        ? route('dashboard.iqa-admin') 
-        : route('dashboard.' . $user->role);
-        
+
+    $expectedRoute = match ($user->role) {
+        'iqa-admin' => route('dashboard.iqa-admin'),
+        'accreditor' => route('submissions.accreditor'),
+        default => route('dashboard.' . $user->role),
+    };
+
     $response->assertRedirect($expectedRoute);
 });

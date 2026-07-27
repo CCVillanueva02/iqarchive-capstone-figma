@@ -27,14 +27,262 @@ window.documentWorkspace = function() {
                                     systems: [
                                         {
                                             id: 'S.1',
-                                            statement: 'The institution has a clearly defined Vision, Mission, Goals, and Objectives.',
+                                            statement: 'The institution has a system of determining its Vision and Mission.',
                                             documents: [
-                                                { name: 'VMGO Approved Resolution s. 2024', type: 'PDF', size: '1.2 MB', date: '2024-03-15', uploader: 'Dr. Albert Santos', office: 'Office of the President', status: 'Verified', ocrText: 'BOARD RESOLUTION NO. 045, SERIES OF 2024\n\nSUBJECT: APPROVAL OF THE UNIVERSITY VISION, MISSION, GOALS AND OBJECTIVES.' }
+                                                { name: 'VMGO Formulation System Policy', type: 'PDF', size: '1.4 MB', date: '2024-01-10', uploader: 'Maria Reyes', office: 'IQA Central Office', status: 'Verified', ocrText: 'POLICY ON FORMULATION AND REVISION OF VMGO...' }
+                                            ]
+                                        },
+                                        {
+                                            id: 'S.2',
+                                            statement: 'The Vision clearly reflects what the Institution hopes to become in the future.',
+                                            documents: [
+                                                { name: 'Bicol University Vision Statement & Analysis', type: 'PDF', size: '0.8 MB', date: '2024-02-15', uploader: 'Dr. Albert Santos', office: 'Office of the President', status: 'Verified', ocrText: 'VISION STATEMENT OF BICOL UNIVERSITY...' }
+                                            ]
+                                        },
+                                        {
+                                            id: 'S.3',
+                                            statement: 'The Mission clearly reflects the Institution’s legal and other statutory mandates.',
+                                            documents: [
+                                                { name: 'SUC Charter (Republic Act 5521) copy', type: 'PDF', size: '2.1 MB', date: '2024-02-28', uploader: 'Dr. Albert Santos', office: 'Office of the President', status: 'Verified', ocrText: 'REPUBLIC ACT NO. 5521: CHARTER OF BICOL UNIVERSITY...' }
+                                            ]
+                                        },
+                                        {
+                                            id: 'S.4',
+                                            statement: 'The Goals of the academic unit/department are clearly stated and are consistent with the Mission of the Institution.',
+                                            documents: [
+                                                { name: 'College of Science Goals and Alignment Matrix', type: 'PDF', size: '1.1 MB', date: '2024-03-12', uploader: 'Maria Reyes', office: 'College of Science', status: 'Verified', ocrText: 'GOALS OF THE COLLEGE OF SCIENCE...' }
+                                            ]
+                                        },
+                                        {
+                                            id: 'S.5',
+                                            statement: 'The Objectives have the expected outcomes in terms of competencies (skills and knowledge), values and other attributes of the graduates which include the development of:',
+                                            documents: []
+                                        },
+                                        {
+                                            id: 'S.5.1',
+                                            statement: 'technical/pedagogical skills;',
+                                            documents: [
+                                                { name: 'BSCS Program Educational Objectives (PEO) Matrix', type: 'PDF', size: '1.5 MB', date: '2024-04-05', uploader: 'Maria Reyes', office: 'College of Science', status: 'Verified', ocrText: 'TECHNICAL COMPETENCIES AND STUDENT OUTCOMES...' }
+                                            ]
+                                        },
+                                        {
+                                            id: 'S.5.2',
+                                            statement: 'research and extension capabilities;',
+                                            documents: []
+                                        },
+                                        {
+                                            id: 'S.5.3',
+                                            statement: 'students’ own ideas, desirable attitudes and personal discipline;',
+                                            documents: []
+                                        },
+                                        {
+                                            id: 'S.5.4',
+                                            statement: 'moral character;',
+                                            documents: []
+                                        },
+                                        {
+                                            id: 'S.5.5',
+                                            statement: 'critical thinking skills; problem solving and other higher order thinking skills; and',
+                                            documents: []
+                                        },
+                                        {
+                                            id: 'S.5.6',
+                                            statement: 'aesthetic and cultural values.',
+                                            documents: []
+                                        }
+                                    ],
+                                    implementation: [
+                                        {
+                                            id: 'I.1',
+                                            statement: 'The Institution/Academic Unit conducts a review on the statement of the Vision and Mission as well as its goals and program objectives for the approval of authorities concerned.',
+                                            documents: [
+                                                { name: 'BU Academic Council Resolution Approving CS VMGO', type: 'PDF', size: '1.3 MB', date: '2024-03-20', uploader: 'Dr. Roger Cruz', office: 'Office of the President', status: 'Verified', ocrText: 'COUNCIL RESOLUTION NO. 012 APPROVING REVISED VMGO...' }
+                                            ]
+                                        },
+                                        {
+                                            id: 'I.2',
+                                            statement: 'The College/Academic Unit follows a system in formulating goals and the objectives of the program.',
+                                            documents: []
+                                        },
+                                        {
+                                            id: 'I.3',
+                                            statement: 'The College’s/Academic Unit’s faculty, staff, personnel, students and other stakeholders (cooperating agencies, linkages, alumni, industry sector and other concerned groups) participate in the formulation, review and/or revision of the VMGO.',
+                                            documents: [
+                                                { name: 'Minutes of Stakeholder Consultation Assembly', type: 'PDF', size: '1.9 MB', date: '2025-04-18', uploader: 'Prof. Amelia Vega', office: 'College of Science', status: 'Verified', ocrText: 'STAKEHOLDERS VMGO ASSEMBLY MINUTES...' }
                                             ]
                                         }
                                     ],
-                                    implementation: [],
-                                    outcomes: [],
+                                    outcomes: [
+                                        {
+                                            id: 'O.1',
+                                            statement: 'The VMGO are crafted and duly approved by the BOR/BOT.',
+                                            documents: [
+                                                { name: 'Board of Regents Resolution s. 2024 Approval', type: 'PDF', size: '1.2 MB', date: '2024-03-15', uploader: 'Dr. Albert Santos', office: 'Office of the President', status: 'Verified', ocrText: 'BOARD RESOLUTION NO. 045, SERIES OF 2024\n\nSUBJECT: APPROVAL OF THE UNIVERSITY VISION, MISSION, GOALS AND OBJECTIVES.' }
+                                            ]
+                                        }
+                                    ],
+                                    bestpractices: []
+                                }
+                            },
+                            {
+                                id: 'param_p1_b',
+                                code: 'Parameter B',
+                                title: 'Dissemination and Acceptability',
+                                progress: 100,
+                                sections: {
+                                    systems: [
+                                        {
+                                            id: 'S.1',
+                                            statement: 'The VMGO are available on bulletin boards, in catalogs/manuals and are available in other forms of communication media.',
+                                            documents: [
+                                                { name: 'BU Student Catalog and Website VMGO Screen', type: 'PDF', size: '2.5 MB', date: '2025-06-12', uploader: 'Prof. Evelyn Diaz', office: 'Student Affairs Office', status: 'Verified', ocrText: 'STUDENT CATALOG s. 2025-2026...' }
+                                            ]
+                                        }
+                                    ],
+                                    implementation: [
+                                        {
+                                            id: 'I.1',
+                                            statement: 'A system of dissemination and acceptability of the VMGO is enforced.',
+                                            documents: []
+                                        },
+                                        {
+                                            id: 'I.2',
+                                            statement: 'The administrators/faculty attend in in-service seminars and training on the awareness and acceptability of the:',
+                                            documents: []
+                                        },
+                                        {
+                                            id: 'I.2.1',
+                                            statement: 'Vision and Mission of the Institution;',
+                                            documents: []
+                                        },
+                                        {
+                                            id: 'I.2.2',
+                                            statement: 'Goals of the Academic Unit; and',
+                                            documents: []
+                                        },
+                                        {
+                                            id: 'I.2.3',
+                                            statement: 'Objectives of the Program.',
+                                            documents: []
+                                        },
+                                        {
+                                            id: 'I.3',
+                                            statement: 'The formulation/review/revision of the VMGO is participated in by the following:',
+                                            documents: []
+                                        },
+                                        {
+                                            id: 'I.3.1',
+                                            statement: 'administrators;',
+                                            documents: []
+                                        },
+                                        {
+                                            id: 'I.3.2',
+                                            statement: 'faculty;',
+                                            documents: []
+                                        },
+                                        {
+                                            id: 'I.3.3',
+                                            statement: 'staff;',
+                                            documents: []
+                                        },
+                                        {
+                                            id: 'I.3.4',
+                                            statement: 'students; and',
+                                            documents: []
+                                        },
+                                        {
+                                            id: 'I.3.5',
+                                            statement: 'other stakeholders.',
+                                            documents: []
+                                        },
+                                        {
+                                            id: 'I.4',
+                                            statement: 'The faculty and staff perform their jobs/functions in consonance with the VMGO.',
+                                            documents: []
+                                        },
+                                        {
+                                            id: 'I.5',
+                                            statement: 'The VMGO are widely disseminated to the different agencies, institutions, industry sector and the community.',
+                                            documents: [
+                                                { name: 'BU VMGO External Dissemination Activity Report', type: 'PDF', size: '3.4 MB', date: '2025-10-15', uploader: 'Dr. Roger Cruz', office: 'Extension Services Office', status: 'Verified', ocrText: 'BU VMGO PUBLIC DISSEMINATION CAMPAIGN...' }
+                                            ]
+                                        }
+                                    ],
+                                    outcomes: [
+                                        {
+                                            id: 'O.1',
+                                            statement: 'There is full awareness and acceptance of the VMGO by all the administrators, faculty, staff, students, and other stakeholders.',
+                                            documents: []
+                                        },
+                                        {
+                                            id: 'O.2',
+                                            statement: 'There is congruency between actual educational practices and activities with the following:',
+                                            documents: []
+                                        },
+                                        {
+                                            id: 'O.2.1',
+                                            statement: 'Vision and mission of the SUC;',
+                                            documents: [
+                                                { name: 'VMGO Congruency and Integration Audit Report', type: 'PDF', size: '1.7 MB', date: '2026-02-12', uploader: 'Maria Reyes', office: 'IQA Central Office', status: 'Verified', ocrText: 'CONGRUENCY REPORT ON EDUCATIONAL PRACTICES WITH VMGO...' }
+                                            ]
+                                        },
+                                        {
+                                            id: 'O.2.2',
+                                            statement: 'Goals of the College/Academic Unit; and',
+                                            documents: []
+                                        },
+                                        {
+                                            id: 'O.2.3',
+                                            statement: 'Objectives of the Program.',
+                                            documents: []
+                                        },
+                                        {
+                                            id: 'O.3',
+                                            statement: 'The goals and objectives are fully achieved.',
+                                            documents: []
+                                        }
+                                    ],
+                                    bestpractices: []
+                                }
+                            },
+                            {
+                                id: 'param_p1_c',
+                                code: 'Parameter C',
+                                title: 'Relationship of the Goals and Objectives to the Vision and Mission',
+                                progress: 100,
+                                sections: {
+                                    systems: [
+                                        {
+                                            id: 'S.1',
+                                            statement: 'There is congruence between the objectives of the program and the goals of the college.',
+                                            documents: [
+                                                { name: 'BU CS PEO to College Goals Alignment Matrix', type: 'PDF', size: '1.2 MB', date: '2025-02-14', uploader: 'Maria Reyes', office: 'College of Science', status: 'Verified', ocrText: 'ALIGNMENT MATRIX BETWEEN BSCS PEOs AND COLLEGE OF SCIENCE GOALS...' }
+                                            ]
+                                        }
+                                    ],
+                                    implementation: [
+                                        {
+                                            id: 'I.1',
+                                            statement: 'The program objectives are regularly reviewed for compatibility with the mission statement.',
+                                            documents: []
+                                        },
+                                        {
+                                            id: 'I.2',
+                                            statement: 'Activities and instructions are designed to implement the program objectives.',
+                                            documents: [
+                                                { name: 'Syllabus Sample showing VMGO Alignment Integration', type: 'PDF', size: '2.4 MB', date: '2025-09-10', uploader: 'Maria Reyes', office: 'College of Science', status: 'Verified', ocrText: 'COURSE SYLLABUS INTEGRATING VMGO...' }
+                                            ]
+                                        }
+                                    ],
+                                    outcomes: [
+                                        {
+                                            id: 'O.1',
+                                            statement: 'The graduates demonstrate the competencies expected of them in line with the program objectives.',
+                                            documents: [
+                                                { name: 'Tracer Study Report of BSCS Graduates s. 2025', type: 'PDF', size: '3.8 MB', date: '2025-12-05', uploader: 'Maria Reyes', office: 'College of Science', status: 'Verified', ocrText: 'GRADUATE TRACER AND PLACEMENT SUCCESS STUDY...' }
+                                            ]
+                                        }
+                                    ],
                                     bestpractices: []
                                 }
                             }
@@ -86,6 +334,202 @@ window.documentWorkspace = function() {
                                             statement: 'The curriculum is regularly reviewed and updated in consultation with stakeholders.',
                                             documents: [
                                                 { name: 'Minutes of Curriculum Review Committee s. 2025', type: 'PDF', size: '1.6 MB', date: '2025-08-12', uploader: 'Maria Reyes', office: 'College of Science', status: 'Verified', ocrText: 'MINUTES OF THE JOINT CURRICULUM REVIEW ASSEMBLY\n\nDiscussed alignment of BSCS and BSIT program outcomes with AACCUP and CHED standards.' }
+                                            ]
+                                        }
+                                    ],
+                                    implementation: [],
+                                    outcomes: [],
+                                    bestpractices: []
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        id: 'area_p4',
+                        code: 'Area IV',
+                        title: 'Support to Students',
+                        progress: 92,
+                        parameters: [
+                            {
+                                id: 'param_p4_a',
+                                code: 'Parameter A',
+                                title: 'Student Services Program',
+                                progress: 92,
+                                sections: {
+                                    systems: [
+                                        {
+                                            id: 'S.1',
+                                            statement: 'The institution has an active and comprehensive student counseling, guidance, and placement services center.',
+                                            documents: [
+                                                { name: 'Guidance & Counseling Manual of Operations s. 2025', type: 'PDF', size: '1.4 MB', date: '2025-05-18', uploader: 'Prof. Evelyn Diaz', office: 'Student Affairs Office', status: 'Verified', ocrText: 'STUDENT AFFAIRS & GUIDANCE COUNSELING MANUAL\n\nOutline of intake interviews, psychological testing, and placement counseling guides.' }
+                                            ]
+                                        }
+                                    ],
+                                    implementation: [],
+                                    outcomes: [],
+                                    bestpractices: []
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        id: 'area_p5',
+                        code: 'Area V',
+                        title: 'Research',
+                        progress: 75,
+                        parameters: [
+                            {
+                                id: 'param_p5_a',
+                                code: 'Parameter A',
+                                title: 'Research Agenda and Outputs',
+                                progress: 75,
+                                sections: {
+                                    systems: [
+                                        {
+                                            id: 'S.1',
+                                            statement: 'The faculty is engaged in research activities aligned with the university research agenda.',
+                                            documents: [
+                                                { name: 'Faculty Publications & Citations Report 2025', type: 'PDF', size: '3.1 MB', date: '2025-11-20', uploader: 'Dr. Roger Cruz', office: 'Research and Development Office', status: 'Verified', ocrText: 'ANNUAL RESEARCH PRODUCTION REPORT\n\nLists of index-journal publications, citations, and registered patents of faculty members.' }
+                                            ]
+                                        }
+                                    ],
+                                    implementation: [],
+                                    outcomes: [],
+                                    bestpractices: []
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        id: 'area_p6',
+                        code: 'Area VI',
+                        title: 'Extension and Community Involvement',
+                        progress: 80,
+                        parameters: [
+                            {
+                                id: 'param_p6_a',
+                                code: 'Parameter A',
+                                title: 'Extension Service Projects',
+                                progress: 80,
+                                sections: {
+                                    systems: [
+                                        {
+                                            id: 'S.1',
+                                            statement: 'The department implements extension and community service projects aligned with local community needs.',
+                                            documents: [
+                                                { name: 'Barangay Livelihood Training Extension Program Portfolio', type: 'PDF', size: '4.2 MB', date: '2026-01-10', uploader: 'Engr. Sarah Gomez', office: 'Extension Services Division', status: 'Verified', ocrText: 'COMMUNITY LIVELIHOOD SKILLS DEVELOPMENT PORTFOLIO\n\nDetails of IT literacy and computer assembly trainings conducted for local youth groups.' }
+                                            ]
+                                        }
+                                    ],
+                                    implementation: [],
+                                    outcomes: [],
+                                    bestpractices: []
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        id: 'area_p7',
+                        code: 'Area VII',
+                        title: 'Library',
+                        progress: 85,
+                        parameters: [
+                            {
+                                id: 'param_p7_a',
+                                code: 'Parameter A',
+                                title: 'Library Resources and Holdings',
+                                progress: 85,
+                                sections: {
+                                    systems: [
+                                        {
+                                            id: 'S.1',
+                                            statement: 'The library has sufficient and up-to-date book, journal, and e-resource holdings for the program.',
+                                            documents: [
+                                                { name: 'Bicol University Library Holdings Catalog s. 2026', type: 'Excel', size: '1.9 MB', date: '2026-03-02', uploader: 'Librarian Delia Santos', office: 'University Library', status: 'Verified', ocrText: 'LIBRARY ACQUISITIONS & HOLDINGS IN COMPUTER SCIENCE\n\nList of textbooks, electronic subscriptions (IEEE, ACM), and research materials.' }
+                                            ]
+                                        }
+                                    ],
+                                    implementation: [],
+                                    outcomes: [],
+                                    bestpractices: []
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        id: 'area_p8',
+                        code: 'Area VIII',
+                        title: 'Physical Plant and Facilities',
+                        progress: 90,
+                        parameters: [
+                            {
+                                id: 'param_p8_a',
+                                code: 'Parameter A',
+                                title: 'Classrooms and Buildings',
+                                progress: 90,
+                                sections: {
+                                    systems: [
+                                        {
+                                            id: 'S.1',
+                                            statement: 'The physical classrooms, buildings, and building layouts are safe, spacious, and well-maintained.',
+                                            documents: [
+                                                { name: 'CS Building Occupancy & Safety Inspection Report', type: 'PDF', size: '2.8 MB', date: '2025-08-30', uploader: 'Arch. Leo Alba', office: 'Physical Plant Office', status: 'Verified', ocrText: 'CERTIFICATE OF BUILDING SAFETY & OCCUPANCY\n\nCS main building structural clearance, fire safety indicators, and classroom sizes report.' }
+                                            ]
+                                        }
+                                    ],
+                                    implementation: [],
+                                    outcomes: [],
+                                    bestpractices: []
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        id: 'area_p9',
+                        code: 'Area IX',
+                        title: 'Laboratories',
+                        progress: 95,
+                        parameters: [
+                            {
+                                id: 'param_p9_a',
+                                code: 'Parameter A',
+                                title: 'Laboratory Equipment and Software',
+                                progress: 95,
+                                sections: {
+                                    systems: [
+                                        {
+                                            id: 'S.1',
+                                            statement: 'The computer and science laboratories are equipped with industry-standard hardware and software licenses.',
+                                            documents: [
+                                                { name: 'CS Advanced Labs Network & Software Inventory s. 2026', type: 'PDF', size: '1.5 MB', date: '2026-04-12', uploader: 'Maria Reyes', office: 'College of Science', status: 'Verified', ocrText: 'COMPUTER LABORATORY SPECIFICATIONS & INVENTORY\n\nTotal PCs: 120. Intel Core i7, 16GB RAM. Licensed IDEs, MATLAB, and specialized CS compilers.' }
+                                            ]
+                                        }
+                                    ],
+                                    implementation: [],
+                                    outcomes: [],
+                                    bestpractices: []
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        id: 'area_p10',
+                        code: 'Area X',
+                        title: 'Administration',
+                        progress: 88,
+                        parameters: [
+                            {
+                                id: 'param_p10_a',
+                                code: 'Parameter A',
+                                title: 'Administrative Staff and Efficiency',
+                                progress: 88,
+                                sections: {
+                                    systems: [
+                                        {
+                                            id: 'S.1',
+                                            statement: 'The administrative services and supporting personnel perform operations efficiently.',
+                                            documents: [
+                                                { name: 'CS Administration Operations Performance Rating s. 2025', type: 'PDF', size: '1.1 MB', date: '2025-12-15', uploader: 'Prof. Amelia Vega', office: 'IQA Central Office', status: 'Verified', ocrText: 'ANNUAL PERFORMANCE EVALUATION SUMMARY\n\nAdministrative staff operational ratings, client feedback results, and processing time efficiency metrics.' }
                                             ]
                                         }
                                     ],
