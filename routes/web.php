@@ -23,6 +23,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         if ($role === 'accreditor') {
             return redirect()->route('submissions.accreditor');
         }
+        if ($role === 'university-administrator') {
+            return redirect()->route('analytics.university-administrator');
+        }
         return redirect()->route('dashboard.' . $role);
     })->name('dashboard');
 
@@ -41,11 +44,32 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return redirect()->route('submissions.accreditor');
     })->name("dashboard.accreditor");
 
+    // University Administrator explicit route mapping (analytics as landing page)
+    Route::get("roles/university-administrator/analytics", function () {
+        if (auth()->user()->role !== 'university-administrator') {
+            abort(403, 'Unauthorized action.');
+        }
+        return view("pages.roles.university-administrator.analytics");
+    })->name("analytics.university-administrator");
+
+    Route::get("roles/university-administrator/dashboard", function () {
+        if (auth()->user()->role !== 'university-administrator') {
+            abort(403, 'Unauthorized action.');
+        }
+        return redirect()->route('analytics.university-administrator');
+    })->name("dashboard.university-administrator");
+
+    Route::get("roles/university-administrator/reports", function () {
+        if (auth()->user()->role !== 'university-administrator') {
+            abort(403, 'Unauthorized action.');
+        }
+        return view("pages.roles.university-administrator.reports");
+    })->name("reports.university-administrator");
+
     $roles = [
         'system-administrator',
         'iqa-admin',
         'iqa-member',
-        'university-administrator',
         'task-force',
         'program-chair',
     ];

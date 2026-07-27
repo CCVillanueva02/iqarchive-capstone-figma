@@ -16,6 +16,7 @@ test('authenticated users can visit the dashboard', function () {
     $expectedRoute = match ($user->role) {
         'iqa-admin' => route('dashboard.iqa-admin'),
         'accreditor' => route('submissions.accreditor'),
+        'university-administrator' => route('analytics.university-administrator'),
         default => route('dashboard.' . $user->role),
     };
 

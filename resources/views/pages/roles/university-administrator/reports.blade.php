@@ -3,7 +3,7 @@
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
                 <h1 class="text-2xl font-bold text-[#1b355a]">Reports</h1>
-                <p class="text-xs text-zinc-500 mt-1">Workspace: BU Executive Admin</p>
+                <p class="text-xs text-zinc-500 mt-1">Workspace: University Executive</p>
             </div>
         </div>
 
@@ -15,7 +15,7 @@
             </div>
             <flux:heading size="lg" class="font-extrabold text-zinc-900">Welcome, {{ auth()->user()->name }}!</flux:heading>
             <flux:text class="text-sm text-zinc-500 max-w-md">
-                You have accessed the <strong>Reports</strong> workspace for the <strong>BU Executive Admin</strong>. This page is currently under development.
+                You have accessed the <strong>Reports</strong> workspace for the <strong>University Executive</strong>. This page is currently under development.
             </flux:text>
         </div>
     </div>
