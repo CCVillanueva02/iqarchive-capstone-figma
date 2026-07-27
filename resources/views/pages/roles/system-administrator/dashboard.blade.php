@@ -48,7 +48,7 @@
                     <span class="text-3xl font-extrabold text-[#002B61] mt-2">{{ $totalUsers }}</span>
                     <span class="text-[11px] text-zinc-500 mt-1.5 flex items-center gap-2">
                         <span class="inline-block h-2 w-2 rounded-full bg-emerald-500"></span> {{ $activeUsers }} Active
-                        <span class="inline-block h-2 w-2 rounded-full bg-zinc-300"></span> {{ $inactiveUsers }} Inactive
+                        <span class="inline-block h-2 w-2 rounded-full bg-zinc-300"></span> {{ $inactiveUsers }} Deactivated
                     </span>
                 </div>
                 <div class="p-3.5 rounded-xl bg-blue-50 text-blue-600">
@@ -121,7 +121,6 @@
                             <tr class="text-xs font-semibold text-zinc-400 border-b border-zinc-100 pb-2">
                                 <th class="pb-3">User</th>
                                 <th class="pb-3">Action</th>
-                                <th class="pb-3">Target</th>
                                 <th class="pb-3">Timestamp</th>
                             </tr>
                         </thead>
@@ -151,20 +150,13 @@
                                             {{ strtoupper(str_replace('_', ' ', $log->action)) }}
                                         </span>
                                     </td>
-                                    <td class="py-3 font-mono text-[10px] text-zinc-400">
-                                        @if($log->target_type)
-                                            {{ class_basename($log->target_type) }} #{{ $log->target_id }}
-                                        @else
-                                            N/A
-                                        @endif
-                                    </td>
                                     <td class="py-3 text-xs font-medium text-zinc-500">
                                         {{ $log->timestamp->diffForHumans() }}
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="text-center py-8 text-zinc-400 text-sm">
+                                    <td colspan="3" class="text-center py-8 text-zinc-400 text-sm">
                                         No recent audit logs found in the database.
                                     </td>
                                 </tr>
