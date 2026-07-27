@@ -60,6 +60,40 @@
         </a>
         @endif
 
+        @if ($role === 'task-force' || $role === 'program-chair')
+        <!-- Task Force / Program Chair / College Head -->
+        <a href="{{ route('dashboard.' . $role) }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-sm font-semibold transition-all {{ request()->routeIs('dashboard.' . $role) ? 'bg-white/10 text-white border-l-[#F47920]' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="7" height="9"></rect>
+                <rect x="14" y="3" width="7" height="5"></rect>
+                <rect x="14" y="12" width="7" height="9"></rect>
+                <rect x="3" y="16" width="7" height="5"></rect>
+            </svg>
+            <span>Dashboard</span>
+        </a>
+        <a href="{{ route('documents.' . $role) }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-sm font-semibold transition-all {{ request()->routeIs('documents.' . $role) ? 'bg-white/10 text-white border-l-[#F47920]' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+            </svg>
+            <span>Documents</span>
+        </a>
+        <a href="{{ route('submissions.' . $role) }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-sm font-semibold transition-all {{ request()->routeIs('submissions.' . $role) ? 'bg-white/10 text-white border-l-[#F47920]' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            <span>Submissions</span>
+        </a>
+        <a href="{{ route('reports.' . $role) }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-sm font-semibold transition-all {{ request()->routeIs('reports.' . $role) ? 'bg-white/10 text-white border-l-[#F47920]' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="20" x2="18" y2="10"></line>
+                <line x1="12" y1="20" x2="12" y2="4"></line>
+                <line x1="6" y1="20" x2="6" y2="14"></line>
+            </svg>
+            <span>Reports</span>
+        </a>
+        @endif
+
         @if ($role === 'iqa-admin' || $role === 'iqa-member')
         <!-- Document -->
         <a href="{{ route('documents.' . $role) }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-sm font-semibold transition-all {{ request()->routeIs('documents.' . $role) ? 'bg-white/10 text-white border-l-[#F47920]' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
@@ -83,22 +117,14 @@
 
 
 
-        @if ($role !== 'iqa-member' && $role !== 'university-administrator')
-        <!-- Reports / Audit Trail -->
-        <a href="{{ route('reports.' . $role) }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-sm font-semibold transition-all {{ request()->routeIs('reports.' . $role) ? 'bg-white/10 text-white border-l-[#F47920]' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
-            @if($role === 'system-administrator')
+        @if ($role === 'system-administrator')
+        <!-- Audit Trail (System Administrator) -->
+        <a href="{{ route('reports.system-administrator') }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-sm font-semibold transition-all {{ request()->routeIs('reports.system-administrator') ? 'bg-white/10 text-white border-l-[#F47920]' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
                 <polyline points="12 6 12 12 16 14"></polyline>
             </svg>
-            @else
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="18" y1="20" x2="18" y2="10"></line>
-                <line x1="12" y1="20" x2="12" y2="4"></line>
-                <line x1="6" y1="20" x2="6" y2="14"></line>
-            </svg>
-            @endif
-            <span>{{ $role === 'system-administrator' ? 'Audit Trail' : 'Reports' }}</span>
+            <span>Audit Trail</span>
         </a>
         @endif
 

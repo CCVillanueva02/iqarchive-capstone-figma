@@ -10,7 +10,7 @@ $bodyClass = 'min-h-screen bg-[#f4f6fa] antialiased text-zinc-800';
         <main class="w-full min-h-screen bg-[#f4f6fa]">
             {{ $slot }}
         </main>
-    @elseif($role === 'iqa-admin' || $role === 'system-administrator' || $role === 'iqa-member' || $role === 'university-administrator')
+    @elseif(in_array($role, ['iqa-admin', 'system-administrator', 'iqa-member', 'university-administrator', 'task-force', 'program-chair', 'college-head']))
         <x-layouts::app.sidebar>
             @if($role === 'system-administrator')
             <div class="sticky top-0 z-50 bg-emerald-600 border-b border-emerald-700 text-white text-xs font-semibold py-2 px-6 flex items-center justify-between shadow-xs select-none">

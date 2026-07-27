@@ -8,7 +8,7 @@
 
         <div>
             <flux:button variant="primary" style="--color-accent: #F47920; --color-accent-foreground: #ffffff;" class="text-white font-semibold border-none shadow-xs" icon="plus" wire:click="openCreateModal">
-                {{ __('Create Account') }}
+                {{ __('Add User') }}
             </flux:button>
         </div>
     </div>
