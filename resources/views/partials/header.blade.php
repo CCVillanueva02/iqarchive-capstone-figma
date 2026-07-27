@@ -2,7 +2,7 @@
 <header class="w-full bg-[#002B61] text-white shadow-md font-sans">
     <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         <!-- Logo / Brand Section -->
-        <a href="#home" class="flex items-center gap-3 cursor-pointer select-none">
+        <a href="{{ route('home') }}#home" class="flex items-center gap-3 cursor-pointer select-none">
             <img src="/bulogo.png" alt="Bicol University Logo" class="w-9 h-9 object-contain select-none shrink-0" />
             <div>
                 <span class="font-extrabold text-lg tracking-tight block leading-tight">
@@ -16,16 +16,16 @@
 
         <!-- Center Navigation Links -->
         <nav class="hidden md:flex items-center gap-2">
-            <a href="#home" class="bg-white/10 text-white px-3.5 py-1.5 rounded-lg text-xs font-bold transition hover:bg-white/20 select-none">
+            <a href="{{ route('home') }}#home" class="bg-white/10 text-white px-3.5 py-1.5 rounded-lg text-xs font-bold transition hover:bg-white/20 select-none">
                 Home
             </a>
-            <a href="#accreditations" class="text-zinc-200 hover:text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold transition hover:bg-white/5 select-none">
+            <a href="{{ route('home') }}#accreditations" class="text-zinc-200 hover:text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold transition hover:bg-white/5 select-none">
                 Accreditations
             </a>
-            <a href="#faq" class="text-zinc-200 hover:text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold transition hover:bg-white/5 select-none">
+            <a href="{{ route('home') }}#faq" class="text-zinc-200 hover:text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold transition hover:bg-white/5 select-none">
                 FAQ
             </a>
-            <a href="#help-center" class="text-zinc-200 hover:text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold transition hover:bg-white/5 select-none">
+            <a href="{{ route('home') }}#help-center" class="text-zinc-200 hover:text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold transition hover:bg-white/5 select-none">
                 Help Center
             </a>
         </nav>
