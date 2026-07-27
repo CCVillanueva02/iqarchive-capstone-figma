@@ -11,13 +11,13 @@ class AuditTrail extends Component
 {
     use WithPagination;
 
-    public $tab = 'general'; // general, authentication, documents
+    public $tab = 'sessions'; // sessions, accounts, files
     public $search = '';
     public $userId = '';
     public $actionType = '';
 
     protected $queryString = [
-        'tab' => ['except' => 'general'],
+        'tab' => ['except' => 'sessions'],
         'search' => ['except' => ''],
         'userId' => ['except' => ''],
         'actionType' => ['except' => ''],
@@ -59,36 +59,94 @@ class AuditTrail extends Component
 
     public function render()
     {
-        $logs = AuditLog::with('user')
-            ->when($this->tab === 'authentication', function ($query) {
-                $query->whereIn('action', ['login', 'logout']);
-            })
-            ->when($this->tab === 'documents', function ($query) {
-                $query->where('action', 'like', 'document_%');
-            })
-            ->when($this->search, function ($query) {
-                $query->where(function ($q) {
-                    $q->where('action', 'like', '%' . $this->search . '%')
-                      ->orWhere('target_type', 'like', '%' . $this->search . '%')
-                      ->orWhere('target_id', 'like', '%' . $this->search . '%');
-                });
-            })
-            ->when($this->userId, function ($query) {
-                $query->where('user_id', $this->userId);
-            })
-            ->when($this->actionType, function ($query) {
-                $query->where('action', $this->actionType);
-            })
-            ->orderBy('timestamp', 'desc')
-            ->paginate(10);
+        if ($this->tab === 'sessions') {
+            $loginsQuery = AuditLog::where('action', 'login')
+                ->with('user')
+                ->when($this->search, function ($query) {
+                    $query->whereHas('user', function ($q) {
+                        $q->where('first_name', 'like', '%' . $this->search . '%')
+                          ->orWhere('last_name', 'like', '%' . $this->search . '%')
+                          ->orWhere('email', 'like', '%' . $this->search . '%');
+                    });
+                })
+                ->when($this->userId, function ($query) {
+                    $query->where('user_id', $this->userId);
+                })
+                ->orderBy('timestamp', 'desc');
+
+            $logs = $loginsQuery->paginate(10);
+
+            // Pair each login event with its corresponding logout event
+            foreach ($logs as $loginLog) {
+                $nextLoginTimestamp = AuditLog::where('user_id', $loginLog->user_id)
+                    ->where('action', 'login')
+                    ->where('timestamp', '>', $loginLog->timestamp)
+                    ->orderBy('timestamp', 'asc')
+                    ->value('timestamp');
+
+                $logoutQuery = AuditLog::where('user_id', $loginLog->user_id)
+                    ->where('action', 'logout')
+                    ->where('timestamp', '>=', $loginLog->timestamp);
+
+                if ($nextLoginTimestamp) {
+                    $logoutQuery->where('timestamp', '<', $nextLoginTimestamp);
+                }
+
+                $loginLog->logout_log = $logoutQuery->orderBy('timestamp', 'asc')->first();
+            }
+        } elseif ($this->tab === 'accounts') {
+            $logs = AuditLog::with('user')
+                ->whereIn('action', ['CREATE_USER', 'UPDATE_USER', 'DEACTIVATE_USER', 'ACTIVATE_USER', 'account_create', 'account_update', 'password_reset'])
+                ->when($this->search, function ($query) {
+                    $query->where(function ($q) {
+                        $q->where('action', 'like', '%' . $this->search . '%')
+                          ->orWhereHas('user', function ($u) {
+                              $u->where('first_name', 'like', '%' . $this->search . '%')
+                                ->orWhere('last_name', 'like', '%' . $this->search . '%')
+                                ->orWhere('email', 'like', '%' . $this->search . '%');
+                          });
+                    });
+                })
+                ->when($this->userId, function ($query) {
+                    $query->where('user_id', $this->userId);
+                })
+                ->when($this->actionType, function ($query) {
+                    $query->where('action', $this->actionType);
+                })
+                ->orderBy('timestamp', 'desc')
+                ->paginate(10);
+        } else {
+            // File Modifications tab
+            $logs = AuditLog::with('user')
+                ->where('action', 'like', 'document_%')
+                ->when($this->search, function ($query) {
+                    $query->where(function ($q) {
+                        $q->where('action', 'like', '%' . $this->search . '%')
+                          ->orWhereHas('user', function ($u) {
+                              $u->where('first_name', 'like', '%' . $this->search . '%')
+                                ->orWhere('last_name', 'like', '%' . $this->search . '%')
+                                ->orWhere('email', 'like', '%' . $this->search . '%');
+                          });
+                    });
+                })
+                ->when($this->userId, function ($query) {
+                    $query->where('user_id', $this->userId);
+                })
+                ->when($this->actionType, function ($query) {
+                    $query->where('action', $this->actionType);
+                })
+                ->orderBy('timestamp', 'desc')
+                ->paginate(10);
+        }
 
         $users = User::orderBy('first_name')->get();
         
-        // Populate distinct action choices filtered by the active tab category
         $actionsQuery = AuditLog::select('action')->distinct()->orderBy('action');
-        if ($this->tab === 'authentication') {
+        if ($this->tab === 'sessions') {
             $actionsQuery->whereIn('action', ['login', 'logout']);
-        } elseif ($this->tab === 'documents') {
+        } elseif ($this->tab === 'accounts') {
+            $actionsQuery->whereIn('action', ['CREATE_USER', 'UPDATE_USER', 'DEACTIVATE_USER', 'ACTIVATE_USER', 'account_create', 'account_update', 'password_reset']);
+        } else {
             $actionsQuery->where('action', 'like', 'document_%');
         }
         $actions = $actionsQuery->pluck('action');
