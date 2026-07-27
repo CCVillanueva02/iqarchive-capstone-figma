@@ -1,5 +1,5 @@
 <!-- Top Navbar Banner -->
-<header class="w-full bg-[#002B61] text-white shadow-md font-sans">
+<header class="w-full bg-[#002B61] text-white shadow-md font-sans relative">
     <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         <!-- Logo / Brand Section -->
         <a href="{{ route('home') }}#home" class="flex items-center gap-3 cursor-pointer select-none">
@@ -15,8 +15,8 @@
         </a>
 
         <!-- Center Navigation Links -->
-        <nav class="hidden md:flex items-center gap-2">
-            <a href="{{ route('home') }}#home" class="bg-white/10 text-white px-3.5 py-1.5 rounded-lg text-xs font-bold transition hover:bg-white/20 select-none">
+        <nav class="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-2">
+            <a href="#home" class="bg-white/10 text-white px-3.5 py-1.5 rounded-lg text-xs font-bold transition hover:bg-white/20 select-none">
                 Home
             </a>
             <a href="{{ route('home') }}#accreditations" class="text-zinc-200 hover:text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold transition hover:bg-white/5 select-none">
