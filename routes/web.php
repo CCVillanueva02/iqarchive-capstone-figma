@@ -89,10 +89,47 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('accounts.system-administrator');
 });
 
-// Dev helper to switch user role in session
-Route::get('/dev/switch-role/{role}', function ($role) {
-    session(['preview_role' => $role]);
-    return back();
-})->name('dev.switch-role');
+if (app()->environment('local')) {
+    // Render the beautiful dev dashboard
+    Route::get('/dev', function () {
+        return view('dev-login');
+    })->name('dev.index');
 
-require __DIR__.'/settings.php';
+    // Handle instant role login
+    Route::get('/dev/login/{role}', function ($role) {
+        $email = match($role) {
+            'system-administrator' => 'sysadmin@example.com',
+            'iqa-admin' => 'iqaadmin@example.com',
+            'iqa-member' => 'iqamember@example.com',
+            'accreditor' => 'accreditor@example.com',
+            'university-administrator' => 'buadmin@example.com',
+            'task-force' => 'taskforce@example.com',
+            'dean' => 'dean@example.com',
+            'program-chair' => 'chair@example.com',
+            default => abort(404),
+        };
+
+        $user = \App\Models\User::where('email', $email)->first();
+
+        if (!$user) {
+            $user = \App\Models\User::create([
+                'name' => ucwords(str_replace('-', ' ', $role)),
+                'email' => $email,
+                'role' => $role === 'dean' ? 'college-head' : $role,
+                'password' => bcrypt('password'),
+            ]);
+        }
+
+        auth()->login($user);
+
+        return redirect()->route('dashboard');
+    })->name('dev.login');
+
+    // Dev helper to switch user role in session
+    Route::get('/dev/switch-role/{role}', function ($role) {
+        session(['preview_role' => $role]);
+        return back();
+    })->name('dev.switch-role');
+}
+
+require __DIR__ . '/settings.php';
