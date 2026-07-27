@@ -17,58 +17,17 @@
         <!-- Session Status -->
         <x-auth-session-status class="text-center" :status="session('status')" />
 
-        <form method="POST" action="{{ route('login.store') }}" class="flex flex-col gap-6">
-            @csrf
-
-            <!-- Email Address -->
-            <flux:input
-                name="email"
-                :label="__('Email Address')"
-                :value="old('email')"
-                type="email"
-                required
-                autofocus
-                autocomplete="email"
-                placeholder="Enter your email"
-                icon="envelope"
-            />
-
-            <!-- Password -->
-            <div class="flex flex-col gap-2">
-                <flux:input
-                    name="password"
-                    :label="__('Password')"
-                    type="password"
-                    required
-                    autocomplete="current-password"
-                    placeholder="Enter your password"
-                    icon="lock-closed"
-                    viewable
-                />
-
-                @if (Route::has('password.request'))
-                    <div class="flex justify-end mt-1">
-                        <flux:link class="text-sm font-semibold text-blue-600 dark:text-blue-400 hover:underline" :href="route('password.request')" wire:navigate>
-                            {{ __('Forgot Password?') }}
-                        </flux:link>
-                    </div>
-                @endif
+        @if ($errors->any())
+            <div class="p-4 rounded-xl bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900/30 text-xs text-red-600 dark:text-red-400">
+                <ul class="list-disc pl-4 space-y-1">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
             </div>
+        @endif
 
-            <!-- Log In Button -->
-            <flux:button type="submit" variant="primary" style="--color-accent: #F47920; --color-accent-foreground: #ffffff;" class="w-full text-white py-2.5 rounded-lg font-semibold border-none shadow-xs" data-test="login-button">
-                {{ __('Log In') }}
-            </flux:button>
-        </form>
-
-        <div class="relative flex items-center justify-center -mt-2 -mb-2">
-            <div class="absolute inset-0 flex items-center">
-                <div class="w-full border-t border-slate-200 dark:border-stone-850"></div>
-            </div>
-            <span class="relative px-3 bg-white dark:bg-stone-900 text-xs text-slate-400 dark:text-stone-500 uppercase tracking-wider">Or</span>
-        </div>
-
-        <a href="{{ route('auth.google') }}" class="flex items-center justify-center gap-3 w-full px-4 py-2.5 text-sm font-semibold text-stone-700 dark:text-stone-300 bg-white dark:bg-stone-900 border border-slate-200 dark:border-stone-800 rounded-lg shadow-2xs hover:bg-slate-50 dark:hover:bg-stone-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#F47920] transition-all">
+        <a href="{{ route('auth.google') }}" class="flex items-center justify-center gap-3 w-full px-4 py-2.5 text-sm font-semibold text-stone-700 dark:text-stone-300 bg-white dark:bg-stone-900 border border-slate-200 dark:border-stone-800 rounded-lg shadow-2xs hover:bg-slate-50 dark:hover:bg-stone-805 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#F47920] transition-all">
             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
                 <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
@@ -85,17 +44,6 @@
                 {{ __('Contact your IQA Administrator') }}
             </span>
         </div>
-
-        <!-- @if (app()->environment('local'))
-            <div class="mt-2 p-3 bg-orange-50/50 border border-orange-100 rounded-lg dark:bg-orange-950/10 dark:border-orange-900/30 text-xs">
-                <div class="font-bold text-orange-600 dark:text-orange-400 mb-1">Local Dev Credentials (Password: <span class="font-mono font-bold select-all">password</span>):</div>
-                <div class="text-zinc-600 dark:text-zinc-400 space-y-0.5">
-                    <div>• IQA Admin: <span class="font-mono select-all font-semibold">iqaadmin@example.com</span></div>
-                    <div>• Accreditor: <span class="font-mono select-all font-semibold">accreditor@example.com</span></div>
-                    <div>• Sysadmin: <span class="font-mono select-all font-semibold">sysadmin@example.com</span></div>
-                </div>
-            </div>
-        @endif -->
     </div>
 
     <!-- Copyright Footer -->
