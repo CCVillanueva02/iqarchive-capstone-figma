@@ -15,7 +15,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         $role = auth()->user()->role;
         if ($role === 'iqa-admin') {
-            return redirect()->route('documents.iqa-admin');
+            return redirect()->route('dashboard.iqa-admin');
         }
         if ($role === 'college-head') {
             return redirect()->route('dashboard.program-chair');
