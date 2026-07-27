@@ -2,8 +2,8 @@
     <!-- Header -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-            <h1 class="text-2xl font-bold text-[#1b355a]">Accounts</h1>
-            <p class="text-xs text-zinc-500 mt-1">Workspace: System Administrator &bull; User Accounts</p>
+            <h1 class="text-2xl font-bold text-[#1b355a]">Accounts Management</h1>
+            <p class="text-xs text-zinc-500 mt-1">Workspace: System Administrator &bull; Pre-register institutional identities &amp; roles</p>
         </div>
 
         <div>
@@ -17,12 +17,15 @@
     <div class="bg-white border border-slate-200/60 rounded-2xl shadow-3xs p-6 flex flex-col gap-4">
         <!-- Top Row: Status Filter Segment -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
-            <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl self-start">
+            <div class="flex flex-wrap items-center gap-1.5 bg-slate-100 p-1 rounded-xl self-start">
                 <button type="button" wire:click="$set('statusFilter', '')" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all {{ $statusFilter === '' ? 'bg-white text-[#1b355a] shadow-xs' : 'text-slate-500 hover:text-slate-700' }}">
                     {{ __('All Accounts') }} <span class="ml-1.5 px-1.5 py-0.5 rounded-full bg-slate-200/60 text-slate-700 text-[10px] font-bold">{{ $totalCount }}</span>
                 </button>
                 <button type="button" wire:click="$set('statusFilter', 'active')" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all {{ $statusFilter === 'active' ? 'bg-[#1b355a] text-white shadow-xs' : 'text-slate-500 hover:text-slate-700' }}">
                     {{ __('Active') }} <span class="ml-1.5 px-1.5 py-0.5 rounded-full bg-white/10 text-white/80 text-[10px] font-bold">{{ $activeCount }}</span>
+                </button>
+                <button type="button" wire:click="$set('statusFilter', 'pending_activation')" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all {{ $statusFilter === 'pending_activation' ? 'bg-amber-500 text-white shadow-xs' : 'text-slate-500 hover:text-slate-700' }}">
+                    {{ __('Pending Activation') }} <span class="ml-1.5 px-1.5 py-0.5 rounded-full bg-white/10 text-white/80 text-[10px] font-bold">{{ $pendingCount }}</span>
                 </button>
                 <button type="button" wire:click="$set('statusFilter', 'inactive')" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all {{ $statusFilter === 'inactive' ? 'bg-[#F47920] text-white shadow-xs' : 'text-slate-500 hover:text-slate-700' }}">
                     {{ __('Deactivated') }} <span class="ml-1.5 px-1.5 py-0.5 rounded-full bg-white/10 text-white/80 text-[10px] font-bold">{{ $inactiveCount }}</span>
@@ -59,11 +62,11 @@
                 <thead>
                     <tr class="border-b border-slate-100 bg-slate-50/70 text-slate-500 font-semibold">
                         <th class="p-4 pl-6">Name</th>
-                        <th class="p-4">Email</th>
+                        <th class="p-4">Institutional Email</th>
                         <th class="p-4">Role</th>
-                        <th class="p-4">Department / College</th>
+                        <th class="p-4">College / Department</th>
                         <th class="p-4">Status</th>
-                        <th class="p-4">Last Edited</th>
+                        <th class="p-4">Registered Date</th>
                         <th class="p-4 pr-6 text-right">Actions</th>
                     </tr>
                 </thead>
@@ -76,7 +79,12 @@
                                 <div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 text-[#586A85] font-bold flex items-center justify-center text-xs shrink-0 select-none">
                                     {{ $user->initials() }}
                                 </div>
-                                <span class="text-[#1b355a] font-semibold text-xs">{{ $user->name }}</span>
+                                <div class="flex flex-col">
+                                    <span class="text-[#1b355a] font-semibold text-xs">{{ $user->name }}</span>
+                                    @if($user->status === 'pending_activation')
+                                    <span class="text-[10px] text-amber-600 font-medium">Awaiting first sign-in</span>
+                                    @endif
+                                </div>
                             </div>
                         </td>
 
@@ -104,49 +112,45 @@
                         <!-- Status -->
                         <td class="p-4">
                             @if($user->status === 'active')
-                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-800 border border-emerald-100">
-                                    <span class="w-1 h-1 rounded-full bg-emerald-600 mr-1"></span>
-                                    {{ __('Active') }}
-                                </span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                Active
+                            </span>
+                            @elseif($user->status === 'pending_activation')
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-300">
+                                Pending Activation
+                            </span>
                             @else
-                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-red-50 text-red-800 border border-red-100">
-                                    <span class="w-1 h-1 rounded-full bg-red-600 mr-1"></span>
-                                    {{ __('Deactivated') }}
-                                </span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-200">
+                                Deactivated
+                            </span>
                             @endif
                         </td>
 
-                        <!-- Last Edited -->
-                        <td class="p-4 text-zinc-500">
-                            @if($user->updated_at)
-                                <div class="flex flex-col">
-                                    <span class="font-medium text-slate-700">{{ $user->updated_at->diffForHumans() }}</span>
-                                    <span class="text-[9px] text-zinc-400 font-mono">{{ $user->updated_at->format('M d, Y h:i A') }}</span>
-                                </div>
-                            @else
-                                <span class="text-zinc-400">—</span>
-                            @endif
+                        <!-- Created At -->
+                        <td class="p-4 text-zinc-500 text-[11px]">
+                            {{ $user->created_at ? $user->created_at->format('M d, Y') : '—' }}
                         </td>
 
                         <!-- Actions -->
-                        <td class="p-4 pr-6 text-right space-x-1">
-                            <flux:button variant="ghost" size="sm" icon="pencil" wire:click="openEditModal({{ $user->id }})" class="cursor-pointer text-slate-500 hover:text-blue-600" />
-                            @if($user->status === 'active')
-                                <flux:button variant="ghost" size="sm" icon="power" wire:click="openDeleteModal({{ $user->id }})" class="cursor-pointer text-amber-500 hover:text-amber-600 hover:bg-amber-50" title="Deactivate Account" />
-                            @else
-                                <flux:button variant="ghost" size="sm" icon="power" wire:click="openDeleteModal({{ $user->id }})" class="cursor-pointer text-emerald-500 hover:text-emerald-600 hover:bg-emerald-50" title="Activate Account" />
-                            @endif
+                        <td class="p-4 pr-6 text-right">
+                            <div class="flex items-center justify-end gap-2">
+                                <flux:button variant="ghost" size="sm" icon="pencil-square" wire:click="openEditModal({{ $user->id }})" title="Edit Account" />
+                                <flux:button 
+                                    variant="ghost" 
+                                    size="sm" 
+                                    icon="{{ $user->status === 'active' || $user->status === 'pending_activation' ? 'no-symbol' : 'check-circle' }}" 
+                                    class="{{ $user->status === 'active' || $user->status === 'pending_activation' ? 'text-red-500 hover:text-red-700' : 'text-emerald-600 hover:text-emerald-700' }}"
+                                    wire:click="openDeleteModal({{ $user->id }})" 
+                                    title="{{ $user->status === 'active' || $user->status === 'pending_activation' ? 'Deactivate Account' : 'Activate Account' }}" 
+                                />
+                            </div>
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="7" class="p-12 text-center text-zinc-400">
-                            <div class="flex flex-col items-center justify-center gap-3">
-                                <div class="w-12 h-12 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-zinc-400">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.109A11.386 11.386 0 0110.089 20M3 11.627a1.018 1.018 0 01.832-.374h.012c.42 0 .783.277.935.671.218.567.49 1.107.809 1.612.336.533.155 1.236-.374 1.56-.527.323-1.224.162-1.56-.362a11.36 11.36 0 01-.659-1.807A1.018 1.018 0 013 11.627zm14.89-.374a1.019 1.019 0 01.828.374c.06.082.109.167.148.256.222.508.417 1.04.58 1.593.18.614-.155 1.258-.756 1.432-.6.174-1.24-.173-1.428-.78a11.352 11.352 0 00-.472-1.392 1.014 1.014 0 01.1-.983 1.019 1.019 0 01.828-.374h-.028z" />
-                                    </svg>
-                                </div>
+                        <td colspan="7" class="p-8 text-center text-zinc-400">
+                            <div class="flex flex-col items-center gap-2">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
                                 <p class="font-medium text-sm">No accounts found</p>
                                 <p class="text-xs text-zinc-500">Try adjusting your filters or search terms.</p>
                             </div>
@@ -165,45 +169,83 @@
         @endif
     </div>
 
-    <!-- Create User Account Modal -->
+    <!-- 3.1 PRE-REGISTRATION MODAL: Add / Pre-Register User -->
     <flux:modal wire:model="showCreateModal" class="max-w-md md:min-w-md" @close="closeCreateModal">
         <form wire:submit="createAccount" class="space-y-6">
             <div>
-                <flux:heading size="lg">{{ __('Create Account') }}</flux:heading>
-                <flux:subheading>{{ __('Fill in details to create a new active user account.') }}</flux:subheading>
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-blue-50 text-[#1b355a] flex items-center justify-center font-bold">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+                        </svg>
+                    </div>
+                    <flux:heading size="lg">{{ __('Pre-Register User') }}</flux:heading>
+                </div>
+                <flux:subheading class="mt-1 text-xs text-slate-500">
+                    {{ __('Pre-registers institutional identity and role assignment. Account authentication is completed by the user via Google Workspace.') }}
+                </flux:subheading>
             </div>
 
             <div class="space-y-4">
-                <flux:input wire:model="first_name" :label="__('First Name')" required placeholder="Enter first name" />
-                <flux:input wire:model="middle_name" :label="__('Middle Name')" placeholder="Enter middle name (optional)" />
-                <flux:input wire:model="last_name" :label="__('Last Name')" required placeholder="Enter last name" />
-                <flux:input wire:model="email" :label="__('Email Address')" type="email" required placeholder="Enter email address" />
-                <flux:input wire:model="password" :label="__('Temporary Password')" type="password" required placeholder="Enter temp password" viewable />
+                <!-- 1. Institutional Email -->
+                <div>
+                    <flux:input 
+                        wire:model="email" 
+                        :label="__('Institutional Email')" 
+                        type="email" 
+                        required 
+                        placeholder="user@bicol-u.edu.ph" 
+                    />
+                    <p class="text-[11px] text-slate-400 mt-1">Must match official Google Workspace domain (@bicol-u.edu.ph).</p>
+                    @error('email')
+                        <p class="text-xs font-semibold text-red-600 mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
                 
-                <flux:select wire:model.live="role_id" :label="__('Role')" required placeholder="Select a role">
-                    @foreach($roles as $role)
-                        <flux:select.option value="{{ $role->id }}">{{ $role->description }}</flux:select.option>
-                    @endforeach
-                </flux:select>
+                <!-- 2. Role Selector -->
+                <div>
+                    <flux:select wire:model.live="role_id" :label="__('Role')" required placeholder="Select a role">
+                        <flux:select.option value="">Select a role</flux:select.option>
+                        @foreach($roles as $role)
+                            <flux:select.option value="{{ $role->id }}">{{ $role->description }}</flux:select.option>
+                        @endforeach
+                    </flux:select>
+                    @error('role_id')
+                        <p class="text-xs font-semibold text-red-600 mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
 
-                <flux:select wire:model.live="college_id" :label="__('College (Affiliated)')" placeholder="None (Optional)">
-                    <flux:select.option value="">None (Optional)</flux:select.option>
-                    @foreach($colleges as $college)
-                        <flux:select.option value="{{ $college->id }}">{{ $college->name }}</flux:select.option>
-                    @endforeach
-                </flux:select>
+                <!-- 3. College / Department (Conditional) -->
+                <div>
+                    <flux:select wire:model.live="college_id" :label="__('College / Department')" placeholder="Select College / Department">
+                        <flux:select.option value="">Select College / Department</flux:select.option>
+                        @foreach($colleges as $college)
+                            <flux:select.option value="{{ $college->id }}">{{ $college->name }} ({{ $college->code }})</flux:select.option>
+                        @endforeach
+                    </flux:select>
+                    <p class="text-[11px] text-slate-400 mt-1">Required for College/Dept Head, Program Chair, and IQA Members.</p>
+                    @error('college_id')
+                        <p class="text-xs font-semibold text-red-600 mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
 
-                <flux:select wire:model="program_id" :label="__('Program (Affiliated)')" placeholder="None (Optional)" :disabled="empty($college_id)">
-                    <flux:select.option value="">None (Optional)</flux:select.option>
-                    @foreach($programs as $program)
-                        <flux:select.option value="{{ $program->id }}">{{ $program->name }}</flux:select.option>
-                    @endforeach
-                </flux:select>
+                <!-- Program (Optional) -->
+                <div>
+                    <flux:select wire:model="program_id" :label="__('Program (Optional)')" placeholder="None (Optional)" :disabled="empty($college_id)">
+                        <flux:select.option value="">None (Optional)</flux:select.option>
+                        @foreach($programs as $program)
+                            <flux:select.option value="{{ $program->id }}">{{ $program->name }} ({{ $program->code }})</flux:select.option>
+                        @endforeach
+                    </flux:select>
+                </div>
+
             </div>
 
-            <div class="flex gap-3 justify-end">
+            <div class="flex gap-3 justify-end pt-2 border-t border-slate-100">
                 <flux:button variant="outline" wire:click="closeCreateModal">{{ __('Cancel') }}</flux:button>
-                <flux:button type="submit" variant="primary" style="--color-accent: #F47920; --color-accent-foreground: #ffffff;" class="text-white font-semibold border-none shadow-xs">{{ __('Create') }}</flux:button>
+                <flux:button type="submit" variant="primary" style="--color-accent: #F47920; --color-accent-foreground: #ffffff;" class="text-white font-semibold border-none shadow-xs">
+                    {{ __('Pre-Register User') }}
+                </flux:button>
             </div>
         </form>
     </flux:modal>
@@ -212,39 +254,58 @@
     <flux:modal wire:model="showEditModal" class="max-w-md md:min-w-md" @close="closeEditModal">
         <form wire:submit="updateAccount" class="space-y-6">
             <div>
-                <flux:heading size="lg">{{ __('Edit Account') }}</flux:heading>
-                <flux:subheading>{{ __('Modify details of the user account.') }}</flux:subheading>
+                <flux:heading size="lg">{{ __('Edit User Account') }}</flux:heading>
+                <flux:subheading class="mt-1 text-xs text-slate-500">{{ __('Modify role and affiliation assignments for this user.') }}</flux:subheading>
             </div>
 
             <div class="space-y-4">
-                <flux:input wire:model="first_name" :label="__('First Name')" required placeholder="Enter first name" />
-                <flux:input wire:model="middle_name" :label="__('Middle Name')" placeholder="Enter middle name (optional)" />
-                <flux:input wire:model="last_name" :label="__('Last Name')" required placeholder="Enter last name" />
-                <flux:input wire:model="email" :label="__('Email Address')" type="email" required placeholder="Enter email address" />
-                <flux:input wire:model="password" :label="__('New Password')" type="password" placeholder="Leave blank to keep unchanged" viewable />
+                <div>
+                    <flux:input 
+                        wire:model="email" 
+                        :label="__('Institutional Email Address')" 
+                        type="email" 
+                        required 
+                        placeholder="user@bicol-u.edu.ph" 
+                    />
+                    @error('email')
+                        <p class="text-xs font-semibold text-red-600 mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
                 
-                <flux:select wire:model.live="role_id" :label="__('Role')" required placeholder="Select a role">
-                    @foreach($roles as $role)
-                        <flux:select.option value="{{ $role->id }}">{{ $role->description }}</flux:select.option>
-                    @endforeach
-                </flux:select>
+                <div>
+                    <flux:select wire:model.live="role_id" :label="__('Role')" required placeholder="Select a role">
+                        @foreach($roles as $role)
+                            <flux:select.option value="{{ $role->id }}">{{ $role->description }}</flux:select.option>
+                        @endforeach
+                    </flux:select>
+                    @error('role_id')
+                        <p class="text-xs font-semibold text-red-600 mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
 
-                <flux:select wire:model.live="college_id" :label="__('College (Affiliated)')" placeholder="None (Optional)">
-                    <flux:select.option value="">None (Optional)</flux:select.option>
-                    @foreach($colleges as $college)
-                        <flux:select.option value="{{ $college->id }}">{{ $college->name }}</flux:select.option>
-                    @endforeach
-                </flux:select>
+                <div>
+                    <flux:select wire:model.live="college_id" :label="__('College / Department')" placeholder="Select College / Department">
+                        <flux:select.option value="">Select College / Department</flux:select.option>
+                        @foreach($colleges as $college)
+                            <flux:select.option value="{{ $college->id }}">{{ $college->name }} ({{ $college->code }})</flux:select.option>
+                        @endforeach
+                    </flux:select>
+                    @error('college_id')
+                        <p class="text-xs font-semibold text-red-600 mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
 
-                <flux:select wire:model="program_id" :label="__('Program (Affiliated)')" placeholder="None (Optional)" :disabled="empty($college_id)">
-                    <flux:select.option value="">None (Optional)</flux:select.option>
-                    @foreach($programs as $program)
-                        <flux:select.option value="{{ $program->id }}">{{ $program->name }}</flux:select.option>
-                    @endforeach
-                </flux:select>
+                <div>
+                    <flux:select wire:model="program_id" :label="__('Program (Optional)')" placeholder="None (Optional)" :disabled="empty($college_id)">
+                        <flux:select.option value="">None (Optional)</flux:select.option>
+                        @foreach($programs as $program)
+                            <flux:select.option value="{{ $program->id }}">{{ $program->name }} ({{ $program->code }})</flux:select.option>
+                        @endforeach
+                    </flux:select>
+                </div>
             </div>
 
-            <div class="flex gap-3 justify-end">
+            <div class="flex gap-3 justify-end pt-2 border-t border-slate-100">
                 <flux:button variant="outline" wire:click="closeEditModal">{{ __('Cancel') }}</flux:button>
                 <flux:button type="submit" variant="primary" style="--color-accent: #F47920; --color-accent-foreground: #ffffff;" class="text-white font-semibold border-none shadow-xs">{{ __('Save Changes') }}</flux:button>
             </div>
@@ -256,19 +317,19 @@
         <div class="space-y-6">
             <div>
                 <flux:heading size="lg">
-                    {{ $targetUserStatus === 'active' ? __('Deactivate Account') : __('Activate Account') }}
+                    {{ $targetUserStatus === 'active' || $targetUserStatus === 'pending_activation' ? __('Deactivate Account') : __('Activate Account') }}
                 </flux:heading>
-                <flux:subheading>
-                    {{ $targetUserStatus === 'active' 
-                        ? __('Are you sure you want to deactivate this account? Deactivating will hide the account from active views, but preserves the upload history.') 
-                        : __('Are you sure you want to reactivate this account? Reactivating will enable the user to log back in and collaborate.') 
+                <flux:subheading class="mt-1 text-xs text-slate-500">
+                    {{ $targetUserStatus === 'active' || $targetUserStatus === 'pending_activation'
+                        ? __('Are you sure you want to deactivate this account? Deactivating preserves referential integrity and historical document logs.') 
+                        : __('Are you sure you want to reactivate this account? Reactivating enables the user to log back in via Google Workspace.') 
                     }}
                 </flux:subheading>
             </div>
 
             <div class="flex gap-3 justify-end">
                 <flux:button variant="outline" wire:click="closeDeleteModal">{{ __('Cancel') }}</flux:button>
-                @if($targetUserStatus === 'active')
+                @if($targetUserStatus === 'active' || $targetUserStatus === 'pending_activation')
                     <flux:button type="button" variant="danger" wire:click="toggleAccountStatus">{{ __('Deactivate Account') }}</flux:button>
                 @else
                     <flux:button type="button" variant="primary" style="--color-accent: #10b981; --color-accent-foreground: #ffffff;" class="text-white border-none shadow-xs" wire:click="toggleAccountStatus">{{ __('Activate Account') }}</flux:button>

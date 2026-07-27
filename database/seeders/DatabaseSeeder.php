@@ -205,6 +205,86 @@ class DatabaseSeeder extends Seeder
                 'program' => 'BSCS',
                 'college' => null,
             ],
+            [
+                'first_name' => 'Maria',
+                'last_name' => 'Santos',
+                'email' => 'msantos@example.com',
+                'role' => 'task-force',
+                'program' => 'BSCS',
+                'college' => 'CS',
+            ],
+            [
+                'first_name' => 'Juan',
+                'last_name' => 'Dela Cruz',
+                'email' => 'jdelacruz@example.com',
+                'role' => 'task-force',
+                'program' => 'BSIT',
+                'college' => 'CS',
+            ],
+            [
+                'first_name' => 'Dr. Aris',
+                'last_name' => 'Ordoñez',
+                'email' => 'aordonez@example.com',
+                'role' => 'program-chair',
+                'program' => 'BSIT',
+                'college' => 'CS',
+            ],
+            [
+                'first_name' => 'Prof. Elena',
+                'last_name' => 'Reyes',
+                'email' => 'ereyes@example.com',
+                'role' => 'task-force',
+                'program' => 'BSBIO',
+                'college' => 'CS',
+            ],
+            [
+                'first_name' => 'Dr. Carlos',
+                'last_name' => 'Mendoza',
+                'email' => 'cmendoza@example.com',
+                'role' => 'college-head',
+                'program' => null,
+                'college' => 'CENG',
+            ],
+            [
+                'first_name' => 'Engr. Rob',
+                'last_name' => 'Alcantara',
+                'email' => 'ralcantara@example.com',
+                'role' => 'program-chair',
+                'program' => 'BSCE',
+                'college' => 'CENG',
+            ],
+            [
+                'first_name' => 'Engr. Sarah',
+                'last_name' => 'Gomez',
+                'email' => 'sgomez@example.com',
+                'role' => 'task-force',
+                'program' => 'BSCE',
+                'college' => 'CENG',
+            ],
+            [
+                'first_name' => 'Engr. Mark',
+                'last_name' => 'Torres',
+                'email' => 'mtorres@example.com',
+                'role' => 'task-force',
+                'program' => 'BSME',
+                'college' => 'CENG',
+            ],
+            [
+                'first_name' => 'Prof. Grace',
+                'last_name' => 'Villanueva',
+                'email' => 'gvillanueva@example.com',
+                'role' => 'iqa-member',
+                'program' => null,
+                'college' => 'CS',
+            ],
+            [
+                'first_name' => 'Dr. Ramon',
+                'last_name' => 'Bautista',
+                'email' => 'rbautista@example.com',
+                'role' => 'accreditor',
+                'program' => 'BSCS',
+                'college' => 'CS',
+            ],
         ];
 
         $seededUsers = [];
@@ -361,6 +441,65 @@ class DatabaseSeeder extends Seeder
                 'target_type' => str_contains($action, 'document') ? \App\Models\Document::class : \App\Models\User::class,
                 'target_id' => fake()->numberBetween(1, 50),
                 'timestamp' => now()->subMinutes(fake()->numberBetween(1, 10000)),
+            ]);
+        }
+
+        // 9. Seed Task Forces
+        $csCollege = $colleges['CS'] ?? College::first();
+        $cengCollege = $colleges['CENG'] ?? College::skip(1)->first();
+        $adminUser = $users->where('role_id', $roles['iqa-admin']->id)->first() ?? $users->first();
+
+        $tf1 = \App\Models\TaskForce::create([
+            'name' => 'BSCS AACCUP Level III Accreditation Task Force',
+            'college_id' => $csCollege->id,
+            'program_id' => $programs['BSCS']->id ?? null,
+            'purpose' => 'Responsible for assembling Area I to Area X compliance evidence folders for BSCS Level III Re-accreditation evaluation.',
+            'status' => 'active',
+            'created_by' => $adminUser->id,
+        ]);
+
+        $tf2 = \App\Models\TaskForce::create([
+            'name' => 'College of Engineering Quality Assurance Committee',
+            'college_id' => $cengCollege->id,
+            'purpose' => 'Conduct quarterly internal quality audits, review syllabus outcomes, and monitor BSCE & BSME instrument compliance.',
+            'status' => 'active',
+            'created_by' => $adminUser->id,
+        ]);
+
+        $tf3 = \App\Models\TaskForce::create([
+            'name' => 'Institutional Vision & Mission Review Committee',
+            'college_id' => $csCollege->id,
+            'purpose' => 'Evaluate stakeholder alignment matrix for BU College of Science strategic goals.',
+            'status' => 'completed',
+            'created_by' => $adminUser->id,
+        ]);
+
+        // Attach members
+        $memberUsers = $users->take(4);
+        foreach ($memberUsers as $mUser) {
+            \App\Models\TaskForceMember::create([
+                'task_force_id' => $tf1->id,
+                'user_id' => $mUser->id,
+                'role_in_team' => 'member',
+                'assigned_at' => now()->subDays(10),
+            ]);
+        }
+
+        foreach ($users->skip(2)->take(3) as $mUser) {
+            \App\Models\TaskForceMember::create([
+                'task_force_id' => $tf2->id,
+                'user_id' => $mUser->id,
+                'role_in_team' => 'member',
+                'assigned_at' => now()->subDays(5),
+            ]);
+        }
+
+        foreach ($users->take(2) as $mUser) {
+            \App\Models\TaskForceMember::create([
+                'task_force_id' => $tf3->id,
+                'user_id' => $mUser->id,
+                'role_in_team' => 'member',
+                'assigned_at' => now()->subDays(20),
             ]);
         }
     }

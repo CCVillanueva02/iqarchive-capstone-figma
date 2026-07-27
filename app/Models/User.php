@@ -115,6 +115,13 @@ class User extends Authenticatable implements PasskeyUser
         return $this->hasMany(TaskForceAssignment::class);
     }
 
+    public function taskForces()
+    {
+        return $this->belongsToMany(TaskForce::class, 'task_force_members')
+            ->withPivot(['role_in_team', 'assigned_at'])
+            ->withTimestamps();
+    }
+
     public function notifications()
     {
         return $this->hasMany(Notification::class);

@@ -46,9 +46,17 @@ class GoogleAuthController extends Controller
             ->first();
 
         if ($user) {
-            // Update google_id if it wasn't linked yet
+            $updates = [];
             if (!$user->google_id) {
-                $user->update(['google_id' => $googleUser->getId()]);
+                $updates['google_id'] = $googleUser->getId();
+            }
+            if ($user->status === 'pending_activation') {
+                $updates['status'] = 'active';
+                $updates['name'] = $googleUser->getName();
+                $updates['email_verified_at'] = now();
+            }
+            if (!empty($updates)) {
+                $user->update($updates);
             }
         } else {
             // Auto-register a new user with a default role
@@ -58,6 +66,7 @@ class GoogleAuthController extends Controller
                 'google_id' => $googleUser->getId(),
                 'password' => null, // No password needed for OAuth-only users
                 'role' => 'task-force', // Default role for newly registered users
+                'status' => 'active',
             ]);
         }
 

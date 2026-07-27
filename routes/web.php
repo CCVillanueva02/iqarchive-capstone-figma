@@ -128,6 +128,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('roles/system-administrator/accounts', \App\Livewire\SystemAdministrator\Accounts::class)
         ->name('accounts.system-administrator');
+
+    // Task Force Management Overview & Create Modal (Accessible to authenticated roles)
+    Route::get('task-forces', \App\Livewire\TaskForce\TaskForceOverview::class)
+        ->name('task-forces.index');
 });
 
 if (app()->environment('local')) {
