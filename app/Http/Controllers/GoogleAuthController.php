@@ -34,7 +34,15 @@ class GoogleAuthController extends Controller
      */
     public function redirectToGoogle()
     {
-        return $this->getGoogleDriver()->redirect();
+        $allowedDomain = env('ALLOWED_EMAIL_DOMAINS', 'bicol-u.edu.ph');
+        $driver = $this->getGoogleDriver();
+
+        if ($allowedDomain && $allowedDomain !== '*') {
+            $firstDomain = trim(explode(',', $allowedDomain)[0]);
+            $driver->with(['hd' => $firstDomain]);
+        }
+
+        return $driver->redirect();
     }
 
     /**
