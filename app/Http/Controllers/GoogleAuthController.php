@@ -2,19 +2,39 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AuditLog;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 
 class GoogleAuthController extends Controller
 {
     /**
+     * Get configured Socialite Google driver.
+     */
+    protected function getGoogleDriver()
+    {
+        $driver = Socialite::driver('google');
+
+        if (app()->environment('local')) {
+            $driver->setHttpClient(new \GuzzleHttp\Client([
+                'verify' => false,
+                'timeout' => 15,
+            ]));
+        }
+
+        return $driver;
+    }
+
+    /**
      * Redirect the user to the Google authentication page.
      */
     public function redirectToGoogle()
     {
-        return Socialite::driver('google')->redirect();
+        return $this->getGoogleDriver()->redirect();
     }
 
     /**
@@ -23,21 +43,42 @@ class GoogleAuthController extends Controller
     public function handleGoogleCallback()
     {
         try {
-            $googleUser = Socialite::driver('google')->user();
+            $googleUser = $this->getGoogleDriver()->user();
         } catch (\Exception $e) {
-            return redirect()->route('login')->withErrors([
-                'email' => 'Failed to authenticate with Google. Please try again.',
-            ]);
+            try {
+                $googleUser = $this->getGoogleDriver()->stateless()->user();
+            } catch (\Exception $ex) {
+                \Illuminate\Support\Facades\Log::error('Google Auth Exception', [
+                    'message' => $ex->getMessage(),
+                    'trace' => $ex->getTraceAsString(),
+                ]);
+
+                $errorMessage = config('app.debug')
+                    ? 'Failed to authenticate with Google: ' . $ex->getMessage()
+                    : 'Failed to authenticate with Google. Please try again.';
+
+                return redirect()->route('login')->withErrors([
+                    'email' => $errorMessage,
+                ]);
+            }
         }
 
-        $email = $googleUser->getEmail();
-        $allowedDomain = env('ALLOWED_EMAIL_DOMAINS', 'bicol-u.edu.ph');
+        $email = strtolower(trim($googleUser->getEmail()));
+        $allowedDomainsSetting = env('ALLOWED_EMAIL_DOMAINS', 'bicol-u.edu.ph');
 
-        // Validate Bicol University domain restriction
-        if (!Str::endsWith($email, '@' . $allowedDomain)) {
-            return redirect()->route('login')->withErrors([
-                'email' => "Access is restricted to official @{$allowedDomain} email accounts.",
-            ]);
+        // Validate domain restriction if specified
+        if ($allowedDomainsSetting && $allowedDomainsSetting !== '*') {
+            $allowedDomains = array_filter(array_map('trim', explode(',', $allowedDomainsSetting)));
+            $userDomain = Str::after($email, '@');
+
+            if (!in_array($userDomain, $allowedDomains, true)) {
+                $domainMessage = count($allowedDomains) > 1
+                    ? 'official @' . implode(' or @', $allowedDomains)
+                    : "@{$allowedDomainsSetting}";
+                return redirect()->route('login')->withErrors([
+                    'email' => "Access is restricted to {$domainMessage} email accounts.",
+                ]);
+            }
         }
 
         // Retrieve existing user or create a new one
@@ -46,31 +87,67 @@ class GoogleAuthController extends Controller
             ->first();
 
         if ($user) {
+            // Block deactivated accounts
+            if ($user->status === 'inactive' || $user->status === 'revoked') {
+                return redirect()->route('login')->withErrors([
+                    'email' => 'Your account has been deactivated. Please contact an IQA Administrator.',
+                ]);
+            }
+
             $updates = [];
             if (!$user->google_id) {
                 $updates['google_id'] = $googleUser->getId();
             }
+
+            $parts = explode(' ', trim($googleUser->getName() ?? ''), 2);
+            $googleFirstName = $parts[0] ?? '';
+            $googleLastName = $parts[1] ?? '';
+
             if ($user->status === 'pending_activation') {
                 $updates['status'] = 'active';
-                $updates['name'] = $googleUser->getName();
                 $updates['email_verified_at'] = now();
+                if ($googleFirstName && ($user->first_name === 'Pending' || empty($user->first_name))) {
+                    $updates['first_name'] = $googleFirstName;
+                }
+                if ($googleLastName && ($user->last_name === 'User' || empty($user->last_name))) {
+                    $updates['last_name'] = $googleLastName;
+                }
             }
+
             if (!empty($updates)) {
                 $user->update($updates);
             }
         } else {
             // Auto-register a new user with a default role
+            $taskForceRole = Role::where('role_name', 'task-force')->first();
+            $roleId = $taskForceRole ? $taskForceRole->id : 6;
+
+            $parts = explode(' ', trim($googleUser->getName() ?? ''), 2);
+            $firstName = $parts[0] ?: 'User';
+            $lastName = $parts[1] ?? '';
+
             $user = User::create([
-                'name' => $googleUser->getName(),
+                'first_name' => $firstName,
+                'last_name' => $lastName,
                 'email' => $email,
                 'google_id' => $googleUser->getId(),
-                'password' => null, // No password needed for OAuth-only users
-                'role' => 'task-force', // Default role for newly registered users
+                'password' => Hash::make(Str::random(32)),
+                'role_id' => $roleId,
                 'status' => 'active',
+                'email_verified_at' => now(),
             ]);
         }
 
         Auth::login($user);
+
+        // Record audit log entry
+        AuditLog::create([
+            'user_id' => $user->id,
+            'action' => 'GOOGLE_LOGIN',
+            'target_type' => User::class,
+            'target_id' => $user->id,
+            'timestamp' => now(),
+        ]);
 
         return redirect()->intended(route('dashboard', absolute: false));
     }
