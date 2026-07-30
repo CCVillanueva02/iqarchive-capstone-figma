@@ -58,21 +58,14 @@ test('pre-registered user with pending_activation is activated on google login',
     expect(AuditLog::where('user_id', $user->id)->where('action', 'GOOGLE_LOGIN')->exists())->toBeTrue();
 });
 
-test('new user with bicol university email is auto registered', function () {
+test('unlisted email is denied access with error', function () {
     mockGoogleUser('google-id-456', 'maria.santos@bicol-u.edu.ph', 'Maria Santos');
 
     $response = $this->get(route('auth.google.callback'));
 
-    $response->assertRedirect(route('dashboard', absolute: false));
-
-    $newUser = User::where('email', 'maria.santos@bicol-u.edu.ph')->first();
-    expect($newUser)->not->toBeNull();
-    $this->assertAuthenticatedAs($newUser);
-
-    expect($newUser->status)->toBe('active');
-    expect($newUser->google_id)->toBe('google-id-456');
-    expect($newUser->first_name)->toBe('Maria');
-    expect($newUser->last_name)->toBe('Santos');
+    $response->assertRedirect(route('login'));
+    $response->assertSessionHasErrors(['email' => 'Your account has not been pre-registered. Please contact the Internal Quality Assurance Office (bu-iqao@bicol-u.edu.ph) for access.']);
+    $this->assertGuest();
 });
 
 test('inactive account cannot log in via google auth', function () {

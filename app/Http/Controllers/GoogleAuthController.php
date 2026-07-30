@@ -81,61 +81,46 @@ class GoogleAuthController extends Controller
             }
         }
 
-        // Retrieve existing user or create a new one
+        // Retrieve pre-registered user
         $user = User::where('google_id', $googleUser->getId())
             ->orWhere('email', $email)
             ->first();
 
-        if ($user) {
-            // Block deactivated accounts
-            if ($user->status === 'inactive' || $user->status === 'revoked') {
-                return redirect()->route('login')->withErrors([
-                    'email' => 'Your account has been deactivated. Please contact an IQA Administrator.',
-                ]);
-            }
-
-            $updates = [];
-            if (!$user->google_id) {
-                $updates['google_id'] = $googleUser->getId();
-            }
-
-            $parts = explode(' ', trim($googleUser->getName() ?? ''), 2);
-            $googleFirstName = $parts[0] ?? '';
-            $googleLastName = $parts[1] ?? '';
-
-            if ($user->status === 'pending_activation') {
-                $updates['status'] = 'active';
-                $updates['email_verified_at'] = now();
-                if ($googleFirstName && ($user->first_name === 'Pending' || empty($user->first_name))) {
-                    $updates['first_name'] = $googleFirstName;
-                }
-                if ($googleLastName && ($user->last_name === 'User' || empty($user->last_name))) {
-                    $updates['last_name'] = $googleLastName;
-                }
-            }
-
-            if (!empty($updates)) {
-                $user->update($updates);
-            }
-        } else {
-            // Auto-register a new user with a default role
-            $taskForceRole = Role::where('role_name', 'task-force')->first();
-            $roleId = $taskForceRole ? $taskForceRole->id : 6;
-
-            $parts = explode(' ', trim($googleUser->getName() ?? ''), 2);
-            $firstName = $parts[0] ?: 'User';
-            $lastName = $parts[1] ?? '';
-
-            $user = User::create([
-                'first_name' => $firstName,
-                'last_name' => $lastName,
-                'email' => $email,
-                'google_id' => $googleUser->getId(),
-                'password' => Hash::make(Str::random(32)),
-                'role_id' => $roleId,
-                'status' => 'active',
-                'email_verified_at' => now(),
+        if (!$user) {
+            return redirect()->route('login')->withErrors([
+                'email' => 'Your account has not been pre-registered. Please contact the Internal Quality Assurance Office (bu-iqao@bicol-u.edu.ph) for access.',
             ]);
+        }
+
+        // Block deactivated accounts
+        if ($user->status === 'inactive' || $user->status === 'revoked') {
+            return redirect()->route('login')->withErrors([
+                'email' => 'Your account has been deactivated. Please contact an IQA Administrator.',
+            ]);
+        }
+
+        $updates = [];
+        if (!$user->google_id) {
+            $updates['google_id'] = $googleUser->getId();
+        }
+
+        $parts = explode(' ', trim($googleUser->getName() ?? ''), 2);
+        $googleFirstName = $parts[0] ?? '';
+        $googleLastName = $parts[1] ?? '';
+
+        if ($user->status === 'pending_activation') {
+            $updates['status'] = 'active';
+            $updates['email_verified_at'] = now();
+            if ($googleFirstName && ($user->first_name === 'Pending' || empty($user->first_name))) {
+                $updates['first_name'] = $googleFirstName;
+            }
+            if ($googleLastName && ($user->last_name === 'User' || empty($user->last_name))) {
+                $updates['last_name'] = $googleLastName;
+            }
+        }
+
+        if (!empty($updates)) {
+            $user->update($updates);
         }
 
         Auth::login($user);
