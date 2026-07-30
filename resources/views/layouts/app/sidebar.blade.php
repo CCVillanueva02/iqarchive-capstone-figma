@@ -150,9 +150,8 @@
             </svg>
             <span>Accounts</span>
         </a>
-        @endif
 
-        <!-- Task Forces (All Authenticated Roles) -->
+        <!-- Task Forces -->
         <a href="{{ route('task-forces.index') }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-sm font-semibold transition-all {{ request()->routeIs('task-forces.*') ? 'bg-white/10 text-white border-l-[#F47920]' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
@@ -162,6 +161,9 @@
             </svg>
             <span>Task Forces</span>
         </a>
+        @endif
+
+
     </div>
 
     @php
