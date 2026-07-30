@@ -93,9 +93,13 @@
 
                         <!-- Role -->
                         <td class="p-4">
-                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-50 text-blue-800 border border-blue-100">
-                                {{ $user->roleRelation->description ?? $user->role }}
-                            </span>
+                            <div class="flex flex-wrap gap-1">
+                                @foreach($user->assignedRoles() as $assignedRole)
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-50 text-blue-800 border border-blue-100">
+                                        {{ $assignedRole->description }}
+                                    </span>
+                                @endforeach
+                            </div>
                         </td>
 
                         <!-- Program/College -->
@@ -202,10 +206,10 @@
                     @enderror
                 </div>
                 
-                <!-- 2. Role Selector -->
+                <!-- 2. Primary Role Selector -->
                 <div>
-                    <flux:select wire:model.live="role_id" :label="__('Role')" required placeholder="Select a role">
-                        <flux:select.option value="">Select a role</flux:select.option>
+                    <flux:select wire:model.live="role_id" :label="__('Primary Role')" required placeholder="Select primary role">
+                        <flux:select.option value="">Select primary role</flux:select.option>
                         @foreach($roles as $role)
                             <flux:select.option value="{{ $role->id }}">{{ $role->description }}</flux:select.option>
                         @endforeach
@@ -213,6 +217,22 @@
                     @error('role_id')
                         <p class="text-xs font-semibold text-red-600 mt-1">{{ $message }}</p>
                     @enderror
+                </div>
+
+                <!-- Additional Roles (Multi-Role Support) -->
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5">{{ __('Additional Assigned Roles (Optional)') }}</label>
+                    <div class="grid grid-cols-2 gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        @foreach($roles as $role)
+                            @if((string)$role->id !== (string)$role_id)
+                                <label class="flex items-center gap-2 text-xs font-semibold text-slate-700 cursor-pointer select-none hover:text-[#002B61]">
+                                    <input type="checkbox" wire:model="selected_role_ids" value="{{ $role->id }}" class="rounded border-slate-300 text-[#F47920] focus:ring-[#F47920]">
+                                    <span>{{ $role->description }}</span>
+                                </label>
+                            @endif
+                        @endforeach
+                    </div>
+                    <p class="text-[11px] text-slate-400 mt-1">Check any additional roles held by this user (e.g. Task Force Lead/Member).</p>
                 </div>
 
                 <!-- 3. College / Department (Conditional) -->
@@ -273,7 +293,7 @@
                 </div>
                 
                 <div>
-                    <flux:select wire:model.live="role_id" :label="__('Role')" required placeholder="Select a role">
+                    <flux:select wire:model.live="role_id" :label="__('Primary Role')" required placeholder="Select primary role">
                         @foreach($roles as $role)
                             <flux:select.option value="{{ $role->id }}">{{ $role->description }}</flux:select.option>
                         @endforeach
@@ -281,6 +301,21 @@
                     @error('role_id')
                         <p class="text-xs font-semibold text-red-600 mt-1">{{ $message }}</p>
                     @enderror
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5">{{ __('Additional Assigned Roles (Optional)') }}</label>
+                    <div class="grid grid-cols-2 gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        @foreach($roles as $role)
+                            @if((string)$role->id !== (string)$role_id)
+                                <label class="flex items-center gap-2 text-xs font-semibold text-slate-700 cursor-pointer select-none hover:text-[#002B61]">
+                                    <input type="checkbox" wire:model="selected_role_ids" value="{{ $role->id }}" class="rounded border-slate-300 text-[#F47920] focus:ring-[#F47920]">
+                                    <span>{{ $role->description }}</span>
+                                </label>
+                            @endif
+                        @endforeach
+                    </div>
+                    <p class="text-[11px] text-slate-400 mt-1">Check any additional roles held by this user (e.g. Task Force Lead/Member).</p>
                 </div>
 
                 <div>

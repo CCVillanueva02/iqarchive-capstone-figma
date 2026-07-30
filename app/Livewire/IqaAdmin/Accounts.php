@@ -167,7 +167,7 @@ class Accounts extends Component
                     'status' => 'pending_activation',
                 ]);
 
-                $rolesToSync = !empty($this->selected_role_ids) ? $this->selected_role_ids : [$this->role_id];
+                $rolesToSync = array_values(array_unique(array_filter(array_merge([(int)$this->role_id], array_map('intval', $this->selected_role_ids)))));
                 $newUser->roles()->sync($rolesToSync);
 
                 AuditLog::create([
