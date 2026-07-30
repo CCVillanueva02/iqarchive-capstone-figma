@@ -112,19 +112,37 @@ class GoogleAuthController extends Controller
             $updates['google_id'] = $googleUser->getId();
         }
 
-        $parts = explode(' ', trim($googleUser->getName() ?? ''), 2);
-        $googleFirstName = $parts[0] ?? '';
-        $googleLastName = $parts[1] ?? '';
+        $rawGiven = $googleUser->user['given_name'] ?? null;
+        $rawFamily = $googleUser->user['family_name'] ?? null;
+
+        if (!$rawGiven || !$rawFamily) {
+            $fullName = trim($googleUser->getName() ?? '');
+            $parts = explode(' ', $fullName, 2);
+            $rawGiven = $rawGiven ?: ($parts[0] ?? '');
+            $rawFamily = $rawFamily ?: ($parts[1] ?? '');
+        }
+
+        // Clean name helper: remove student/employee ID tokens containing digits (e.g. Jcmm2023, 4700, 61428)
+        $cleanNameToken = function (string $nameStr): string {
+            $tokens = preg_split('/\s+/', trim($nameStr));
+            $filtered = array_filter($tokens, fn($t) => !preg_match('/\d/', $t));
+            return !empty($filtered) ? implode(' ', $filtered) : $nameStr;
+        };
+
+        $googleFirstName = $cleanNameToken($rawGiven ?: '');
+        $googleLastName = $cleanNameToken($rawFamily ?: '');
 
         if ($user->status === 'pending_activation') {
             $updates['status'] = 'active';
             $updates['email_verified_at'] = now();
-            if ($googleFirstName && ($user->first_name === 'Pending' || empty($user->first_name))) {
-                $updates['first_name'] = $googleFirstName;
-            }
-            if ($googleLastName && ($user->last_name === 'User' || empty($user->last_name))) {
-                $updates['last_name'] = $googleLastName;
-            }
+        }
+
+        // Always update first_name and last_name if they contain digits or default placeholder values ('Pending', 'User')
+        if ($googleFirstName && ($user->first_name === 'Pending' || empty($user->first_name) || preg_match('/\d/', $user->first_name))) {
+            $updates['first_name'] = $googleFirstName;
+        }
+        if ($googleLastName && ($user->last_name === 'User' || empty($user->last_name) || preg_match('/\d/', $user->last_name))) {
+            $updates['last_name'] = $googleLastName;
         }
 
         if (!empty($updates)) {

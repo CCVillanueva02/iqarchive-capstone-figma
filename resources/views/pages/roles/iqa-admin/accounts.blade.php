@@ -226,7 +226,7 @@
                         @foreach($roles as $role)
                             @if((string)$role->id !== (string)$role_id)
                                 <label class="flex items-center gap-2 text-xs font-semibold text-slate-700 cursor-pointer select-none hover:text-[#002B61]">
-                                    <input type="checkbox" wire:model="selected_role_ids" value="{{ $role->id }}" class="rounded border-slate-300 text-[#F47920] focus:ring-[#F47920]">
+                                    <input type="checkbox" wire:model.live="selected_role_ids" value="{{ $role->id }}" class="rounded border-slate-300 text-[#F47920] focus:ring-[#F47920]">
                                     <span>{{ $role->description }}</span>
                                 </label>
                             @endif
@@ -235,15 +235,19 @@
                     <p class="text-[11px] text-slate-400 mt-1">Check any additional roles held by this user (e.g. Task Force Lead/Member).</p>
                 </div>
 
-                <!-- 3. College / Department (Conditional) -->
+                <!-- 3. College / Department (Conditional Required) -->
                 <div>
-                    <flux:select wire:model.live="college_id" :label="__('College / Department')" placeholder="Select College / Department">
+                    <flux:select wire:model.live="college_id" :label="__('College / Department') . ($this->isCollegeRequired() ? ' *' : '')" placeholder="Select College / Department" :required="$this->isCollegeRequired()">
                         <flux:select.option value="">Select College / Department</flux:select.option>
                         @foreach($colleges as $college)
                             <flux:select.option value="{{ $college->id }}">{{ $college->name }} ({{ $college->code }})</flux:select.option>
                         @endforeach
                     </flux:select>
-                    <p class="text-[11px] text-slate-400 mt-1">Required for College/Dept Head, Program Chair, and IQA Members.</p>
+                    @if($this->isCollegeRequired())
+                        <p class="text-[11px] font-semibold text-amber-600 mt-1">Required for College Head, Program Chair, and IQA Member roles.</p>
+                    @else
+                        <p class="text-[11px] text-slate-400 mt-1">Required for College/Dept Head, Program Chair, and IQA Members.</p>
+                    @endif
                     @error('college_id')
                         <p class="text-xs font-semibold text-red-600 mt-1">{{ $message }}</p>
                     @enderror
@@ -279,6 +283,15 @@
             </div>
 
             <div class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                        <flux:input wire:model="first_name" :label="__('First Name')" placeholder="First Name" />
+                    </div>
+                    <div>
+                        <flux:input wire:model="last_name" :label="__('Last Name')" placeholder="Last Name" />
+                    </div>
+                </div>
+
                 <div>
                     <flux:input 
                         wire:model="email" 
@@ -309,7 +322,7 @@
                         @foreach($roles as $role)
                             @if((string)$role->id !== (string)$role_id)
                                 <label class="flex items-center gap-2 text-xs font-semibold text-slate-700 cursor-pointer select-none hover:text-[#002B61]">
-                                    <input type="checkbox" wire:model="selected_role_ids" value="{{ $role->id }}" class="rounded border-slate-300 text-[#F47920] focus:ring-[#F47920]">
+                                    <input type="checkbox" wire:model.live="selected_role_ids" value="{{ $role->id }}" class="rounded border-slate-300 text-[#F47920] focus:ring-[#F47920]">
                                     <span>{{ $role->description }}</span>
                                 </label>
                             @endif
@@ -319,12 +332,15 @@
                 </div>
 
                 <div>
-                    <flux:select wire:model.live="college_id" :label="__('College / Department')" placeholder="Select College / Department">
+                    <flux:select wire:model.live="college_id" :label="__('College / Department') . ($this->isCollegeRequired() ? ' *' : '')" placeholder="Select College / Department" :required="$this->isCollegeRequired()">
                         <flux:select.option value="">Select College / Department</flux:select.option>
                         @foreach($colleges as $college)
                             <flux:select.option value="{{ $college->id }}">{{ $college->name }} ({{ $college->code }})</flux:select.option>
                         @endforeach
                     </flux:select>
+                    @if($this->isCollegeRequired())
+                        <p class="text-[11px] font-semibold text-amber-600 mt-1">Required for College Head, Program Chair, and IQA Member roles.</p>
+                    @endif
                     @error('college_id')
                         <p class="text-xs font-semibold text-red-600 mt-1">{{ $message }}</p>
                     @enderror

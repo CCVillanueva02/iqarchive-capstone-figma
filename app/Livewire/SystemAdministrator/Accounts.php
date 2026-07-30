@@ -106,6 +106,20 @@ class Accounts extends Component
     }
 
     /**
+     * Check if College/Department is required based on selected roles
+     */
+    public function isCollegeRequired(): bool
+    {
+        $allRoleIds = array_filter(array_merge([(int)$this->role_id], array_map('intval', (array)$this->selected_role_ids)));
+        if (empty($allRoleIds)) {
+            return false;
+        }
+
+        $roleNames = Role::whereIn('id', $allRoleIds)->pluck('role_name')->toArray();
+        return !empty(array_intersect($roleNames, ['college-head', 'program-chair', 'iqa-member']));
+    }
+
+    /**
      * 3.1 Pre-register User Account
      */
     public function createAccount()
@@ -114,13 +128,12 @@ class Accounts extends Component
             $this->role_id = $this->selected_role_ids[0];
         }
 
-        $selectedRole = Role::find($this->role_id);
-        $roleName = $selectedRole ? $selectedRole->role_name : '';
-
-        // College is required when Role is College Head, Program Chair, or IQA Member
-        $requiresCollege = in_array($roleName, ['college-head', 'program-chair', 'iqa-member']);
+        $requiresCollege = $this->isCollegeRequired();
 
         $rules = [
+            'first_name' => ['nullable', 'string', 'max:255'],
+            'middle_name' => ['nullable', 'string', 'max:255'],
+            'last_name' => ['nullable', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'role_id' => ['required', 'exists:roles,id'],
             'college_id' => $requiresCollege ? ['required', 'exists:colleges,id'] : ['nullable', 'exists:colleges,id'],
@@ -143,10 +156,12 @@ class Accounts extends Component
             $newUser = null;
             DB::transaction(function () use (&$newUser) {
                 $emailPrefix = explode('@', trim($this->email))[0];
-                $defaultFirstName = ucwords(str_replace(['.', '_', '-'], ' ', $emailPrefix));
+                $cleanPrefix = preg_replace('/\d+/', '', str_replace(['.', '_', '-'], ' ', $emailPrefix));
+                $defaultFirstName = ucwords(trim($cleanPrefix));
 
                 $newUser = User::create([
-                    'first_name' => $defaultFirstName ?: 'Pending',
+                    'first_name' => 'Pending',
+                    'middle_name' => null,
                     'last_name' => 'User',
                     'email' => strtolower(trim($this->email)),
                     'password' => bcrypt(Str::random(32)), // Credential security delegated to Google Workspace
@@ -221,11 +236,12 @@ class Accounts extends Component
             $this->role_id = $this->selected_role_ids[0];
         }
 
-        $selectedRole = Role::find($this->role_id);
-        $roleName = $selectedRole ? $selectedRole->role_name : '';
-        $requiresCollege = in_array($roleName, ['college-head', 'program-chair', 'iqa-member']);
+        $requiresCollege = $this->isCollegeRequired();
 
         $rules = [
+            'first_name' => ['nullable', 'string', 'max:255'],
+            'middle_name' => ['nullable', 'string', 'max:255'],
+            'last_name' => ['nullable', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email,' . $this->userId],
             'role_id' => ['required', 'exists:roles,id'],
             'college_id' => $requiresCollege ? ['required', 'exists:colleges,id'] : ['nullable', 'exists:colleges,id'],
@@ -246,6 +262,9 @@ class Accounts extends Component
 
         DB::transaction(function () use ($user) {
             $user->update([
+                'first_name' => trim($this->first_name) ?: $user->first_name,
+                'middle_name' => trim($this->middle_name) ?: null,
+                'last_name' => trim($this->last_name) ?: $user->last_name,
                 'email' => strtolower(trim($this->email)),
                 'role_id' => $this->role_id,
                 'college_id' => $this->college_id ?: null,
