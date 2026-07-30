@@ -110,7 +110,10 @@ class Accounts extends Component
      */
     public function isCollegeRequired(): bool
     {
-        $allRoleIds = array_filter(array_merge([(int)$this->role_id], array_map('intval', (array)$this->selected_role_ids)));
+        $primaryId = (int) $this->role_id;
+        $additionalIds = array_map('intval', (array) $this->selected_role_ids);
+        $allRoleIds = array_filter(array_unique(array_merge([$primaryId], $additionalIds)));
+
         if (empty($allRoleIds)) {
             return false;
         }
@@ -124,10 +127,6 @@ class Accounts extends Component
      */
     public function createAccount()
     {
-        if (!empty($this->selected_role_ids)) {
-            $this->role_id = $this->selected_role_ids[0];
-        }
-
         $requiresCollege = $this->isCollegeRequired();
 
         $rules = [
@@ -231,10 +230,6 @@ class Accounts extends Component
     public function updateAccount()
     {
         $user = User::findOrFail($this->userId);
-
-        if (!empty($this->selected_role_ids)) {
-            $this->role_id = $this->selected_role_ids[0];
-        }
 
         $requiresCollege = $this->isCollegeRequired();
 
