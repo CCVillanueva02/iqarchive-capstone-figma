@@ -27,16 +27,17 @@ class DatabaseSeeder extends Seeder
             'accreditor' => 'AACCUP Accreditor',
             'university-administrator' => 'BU Executive Admin',
             'task-force' => 'QA Task Force Lead',
+            'task-force-member' => 'QA Task Force Member',
             'college-head' => 'College Head (Dean)',
             'program-chair' => 'BU Program Chair',
         ];
 
         $roles = [];
         foreach ($rolesData as $nameCode => $displayName) {
-            $roles[$nameCode] = Role::create([
-                'role_name' => $nameCode,
-                'description' => $displayName,
-            ]);
+            $roles[$nameCode] = Role::firstOrCreate(
+                ['role_name' => $nameCode],
+                ['description' => $displayName]
+            );
         }
 
         // 2. Seed Colleges
@@ -190,6 +191,14 @@ class DatabaseSeeder extends Seeder
                 'college' => null,
             ],
             [
+                'first_name' => 'QA Task Force',
+                'last_name' => 'Member',
+                'email' => 'taskforcemember@example.com',
+                'role' => 'task-force-member',
+                'program' => 'BSCS',
+                'college' => 'CS',
+            ],
+            [
                 'first_name' => 'CS Dean',
                 'last_name' => 'Office',
                 'email' => 'dean@example.com',
@@ -202,6 +211,34 @@ class DatabaseSeeder extends Seeder
                 'last_name' => 'Chair',
                 'email' => 'chair@example.com',
                 'role' => 'program-chair',
+                'program' => 'BSCS',
+                'college' => null,
+            ],
+            // Multi-Role Accounts
+            [
+                'first_name' => 'IQA Member',
+                'last_name' => '(Multi-Role)',
+                'email' => 'iqamember-multirole@example.com',
+                'role' => 'iqa-member',
+                'extra_roles' => ['task-force'],
+                'program' => null,
+                'college' => null,
+            ],
+            [
+                'first_name' => 'College Head',
+                'last_name' => '(Multi-Role)',
+                'email' => 'dean-multirole@example.com',
+                'role' => 'college-head',
+                'extra_roles' => ['task-force'],
+                'program' => null,
+                'college' => 'CS',
+            ],
+            [
+                'first_name' => 'Program Chair',
+                'last_name' => '(Multi-Role)',
+                'email' => 'chair-multirole@example.com',
+                'role' => 'program-chair',
+                'extra_roles' => ['task-force-member'],
                 'program' => 'BSCS',
                 'college' => null,
             ],
@@ -293,7 +330,7 @@ class DatabaseSeeder extends Seeder
             $programId = $userData['program'] ? $programs[$userData['program']]->id : null;
             $collegeId = $userData['college'] ? $colleges[$userData['college']]->id : null;
 
-            $seededUsers[] = User::factory()->create([
+            $user = User::factory()->create([
                 'first_name' => $userData['first_name'],
                 'last_name' => $userData['last_name'],
                 'email' => $userData['email'],
@@ -301,6 +338,17 @@ class DatabaseSeeder extends Seeder
                 'program_id' => $programId,
                 'college_id' => $collegeId,
             ]);
+
+            $rolesToSync = [$roleId];
+            if (isset($userData['extra_roles'])) {
+                foreach ($userData['extra_roles'] as $extraRoleCode) {
+                    if (isset($roles[$extraRoleCode])) {
+                        $rolesToSync[] = $roles[$extraRoleCode]->id;
+                    }
+                }
+            }
+            $user->roles()->sync(array_unique($rolesToSync));
+            $seededUsers[] = $user;
         }
 
         // 6. Seed Instruments & Compliance Requirements (AACCUP statistics)

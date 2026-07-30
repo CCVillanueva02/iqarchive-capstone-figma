@@ -63,9 +63,59 @@ class User extends Authenticatable implements PasskeyUser
         return $this->belongsTo(Role::class, 'role_id');
     }
 
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'role_user');
+    }
+
+    /**
+     * Get all assigned roles for the user (including primary role_id fallback).
+     */
+    public function assignedRoles()
+    {
+        $assigned = $this->roles;
+        if ($assigned->isEmpty() && $this->roleRelation) {
+            return collect([$this->roleRelation]);
+        }
+        return $assigned;
+    }
+
     public function getRoleAttribute(): string
     {
+        $activeRole = session('active_role');
+        if ($activeRole && $this->hasRole($activeRole)) {
+            return $activeRole;
+        }
+
         return $this->roleRelation ? $this->roleRelation->role_name : '';
+    }
+
+    public function hasRole($roleName): bool
+    {
+        if (is_array($roleName)) {
+            foreach ($roleName as $r) {
+                if ($this->hasRole($r)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        if ($this->roleRelation && $this->roleRelation->role_name === $roleName) {
+            return true;
+        }
+
+        return $this->roles()->where('role_name', $roleName)->exists()
+            || $this->roles->contains('role_name', $roleName);
+    }
+
+    public function syncRoles(array $roleIds): void
+    {
+        $this->roles()->sync($roleIds);
+        if (!empty($roleIds) && (!in_array($this->role_id, $roleIds))) {
+            $this->role_id = $roleIds[0];
+            $this->save();
+        }
     }
 
     public function getNameAttribute(): string

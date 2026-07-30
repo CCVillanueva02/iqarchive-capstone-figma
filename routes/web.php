@@ -66,53 +66,89 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return view("pages.roles.university-administrator.reports");
     })->name("reports.university-administrator");
 
+    // Active role switcher route for multi-role users
+    Route::post('switch-role', function (\Illuminate\Http\Request $request) {
+        $role = $request->input('role');
+        $user = auth()->user();
+
+        if ($user && $user->hasRole($role)) {
+            session(['active_role' => $role]);
+            return redirect()->route('dashboard')->with('status', 'Switched active role to ' . ucwords(str_replace('-', ' ', $role)));
+        }
+
+        return back()->with('error', 'Unauthorized role switch request.');
+    })->name('switch-role');
+
     $roles = [
         'system-administrator',
         'iqa-admin',
         'iqa-member',
         'task-force',
+        'task-force-member',
         'program-chair',
     ];
 
     foreach ($roles as $role) {
         Route::get("roles/{$role}/dashboard", function () use ($role) {
-            $userRole = auth()->user()->role;
-            if ($role !== $userRole && !($role === 'program-chair' && $userRole === 'college-head')) {
+            $user = auth()->user();
+            if (!$user->hasRole($role) && !($role === 'program-chair' && $user->role === 'college-head')) {
                 abort(403, 'Unauthorized action.');
+            }
+            if ($user->hasRole($role)) {
+                session(['active_role' => $role]);
+            }
+            if (!view()->exists("pages.roles.{$role}.dashboard")) {
+                return view("pages.roles.task-force.dashboard");
             }
             return view("pages.roles.{$role}.dashboard");
         })->name("dashboard.{$role}");
 
         Route::get("roles/{$role}/documents", function () use ($role) {
-            $userRole = auth()->user()->role;
-            if ($role !== $userRole && !($role === 'program-chair' && $userRole === 'college-head')) {
+            $user = auth()->user();
+            if (!$user->hasRole($role) && !($role === 'program-chair' && $user->role === 'college-head')) {
                 abort(403, 'Unauthorized action.');
             }
-            return view("pages.roles.{$role}.documents");
+            if ($user->hasRole($role)) {
+                session(['active_role' => $role]);
+            }
+            $viewName = view()->exists("pages.roles.{$role}.documents") ? "pages.roles.{$role}.documents" : "pages.roles.task-force.documents";
+            return view($viewName);
         })->name("documents.{$role}");
 
         Route::get("roles/{$role}/submissions", function () use ($role) {
-            $userRole = auth()->user()->role;
-            if ($role !== $userRole && !($role === 'program-chair' && $userRole === 'college-head')) {
+            $user = auth()->user();
+            if (!$user->hasRole($role) && !($role === 'program-chair' && $user->role === 'college-head')) {
                 abort(403, 'Unauthorized action.');
             }
-            return view("pages.roles.{$role}.submissions");
+            if ($user->hasRole($role)) {
+                session(['active_role' => $role]);
+            }
+            $viewName = view()->exists("pages.roles.{$role}.submissions") ? "pages.roles.{$role}.submissions" : "pages.roles.task-force.submissions";
+            return view($viewName);
         })->name("submissions.{$role}");
 
         Route::get("roles/{$role}/reports", function () use ($role) {
-            $userRole = auth()->user()->role;
-            if ($role !== $userRole && !($role === 'program-chair' && $userRole === 'college-head')) {
+            $user = auth()->user();
+            if (!$user->hasRole($role) && !($role === 'program-chair' && $user->role === 'college-head')) {
                 abort(403, 'Unauthorized action.');
             }
-            return view("pages.roles.{$role}.reports");
+            if ($user->hasRole($role)) {
+                session(['active_role' => $role]);
+            }
+            $viewName = view()->exists("pages.roles.{$role}.reports") ? "pages.roles.{$role}.reports" : "pages.roles.task-force.reports";
+            return view($viewName);
         })->name("reports.{$role}");
 
         Route::get("roles/{$role}/settings", function () use ($role) {
-            $userRole = auth()->user()->role;
-            if ($role !== $userRole && !($role === 'program-chair' && $userRole === 'college-head')) {
+            $user = auth()->user();
+            if (!$user->hasRole($role) && !($role === 'program-chair' && $user->role === 'college-head')) {
                 abort(403, 'Unauthorized action.');
             }
-            return view("pages.roles.{$role}.settings");
+            if ($user->hasRole($role)) {
+                session(['active_role' => $role]);
+            }
+            $viewName = view()->exists("pages.roles.{$role}.settings") ? "pages.roles.{$role}.settings" : "pages.roles.task-force.settings";
+            return view($viewName);
         })->name("settings.{$role}");
     }
 
@@ -146,11 +182,15 @@ if (app()->environment('local')) {
             'system-administrator' => 'sysadmin@example.com',
             'iqa-admin' => 'iqaadmin@example.com',
             'iqa-member' => 'iqamember@example.com',
+            'iqa-member-multi' => 'iqamember-multirole@example.com',
             'accreditor' => 'accreditor@example.com',
             'university-administrator' => 'buadmin@example.com',
             'task-force' => 'taskforce@example.com',
+            'task-force-member' => 'taskforcemember@example.com',
             'dean' => 'dean@example.com',
+            'dean-multi' => 'dean-multirole@example.com',
             'program-chair' => 'chair@example.com',
+            'program-chair-multi' => 'chair-multirole@example.com',
             default => abort(404),
         };
 

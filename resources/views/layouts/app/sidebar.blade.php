@@ -60,8 +60,8 @@
         </a>
         @endif
 
-        @if ($role === 'task-force' || $role === 'program-chair')
-        <!-- Task Force / Program Chair / College Head -->
+        @if ($role === 'task-force' || $role === 'task-force-member' || $role === 'program-chair')
+        <!-- Task Force / Task Force Member / Program Chair / College Head -->
         <a href="{{ route('dashboard.' . $role) }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-sm font-semibold transition-all {{ request()->routeIs('dashboard.' . $role) ? 'bg-white/10 text-white border-l-[#F47920]' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="3" y="3" width="7" height="9"></rect>
@@ -169,16 +169,18 @@
     @php
     $user = auth()->user();
     $roleLabel = match($user?->role) {
-    'system-administrator' => 'System Admin',
-    'iqa-admin' => 'IQA Admin',
-    'iqa-member' => 'IQA Staff',
-    'accreditor' => 'Accreditor',
-    'university-administrator' => 'BU Admin/Exec',
-    'task-force' => 'Task Force',
-    'program-chair' => 'Program Chair',
-    'college-head' => 'College Head',
-    default => 'User'
+        'system-administrator' => 'System Admin',
+        'iqa-admin' => 'IQA Admin',
+        'iqa-member' => 'IQA Staff',
+        'accreditor' => 'Accreditor',
+        'university-administrator' => 'BU Admin/Exec',
+        'task-force' => 'Task Force Lead',
+        'task-force-member' => 'Task Force Member',
+        'program-chair' => 'Program Chair',
+        'college-head' => 'College Head',
+        default => 'User'
     };
+    $userAssignedRoles = $user ? $user->assignedRoles() : collect();
     @endphp
 
     <!-- Profile Dropdown Component matching Mockup -->
@@ -190,11 +192,51 @@
                 </div>
                 <div class="flex-1 min-w-0">
                     <div class="text-[13px] font-bold text-white truncate">{{ $user?->name }}</div>
-                    <div class="text-[11px] text-white/60 truncate">{{ $roleLabel }}</div>
+                    <div class="text-[11px] text-white/60 truncate flex items-center gap-1">
+                        <span>{{ $roleLabel }}</span>
+                        @if($userAssignedRoles->count() > 1)
+                            <span class="text-[9px] bg-[#F47920] px-1.5 py-0.2 rounded text-white font-bold">Multi</span>
+                        @endif
+                    </div>
                 </div>
             </button>
 
             <flux:menu>
+                @if($userAssignedRoles->count() > 1)
+                    <div class="px-2 py-1">
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Switch Role View</span>
+                    </div>
+                    @foreach($userAssignedRoles as $r)
+                        @php
+                            $code = $r->role_name;
+                            $title = match($code) {
+                                'task-force' => 'QA Task Force Lead',
+                                'task-force-member' => 'QA Task Force Member',
+                                'system-administrator' => 'System Administrator',
+                                'iqa-admin' => 'IQA Admin',
+                                'iqa-member' => 'IQA Staff Member',
+                                'accreditor' => 'AACCUP Accreditor',
+                                'university-administrator' => 'BU Executive Admin',
+                                'college-head' => 'College Head (Dean)',
+                                'program-chair' => 'Program Chair',
+                                default => ucwords(str_replace('-', ' ', $code))
+                            };
+                            $isActiveRole = ($code === $user?->role);
+                        @endphp
+                        <form method="POST" action="{{ route('switch-role') }}" class="w-full">
+                            @csrf
+                            <input type="hidden" name="role" value="{{ $code }}" />
+                            <button type="submit" class="w-full text-left px-2 py-1.5 rounded-lg flex items-center justify-between text-xs font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors {{ $isActiveRole ? 'text-[#F47920] font-bold bg-orange-50/50' : 'text-zinc-700 dark:text-zinc-300' }}">
+                                <span>{{ $title }}</span>
+                                @if($isActiveRole)
+                                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#F47920] text-white">Active</span>
+                                @endif
+                            </button>
+                        </form>
+                    @endforeach
+                    <flux:menu.separator />
+                @endif
+
                 <flux:menu.item :href="route('profile.edit')" icon="cog" wire:navigate class="text-xs cursor-pointer">
                     {{ __('Settings') }}
                 </flux:menu.item>

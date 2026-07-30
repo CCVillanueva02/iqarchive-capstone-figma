@@ -37,6 +37,7 @@ class Accounts extends Component
     public $last_name = '';
     public $email = '';
     public $role_id = '';
+    public $selected_role_ids = [];
     public $college_id = '';
     public $program_id = '';
 
@@ -98,6 +99,7 @@ class Accounts extends Component
         $this->last_name = '';
         $this->email = '';
         $this->role_id = '';
+        $this->selected_role_ids = [];
         $this->college_id = '';
         $this->program_id = '';
         $this->resetValidation();
@@ -108,6 +110,10 @@ class Accounts extends Component
      */
     public function createAccount()
     {
+        if (!empty($this->selected_role_ids)) {
+            $this->role_id = $this->selected_role_ids[0];
+        }
+
         $selectedRole = Role::find($this->role_id);
         $roleName = $selectedRole ? $selectedRole->role_name : '';
 
@@ -150,6 +156,9 @@ class Accounts extends Component
                     'status' => 'pending_activation',
                 ]);
 
+                $rolesToSync = !empty($this->selected_role_ids) ? $this->selected_role_ids : [$this->role_id];
+                $newUser->roles()->sync($rolesToSync);
+
                 AuditLog::create([
                     'user_id' => auth()->id(),
                     'action' => 'CREATE_USER',
@@ -188,6 +197,10 @@ class Accounts extends Component
         $this->last_name = $user->last_name;
         $this->email = $user->email;
         $this->role_id = $user->role_id;
+        $this->selected_role_ids = $user->roles->pluck('id')->toArray();
+        if (empty($this->selected_role_ids) && $user->role_id) {
+            $this->selected_role_ids = [$user->role_id];
+        }
         $this->college_id = $user->college_id;
         $this->program_id = $user->program_id;
 
@@ -203,6 +216,10 @@ class Accounts extends Component
     public function updateAccount()
     {
         $user = User::findOrFail($this->userId);
+
+        if (!empty($this->selected_role_ids)) {
+            $this->role_id = $this->selected_role_ids[0];
+        }
 
         $selectedRole = Role::find($this->role_id);
         $roleName = $selectedRole ? $selectedRole->role_name : '';
@@ -234,6 +251,9 @@ class Accounts extends Component
                 'college_id' => $this->college_id ?: null,
                 'program_id' => $this->program_id ?: null,
             ]);
+
+            $rolesToSync = !empty($this->selected_role_ids) ? $this->selected_role_ids : [$this->role_id];
+            $user->roles()->sync($rolesToSync);
 
             AuditLog::create([
                 'user_id' => auth()->id(),
