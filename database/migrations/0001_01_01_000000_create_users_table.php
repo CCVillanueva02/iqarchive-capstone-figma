@@ -30,6 +30,7 @@ return new class extends Migration
             $table->foreignId('college_id')->constrained('colleges')->onDelete('cascade');
             $table->string('name');
             $table->string('code')->unique();
+            $table->string('accreditation_level')->default('Candidate Status');
             $table->timestamps();
         });
 

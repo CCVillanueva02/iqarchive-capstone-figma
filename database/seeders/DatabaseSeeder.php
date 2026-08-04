@@ -49,34 +49,37 @@ class DatabaseSeeder extends Seeder
 
         $colleges = [];
         foreach ($collegesData as $code => $name) {
-            $colleges[$code] = College::create([
-                'name' => $name,
-                'code' => $code,
-            ]);
+            $colleges[$code] = College::firstOrCreate(
+                ['code' => $code],
+                ['name' => $name]
+            );
         }
 
         // 3. Seed Programs
         $programsData = [
             'CS' => [
-                'BSCS' => 'BS Computer Science',
-                'BSIT' => 'BS Information Technology',
-                'BSBIO' => 'BS Biology',
+                'BSCS' => ['name' => 'BS Computer Science', 'level' => 'Level IV Re-accredited'],
+                'BSIT' => ['name' => 'BS Information Technology', 'level' => 'Level III Accredited'],
+                'BSBIO' => ['name' => 'BS Biology', 'level' => 'Level III Accredited'],
             ],
             'CENG' => [
-                'BSCE' => 'BS Civil Engineering',
-                'BSME' => 'BS Mechanical Engineering',
+                'BSCE' => ['name' => 'BS Civil Engineering', 'level' => 'Level III Accredited'],
+                'BSME' => ['name' => 'BS Mechanical Engineering', 'level' => 'Level II Accredited'],
             ],
         ];
 
         $programs = [];
         foreach ($programsData as $collegeCode => $collegePrograms) {
             $college = $colleges[$collegeCode];
-            foreach ($collegePrograms as $code => $name) {
-                $programs[$code] = Program::create([
-                    'college_id' => $college->id,
-                    'name' => $name,
-                    'code' => $code,
-                ]);
+            foreach ($collegePrograms as $code => $info) {
+                $programs[$code] = Program::firstOrCreate(
+                    ['code' => $code],
+                    [
+                        'college_id' => $college->id,
+                        'name' => $info['name'],
+                        'accreditation_level' => $info['level'],
+                    ]
+                );
             }
         }
 

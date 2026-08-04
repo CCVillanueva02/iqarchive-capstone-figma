@@ -168,6 +168,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Task Force Management Overview & Create Modal (Accessible to authenticated roles)
     Route::get('task-forces', \App\Livewire\TaskForce\TaskForceOverview::class)
         ->name('task-forces.index');
+
+    // Program Management & Accreditation API routes
+    Route::get('api/programs', [\App\Http\Controllers\ProgramController::class, 'index'])->name('api.programs.index');
+    Route::post('api/programs', [\App\Http\Controllers\ProgramController::class, 'store'])->name('api.programs.store');
+    Route::get('api/colleges', [\App\Http\Controllers\ProgramController::class, 'getColleges'])->name('api.colleges.index');
 });
 
 if (app()->environment('local')) {
