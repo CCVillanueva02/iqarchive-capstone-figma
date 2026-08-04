@@ -8,6 +8,4 @@
 
         @include('pages.roles.iqa-member.partials.detail-drawer')
     </div>
-
-    @vite('resources/js/iqa-documents.js')
 </x-layouts::app>

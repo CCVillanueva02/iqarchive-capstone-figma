@@ -7,6 +7,7 @@ use App\Models\Role;
 use App\Models\College;
 use App\Models\Program;
 use App\Models\DocumentCategory;
+use App\Models\Document;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -90,57 +91,67 @@ class DatabaseSeeder extends Seeder
         // 75 more Baccalaureate (to reach 80 total)
         for ($i = 6; $i <= 80; $i++) {
             $college = $colIds[$i % count($colIds)];
-            $programs['BSP' . $i] = Program::create([
-                'college_id' => $college->id,
-                'name' => "BS Program " . $i,
-                'code' => "BSP" . $i,
-            ]);
+            $programs['BSP' . $i] = Program::firstOrCreate(
+                ['code' => "BSP" . $i],
+                [
+                    'college_id' => $college->id,
+                    'name' => "BS Program " . $i,
+                ]
+            );
         }
 
         // 39 Master's programs
         for ($i = 1; $i <= 39; $i++) {
             $college = $colIds[$i % count($colIds)];
-            $programs['MSP' . $i] = Program::create([
-                'college_id' => $college->id,
-                'name' => "MS Program " . $i,
-                'code' => "MSP" . $i,
-            ]);
+            $programs['MSP' . $i] = Program::firstOrCreate(
+                ['code' => "MSP" . $i],
+                [
+                    'college_id' => $college->id,
+                    'name' => "MS Program " . $i,
+                ]
+            );
         }
 
         // 7 Doctoral programs
         for ($i = 1; $i <= 7; $i++) {
             $college = $colIds[$i % count($colIds)];
-            $programs['PHDP' . $i] = Program::create([
-                'college_id' => $college->id,
-                'name' => "PhD Program " . $i,
-                'code' => "PHDP" . $i,
-            ]);
+            $programs['PHDP' . $i] = Program::firstOrCreate(
+                ['code' => "PHDP" . $i],
+                [
+                    'college_id' => $college->id,
+                    'name' => "PhD Program " . $i,
+                ]
+            );
         }
 
         // 2 Post Bacc programs
         for ($i = 1; $i <= 2; $i++) {
             $college = $colIds[$i % count($colIds)];
-            $programs['PBP' . $i] = Program::create([
-                'college_id' => $college->id,
-                'name' => "Post Bacc Program " . $i,
-                'code' => "PBP" . $i,
-            ]);
+            $programs['PBP' . $i] = Program::firstOrCreate(
+                ['code' => "PBP" . $i],
+                [
+                    'college_id' => $college->id,
+                    'name' => "Post Bacc Program " . $i,
+                ]
+            );
         }
 
         // 4. Seed Document Categories
         $categoriesData = [
+            'Uncategorized Documents' => 'General and uncategorized institution documents.',
+            'Policies & Issuances' => 'Administrative orders, memorandums, circulars, and university code documents.',
+            'Instruments' => 'Internal QA self-evaluation spreadsheets, numerical rating guides, and diagnostic compliance evaluations.',
+            'Memoranda' => 'Official office memorandums, notices of meetings, and executive directives.',
+            'Correspondences' => 'Official letters to/from colleges, AACCUP, and administrative offices.',
             'Faculty Profile' => 'Faculty credentials, curriculum vitae, and loads.',
             'Curriculum / Syllabus' => 'Official course curriculum structure and syllabi.',
-            'Board Exam Performance' => 'Results and statistics of professional board examinations.',
-            'College/Department Budget' => 'Financial allocations and expenditures reports.',
-            'Student Performance' => 'Student achievement and grades summaries.',
         ];
 
         foreach ($categoriesData as $name => $desc) {
-            DocumentCategory::create([
-                'name' => $name,
-                'description' => $desc,
-            ]);
+            DocumentCategory::firstOrCreate(
+                ['name' => $name],
+                ['description' => $desc]
+            );
         }
 
         // 5. Seed Users
@@ -333,14 +344,19 @@ class DatabaseSeeder extends Seeder
             $programId = $userData['program'] ? $programs[$userData['program']]->id : null;
             $collegeId = $userData['college'] ? $colleges[$userData['college']]->id : null;
 
-            $user = User::factory()->create([
-                'first_name' => $userData['first_name'],
-                'last_name' => $userData['last_name'],
-                'email' => $userData['email'],
-                'role_id' => $roleId,
-                'program_id' => $programId,
-                'college_id' => $collegeId,
-            ]);
+            $user = User::firstOrCreate(
+                ['email' => $userData['email']],
+                [
+                    'first_name' => $userData['first_name'],
+                    'last_name' => $userData['last_name'],
+                    'role_id' => $roleId,
+                    'program_id' => $programId,
+                    'college_id' => $collegeId,
+                    'password' => bcrypt('password'),
+                    'email_verified_at' => now(),
+                    'status' => 'active',
+                ]
+            );
 
             $rolesToSync = [$roleId];
             if (isset($userData['extra_roles'])) {
@@ -588,6 +604,63 @@ class DatabaseSeeder extends Seeder
                 'role_in_team' => 'member',
                 'assigned_at' => now()->subDays(20),
             ]);
+        }
+
+        // 6. Seed Actual Sample Documents (test1.pdf to test5.pdf)
+        $sysUser = \App\Models\User::where('email', 'sysadmin@example.com')->first();
+        if ($sysUser) {
+            $categoriesToSeedDocs = [
+                'Policies & Issuances' => 'test1 - Bicol University Governance Policy 2026',
+                'Instruments' => 'test2 - Level IV Accreditation Instrument',
+                'Memoranda' => 'test3 - Quality Audit Memorandum 2026-042',
+                'Correspondences' => 'test4 - AACCUP Official Endorsement Letter',
+                'Uncategorized Documents' => 'test5 - General Quality Guidelines Manual',
+            ];
+
+            $index = 1;
+            foreach ($categoriesToSeedDocs as $catName => $docTitle) {
+                $category = DocumentCategory::firstOrCreate(
+                    ['name' => $catName],
+                    ['description' => 'General documents for ' . $catName]
+                );
+
+                $fileName = "test{$index}.pdf";
+                $relativeFilePath = "documents/{$fileName}";
+                $fullPath = storage_path("app/public/{$relativeFilePath}");
+                $dir = dirname($fullPath);
+
+                if (!file_exists($dir)) {
+                    mkdir($dir, 0755, true);
+                }
+
+                $contentStr = "BT /F1 12 Tf 50 700 Td (Document: {$fileName} - {$docTitle}) Tj 0 -20 Td (Lorem ipsum dolor sit amet, consectetur adipiscing elit.) Tj 0 -20 Td (Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.) Tj 0 -20 Td (Bicol University Institutional Quality Assurance Office) Tj ET";
+                $len = strlen($contentStr);
+
+                $pdfContent = "%PDF-1.4\n";
+                $pdfContent .= "1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n";
+                $pdfContent .= "2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n";
+                $pdfContent .= "3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>\nendobj\n";
+                $pdfContent .= "4 0 obj\n<< /Length {$len} >>\nstream\n{$contentStr}\nendstream\nendobj\n";
+                $pdfContent .= "5 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>\nendobj\n";
+                $pdfContent .= "xref\n0 6\n0000000000 65535 f \n0000000009 00000 n \n0000000058 00000 n \n0000000115 00000 n \n0000000244 00000 n \n0000000495 00000 n \ntrailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n566\n%%EOF";
+
+                file_put_contents($fullPath, $pdfContent);
+
+                Document::firstOrCreate(
+                    [
+                        'title' => "test{$index}",
+                    ],
+                    [
+                        'uploaded_by' => $sysUser->id,
+                        'category_id' => $category->id,
+                        'file_path' => $relativeFilePath,
+                        'status' => 'approved',
+                        'visibility' => 'public',
+                    ]
+                );
+
+                $index++;
+            }
         }
     }
 }

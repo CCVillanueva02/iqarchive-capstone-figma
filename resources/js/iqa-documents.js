@@ -1233,78 +1233,197 @@ window.documentWorkspace = function() {
                     }
                 })
                 .catch(err => console.error('Error fetching colleges:', err));
+
+            this.initCategories();
         },
 
-        openAddProgramModal() {
-            this.addProgramError = '';
-            this.addProgramSuccess = '';
-            this.showAddProgramModal = true;
-            if (this.collegesList.length > 0 && !this.newProgram.college_id) {
-                this.newProgram.college_id = this.collegesList[0].id;
-            }
+        initCategories() {
+            // Fetch categories from backend
+            fetch('/api/categories')
+                .then(res => res.json())
+                .then(data => {
+                    if (Array.isArray(data) && data.length > 0) {
+                        data.forEach(dbCat => {
+                            const existingCat = this.categories.find(c => c.name.toLowerCase() === dbCat.name.toLowerCase());
+                            if (!existingCat) {
+                                this.categories.push({
+                                    id: 'cat_' + dbCat.id,
+                                    name: dbCat.name,
+                                    description: dbCat.description,
+                                    icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>`,
+                                    docCount: dbCat.docCount || 0
+                                });
+                            } else {
+                                existingCat.docCount = dbCat.docCount || existingCat.docCount;
+                            }
+                        });
+                    }
+                })
+                .catch(err => console.error('Error fetching categories from backend:', err));
+
+            // Fetch common documents from backend
+            fetch('/api/common-documents')
+                .then(res => res.json())
+                .then(data => {
+                    if (Array.isArray(data) && data.length > 0) {
+                        data.forEach(dbDoc => {
+                            const exists = this.documents.some(d => d.name === dbDoc.name && d.category === dbDoc.category);
+                            if (!exists) {
+                                this.documents.unshift(dbDoc);
+                            }
+                        });
+                    }
+                })
+                .catch(err => console.error('Error fetching common documents:', err));
         },
 
-        closeAddProgramModal() {
-            this.showAddProgramModal = false;
+        // Category Creation Modal state & methods (IQA Admin & System Admin only)
+        showCreateCategoryModal: false,
+        createCategoryLoading: false,
+        createCategoryError: '',
+        createCategorySuccess: '',
+        newCategoryForm: {
+            name: '',
+            description: ''
         },
 
-        submitNewProgram() {
-            this.addProgramError = '';
-            this.addProgramSuccess = '';
+        openCreateCategoryModal() {
+            this.createCategoryError = '';
+            this.createCategorySuccess = '';
+            this.showCreateCategoryModal = true;
+            this.newCategoryForm = { name: '', description: '' };
+        },
 
-            if (!this.newProgram.name.trim()) {
-                this.addProgramError = 'Program Name is required.';
+        closeCreateCategoryModal() {
+            this.showCreateCategoryModal = false;
+        },
+
+        submitNewCategory() {
+            this.createCategoryError = '';
+            this.createCategorySuccess = '';
+
+            if (!this.newCategoryForm.name.trim()) {
+                this.createCategoryError = 'Category name is required.';
                 return;
             }
-            if (!this.newProgram.code.trim()) {
-                this.addProgramError = 'Program Code is required.';
-                return;
-            }
-            if (!this.newProgram.college_id) {
-                this.addProgramError = 'Please select a College.';
-                return;
-            }
 
-            this.addProgramLoading = true;
-
+            this.createCategoryLoading = true;
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
 
-            fetch('/api/programs', {
+            fetch('/api/categories', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
                     'X-CSRF-TOKEN': csrfToken
                 },
-                body: JSON.stringify(this.newProgram)
+                body: JSON.stringify(this.newCategoryForm)
             })
             .then(async res => {
                 const data = await res.json();
-                if (!res.ok) {
-                    throw new Error(data.message || data.error || 'Failed to save program.');
-                }
+                if (!res.ok) throw new Error(data.message || data.error || 'Failed to create Document Category.');
                 return data;
             })
             .then(data => {
-                this.addProgramLoading = false;
-                this.addProgramSuccess = 'Program created successfully!';
-                if (data.program) {
-                    this.programsList.unshift(data.program);
+                this.createCategoryLoading = false;
+                this.createCategorySuccess = 'Document Category card created successfully!';
+                
+                if (data.category) {
+                    this.categories.push({
+                        id: 'cat_' + data.category.id,
+                        name: data.category.name,
+                        description: data.category.description || 'Common document category',
+                        icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>`,
+                        docCount: 0
+                    });
                 }
+
                 setTimeout(() => {
-                    this.closeAddProgramModal();
-                    this.newProgram = {
-                        name: '',
-                        code: '',
-                        college_id: this.collegesList[0]?.id || '',
-                        accreditation_level: 'Candidate Status'
-                    };
-                    this.addProgramSuccess = '';
+                    this.closeCreateCategoryModal();
+                    this.createCategorySuccess = '';
                 }, 1000);
             })
             .catch(err => {
-                this.addProgramLoading = false;
-                this.addProgramError = err.message || 'An error occurred while creating the program.';
+                this.createCategoryLoading = false;
+                this.createCategoryError = err.message || 'An error occurred while creating the category.';
+            });
+        },
+
+        // Upload Document Modal state & methods
+        showUploadModal: false,
+        uploadLoading: false,
+        uploadError: '',
+        uploadSuccess: '',
+        uploadForm: {
+            title: '',
+            category_name: 'Uncategorized Documents',
+            office: 'IQA Central Office'
+        },
+
+        openUploadModal() {
+            this.uploadError = '';
+            this.uploadSuccess = '';
+            this.showUploadModal = true;
+            this.uploadForm.category_name = this.selectedCategory || 'Uncategorized Documents';
+        },
+
+        closeUploadModal() {
+            this.showUploadModal = false;
+        },
+
+        submitUploadDocument() {
+            this.uploadError = '';
+            this.uploadSuccess = '';
+
+            if (!this.uploadForm.title.trim()) {
+                this.uploadError = 'Document title is required.';
+                return;
+            }
+
+            this.uploadLoading = true;
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+            const targetCategory = this.uploadForm.category_name || 'Uncategorized Documents';
+
+            fetch('/api/common-documents', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({
+                    title: this.uploadForm.title,
+                    category_name: targetCategory,
+                    office: this.uploadForm.office
+                })
+            })
+            .then(async res => {
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.message || data.error || 'Failed to upload document.');
+                return data;
+            })
+            .then(data => {
+                this.uploadLoading = false;
+                this.uploadSuccess = 'Document uploaded successfully!';
+
+                if (data.document) {
+                    this.documents.unshift(data.document);
+                }
+
+                const catObj = this.categories.find(c => c.name.toLowerCase() === targetCategory.toLowerCase());
+                if (catObj) {
+                    catObj.docCount = (catObj.docCount || 0) + 1;
+                }
+
+                setTimeout(() => {
+                    this.closeUploadModal();
+                    this.uploadForm = { title: '', category_name: 'Uncategorized Documents', office: 'IQA Central Office' };
+                    this.uploadSuccess = '';
+                }, 1000);
+            })
+            .catch(err => {
+                this.uploadLoading = false;
+                this.uploadError = err.message || 'An error occurred while uploading.';
             });
         }
     };
