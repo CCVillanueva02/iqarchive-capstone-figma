@@ -107,9 +107,13 @@
                                 <td class="py-4 px-6">
                                     @if($loginLog->user)
                                         <div class="flex items-center gap-3">
-                                            <div class="w-8 h-8 rounded-full bg-[#1b355a] text-white font-bold text-xs flex items-center justify-center shrink-0">
-                                                {{ $loginLog->user->initials() }}
-                                            </div>
+                                            @if($loginLog->user->avatar)
+                                                <img src="{{ Storage::url($loginLog->user->avatar) }}" alt="{{ $loginLog->user->name }}" class="w-8 h-8 rounded-full object-cover border border-[#1b355a]/10 shrink-0" />
+                                            @else
+                                                <div class="w-8 h-8 rounded-full bg-[#1b355a] text-white font-bold text-xs flex items-center justify-center shrink-0">
+                                                    {{ $loginLog->user->initials() }}
+                                                </div>
+                                            @endif
                                             <div class="flex flex-col">
                                                 <span class="font-bold text-[#1b355a] text-xs">{{ $loginLog->user->name }}</span>
                                                 <span class="text-zinc-400 text-[10px] font-mono">{{ $loginLog->user->email }}</span>

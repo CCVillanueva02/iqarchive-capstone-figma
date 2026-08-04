@@ -187,9 +187,13 @@
     <div class="px-[20px] py-[20px] border-t border-white/10 mt-auto">
         <flux:dropdown position="top" align="start" class="w-full">
             <button type="button" class="w-full text-left p-3 bg-white/8 hover:bg-white/15 border border-white/5 cursor-pointer rounded-xl flex items-center gap-3 transition focus:outline-none">
-                <div class="w-[38px] h-[38px] rounded-full bg-[#F47920] border-2 border-white text-white font-bold flex items-center justify-center text-sm shrink-0 select-none">
-                    {{ $user?->initials() }}
-                </div>
+                @if($user?->avatar)
+                    <img src="{{ Storage::url($user->avatar) }}" alt="{{ $user->name }}" class="w-[38px] h-[38px] rounded-full object-cover border-2 border-white shrink-0 select-none" />
+                @else
+                    <div class="w-[38px] h-[38px] rounded-full bg-[#F47920] border-2 border-white text-white font-bold flex items-center justify-center text-sm shrink-0 select-none">
+                        {{ $user?->initials() }}
+                    </div>
+                @endif
                 <div class="flex-1 min-w-0">
                     <div class="text-[13px] font-bold text-white truncate">{{ $user?->name }}</div>
                     <div class="text-[11px] text-white/60 truncate flex items-center gap-1">

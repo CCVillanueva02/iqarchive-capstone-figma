@@ -76,9 +76,13 @@
                         <!-- Name -->
                         <td class="p-4 pl-6 font-medium">
                             <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 text-[#586A85] font-bold flex items-center justify-center text-xs shrink-0 select-none">
-                                    {{ $user->initials() }}
-                                </div>
+                                @if($user->avatar)
+                                    <img src="{{ Storage::url($user->avatar) }}" alt="{{ $user->name }}" class="w-8 h-8 rounded-full object-cover border border-slate-200 shrink-0 select-none" />
+                                @else
+                                    <div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 text-[#586A85] font-bold flex items-center justify-center text-xs shrink-0 select-none">
+                                        {{ $user->initials() }}
+                                    </div>
+                                @endif
                                 <div class="flex flex-col">
                                     <span class="text-[#1b355a] font-semibold text-xs">{{ $user->name }}</span>
                                     @if($user->status === 'pending_activation')
