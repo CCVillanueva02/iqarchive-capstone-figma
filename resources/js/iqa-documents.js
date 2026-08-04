@@ -1075,58 +1075,8 @@ window.documentWorkspace = function() {
             }
             this.accredActiveSection = 'systems';
         },
-        categories: [
-            {
-                id: 'cat_1',
-                name: 'Policies & Issuances',
-                description: 'Admin orders, office policies, notices',
-                icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>`,
-                docCount: 4
-            },
-            {
-                id: 'cat_2',
-                name: 'Instruments',
-                description: 'Per-area accreditation guides, surveys',
-                icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9zM9 13h6M9 17h3" /></svg>`,
-                docCount: 3
-            },
-            {
-                id: 'cat_3',
-                name: 'Memoranda',
-                description: 'Internal circulars and memos',
-                icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>`,
-                docCount: 3
-            },
-            {
-                id: 'cat_4',
-                name: 'Correspondences',
-                description: 'Letters to/from colleges, AACCUP, admin',
-                icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" /></svg>`,
-                docCount: 3
-            }
-        ],
-        documents: [
-            // Policies & Issuances
-            { name: "Administrative Order No. 453, s. of 2024", category: "Policies & Issuances", type: "PDF", size: "1.4 MB", date: "2024-05-10", uploader: "Maria Reyes", office: "IQA Central Office", status: "Verified", ocrText: "ADMINISTRATIVE ORDER NO. 453, SERIES OF 2024\n\nSUBJECT: CONSTITUTION OF THE TECHNICAL WORKING GROUP (TWG) FOR THE REVIEW AND REVISION OF THE BICOL UNIVERSITY CODE OF 2016." },
-            { name: "Office Memorandum No. 153 s. of 2024", category: "Policies & Issuances", type: "PDF", size: "920 KB", date: "2024-06-15", uploader: "Maria Reyes", office: "IQA Central Office", status: "Verified", ocrText: "OFFICE MEMORANDUM NO. 153, SERIES OF 2024\n\nTO: ALL MEMBERS OF THE CODE REVISION TWG\nSUBJECT: WRITESHOP FOR THE REVIEW AND AMENDMENTS OF THE UNIVERSITY CODE." },
-            { name: "BU Code revised 2024", category: "Policies & Issuances", type: "PDF", size: "4.8 MB", date: "2024-11-20", uploader: "Dr. Albert Santos", office: "Office of the President", status: "Verified", ocrText: "REVISED UNIVERSITY CODE OF BICOL UNIVERSITY\n\nApproved by the Board of Regents under Resolution No. 075, s. 2024." },
-            { name: "University Circular on Quality Audits", category: "Policies & Issuances", type: "PDF", size: "750 KB", date: "2025-01-10", uploader: "Dr. Albert Santos", office: "IQA Central Office", status: "Pending", ocrText: "UNIVERSITY CIRCULAR NO. 012, SERIES OF 2025\n\nSUBJECT: SCHEDULE OF INTERNAL QUALITY ASSURANCE AUDITS FOR ACADEMIC YEAR 2025-2026." },
-            
-            // Instruments
-            { name: "Self-Survey Instrument Area I", category: "Instruments", type: "Word", size: "680 KB", date: "2026-03-01", uploader: "Maria Reyes", office: "IQA Central Office", status: "Verified", ocrText: "AACCUP SELF-SURVEY INSTRUMENT\nAREA I: GOVERNANCE AND MANAGEMENT\n\nRating guidelines and evidence checklist for institutional compliance evaluation." },
-            { name: "Self-Survey Instrument Area II", category: "Instruments", type: "Word", size: "720 KB", date: "2026-03-05", uploader: "Maria Reyes", office: "IQA Central Office", status: "Verified", ocrText: "AACCUP SELF-SURVEY INSTRUMENT\nAREA II: CURRICULUM AND INSTRUCTION\n\nRating guidelines and syllabus compliance mapping database." },
-            { name: "AACCUP Survey Guideline 2026", category: "Instruments", type: "PDF", size: "2.3 MB", date: "2026-02-15", uploader: "Dr. Albert Santos", office: "Office of the President", status: "Verified", ocrText: "AACCUP ACCREDITATION MANUAL 2026\n\nLatest policies, procedures, and institutional survey instrumentation rules for higher education institutions." },
-            
-            // Memoranda
-            { name: "OM No. 214, s. 2015 (Signing Authorities)", category: "Memoranda", type: "PDF", size: "620 KB", date: "2025-06-01", uploader: "Maria Reyes", office: "Office of the President", status: "Verified", ocrText: "BICOL UNIVERSITY\nOFFICE OF THE PRESIDENT\n\nOFFICE MEMORANDUM NO. 214, SERIES OF 2015\n\nTO: ALL ACADEMIC AND ADMINISTRATIVE OFFICIALS\n\nSUBJECT: GUIDELINES ON SIGNING AUTHORITIES FOR REQUISITIONS AND GENERAL OFFICE TRANSACTIONS." },
-            { name: "Notice of 1st Regular Academic Council", category: "Memoranda", type: "PDF", size: "410 KB", date: "2026-02-05", uploader: "Maria Reyes", office: "Office of the President", status: "Verified", ocrText: "OFFICE OF THE BOARD SECRETARY\n\nNOTICE OF MEETING\n\nNotice is hereby given that the 1st Regular Academic Council Assembly of Bicol University will be held on February 12, 2026." },
-            { name: "Memorandum on Internal Quality Audits s. 2026", category: "Memoranda", type: "PDF", size: "890 KB", date: "2026-04-12", uploader: "Maria Reyes", office: "IQA Central Office", status: "Pending", ocrText: "OFFICE MEMORANDUM NO. 320, SERIES OF 2026\n\nTO: ALL DEANS, DIRECTORS, AND DEPARTMENT CHAIRS\nSUBJECT: CONSTITUTION OF COLLATERAL INTERNAL AUDIT TEAMS." },
-
-            // Correspondences
-            { name: "Letter to AACCUP Secretariat (Self-Survey Submission)", category: "Correspondences", type: "PDF", size: "1.1 MB", date: "2026-03-12", uploader: "Dr. Albert Santos", office: "Office of the President", status: "Verified", ocrText: "BICOL UNIVERSITY\nLegazpi City\n\nMarch 12, 2026\n\nTO: THE EXECUTIVE DIRECTOR, AACCUP SECRETARIAT\n\nDear Sir/Madam:\n\nWe have the honor to submit herewith the self-survey documents and supporting files for Bicol University's Institutional Accreditation." },
-            { name: "Endorsement Letter from BU President to BOR", category: "Correspondences", type: "PDF", size: "520 KB", date: "2026-03-15", uploader: "Maria Reyes", office: "Office of the President", status: "Verified", ocrText: "OFFICE OF THE UNIVERSITY PRESIDENT\n\nMEMORANDUM FOR THE BOARD OF REGENTS\n\nSUBJECT: ENDORSEMENT OF THE PROPOSED DIGITAL TRANSFORMATION ROADMAP FOR FY 2026." },
-            { name: "Query from College of Science Dean on IQA Timeline", category: "Correspondences", type: "PDF", size: "340 KB", date: "2026-04-01", uploader: "Prof. Lilian Diaz", office: "College of Science", status: "Flagged", ocrText: "COLLEGE OF SCIENCE\nOffice of the Dean\n\nApril 1, 2026\n\nTO: THE DIRECTOR, IQA OFFICE\n\nDear Director Santos:\n\nWe would like to request clarification on the timeline for submission of supporting folders for Parameter B." }
-        ],
+        categories: [],
+        documents: [],
         
         get filteredCategories() {
             if (this.selectedCategory !== null) return [];
@@ -1242,21 +1192,14 @@ window.documentWorkspace = function() {
             fetch('/api/categories')
                 .then(res => res.json())
                 .then(data => {
-                    if (Array.isArray(data) && data.length > 0) {
-                        data.forEach(dbCat => {
-                            const existingCat = this.categories.find(c => c.name.toLowerCase() === dbCat.name.toLowerCase());
-                            if (!existingCat) {
-                                this.categories.push({
-                                    id: 'cat_' + dbCat.id,
-                                    name: dbCat.name,
-                                    description: dbCat.description,
-                                    icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>`,
-                                    docCount: dbCat.docCount || 0
-                                });
-                            } else {
-                                existingCat.docCount = dbCat.docCount || existingCat.docCount;
-                            }
-                        });
+                    if (Array.isArray(data)) {
+                        this.categories = data.map(dbCat => ({
+                            id: 'cat_' + dbCat.id,
+                            name: dbCat.name,
+                            description: dbCat.description || ('Common document category for ' + dbCat.name),
+                            icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>`,
+                            docCount: dbCat.docCount || 0
+                        }));
                     }
                 })
                 .catch(err => console.error('Error fetching categories from backend:', err));
@@ -1265,13 +1208,8 @@ window.documentWorkspace = function() {
             fetch('/api/common-documents')
                 .then(res => res.json())
                 .then(data => {
-                    if (Array.isArray(data) && data.length > 0) {
-                        data.forEach(dbDoc => {
-                            const exists = this.documents.some(d => d.name === dbDoc.name && d.category === dbDoc.category);
-                            if (!exists) {
-                                this.documents.unshift(dbDoc);
-                            }
-                        });
+                    if (Array.isArray(data)) {
+                        this.documents = data;
                     }
                 })
                 .catch(err => console.error('Error fetching common documents:', err));
@@ -1356,15 +1294,16 @@ window.documentWorkspace = function() {
         uploadSuccess: '',
         uploadForm: {
             title: '',
-            category_name: 'Uncategorized Documents',
-            office: 'IQA Central Office'
+            category_name: '',
+            file: null
         },
 
         openUploadModal() {
             this.uploadError = '';
             this.uploadSuccess = '';
             this.showUploadModal = true;
-            this.uploadForm.category_name = this.selectedCategory || 'Uncategorized Documents';
+            this.uploadForm.category_name = this.selectedCategory || '';
+            this.uploadForm.file = null;
         },
 
         closeUploadModal() {
@@ -1384,18 +1323,22 @@ window.documentWorkspace = function() {
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
             const targetCategory = this.uploadForm.category_name || 'Uncategorized Documents';
 
+            const formData = new FormData();
+            formData.append('title', this.uploadForm.title);
+            if (this.uploadForm.category_name) {
+                formData.append('category_name', this.uploadForm.category_name);
+            }
+            if (this.uploadForm.file) {
+                formData.append('file', this.uploadForm.file);
+            }
+
             fetch('/api/common-documents', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
                     'Accept': 'application/json',
                     'X-CSRF-TOKEN': csrfToken
                 },
-                body: JSON.stringify({
-                    title: this.uploadForm.title,
-                    category_name: targetCategory,
-                    office: this.uploadForm.office
-                })
+                body: formData
             })
             .then(async res => {
                 const data = await res.json();
@@ -1417,7 +1360,7 @@ window.documentWorkspace = function() {
 
                 setTimeout(() => {
                     this.closeUploadModal();
-                    this.uploadForm = { title: '', category_name: 'Uncategorized Documents', office: 'IQA Central Office' };
+                    this.uploadForm = { title: '', category_name: '', file: null };
                     this.uploadSuccess = '';
                 }, 1000);
             })

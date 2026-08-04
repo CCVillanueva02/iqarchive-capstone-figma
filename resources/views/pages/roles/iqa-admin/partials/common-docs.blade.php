@@ -118,19 +118,6 @@
                         </div>
                     </div>
 
-                    <!-- College/Office Select -->
-                    <div class="relative">
-                        <select x-model="filterOffice" class="text-sm bg-[#f8fafc] border border-slate-200 rounded-lg pl-4 pr-10 py-2.5 text-zinc-650 appearance-none focus:outline-none focus:border-slate-300 font-semibold cursor-pointer">
-                            <option value="all">Office: All</option>
-                            <option value="IQA Central Office">IQA Central Office</option>
-                            <option value="Office of the President">Office of the President</option>
-                            <option value="College of Science">College of Science</option>
-                        </select>
-                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-zinc-500">
-                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
-                        </div>
-                    </div>
-
                     <!-- Date Select -->
                     <div class="relative">
                         <select x-model="filterDate" class="text-sm bg-[#f8fafc] border border-slate-200 rounded-lg pl-4 pr-10 py-2.5 text-zinc-650 appearance-none focus:outline-none focus:border-slate-300 font-semibold cursor-pointer">
@@ -168,7 +155,6 @@
                         <tr class="bg-slate-50/75 border-b border-slate-100 text-zinc-400 font-bold uppercase tracking-wider select-none text-[11px]">
                             <th class="py-3.5 px-6">Document Title</th>
                             <th class="py-3.5 px-6">Uploader</th>
-                            <th class="py-3.5 px-6">Lead Office</th>
                             <th class="py-3.5 px-6 text-center">Type</th>
                             <th class="py-3.5 px-6">Upload Date</th>
                             <th class="py-3.5 px-6">Status</th>
@@ -180,12 +166,10 @@
                             <tr class="hover:bg-slate-50/50 transition">
                                 <!-- Title -->
                                 <td class="py-4 px-6 font-bold text-[#1b355a]">
-                                    <div class="max-w-[280px] truncate" x-text="doc.name"></div>
+                                    <div class="max-w-[320px] truncate" x-text="doc.name"></div>
                                 </td>
                                 <!-- Uploader -->
                                 <td class="py-4 px-6 text-zinc-500" x-text="doc.uploader"></td>
-                                <!-- Lead Office -->
-                                <td class="py-4 px-6 text-zinc-500" x-text="doc.office"></td>
                                 <!-- Type -->
                                 <td class="py-4 px-6 text-center shrink-0">
                                     <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-rose-50 text-rose-600 uppercase tracking-wide" x-text="doc.type"></span>
@@ -353,32 +337,31 @@
                     <input type="text" x-model="uploadForm.title" placeholder="e.g. Bicol University Academic Code 2026" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#1b355a]/20 focus:border-[#1b355a]" />
                 </div>
 
-                <!-- Document Category Select -->
+                <!-- Document Category Select (Optional: Defaults to Uncategorized Documents) -->
                 <div class="flex flex-col gap-1.5">
-                    <label class="text-xs font-bold text-[#1b355a]">Document Category <span class="text-rose-500">*</span></label>
-                    <select x-model="uploadForm.category_name" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#1b355a]/20 focus:border-[#1b355a]">
+                    <div class="flex items-center justify-between">
+                        <label class="text-xs font-bold text-[#1b355a]">Document Category</label>
+                        <span class="text-[11px] font-medium text-zinc-400">Optional (Defaults to Uncategorized)</span>
+                    </div>
+                    <select x-model="uploadForm.category_name" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#1b355a]/20 focus:border-[#1b355a]">
+                        <option value="">None (Uncategorized Document)</option>
                         <template x-for="cat in categories" :key="cat.id || cat.name">
                             <option :value="cat.name" x-text="cat.name"></option>
                         </template>
                     </select>
                 </div>
 
-                <!-- Lead Office -->
-                <div class="flex flex-col gap-1.5">
-                    <label class="text-xs font-bold text-[#1b355a]">Lead Office</label>
-                    <input type="text" x-model="uploadForm.office" placeholder="e.g. IQA Central Office / Office of the President" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#1b355a]/20 focus:border-[#1b355a]" />
-                </div>
-
                 <!-- Attachment File -->
                 <div class="flex flex-col gap-1.5">
                     <label class="text-xs font-bold text-[#1b355a]">Attachment File</label>
-                    <div class="border-2 border-dashed border-slate-200 rounded-xl p-4 text-center bg-slate-50/50 hover:bg-slate-50 transition cursor-pointer flex flex-col items-center gap-1.5">
+                    <input type="file" id="adminFileUploadInput" @change="uploadForm.file = $event.target.files[0]" class="hidden" accept=".pdf,.doc,.docx,.xls,.xlsx" />
+                    <label for="adminFileUploadInput" class="border-2 border-dashed border-slate-200 rounded-xl p-4 text-center bg-slate-50/50 hover:bg-slate-50 transition cursor-pointer flex flex-col items-center gap-1.5">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-zinc-400">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
                         </svg>
-                        <span class="text-xs font-bold text-[#1b355a]">Click to select PDF or Word document</span>
-                        <span class="text-[10px] text-zinc-400">Supported formats: .pdf, .docx, .xlsx (Max: 25MB)</span>
-                    </div>
+                        <span class="text-xs font-bold text-[#1b355a]" x-text="uploadForm.file ? uploadForm.file.name : 'Click to select PDF or Word document'"></span>
+                        <span class="text-[10px] text-zinc-400" x-text="uploadForm.file ? (Math.round(uploadForm.file.size / 1024) + ' KB selected') : 'Supported formats: .pdf, .docx, .xlsx (Max: 25MB)'"></span>
+                    </label>
                 </div>
 
                 <!-- Modal Action Footer -->

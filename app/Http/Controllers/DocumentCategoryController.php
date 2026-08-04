@@ -9,24 +9,26 @@ use Illuminate\Http\Request;
 class DocumentCategoryController extends Controller
 {
     /**
-     * Get all document categories with doc counts.
+     * Get all document categories with doc counts (including Uncategorized Documents).
      */
     public function index()
     {
-        // Ensure default Uncategorized Documents category exists
+        // Ensure default Uncategorized Documents category exists in database
         DocumentCategory::firstOrCreate(
             ['name' => 'Uncategorized Documents'],
             ['description' => 'General and uncategorized institution documents.']
         );
 
-        $categories = DocumentCategory::withCount('documents')->get()->map(function ($cat) {
-            return [
-                'id' => $cat->id,
-                'name' => $cat->name,
-                'description' => $cat->description ?: 'Common document category for ' . $cat->name,
-                'docCount' => $cat->documents_count ?: 0,
-            ];
-        });
+        $categories = DocumentCategory::withCount('documents')
+            ->get()
+            ->map(function ($cat) {
+                return [
+                    'id' => $cat->id,
+                    'name' => $cat->name,
+                    'description' => $cat->description ?: 'Common document category for ' . $cat->name,
+                    'docCount' => $cat->documents_count ?: 0,
+                ];
+            });
 
         return response()->json($categories);
     }
@@ -90,11 +92,10 @@ class DocumentCategoryController extends Controller
                     'id' => $doc->id,
                     'name' => $doc->title,
                     'category' => $doc->category ? $doc->category->name : 'Uncategorized Documents',
-                    'type' => 'PDF',
+                    'type' => strtoupper(pathinfo($filePath, PATHINFO_EXTENSION)) ?: 'PDF',
                     'size' => '1.5 MB',
                     'date' => $doc->created_at ? $doc->created_at->format('Y-m-d') : now()->format('Y-m-d'),
                     'uploader' => $doc->uploader ? ($doc->uploader->first_name . ' ' . $doc->uploader->last_name) : 'IQA Office',
-                    'office' => 'IQA Central Office',
                     'status' => $doc->status ?: 'Verified',
                     'file_path' => $filePath,
                     'file_url' => $fileUrl,
@@ -106,7 +107,9 @@ class DocumentCategoryController extends Controller
     }
 
     /**
-     * Store a new common document under a category and generate an actual PDF file test[index].pdf.
+     * Store a new common document.
+     * Category is optional; defaults to 'Uncategorized Documents' if omitted or empty.
+     * Supports actual file uploads via multipart request or falls back to generated PDF.
      */
     public function storeDocument(Request $request)
     {
@@ -126,39 +129,52 @@ class DocumentCategoryController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'category_name' => 'nullable|string|max:255',
-            'office' => 'nullable|string|max:255',
+            'file' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx|max:25600',
         ]);
 
-        $categoryName = $validated['category_name'] ?: 'Uncategorized Documents';
+        // Default to Uncategorized Documents if category is empty/not provided
+        $categoryName = !empty($validated['category_name']) ? $validated['category_name'] : 'Uncategorized Documents';
         $category = DocumentCategory::firstOrCreate(
             ['name' => $categoryName],
             ['description' => 'General and uncategorized institution documents.']
         );
 
-        // Generate sequential filename test[index].pdf
-        $nextIndex = Document::count() + 1;
-        $fileName = "test{$nextIndex}.pdf";
-        $relativeFilePath = "documents/{$fileName}";
-        $fullPath = storage_path("app/public/{$relativeFilePath}");
-        $dir = dirname($fullPath);
+        if ($request->hasFile('file') && $request->file('file')->isValid()) {
+            // Actual file uploaded
+            $uploadedFile = $request->file('file');
+            $filename = time() . '_' . str_replace(' ', '_', $uploadedFile->getClientOriginalName());
+            $relativeFilePath = $uploadedFile->storeAs('documents', $filename, 'public');
+            $fileExtension = strtoupper($uploadedFile->getClientOriginalExtension());
+            $fileSizeBytes = $uploadedFile->getSize();
+            $fileSizeStr = round($fileSizeBytes / 1024 / 1024, 1) . ' MB';
+        } else {
+            // Generate test PDF file test[index].pdf
+            $nextIndex = Document::count() + 1;
+            $fileName = "test{$nextIndex}.pdf";
+            $relativeFilePath = "documents/{$fileName}";
+            $fullPath = storage_path("app/public/{$relativeFilePath}");
+            $dir = dirname($fullPath);
 
-        if (!file_exists($dir)) {
-            mkdir($dir, 0755, true);
+            if (!file_exists($dir)) {
+                mkdir($dir, 0755, true);
+            }
+
+            $docTitle = $validated['title'];
+            $contentStr = "BT /F1 12 Tf 50 700 Td (Document: {$fileName} - {$docTitle}) Tj 0 -20 Td (Lorem ipsum dolor sit amet, consectetur adipiscing elit.) Tj 0 -20 Td (Bicol University Institutional Quality Assurance Office) Tj ET";
+            $len = strlen($contentStr);
+
+            $pdfContent = "%PDF-1.4\n";
+            $pdfContent .= "1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n";
+            $pdfContent .= "2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n";
+            $pdfContent .= "3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>\nendobj\n";
+            $pdfContent .= "4 0 obj\n<< /Length {$len} >>\nstream\n{$contentStr}\nendstream\nendobj\n";
+            $pdfContent .= "5 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>\nendobj\n";
+            $pdfContent .= "xref\n0 6\n0000000000 65535 f \n0000000009 00000 n \n0000000058 00000 n \n0000000115 00000 n \n0000000244 00000 n \n0000000495 00000 n \ntrailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n566\n%%EOF";
+
+            file_put_contents($fullPath, $pdfContent);
+            $fileExtension = 'PDF';
+            $fileSizeStr = '1.8 MB';
         }
-
-        $docTitle = $validated['title'];
-        $contentStr = "BT /F1 12 Tf 50 700 Td (Document: {$fileName} - {$docTitle}) Tj 0 -20 Td (Lorem ipsum dolor sit amet, consectetur adipiscing elit.) Tj 0 -20 Td (Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.) Tj 0 -20 Td (Bicol University Institutional Quality Assurance Office) Tj ET";
-        $len = strlen($contentStr);
-
-        $pdfContent = "%PDF-1.4\n";
-        $pdfContent .= "1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n";
-        $pdfContent .= "2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n";
-        $pdfContent .= "3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>\nendobj\n";
-        $pdfContent .= "4 0 obj\n<< /Length {$len} >>\nstream\n{$contentStr}\nendstream\nendobj\n";
-        $pdfContent .= "5 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>\nendobj\n";
-        $pdfContent .= "xref\n0 6\n0000000000 65535 f \n0000000009 00000 n \n0000000058 00000 n \n0000000115 00000 n \n0000000244 00000 n \n0000000495 00000 n \ntrailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n566\n%%EOF";
-
-        file_put_contents($fullPath, $pdfContent);
 
         $doc = Document::create([
             'title' => $validated['title'],
@@ -177,12 +193,11 @@ class DocumentCategoryController extends Controller
                 'id' => $doc->id,
                 'name' => $doc->title,
                 'category' => $category->name,
-                'size' => '1.8 MB',
+                'size' => $fileSizeStr,
                 'uploader' => $user->first_name . ' ' . $user->last_name,
-                'office' => $validated['office'] ?: 'IQA Central Office',
                 'date' => now()->format('Y-m-d'),
                 'status' => 'Pending',
-                'type' => 'PDF',
+                'type' => $fileExtension,
                 'file_path' => $relativeFilePath,
                 'file_url' => $fileUrl,
                 'ocrText' => 'Document uploaded: ' . $doc->title . "\nCategory: " . $category->name . "\nFile URL: " . $fileUrl,
