@@ -2,10 +2,173 @@ window.documentWorkspace = function() {
     return {
         activeTab: 'common', // 'common' or 'accreditation'
         accredLevel: null, // 'program' or 'institutional'
+        accredProgram: null, // selected program object
+        programSearchQuery: '',
+        programCollegeFilter: 'all',
         accredCategory: null, // 'Self-Survey Documents', 'Compliance Reports', 'Supporting Documents'
         accredActiveAreaId: 'area_i1',
         accredActiveParamId: 'param_i1_a',
         accredActiveSection: 'systems',
+
+        // List of academic programs for Program Accreditation selection UI
+        programsList: [
+            {
+                id: 'bscs',
+                code: 'BSCS',
+                name: 'BS Computer Science',
+                college: 'BU College of Science',
+                collegeCode: 'CS',
+                level: 'Level IV Re-accredited',
+                progress: 88,
+                totalDocs: 612,
+                verifiedDocs: 540,
+                status: 'Compliant',
+                iconBg: 'bg-blue-50 text-[#1b355a]'
+            },
+            {
+                id: 'bsit',
+                code: 'BSIT',
+                name: 'BS Information Technology',
+                college: 'BU College of Science',
+                collegeCode: 'CS',
+                level: 'Level III Accredited',
+                progress: 76,
+                totalDocs: 480,
+                verifiedDocs: 390,
+                status: 'Compliant',
+                iconBg: 'bg-sky-50 text-sky-700'
+            },
+            {
+                id: 'bsbio',
+                code: 'BSBIO',
+                name: 'BS Biology',
+                college: 'BU College of Science',
+                collegeCode: 'CS',
+                level: 'Level III Accredited',
+                progress: 92,
+                totalDocs: 510,
+                verifiedDocs: 470,
+                status: 'Compliant',
+                iconBg: 'bg-emerald-50 text-emerald-700'
+            },
+            {
+                id: 'bschem',
+                code: 'BSCHEM',
+                name: 'BS Chemistry',
+                college: 'BU College of Science',
+                collegeCode: 'CS',
+                level: 'Level II Accredited',
+                progress: 65,
+                totalDocs: 320,
+                verifiedDocs: 240,
+                status: 'Under Review',
+                iconBg: 'bg-indigo-50 text-indigo-700'
+            },
+            {
+                id: 'bsce',
+                code: 'BSCE',
+                name: 'BS Civil Engineering',
+                college: 'BU College of Engineering',
+                collegeCode: 'CENG',
+                level: 'Level III Accredited',
+                progress: 82,
+                totalDocs: 540,
+                verifiedDocs: 460,
+                status: 'Compliant',
+                iconBg: 'bg-amber-50 text-amber-700'
+            },
+            {
+                id: 'bsme',
+                code: 'BSME',
+                name: 'BS Mechanical Engineering',
+                college: 'BU College of Engineering',
+                collegeCode: 'CENG',
+                level: 'Level II Accredited',
+                progress: 70,
+                totalDocs: 410,
+                verifiedDocs: 310,
+                status: 'Under Review',
+                iconBg: 'bg-orange-50 text-orange-700'
+            },
+            {
+                id: 'bsee',
+                code: 'BSEE',
+                name: 'BS Electrical Engineering',
+                college: 'BU College of Engineering',
+                collegeCode: 'CENG',
+                level: 'Level II Accredited',
+                progress: 68,
+                totalDocs: 390,
+                verifiedDocs: 285,
+                status: 'Under Review',
+                iconBg: 'bg-[#1b355a]/10 text-[#1b355a]'
+            },
+            {
+                id: 'bacomm',
+                code: 'BACOMM',
+                name: 'BA Communication',
+                college: 'BU College of Arts & Letters',
+                collegeCode: 'CAL',
+                level: 'Level IV Re-accredited',
+                progress: 94,
+                totalDocs: 590,
+                verifiedDocs: 560,
+                status: 'Compliant',
+                iconBg: 'bg-rose-50 text-rose-700'
+            },
+            {
+                id: 'bsn',
+                code: 'BSN',
+                name: 'BS Nursing',
+                college: 'BU College of Nursing',
+                collegeCode: 'CN',
+                level: 'Level IV Re-accredited',
+                progress: 98,
+                totalDocs: 720,
+                verifiedDocs: 705,
+                status: 'Compliant',
+                iconBg: 'bg-teal-50 text-teal-700'
+            },
+            {
+                id: 'bsed',
+                code: 'BSED',
+                name: 'Bachelor of Secondary Education',
+                college: 'BU College of Education',
+                collegeCode: 'CED',
+                level: 'Level IV Re-accredited',
+                progress: 95,
+                totalDocs: 680,
+                verifiedDocs: 646,
+                status: 'Compliant',
+                iconBg: 'bg-purple-50 text-purple-700'
+            },
+            {
+                id: 'bsba',
+                code: 'BSBA',
+                name: 'BS Business Administration',
+                college: 'BU College of Business, Economics & Management',
+                collegeCode: 'CBEM',
+                level: 'Level III Accredited',
+                progress: 80,
+                totalDocs: 490,
+                verifiedDocs: 415,
+                status: 'Compliant',
+                iconBg: 'bg-yellow-50 text-yellow-700'
+            },
+            {
+                id: 'bsa',
+                code: 'BSA',
+                name: 'BS Accountancy',
+                college: 'BU College of Business, Economics & Management',
+                collegeCode: 'CBEM',
+                level: 'Level III Accredited',
+                progress: 88,
+                totalDocs: 530,
+                verifiedDocs: 480,
+                status: 'Compliant',
+                iconBg: 'bg-emerald-50 text-emerald-700'
+            }
+        ],
         
         // Accreditation mock data
         accredData: {
@@ -857,6 +1020,33 @@ window.documentWorkspace = function() {
             return this.accredData[this.accredLevel];
         },
 
+        get filteredPrograms() {
+            return this.programsList.filter(prog => {
+                if (this.programCollegeFilter !== 'all' && prog.collegeCode !== this.programCollegeFilter) {
+                    return false;
+                }
+                if (this.programSearchQuery) {
+                    const query = this.programSearchQuery.toLowerCase().trim();
+                    const match = prog.name.toLowerCase().includes(query) ||
+                                  prog.code.toLowerCase().includes(query) ||
+                                  prog.college.toLowerCase().includes(query) ||
+                                  prog.level.toLowerCase().includes(query);
+                    if (!match) return false;
+                }
+                return true;
+            });
+        },
+
+        selectProgram(prog) {
+            this.accredProgram = prog;
+            this.accredCategory = null;
+        },
+
+        clearProgram() {
+            this.accredProgram = null;
+            this.accredCategory = null;
+        },
+
         get activeArea() {
             const data = this.activeAccredData;
             if (!data) return null;
@@ -1004,6 +1194,118 @@ window.documentWorkspace = function() {
         flagDoc() {
             this.selectedDoc.status = 'Flagged';
             this.closeDrawer();
+        },
+
+        showAddProgramModal: false,
+        addProgramLoading: false,
+        addProgramError: '',
+        addProgramSuccess: '',
+        collegesList: [],
+        newProgram: {
+            name: '',
+            code: '',
+            college_id: '',
+            accreditation_level: 'Candidate Status'
+        },
+
+        init() {
+            this.initBackendData();
+        },
+
+        initBackendData() {
+            fetch('/api/programs')
+                .then(res => res.json())
+                .then(data => {
+                    if (Array.isArray(data) && data.length > 0) {
+                        this.programsList = data;
+                    }
+                })
+                .catch(err => console.error('Error fetching programs from backend:', err));
+
+            fetch('/api/colleges')
+                .then(res => res.json())
+                .then(data => {
+                    if (Array.isArray(data)) {
+                        this.collegesList = data;
+                        if (data.length > 0 && !this.newProgram.college_id) {
+                            this.newProgram.college_id = data[0].id;
+                        }
+                    }
+                })
+                .catch(err => console.error('Error fetching colleges:', err));
+        },
+
+        openAddProgramModal() {
+            this.addProgramError = '';
+            this.addProgramSuccess = '';
+            this.showAddProgramModal = true;
+            if (this.collegesList.length > 0 && !this.newProgram.college_id) {
+                this.newProgram.college_id = this.collegesList[0].id;
+            }
+        },
+
+        closeAddProgramModal() {
+            this.showAddProgramModal = false;
+        },
+
+        submitNewProgram() {
+            this.addProgramError = '';
+            this.addProgramSuccess = '';
+
+            if (!this.newProgram.name.trim()) {
+                this.addProgramError = 'Program Name is required.';
+                return;
+            }
+            if (!this.newProgram.code.trim()) {
+                this.addProgramError = 'Program Code is required.';
+                return;
+            }
+            if (!this.newProgram.college_id) {
+                this.addProgramError = 'Please select a College.';
+                return;
+            }
+
+            this.addProgramLoading = true;
+
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+
+            fetch('/api/programs', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify(this.newProgram)
+            })
+            .then(async res => {
+                const data = await res.json();
+                if (!res.ok) {
+                    throw new Error(data.message || data.error || 'Failed to save program.');
+                }
+                return data;
+            })
+            .then(data => {
+                this.addProgramLoading = false;
+                this.addProgramSuccess = 'Program created successfully!';
+                if (data.program) {
+                    this.programsList.unshift(data.program);
+                }
+                setTimeout(() => {
+                    this.closeAddProgramModal();
+                    this.newProgram = {
+                        name: '',
+                        code: '',
+                        college_id: this.collegesList[0]?.id || '',
+                        accreditation_level: 'Candidate Status'
+                    };
+                    this.addProgramSuccess = '';
+                }, 1000);
+            })
+            .catch(err => {
+                this.addProgramLoading = false;
+                this.addProgramError = err.message || 'An error occurred while creating the program.';
+            });
         }
     };
 };
