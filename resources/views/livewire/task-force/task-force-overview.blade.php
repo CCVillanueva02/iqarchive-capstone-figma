@@ -295,9 +295,7 @@
                         <span class="text-[11px] text-slate-400">3 to 150 characters. Must be unique across the system.</span>
                         <span class="text-[11px] font-mono text-slate-400">{{ strlen($name) }}/150</span>
                     </div>
-                    @error('name')
-                        <p class="text-xs font-semibold text-red-600 mt-1">{{ $message }}</p>
-                    @enderror
+
                 </div>
 
                 <!-- 2. Assigned College (Defined) & Program Input -->
@@ -332,9 +330,7 @@
                                 <flux:select.option value="{{ $prog->id }}">{{ $prog->name }} ({{ $prog->code }})</flux:select.option>
                             @endforeach
                         </flux:select>
-                        @error('program_id')
-                            <p class="text-xs font-semibold text-red-600 mt-1">{{ $message }}</p>
-                        @enderror
+
                     </div>
                 </div>
 
@@ -421,9 +417,7 @@
                         <span class="text-[11px] text-slate-400">Optional. Maximum 500 characters.</span>
                         <span class="text-[11px] font-mono text-slate-400">{{ strlen($purpose) }}/500</span>
                     </div>
-                    @error('purpose')
-                        <p class="text-xs font-semibold text-red-600 mt-1">{{ $message }}</p>
-                    @enderror
+
                 </div>
             </div>
 

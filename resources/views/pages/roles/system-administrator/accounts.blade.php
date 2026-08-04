@@ -201,9 +201,7 @@
                         placeholder="user@bicol-u.edu.ph" 
                     />
                     <p class="text-[11px] text-slate-400 mt-1">Must match official Google Workspace domain (@bicol-u.edu.ph).</p>
-                    @error('email')
-                        <p class="text-xs font-semibold text-red-600 mt-1">{{ $message }}</p>
-                    @enderror
+
                 </div>
                 
                 <!-- 2. Primary Role Selector -->
@@ -214,9 +212,7 @@
                             <flux:select.option value="{{ $role->id }}">{{ $role->description }}</flux:select.option>
                         @endforeach
                     </flux:select>
-                    @error('role_id')
-                        <p class="text-xs font-semibold text-red-600 mt-1">{{ $message }}</p>
-                    @enderror
+
                 </div>
 
                 <!-- Additional Roles (Multi-Role Support) -->
@@ -248,9 +244,7 @@
                     @else
                         <p class="text-[11px] text-slate-400 mt-1">Required for College/Dept Head, Program Chair, and IQA Members.</p>
                     @endif
-                    @error('college_id')
-                        <p class="text-xs font-semibold text-red-600 mt-1">{{ $message }}</p>
-                    @enderror
+
                 </div>
 
                 <!-- Program (Optional) -->
@@ -300,9 +294,7 @@
                         required 
                         placeholder="user@bicol-u.edu.ph" 
                     />
-                    @error('email')
-                        <p class="text-xs font-semibold text-red-600 mt-1">{{ $message }}</p>
-                    @enderror
+
                 </div>
                 
                 <div>
@@ -311,9 +303,7 @@
                             <flux:select.option value="{{ $role->id }}">{{ $role->description }}</flux:select.option>
                         @endforeach
                     </flux:select>
-                    @error('role_id')
-                        <p class="text-xs font-semibold text-red-600 mt-1">{{ $message }}</p>
-                    @enderror
+
                 </div>
 
                 <div>
@@ -341,9 +331,7 @@
                     @if($this->isCollegeRequired())
                         <p class="text-[11px] font-semibold text-amber-600 mt-1">Required for College Head, Program Chair, and IQA Member roles.</p>
                     @endif
-                    @error('college_id')
-                        <p class="text-xs font-semibold text-red-600 mt-1">{{ $message }}</p>
-                    @enderror
+
                 </div>
 
                 <div>
