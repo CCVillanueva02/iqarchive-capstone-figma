@@ -30,6 +30,53 @@ $bodyClass = 'min-h-screen bg-[#f4f6fa] antialiased text-zinc-800';
                 {{ $slot }}
             </flux:main>
         </x-layouts::app.sidebar>
+
+        @persist('sidebar-loader')
+            <div x-data="{
+                    loading: false,
+                    startTime: 0,
+                    timer: null,
+                    showLoader() {
+                        if (this.timer) clearTimeout(this.timer);
+                        this.startTime = Date.now();
+                        this.loading = true;
+                    },
+                    hideLoader() {
+                        const elapsed = Date.now() - this.startTime;
+                        const remaining = Math.max(0, 2000 - elapsed);
+                        this.timer = setTimeout(() => {
+                            this.loading = false;
+                        }, remaining);
+                    }
+                 }"
+                 x-init="
+                    document.addEventListener('livewire:navigating', () => showLoader());
+                    document.addEventListener('livewire:navigated', () => hideLoader());
+                 "
+                 x-show="loading"
+                 x-cloak
+                 x-transition:enter="transition ease-out duration-200"
+                 x-transition:enter-start="opacity-0 scale-95"
+                 x-transition:enter-end="opacity-100 scale-100"
+                 x-transition:leave="transition ease-in duration-300"
+                 x-transition:leave-start="opacity-100 scale-100"
+                 x-transition:leave-end="opacity-0 scale-95"
+                 class="fixed inset-y-0 right-0 left-0 lg:left-64 z-[9999] flex items-center justify-center bg-[#f4f6fa]/80 backdrop-blur-xs select-none"
+                 style="display: none;">
+                <div class="bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl p-6 shadow-2xl flex flex-col items-center gap-4 max-w-xs w-full mx-4">
+                    <!-- Animated Dual-Ring Spinner -->
+                    <div class="relative w-12 h-12 flex items-center justify-center">
+                        <div class="absolute inset-0 rounded-full border-3 border-slate-100"></div>
+                        <div class="absolute inset-0 rounded-full border-3 border-[#002B61] border-t-transparent animate-spin"></div>
+                        <div class="absolute w-7 h-7 rounded-full border-2 border-[#F47920] border-b-transparent animate-spin" style="animation-direction: reverse; animation-duration: 0.6s;"></div>
+                    </div>
+                    <div class="flex flex-col items-center text-center">
+                        <span class="text-xs font-extrabold text-[#002B61] tracking-wider uppercase">Loading Workspace</span>
+                        <span class="text-[11px] text-zinc-400 font-medium mt-0.5">Please wait...</span>
+                    </div>
+                </div>
+            </div>
+        @endpersist
     @else
         <x-layouts::app.header>
             <flux:main class="min-h-[calc(100vh-64px)] flex flex-col justify-between !p-0">
