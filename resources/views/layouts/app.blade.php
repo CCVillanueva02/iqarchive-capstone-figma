@@ -43,7 +43,7 @@ $bodyClass = 'min-h-screen bg-[#f4f6fa] antialiased text-zinc-800';
                     },
                     hideLoader() {
                         const elapsed = Date.now() - this.startTime;
-                        const remaining = Math.max(0, 2000 - elapsed);
+                        const remaining = Math.max(0, 700 - elapsed);
                         this.timer = setTimeout(() => {
                             this.loading = false;
                         }, remaining);
