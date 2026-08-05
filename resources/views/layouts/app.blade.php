@@ -50,20 +50,30 @@ $bodyClass = 'min-h-screen bg-[#f4f6fa] antialiased text-zinc-800';
                     }
                  }"
                  x-init="
+                    document.addEventListener('pointerdown', (e) => {
+                        if (e.target.closest('a[wire\\:navigate]')) {
+                            showLoader();
+                        }
+                    }, true);
+                    document.addEventListener('click', (e) => {
+                        if (e.target.closest('a[wire\\:navigate]')) {
+                            showLoader();
+                        }
+                    }, true);
                     document.addEventListener('livewire:navigating', () => showLoader());
                     document.addEventListener('livewire:navigated', () => hideLoader());
                  "
                  x-show="loading"
                  x-cloak
-                 x-transition:enter="transition ease-out duration-200"
-                 x-transition:enter-start="opacity-0 scale-95"
-                 x-transition:enter-end="opacity-100 scale-100"
-                 x-transition:leave="transition ease-in duration-300"
-                 x-transition:leave-start="opacity-100 scale-100"
-                 x-transition:leave-end="opacity-0 scale-95"
-                 class="fixed inset-y-0 right-0 left-0 lg:left-64 z-[9999] flex items-center justify-center bg-[#f4f6fa]/80 backdrop-blur-xs select-none"
+                 x-transition:enter="transition-opacity ease-out duration-75"
+                 x-transition:enter-start="opacity-0"
+                 x-transition:enter-end="opacity-100"
+                 x-transition:leave="transition-opacity ease-in duration-200"
+                 x-transition:leave-start="opacity-100"
+                 x-transition:leave-end="opacity-0"
+                 class="fixed inset-y-0 right-0 left-0 lg:left-64 z-[9999] flex items-center justify-center bg-[#f4f6fa] select-none"
                  style="display: none;">
-                <div class="bg-white/95 backdrop-blur-md border border-slate-200/80 rounded-2xl p-6 shadow-2xl flex flex-col items-center gap-4 max-w-xs w-full mx-4">
+                <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xl flex flex-col items-center gap-4 max-w-xs w-full mx-4">
                     <!-- Animated Dual-Ring Spinner -->
                     <div class="relative w-12 h-12 flex items-center justify-center">
                         <div class="absolute inset-0 rounded-full border-3 border-slate-100"></div>
