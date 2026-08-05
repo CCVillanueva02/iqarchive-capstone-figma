@@ -86,7 +86,7 @@ class DocumentCategoryController extends Controller
             ->get()
             ->map(function ($doc) {
                 $filePath = $doc->file_path ?: ('documents/' . $doc->title . '.pdf');
-                $fileUrl = asset('storage/' . $filePath);
+                $fileUrl = route('documents.serve', ['id' => $doc->id]);
 
                 return [
                     'id' => $doc->id,
@@ -185,7 +185,7 @@ class DocumentCategoryController extends Controller
             'visibility' => 'public',
         ]);
 
-        $fileUrl = asset('storage/' . $relativeFilePath);
+        $fileUrl = route('documents.serve', ['id' => $doc->id]);
 
         return response()->json([
             'message' => 'Document uploaded successfully.',
@@ -203,5 +203,29 @@ class DocumentCategoryController extends Controller
                 'ocrText' => 'Document uploaded: ' . $doc->title . "\nCategory: " . $category->name . "\nFile URL: " . $fileUrl,
             ]
         ], 201);
+    }
+
+    /**
+     * Serve a document via an HTML wrapper page so the browser tab title
+     * shows the document title instead of the PDF's internal metadata title.
+     */
+    public function serveDocument($id)
+    {
+        $doc = Document::findOrFail($id);
+
+        $filePath = $doc->file_path;
+        $storagePath = storage_path('app/public/' . $filePath);
+
+        if (!$filePath || !file_exists($storagePath)) {
+            abort(404, 'Document file not found.');
+        }
+
+        // Pass the raw storage URL to embed inside the viewer page
+        $fileUrl = asset('storage/' . $filePath);
+
+        return view('pages.document-viewer', [
+            'title'   => $doc->title,
+            'fileUrl' => $fileUrl,
+        ]);
     }
 }

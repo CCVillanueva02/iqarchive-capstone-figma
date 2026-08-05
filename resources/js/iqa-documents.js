@@ -1012,7 +1012,8 @@ window.documentWorkspace = function() {
             office: '',
             type: '',
             status: '',
-            ocrText: ''
+            ocrText: '',
+            fileUrl: ''
         },
 
         get activeAccredData() {
