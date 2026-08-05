@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GoogleAuthController;
+use App\Http\Controllers\SubmissionController;
 
 Route::view('/', 'welcome')->name('home');
 
@@ -168,6 +169,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Task Force Management Overview & Create Modal (Accessible to authenticated roles)
     Route::get('task-forces', \App\Livewire\TaskForce\TaskForceOverview::class)
         ->name('task-forces.index');
+
+    // Document Submission Store (Program Chair / College Head / Task Force / IQA Member)
+    Route::post('submissions/store', [SubmissionController::class, 'store'])->name('submissions.store');
+    Route::post('submissions/{id}/review', [SubmissionController::class, 'review'])->name('submissions.review');
+    Route::get('documents/{id}/serve', [SubmissionController::class, 'serveDocument'])->name('documents.serve');
 
     // Program Management & Accreditation API routes
     Route::get('api/programs', [\App\Http\Controllers\ProgramController::class, 'index'])->name('api.programs.index');
