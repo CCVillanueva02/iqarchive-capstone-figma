@@ -169,50 +169,19 @@
                 </template>
             </div>
 
-            <!-- Filter Pills by College -->
-            <div class="flex overflow-x-auto gap-1.5 pb-1 lg:pb-0 text-xs select-none">
-                <button type="button"
-                    class="px-3.5 py-2 rounded-lg font-bold transition cursor-pointer whitespace-nowrap"
-                    :class="programCollegeFilter === 'all' ? 'bg-[#1b355a] text-white shadow-3xs' : 'bg-white text-zinc-600 border border-slate-200 hover:bg-slate-50'"
-                    @click="programCollegeFilter = 'all'">
-                    All Colleges
-                </button>
-                <button type="button"
-                    class="px-3.5 py-2 rounded-lg font-bold transition cursor-pointer whitespace-nowrap"
-                    :class="programCollegeFilter === 'CS' ? 'bg-[#1b355a] text-white shadow-3xs' : 'bg-white text-zinc-600 border border-slate-200 hover:bg-slate-50'"
-                    @click="programCollegeFilter = 'CS'">
-                    Science (CS)
-                </button>
-                <button type="button"
-                    class="px-3.5 py-2 rounded-lg font-bold transition cursor-pointer whitespace-nowrap"
-                    :class="programCollegeFilter === 'CENG' ? 'bg-[#1b355a] text-white shadow-3xs' : 'bg-white text-zinc-600 border border-slate-200 hover:bg-slate-50'"
-                    @click="programCollegeFilter = 'CENG'">
-                    Engineering (CENG)
-                </button>
-                <button type="button"
-                    class="px-3.5 py-2 rounded-lg font-bold transition cursor-pointer whitespace-nowrap"
-                    :class="programCollegeFilter === 'CAL' ? 'bg-[#1b355a] text-white shadow-3xs' : 'bg-white text-zinc-600 border border-slate-200 hover:bg-slate-50'"
-                    @click="programCollegeFilter = 'CAL'">
-                    Arts & Letters (CAL)
-                </button>
-                <button type="button"
-                    class="px-3.5 py-2 rounded-lg font-bold transition cursor-pointer whitespace-nowrap"
-                    :class="programCollegeFilter === 'CED' ? 'bg-[#1b355a] text-white shadow-3xs' : 'bg-white text-zinc-600 border border-slate-200 hover:bg-slate-50'"
-                    @click="programCollegeFilter = 'CED'">
-                    Education (CED)
-                </button>
-                <button type="button"
-                    class="px-3.5 py-2 rounded-lg font-bold transition cursor-pointer whitespace-nowrap"
-                    :class="programCollegeFilter === 'CN' ? 'bg-[#1b355a] text-white shadow-3xs' : 'bg-white text-zinc-600 border border-slate-200 hover:bg-slate-50'"
-                    @click="programCollegeFilter = 'CN'">
-                    Nursing (CN)
-                </button>
-                <button type="button"
-                    class="px-3.5 py-2 rounded-lg font-bold transition cursor-pointer whitespace-nowrap"
-                    :class="programCollegeFilter === 'CBEM' ? 'bg-[#1b355a] text-white shadow-3xs' : 'bg-white text-zinc-600 border border-slate-200 hover:bg-slate-50'"
-                    @click="programCollegeFilter = 'CBEM'">
-                    CBEM
-                </button>
+            <!-- Filter Dropdown by College -->
+            <div class="flex items-center gap-3 w-full sm:w-auto">
+                <span class="text-xs text-zinc-400 font-semibold whitespace-nowrap">Filter by College:</span>
+                <select x-model="programCollegeFilter"
+                    class="w-full sm:w-auto px-3.5 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-[#1b355a] focus:outline-none focus:ring-2 focus:ring-[#1b355a]/20 focus:border-[#1b355a] shadow-3xs cursor-pointer transition min-w-[180px]">
+                    <option value="all">All Colleges</option>
+                    <option value="CS">Science (CS)</option>
+                    <option value="CENG">Engineering (CENG)</option>
+                    <option value="CAL">Arts & Letters (CAL)</option>
+                    <option value="CED">Education (CED)</option>
+                    <option value="CN">Nursing (CN)</option>
+                    <option value="CBEM">CBEM</option>
+                </select>
             </div>
         </div>
 
