@@ -23,6 +23,19 @@
                 </div>
             </div>
 
+            <!-- Under Development Notice Banner -->
+            <div class="p-4 bg-amber-50 border border-amber-200/80 rounded-2xl flex items-center gap-3.5 text-amber-900 text-sm font-semibold select-none shadow-3xs">
+                <div class="w-9 h-9 rounded-xl bg-amber-100/80 text-amber-600 flex items-center justify-center shrink-0 animate-pulse">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                    </svg>
+                </div>
+                <div>
+                    <span class="font-extrabold text-amber-900 block text-sm">Notice: Page Under Development</span>
+                    <span class="text-xs text-amber-700 font-normal">This Submission Evaluation workspace is currently under development. Some features may be limited or subject to change.</span>
+                </div>
+            </div>
+
             <!-- Area Selector Horizontal Tablist (Starts directly with Areas) -->
             <div class="flex overflow-x-auto gap-4 pb-2 w-full select-none scrollbar-thin">
                 <template x-for="area in activeAccredData?.areas" :key="area.id">
