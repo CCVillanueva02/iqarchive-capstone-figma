@@ -204,4 +204,40 @@ class DocumentCategoryController extends Controller
             ]
         ], 201);
     }
+
+    /**
+     * Delete a document by ID — removes DB record and physical file from storage.
+     */
+    public function destroyDocument($id)
+    {
+        $user = auth()->user();
+
+        if (!$user) {
+            return response()->json(['error' => 'Unauthenticated.'], 401);
+        }
+
+        $allowedRoles = ['iqa-admin', 'iqa-member', 'system-administrator'];
+        $isAllowed = in_array($user->role, $allowedRoles)
+            || $user->hasRole('iqa-admin')
+            || $user->hasRole('iqa-member')
+            || $user->hasRole('system-administrator');
+
+        if (!$isAllowed) {
+            return response()->json(['error' => 'Unauthorized.'], 403);
+        }
+
+        $doc = Document::findOrFail($id);
+
+        // Delete the physical file from storage if it exists
+        if ($doc->file_path) {
+            $fullPath = storage_path('app/public/' . $doc->file_path);
+            if (file_exists($fullPath)) {
+                unlink($fullPath);
+            }
+        }
+
+        $doc->delete();
+
+        return response()->json(['message' => 'Document deleted successfully.']);
+    }
 }
