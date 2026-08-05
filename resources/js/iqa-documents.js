@@ -1147,6 +1147,74 @@ window.documentWorkspace = function() {
             this.closeDrawer();
         },
 
+        async deleteDoc(doc) {
+            if (!doc) return;
+            
+            const result = await Swal.fire({
+                title: 'Delete Document?',
+                text: `Are you sure you want to permanently delete "${doc.name}"? This action cannot be undone.`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#3b82f6',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel',
+                customClass: {
+                    popup: 'rounded-2xl border border-slate-200/60 shadow-lg font-sans',
+                    title: 'text-[#1b355a] font-bold text-xl',
+                    confirmButton: 'px-6 py-2.5 rounded-xl font-semibold text-white',
+                    cancelButton: 'px-6 py-2.5 rounded-xl font-semibold text-zinc-700 bg-slate-100 hover:bg-slate-200'
+                }
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+                    const response = await fetch(`/api/common-documents/${doc.id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken,
+                            'Accept': 'application/json'
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.error || 'Failed to delete document');
+                    }
+
+                    Swal.fire({
+                        title: 'Deleted!',
+                        text: data.message || 'Your document has been deleted.',
+                        icon: 'success',
+                        confirmButtonColor: '#F47920',
+                        customClass: {
+                            popup: 'rounded-2xl border border-slate-200/60 shadow-lg font-sans',
+                            title: 'text-[#1b355a] font-bold text-xl',
+                            confirmButton: 'px-6 py-2.5 rounded-xl font-semibold text-white'
+                        }
+                    });
+
+                    this.documents = this.documents.filter(d => d.id !== doc.id);
+                    
+                    if (this.selectedDoc && this.selectedDoc.id === doc.id) {
+                        this.closeDrawer();
+                    }
+
+                    this.initCategories();
+
+                } catch (error) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: error.message || 'An error occurred while deleting the document.',
+                        icon: 'error',
+                        confirmButtonColor: '#F47920'
+                    });
+                }
+            }
+        },
+
         showAddProgramModal: false,
         addProgramLoading: false,
         addProgramError: '',

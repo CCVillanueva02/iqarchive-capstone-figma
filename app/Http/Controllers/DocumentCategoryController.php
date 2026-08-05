@@ -204,4 +204,41 @@ class DocumentCategoryController extends Controller
             ]
         ], 201);
     }
+
+    /**
+     * Delete a document.
+     */
+    public function destroy($id)
+    {
+        $user = auth()->user();
+
+        if (!$user) {
+            return response()->json(['error' => 'Unauthenticated.'], 401);
+        }
+
+        $doc = Document::find($id);
+
+        if (!$doc) {
+            return response()->json(['error' => 'Document not found.'], 404);
+        }
+
+        $allowedRoles = ['iqa-admin', 'system-administrator'];
+        $isPowerUser = in_array($user->role, $allowedRoles) || $user->hasRole('iqa-admin') || $user->hasRole('system-administrator');
+        
+        $isUploader = $doc->uploaded_by === $user->id;
+
+        if (!$isPowerUser && !$isUploader) {
+            return response()->json(['error' => 'Unauthorized. Only the uploader, IQA Admin, or System Admin can delete this document.'], 403);
+        }
+
+        if ($doc->file_path && \Storage::disk('public')->exists($doc->file_path)) {
+            \Storage::disk('public')->delete($doc->file_path);
+        }
+
+        $doc->delete();
+
+        return response()->json([
+            'message' => 'Document deleted successfully.'
+        ], 200);
+    }
 }
