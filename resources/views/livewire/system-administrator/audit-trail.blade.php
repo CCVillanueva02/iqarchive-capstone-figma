@@ -35,15 +35,6 @@
             />
         </div>
 
-        <div class="w-full md:w-64">
-            <flux:select wire:model.live="userId" label="User / Actor">
-                <option value="">All Users</option>
-                @foreach($users as $u)
-                    <option value="{{ $u->id }}">{{ $u->name }}</option>
-                @endforeach
-            </flux:select>
-        </div>
-
         @if($tab !== 'sessions')
         <div class="w-full md:w-64">
             <flux:select wire:model.live="actionType" label="Action Type">
@@ -53,9 +44,11 @@
                 @endforeach
             </flux:select>
         </div>
+        @else
+        <div class="w-full md:w-64 invisible"></div>
         @endif
 
-        @if($search || $userId || $actionType)
+        @if($search || $actionType)
             <div class="w-full md:w-auto">
                 <flux:button 
                     wire:click="clearFilters" 
@@ -77,7 +70,7 @@
                 <table class="w-full text-left border-collapse font-sans text-xs">
                     <thead>
                         <tr class="bg-slate-50/75 border-b border-slate-100 text-zinc-400 font-bold uppercase tracking-wider select-none text-[11px]">
-                            <th class="py-3.5 px-6">User (Actor)</th>
+
                             <th class="py-3.5 px-6">Login Time</th>
                             <th class="py-3.5 px-6">Logout Time</th>
                             <th class="py-3.5 px-6">Session Duration</th>
@@ -103,26 +96,6 @@
                                 }
                             @endphp
                             <tr class="hover:bg-slate-50/40 transition text-slate-700">
-                                <!-- User -->
-                                <td class="py-4 px-6">
-                                    @if($loginLog->user)
-                                        <div class="flex items-center gap-3">
-                                            @if($loginLog->user->avatar)
-                                                <img src="{{ Storage::url($loginLog->user->avatar) }}" alt="{{ $loginLog->user->name }}" class="w-8 h-8 rounded-full object-cover border border-[#1b355a]/10 shrink-0" />
-                                            @else
-                                                <div class="w-8 h-8 rounded-full bg-[#1b355a] text-white font-bold text-xs flex items-center justify-center shrink-0">
-                                                    {{ $loginLog->user->initials() }}
-                                                </div>
-                                            @endif
-                                            <div class="flex flex-col">
-                                                <span class="font-bold text-[#1b355a] text-xs">{{ $loginLog->user->name }}</span>
-                                                <span class="text-zinc-400 text-[10px] font-mono">{{ $loginLog->user->email }}</span>
-                                            </div>
-                                        </div>
-                                    @else
-                                        <span class="text-zinc-400 italic">System / Unknown</span>
-                                    @endif
-                                </td>
 
                                 <!-- Login Time Column -->
                                 <td class="py-4 px-6 font-mono text-slate-600 whitespace-nowrap">
@@ -160,7 +133,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="py-12 px-6 text-center text-zinc-400">
+                                <td colspan="3" class="py-12 px-6 text-center text-zinc-400">
                                     No access or session records found matching your query.
                                 </td>
                             </tr>
@@ -173,7 +146,7 @@
                     <thead>
                         <tr class="bg-slate-50/75 border-b border-slate-100 text-zinc-400 font-bold uppercase tracking-wider select-none text-[11px]">
                             <th class="py-3.5 px-6">Timestamp</th>
-                            <th class="py-3.5 px-6">User (Actor / Admin)</th>
+
                             <th class="py-3.5 px-6">Action</th>
                             <th class="py-3.5 px-6">Details</th>
                         </tr>
@@ -212,16 +185,7 @@
                                 <td class="py-4 px-6 text-zinc-500 font-mono text-[11px] whitespace-nowrap">
                                     {{ $log->timestamp->format('M d, Y') }} &bull; {{ $log->timestamp->format('h:i:s A') }}
                                 </td>
-                                <td class="py-4 px-6">
-                                    @if($log->user)
-                                        <div class="flex flex-col">
-                                            <span class="font-bold text-[#1b355a] text-xs">{{ $log->user->name }}</span>
-                                            <span class="text-zinc-400 text-[10px] font-mono">{{ $log->user->email }}</span>
-                                        </div>
-                                    @else
-                                        <span class="text-zinc-400 italic">System Administrator</span>
-                                    @endif
-                                </td>
+
                                 <td class="py-4 px-6 whitespace-nowrap">
                                     <span class="px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide inline-block {{ $badgeColor }}">
                                         {{ $actionLabel }}
@@ -233,7 +197,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="py-12 px-6 text-center text-zinc-400">
+                                <td colspan="3" class="py-12 px-6 text-center text-zinc-400">
                                     No account creation or management logs found.
                                 </td>
                             </tr>
@@ -246,7 +210,7 @@
                     <thead>
                         <tr class="bg-slate-50/75 border-b border-slate-100 text-zinc-400 font-bold uppercase tracking-wider select-none text-[11px]">
                             <th class="py-3.5 px-6">Timestamp</th>
-                            <th class="py-3.5 px-6">User (Actor)</th>
+
                             <th class="py-3.5 px-6">Action</th>
                             <th class="py-3.5 px-6">Details</th>
                         </tr>
@@ -283,16 +247,7 @@
                                 <td class="py-4 px-6 text-zinc-500 font-mono text-[11px] whitespace-nowrap">
                                     {{ $log->timestamp->format('M d, Y') }} &bull; {{ $log->timestamp->format('h:i:s A') }}
                                 </td>
-                                <td class="py-4 px-6">
-                                    @if($log->user)
-                                        <div class="flex flex-col">
-                                            <span class="font-bold text-[#1b355a] text-xs">{{ $log->user->name }}</span>
-                                            <span class="text-zinc-400 text-[10px] font-mono">{{ $log->user->email }}</span>
-                                        </div>
-                                    @else
-                                        <span class="text-zinc-400 italic">System / Unknown</span>
-                                    @endif
-                                </td>
+
                                 <td class="py-4 px-6 whitespace-nowrap">
                                     <span class="px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide inline-block {{ $badgeColor }}">
                                         {{ $actionLabel }}
@@ -304,7 +259,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="py-12 px-6 text-center text-zinc-400">
+                                <td colspan="3" class="py-12 px-6 text-center text-zinc-400">
                                     No file modification or approval logs found.
                                 </td>
                             </tr>

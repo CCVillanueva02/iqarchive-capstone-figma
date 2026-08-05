@@ -13,13 +13,11 @@ class AuditTrail extends Component
 
     public $tab = 'sessions'; // sessions, accounts, files
     public $search = '';
-    public $userId = '';
     public $actionType = '';
 
     protected $queryString = [
         'tab' => ['except' => 'sessions'],
         'search' => ['except' => ''],
-        'userId' => ['except' => ''],
         'actionType' => ['except' => ''],
     ];
 
@@ -35,11 +33,6 @@ class AuditTrail extends Component
         $this->resetPage();
     }
 
-    public function updatingUserId()
-    {
-        $this->resetPage();
-    }
-
     public function updatingActionType()
     {
         $this->resetPage();
@@ -48,12 +41,12 @@ class AuditTrail extends Component
     public function updatedTab()
     {
         $this->resetPage();
-        $this->reset(['search', 'userId', 'actionType']);
+        $this->reset(['search', 'actionType']);
     }
 
     public function clearFilters()
     {
-        $this->reset(['search', 'userId', 'actionType']);
+        $this->reset(['search', 'actionType']);
         $this->resetPage();
     }
 
@@ -68,9 +61,6 @@ class AuditTrail extends Component
                           ->orWhere('last_name', 'like', '%' . $this->search . '%')
                           ->orWhere('email', 'like', '%' . $this->search . '%');
                     });
-                })
-                ->when($this->userId, function ($query) {
-                    $query->where('user_id', $this->userId);
                 })
                 ->orderBy('timestamp', 'desc');
 
@@ -107,9 +97,6 @@ class AuditTrail extends Component
                           });
                     });
                 })
-                ->when($this->userId, function ($query) {
-                    $query->where('user_id', $this->userId);
-                })
                 ->when($this->actionType, function ($query) {
                     $query->where('action', $this->actionType);
                 })
@@ -129,9 +116,6 @@ class AuditTrail extends Component
                           });
                     });
                 })
-                ->when($this->userId, function ($query) {
-                    $query->where('user_id', $this->userId);
-                })
                 ->when($this->actionType, function ($query) {
                     $query->where('action', $this->actionType);
                 })
@@ -139,7 +123,6 @@ class AuditTrail extends Component
                 ->paginate(10);
         }
 
-        $users = User::orderBy('first_name')->get();
         
         $actionsQuery = AuditLog::select('action')->distinct()->orderBy('action');
         if ($this->tab === 'sessions') {
@@ -153,7 +136,6 @@ class AuditTrail extends Component
 
         return view('livewire.iqa-admin.audit-trail', [
             'logs' => $logs,
-            'users' => $users,
             'actions' => $actions,
         ]);
     }
