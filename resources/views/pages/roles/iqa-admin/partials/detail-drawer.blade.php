@@ -62,10 +62,19 @@
             </div>
         </div>
 
-        <!-- Document Evidentiary Text Preview (OCR) -->
+        <!-- Document Preview -->
         <div class="flex-1 flex flex-col min-h-[300px]">
             <div class="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">📄 Original Document Preview</div>
-            <div class="flex-1 bg-[#fafbfc] border border-slate-100 rounded-xl p-4 font-mono text-xs leading-relaxed text-zinc-500 overflow-y-auto select-all whitespace-pre-wrap" x-text="selectedDoc.ocrText">
+            <div class="flex-1 bg-[#fafbfc] border border-slate-100 rounded-xl overflow-hidden" style="min-height: 300px;">
+                <iframe
+                    x-bind:src="selectedDoc.file_url ? selectedDoc.file_url + '#toolbar=0&navpanes=0&scrollbar=0&view=FitH' : ''"
+                    class="w-full h-full"
+                    style="min-height: 300px; border: none;"
+                    x-show="selectedDoc.file_url"
+                ></iframe>
+                <div x-show="!selectedDoc.file_url" class="flex items-center justify-center h-full text-zinc-400 text-sm p-4">
+                    No preview available.
+                </div>
             </div>
         </div>
 
