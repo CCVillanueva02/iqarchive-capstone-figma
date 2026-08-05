@@ -86,7 +86,7 @@ class DocumentCategoryController extends Controller
             ->get()
             ->map(function ($doc) {
                 $filePath = $doc->file_path ?: ('documents/' . $doc->title . '.pdf');
-                $fileUrl = route('documents.serve', ['id' => $doc->id]);
+                $fileUrl = asset('storage/' . $filePath);
 
                 return [
                     'id' => $doc->id,
@@ -185,7 +185,7 @@ class DocumentCategoryController extends Controller
             'visibility' => 'public',
         ]);
 
-        $fileUrl = route('documents.serve', ['id' => $doc->id]);
+        $fileUrl = asset('storage/' . $relativeFilePath);
 
         return response()->json([
             'message' => 'Document uploaded successfully.',
