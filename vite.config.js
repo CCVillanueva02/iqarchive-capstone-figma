@@ -13,7 +13,6 @@ export default defineConfig({
                 'resources/js/app.js',
                 'resources/js/passkeys.js',
                 'resources/js/iqa-documents.js',
-                'resources/js/monitoring-dashboard.js',
                 'resources/js/iqa-submissions.js',
             ],
             refresh: true,
