@@ -656,6 +656,7 @@
 
     <!-- Modal for Adding New Program (For IQA Admin & System Admin) -->
     <div x-show="showAddProgramModal" 
+         x-cloak
          @click="closeAddProgramModal()" 
          x-transition:enter="transition ease-out duration-300"
          x-transition:enter-start="opacity-0"
@@ -667,6 +668,7 @@
         
         <div @click.stop 
              x-show="showAddProgramModal"
+             x-cloak
              x-transition:enter="transition ease-out duration-300 transform"
              x-transition:enter-start="opacity-0 scale-95"
              x-transition:enter-end="opacity-100 scale-100"

@@ -214,6 +214,7 @@
 
     <!-- Modal for Creating New Category (IQA Admin & System Admin only) -->
     <div x-show="showCreateCategoryModal" 
+         x-cloak
          @click="closeCreateCategoryModal()" 
          x-transition:enter="transition ease-out duration-300"
          x-transition:enter-start="opacity-0"
@@ -225,6 +226,7 @@
         
         <div @click.stop 
              x-show="showCreateCategoryModal"
+             x-cloak
              x-transition:enter="transition ease-out duration-300 transform"
              x-transition:enter-start="opacity-0 scale-95"
              x-transition:enter-end="opacity-100 scale-100"
@@ -285,6 +287,7 @@
 
     <!-- Modal for Uploading Common Document -->
     <div x-show="showUploadModal" 
+         x-cloak
          @click="closeUploadModal()" 
          x-transition:enter="transition ease-out duration-300"
          x-transition:enter-start="opacity-0"
@@ -296,6 +299,7 @@
         
         <div @click.stop 
              x-show="showUploadModal"
+             x-cloak
              x-transition:enter="transition ease-out duration-300 transform"
              x-transition:enter-start="opacity-0 scale-95"
              x-transition:enter-end="opacity-100 scale-100"
