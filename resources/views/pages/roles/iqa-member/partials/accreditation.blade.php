@@ -12,31 +12,49 @@
             </div>
         </template>
 
-        <!-- Level 2 Breadcrumbs (Program Selection) -->
-        <template x-if="accredLevel === 'program' && accredProgram === null">
+        <!-- Level 2 Breadcrumbs (College Selection) -->
+        <template x-if="accredLevel === 'program' && accredCollege === null">
             <div class="bg-white border border-slate-200/60 rounded-xl px-4 py-3.5 shadow-3xs flex items-center gap-1.5 text-sm text-zinc-400 font-medium">
-                <button @click="accredLevel = null; accredProgram = null; accredCategory = null" class="mr-2 flex items-center justify-center p-1.5 rounded-md hover:bg-slate-50 border border-slate-200/50 text-[#1b355a] cursor-pointer">
+                <button @click="accredLevel = null; accredCollege = null; accredProgram = null; accredCategory = null" class="mr-2 flex items-center justify-center p-1.5 rounded-md hover:bg-slate-50 border border-slate-200/50 text-[#1b355a] cursor-pointer">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
                     </svg>
                 </button>
-                <span class="hover:underline cursor-pointer" @click="accredLevel = null; accredProgram = null; accredCategory = null">Documents</span>
+                <span class="hover:underline cursor-pointer" @click="accredLevel = null; accredCollege = null; accredProgram = null; accredCategory = null">Documents</span>
                 <span>&gt;</span>
                 <span class="text-zinc-655 font-semibold">Program Accreditation</span>
             </div>
         </template>
 
-        <!-- Level 3 Breadcrumbs (Program Sub-Categories) -->
-        <template x-if="accredLevel === 'program' && accredProgram !== null && accredCategory === null">
+        <!-- Level 2.5 Breadcrumbs (Program Selection inside College) -->
+        <template x-if="accredLevel === 'program' && accredCollege !== null && accredProgram === null">
             <div class="bg-white border border-slate-200/60 rounded-xl px-4 py-3.5 shadow-3xs flex items-center gap-1.5 text-sm text-zinc-400 font-medium">
-                <button @click="accredProgram = null; accredCategory = null" class="mr-2 flex items-center justify-center p-1.5 rounded-md hover:bg-slate-50 border border-slate-200/50 text-[#1b355a] cursor-pointer">
+                <button @click="clearCollege()" class="mr-2 flex items-center justify-center p-1.5 rounded-md hover:bg-slate-50 border border-slate-200/50 text-[#1b355a] cursor-pointer">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
                     </svg>
                 </button>
-                <span class="hover:underline cursor-pointer" @click="accredLevel = null; accredProgram = null; accredCategory = null">Documents</span>
+                <span class="hover:underline cursor-pointer" @click="accredLevel = null; accredCollege = null; accredProgram = null; accredCategory = null">Documents</span>
                 <span>&gt;</span>
-                <span class="hover:underline cursor-pointer" @click="accredProgram = null; accredCategory = null">Program Accreditation</span>
+                <span class="hover:underline cursor-pointer" @click="clearCollege()">Program Accreditation</span>
+                <span>&gt;</span>
+                <span class="text-zinc-655 font-semibold" x-text="accredCollege?.name"></span>
+            </div>
+        </template>
+
+        <!-- Level 3 Breadcrumbs (Program Sub-Categories) -->
+        <template x-if="accredLevel === 'program' && accredCollege !== null && accredProgram !== null && accredCategory === null">
+            <div class="bg-white border border-slate-200/60 rounded-xl px-4 py-3.5 shadow-3xs flex items-center gap-1.5 text-sm text-zinc-400 font-medium">
+                <button @click="clearProgram()" class="mr-2 flex items-center justify-center p-1.5 rounded-md hover:bg-slate-50 border border-slate-200/50 text-[#1b355a] cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                    </svg>
+                </button>
+                <span class="hover:underline cursor-pointer" @click="accredLevel = null; accredCollege = null; accredProgram = null; accredCategory = null">Documents</span>
+                <span>&gt;</span>
+                <span class="hover:underline cursor-pointer" @click="clearCollege(); clearProgram()">Program Accreditation</span>
+                <span>&gt;</span>
+                <span class="hover:underline cursor-pointer" @click="clearProgram()" x-text="accredCollege?.name"></span>
                 <span>&gt;</span>
                 <span class="text-zinc-655 font-semibold" x-text="accredProgram?.name"></span>
             </div>
@@ -57,16 +75,18 @@
         </template>
 
         <!-- Level 4 Breadcrumbs (Program Workspace Category) -->
-        <template x-if="accredLevel === 'program' && accredProgram !== null && accredCategory !== null">
+        <template x-if="accredLevel === 'program' && accredCollege !== null && accredProgram !== null && accredCategory !== null">
             <div class="bg-white border border-slate-200/60 rounded-xl px-4 py-3.5 shadow-3xs flex items-center gap-1.5 text-sm text-zinc-400 font-medium">
                 <button @click="accredCategory = null" class="mr-2 flex items-center justify-center p-1.5 rounded-md hover:bg-slate-50 border border-slate-200/50 text-[#1b355a] cursor-pointer">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
                     </svg>
                 </button>
-                <span class="hover:underline cursor-pointer" @click="accredLevel = null; accredProgram = null; accredCategory = null">Documents</span>
+                <span class="hover:underline cursor-pointer" @click="accredLevel = null; accredCollege = null; accredProgram = null; accredCategory = null">Documents</span>
                 <span>&gt;</span>
-                <span class="hover:underline cursor-pointer" @click="accredCategory = null">Program Accreditation</span>
+                <span class="hover:underline cursor-pointer" @click="clearCollege(); clearProgram()">Program Accreditation</span>
+                <span>&gt;</span>
+                <span class="hover:underline cursor-pointer" @click="clearProgram()" x-text="accredCollege?.name"></span>
                 <span>&gt;</span>
                 <span class="hover:underline cursor-pointer" @click="accredCategory = null" x-text="accredProgram?.name"></span>
                 <span>&gt;</span>
@@ -104,8 +124,8 @@
                     Evaluate specific degree programs for academic quality, faculty portfolio, and student facilities.
                 </p>
             </div>
-            <button type="button" @click="accredLevel = 'program'; accredProgram = null; accredCategory = null" class="w-full mt-2 bg-[#1b355a] hover:bg-[#112239] text-white py-3 rounded-lg font-bold text-sm shadow-2xs transition cursor-pointer">
-                Select Program
+            <button type="button" @click="accredLevel = 'program'; accredCollege = null; accredProgram = null; accredCategory = null" class="w-full mt-2 bg-[#1b355a] hover:bg-[#112239] text-white py-3 rounded-lg font-bold text-sm shadow-2xs transition cursor-pointer">
+                Select College
             </button>
         </div>
 
@@ -120,14 +140,97 @@
                     Evaluate university-wide administration, leadership, fiscal soundness, and governance structure.
                 </p>
             </div>
-            <button type="button" @click="accredLevel = 'institutional'; accredProgram = null; accredCategory = null" class="w-full mt-2 bg-[#f27224] hover:bg-[#d65f1a] text-white py-3 rounded-lg font-bold text-sm shadow-2xs transition cursor-pointer">
+            <button type="button" @click="accredLevel = 'institutional'; accredCollege = null; accredProgram = null; accredCategory = null" class="w-full mt-2 bg-[#f27224] hover:bg-[#d65f1a] text-white py-3 rounded-lg font-bold text-sm shadow-2xs transition cursor-pointer">
                 Select Institutional
             </button>
         </div>
     </div>
 
-    <!-- LEVEL 1.5: PROGRAM SELECTION UI (When Program Accreditation is clicked) -->
-    <div x-show="accredLevel === 'program' && accredProgram === null" x-transition class="flex flex-col gap-6 w-full py-2">
+    <!-- LEVEL 1.5: COLLEGE SELECTION UI (When Program Accreditation is clicked) -->
+    <div x-show="accredLevel === 'program' && accredCollege === null" x-transition class="flex flex-col gap-6 w-full py-2">
+        <!-- Hero Title Banner for College Selection -->
+        <div class="bg-white border border-slate-200/70 rounded-2xl p-6 shadow-3xs flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div class="flex items-start gap-4">
+                <div class="w-12 h-12 rounded-xl bg-blue-50 text-[#1b355a] flex items-center justify-center shrink-0 mt-1">
+                    <x-lucide-building-2 class="w-6 h-6" />
+                </div>
+                <div>
+                    <h2 class="text-xl font-extrabold text-[#1b355a]">Select Academic College</h2>
+                    <p class="text-xs text-zinc-500 mt-1 leading-relaxed max-w-2xl">
+                        Select a college below to view its academic degree programs, accreditation compliance records, and self-survey documents.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Available Colleges Count Badge -->
+            <div class="flex items-center gap-2 bg-slate-50 border border-slate-200/60 px-3.5 py-2 rounded-xl shrink-0 self-start md:self-auto">
+                <span class="text-xs font-semibold text-zinc-500">Colleges:</span>
+                <span class="text-xs font-extrabold text-[#1b355a] bg-white px-2 py-0.5 rounded-md border border-slate-200/50" x-text="availableColleges.length"></span>
+            </div>
+        </div>
+
+        <!-- Search Input for Colleges -->
+        <div class="relative max-w-md">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+            </svg>
+            <input type="text"
+                x-model="collegeSearchQuery"
+                placeholder="Search college name, code (e.g. CS, CENG, CAL)..."
+                class="w-full pl-10 pr-9 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-medium text-zinc-800 focus:outline-none focus:ring-2 focus:ring-[#1b355a]/20 focus:border-[#1b355a] shadow-3xs" />
+            <template x-if="collegeSearchQuery">
+                <button @click="collegeSearchQuery = ''" class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </template>
+        </div>
+
+        <!-- College Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <template x-for="col in availableColleges" :key="col.id">
+                <div class="bg-white border border-slate-200/70 rounded-2xl p-5 shadow-3xs hover:shadow-md transition-all duration-300 flex flex-col justify-between gap-5 group cursor-pointer" @click="selectCollege(col)">
+                    <div class="flex flex-col gap-4">
+                        <div class="flex items-center justify-between gap-2">
+                            <div class="w-11 h-11 rounded-xl flex items-center justify-center font-black text-sm shrink-0" :class="col.iconBg || 'bg-blue-50 text-[#1b355a]'">
+                                <span x-text="col.code"></span>
+                            </div>
+                            <span class="text-[10px] font-bold px-2.5 py-1 rounded-full bg-slate-100 text-zinc-600 border border-slate-200" x-text="col.programCount + ' Programs'"></span>
+                        </div>
+
+                        <div>
+                            <h3 class="text-base font-bold text-[#1b355a] group-hover:text-blue-600 transition" x-text="col.name"></h3>
+                            <p class="text-xs text-zinc-500 mt-1.5 leading-relaxed line-clamp-2" x-text="col.description"></p>
+                        </div>
+                    </div>
+
+                    <button type="button" @click.stop="selectCollege(col)" class="w-full bg-[#1b355a] hover:bg-[#112239] text-white py-2.5 rounded-xl font-bold text-xs shadow-3xs transition cursor-pointer flex items-center justify-center gap-2">
+                        <span>View Academic Programs</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                        </svg>
+                    </button>
+                </div>
+            </template>
+        </div>
+
+        <!-- Empty Search State for Colleges -->
+        <template x-if="availableColleges.length === 0">
+            <div class="flex flex-col items-center justify-center text-center p-12 bg-white border border-slate-200/60 rounded-2xl shadow-3xs gap-3">
+                <div class="w-12 h-12 rounded-full bg-slate-100 text-zinc-400 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                    </svg>
+                </div>
+                <h3 class="text-sm font-bold text-[#1b355a]">No Colleges Found</h3>
+                <p class="text-xs text-zinc-400 max-w-sm">No academic college matching "<span x-text="collegeSearchQuery"></span>" was found.</p>
+            </div>
+        </template>
+    </div>
+
+    <!-- LEVEL 1.6: PROGRAM SELECTION UI (When College is selected) -->
+    <div x-show="accredLevel === 'program' && accredCollege !== null && accredProgram === null" x-transition class="flex flex-col gap-6 w-full py-2">
         <!-- Hero Title Banner for Program Selection -->
         <div class="bg-white border border-slate-200/70 rounded-2xl p-6 shadow-3xs flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div class="flex items-start gap-4">
@@ -135,21 +238,30 @@
                     <x-lucide-graduation-cap class="w-6 h-6" />
                 </div>
                 <div>
-                    <h2 class="text-xl font-extrabold text-[#1b355a]">Select Academic Program</h2>
+                    <h2 class="text-xl font-extrabold text-[#1b355a]" x-text="accredCollege?.name ? accredCollege.name + ' Degree Programs' : 'Select Academic Program'"></h2>
                     <p class="text-xs text-zinc-500 mt-1 leading-relaxed max-w-2xl">
-                        Select a degree program below to access its self-survey accreditation files, compliance reports, and supporting documents.
+                        Select a degree program under <strong class="text-[#1b355a]" x-text="accredCollege?.name"></strong> to access its self-survey accreditation files, compliance reports, and supporting documents.
                     </p>
                 </div>
             </div>
 
-            <!-- College Count Badge -->
-            <div class="flex items-center gap-2 bg-slate-50 border border-slate-200/60 px-3.5 py-2 rounded-xl shrink-0 self-start md:self-auto">
-                <span class="text-xs font-semibold text-zinc-500">Available Programs:</span>
-                <span class="text-xs font-extrabold text-[#1b355a] bg-white px-2 py-0.5 rounded-md border border-slate-200/50" x-text="filteredPrograms.length + ' / ' + programsList.length"></span>
+            <!-- Action Buttons: Count Badge & Change College Button -->
+            <div class="flex flex-wrap items-center gap-3 shrink-0 self-start md:self-auto">
+                <button type="button" @click="clearCollege()" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-zinc-700 font-bold text-xs rounded-xl shadow-2xs transition cursor-pointer flex items-center gap-1.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                    </svg>
+                    <span>Change College</span>
+                </button>
+
+                <div class="flex items-center gap-2 bg-slate-50 border border-slate-200/60 px-3.5 py-2 rounded-xl">
+                    <span class="text-xs font-semibold text-zinc-500">Available Programs:</span>
+                    <span class="text-xs font-extrabold text-[#1b355a] bg-white px-2 py-0.5 rounded-md border border-slate-200/50" x-text="filteredPrograms.length"></span>
+                </div>
             </div>
         </div>
 
-        <!-- Search Bar and College Category Filters -->
+        <!-- Search Bar -->
         <div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
             <!-- Search Input -->
             <div class="relative flex-1 max-w-md">
@@ -168,21 +280,6 @@
                     </button>
                 </template>
             </div>
-
-            <!-- Filter Dropdown by College -->
-            <div class="flex items-center gap-3 w-full sm:w-auto">
-                <span class="text-xs text-zinc-400 font-semibold whitespace-nowrap">Filter by College:</span>
-                <select x-model="programCollegeFilter"
-                    class="w-full sm:w-auto px-3.5 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-[#1b355a] focus:outline-none focus:ring-2 focus:ring-[#1b355a]/20 focus:border-[#1b355a] shadow-3xs cursor-pointer transition min-w-[180px]">
-                    <option value="all">All Colleges</option>
-                    <option value="CS">Science (CS)</option>
-                    <option value="CENG">Engineering (CENG)</option>
-                    <option value="CAL">Arts & Letters (CAL)</option>
-                    <option value="CED">Education (CED)</option>
-                    <option value="CN">Nursing (CN)</option>
-                    <option value="CBEM">CBEM</option>
-                </select>
-            </div>
         </div>
 
         <!-- Program Cards Grid -->
@@ -196,17 +293,17 @@
                                 <div class="w-10 h-10 rounded-xl flex items-center justify-center font-black text-xs shrink-0" :class="prog.iconBg || 'bg-blue-50 text-[#1b355a]'">
                                     <span x-text="prog.code"></span>
                                 </div>
-                                <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block" x-text="prog.collegeCode"></span>
+                                <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block" x-text="prog.collegeCode || accredCollege?.code"></span>
                             </div>
                         </div>
 
                         <!-- Program Title and College -->
                         <div>
                             <h3 class="text-base font-bold text-[#1b355a] group-hover:text-blue-600 transition" x-text="prog.name"></h3>
-                            <p class="text-xs text-zinc-500 mt-1" x-text="prog.college"></p>
+                            <p class="text-xs text-zinc-500 mt-1" x-text="prog.college || accredCollege?.name"></p>
                         </div>
 
-                        <!-- Accreditation Status / Level Info (Fetched from Backend) -->
+                        <!-- Accreditation Status / Level Info -->
                         <div class="flex items-center justify-between pt-3 border-t border-slate-100 text-xs">
                             <span class="text-zinc-400 font-medium">Accreditation Level:</span>
                             <span class="font-extrabold px-2.5 py-1 rounded-full border text-[11px]"
@@ -234,10 +331,10 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
                     </svg>
                 </div>
-                <h3 class="text-base font-extrabold text-zinc-800">No matching programs found</h3>
-                <p class="text-xs text-zinc-500 max-w-sm">No academic programs match your current search query or college filter.</p>
-                <button type="button" @click="programSearchQuery = ''; programCollegeFilter = 'all'" class="mt-2 text-xs font-bold text-[#1b355a] hover:underline cursor-pointer">
-                    Clear Filters
+                <h3 class="text-base font-extrabold text-zinc-800">No programs found for this college</h3>
+                <p class="text-xs text-zinc-500 max-w-sm">No academic programs match your current search query within <span class="font-bold text-[#1b355a]" x-text="accredCollege?.name"></span>.</p>
+                <button type="button" @click="programSearchQuery = ''" class="mt-2 text-xs font-bold text-[#1b355a] hover:underline cursor-pointer">
+                    Clear Search
                 </button>
             </div>
         </template>

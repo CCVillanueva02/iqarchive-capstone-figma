@@ -2,7 +2,9 @@ window.documentWorkspace = function() {
     return {
         activeTab: 'common', // 'common' or 'accreditation'
         accredLevel: null, // 'program' or 'institutional'
+        accredCollege: null, // selected college object
         accredProgram: null, // selected program object
+        collegeSearchQuery: '',
         programSearchQuery: '',
         programCollegeFilter: 'all',
         accredCategory: null, // 'Self-Survey Documents', 'Compliance Reports', 'Supporting Documents'
@@ -1369,17 +1371,88 @@ window.documentWorkspace = function() {
             return this.accredData[this.accredLevel];
         },
 
+        get availableColleges() {
+            const defaultCollegeMeta = {
+                'CS': { code: 'CS', name: 'BU College of Science', iconBg: 'bg-blue-50 text-[#1b355a]', description: 'Computer Science, Information Technology, Biology, Chemistry' },
+                'CENG': { code: 'CENG', name: 'BU College of Engineering', iconBg: 'bg-amber-50 text-amber-700', description: 'Civil, Mechanical, and Electrical Engineering' },
+                'CAL': { code: 'CAL', name: 'BU College of Arts & Letters', iconBg: 'bg-rose-50 text-rose-700', description: 'Communication, Languages, Humanities' },
+                'CED': { code: 'CED', name: 'BU College of Education', iconBg: 'bg-purple-50 text-purple-700', description: 'Elementary and Secondary Teacher Education' },
+                'CN': { code: 'CN', name: 'BU College of Nursing', iconBg: 'bg-teal-50 text-teal-700', description: 'Nursing and Health Sciences' },
+                'CBEM': { code: 'CBEM', name: 'BU College of Business, Economics & Management', iconBg: 'bg-emerald-50 text-emerald-700', description: 'Business Administration, Accountancy, Economics' }
+            };
+
+            let list = [];
+
+            if (this.collegesList && this.collegesList.length > 0) {
+                list = this.collegesList.map(c => {
+                    const code = c.code || (c.name ? c.name.split(' ').pop() : 'COL');
+                    const meta = defaultCollegeMeta[code] || { code, name: c.name, iconBg: 'bg-slate-100 text-[#1b355a]', description: 'Academic College Unit' };
+                    const count = this.programsList.filter(p => p.college_id === c.id || p.collegeCode === code || (p.college && p.college.toLowerCase().includes(c.name.toLowerCase()))).length;
+                    return {
+                        id: c.id || code,
+                        code: code,
+                        name: c.name || meta.name,
+                        description: meta.description,
+                        iconBg: meta.iconBg,
+                        programCount: count
+                    };
+                });
+            } else {
+                const codes = ['CS', 'CENG', 'CAL', 'CED', 'CN', 'CBEM'];
+                list = codes.map(code => {
+                    const meta = defaultCollegeMeta[code];
+                    const count = this.programsList.filter(p => p.collegeCode === code || (p.college && p.college.includes(meta.name))).length;
+                    return {
+                        id: code.toLowerCase(),
+                        code: code,
+                        name: meta.name,
+                        description: meta.description,
+                        iconBg: meta.iconBg,
+                        programCount: count
+                    };
+                });
+            }
+
+            if (this.collegeSearchQuery) {
+                const q = this.collegeSearchQuery.toLowerCase().trim();
+                list = list.filter(c => c.name.toLowerCase().includes(q) || c.code.toLowerCase().includes(q) || (c.description && c.description.toLowerCase().includes(q)));
+            }
+
+            return list;
+        },
+
+        selectCollege(college) {
+            this.accredCollege = college;
+            this.accredProgram = null;
+            this.accredCategory = null;
+            this.programSearchQuery = '';
+        },
+
+        clearCollege() {
+            this.accredCollege = null;
+            this.accredProgram = null;
+            this.accredCategory = null;
+            this.collegeSearchQuery = '';
+        },
+
         get filteredPrograms() {
             return this.programsList.filter(prog => {
-                if (this.programCollegeFilter !== 'all' && prog.collegeCode !== this.programCollegeFilter) {
+                if (this.accredCollege) {
+                    const selectedCode = this.accredCollege.code;
+                    const selectedId = this.accredCollege.id;
+                    const matchCollege = (prog.collegeCode && prog.collegeCode === selectedCode) ||
+                                         (prog.college_id && prog.college_id === selectedId) ||
+                                         (prog.college && this.accredCollege.name && prog.college.toLowerCase().includes(this.accredCollege.name.toLowerCase()));
+                    if (!matchCollege) return false;
+                } else if (this.programCollegeFilter !== 'all' && prog.collegeCode !== this.programCollegeFilter) {
                     return false;
                 }
                 if (this.programSearchQuery) {
                     const query = this.programSearchQuery.toLowerCase().trim();
                     const match = prog.name.toLowerCase().includes(query) ||
                                   prog.code.toLowerCase().includes(query) ||
-                                  prog.college.toLowerCase().includes(query) ||
-                                  prog.level.toLowerCase().includes(query);
+                                  (prog.college && prog.college.toLowerCase().includes(query)) ||
+                                  (prog.level && prog.level.toLowerCase().includes(query));
                     if (!match) return false;
                 }
                 return true;
