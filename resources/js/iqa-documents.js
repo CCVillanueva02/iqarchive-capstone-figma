@@ -10,6 +10,12 @@ window.documentWorkspace = function() {
         accredActiveParamId: 'param_i1_a',
         accredActiveSection: 'systems',
 
+        // === Self-Survey State ===
+        selfSurveyActiveAreaId: null,      // null = show area grid; string = viewing that area's table
+        selfSurveyRatings: {},             // { indicatorKey: 1-5 | null }
+        selfSurveyBestPractices: {},       // { paramKey: 'text...' }
+        selfSurveySaving: false,           // debounce guard
+
         // List of academic programs for Program Accreditation selection UI
         programsList: [
             {
@@ -997,6 +1003,348 @@ window.documentWorkspace = function() {
             }
         },
 
+        // ================================================================
+        // INSTITUTIONAL SELF-SURVEY – Static Pre-Population Data
+        // Used for visual reference when DB has no seeded records.
+        // ================================================================
+        institutionalSurveyAreas: [
+            {
+                id: 'ss_area_i1',
+                code: 'Area I',
+                title: 'Governance and Management (including resource generation)',
+                color: 'bg-blue-600',
+                lightColor: 'bg-blue-50',
+                textColor: 'text-blue-700',
+                borderColor: 'border-blue-200',
+                parameters: [
+                    {
+                        id: 'ss_param_i1_a',
+                        code: 'A',
+                        title: 'GOVERNANCE – ORGANIZATIONAL STRUCTURE',
+                        sections: {
+                            system: [
+                                { id: 'ss_s_i1a_1', code: 'S.1', statement: 'The governance of the institution is clearly defined in the organizational structure.' },
+                                { id: 'ss_s_i1a_2', code: 'S.2', statement: 'The powers, functions/duties and responsibilities of key officials are clearly delineated.' },
+                                { id: 'ss_s_i1a_3', code: 'S.3', statement: 'Administrative and academic councils/bodies exist to assist in decision-making as defined in the organizational structure.' }
+                            ],
+                            implementation: [
+                                { id: 'ss_i_i1a_1', code: 'I.1', statement: 'The policy-making body demonstrates strong leadership and supports the institution\'s programs and operations.' },
+                                { id: 'ss_i_i1a_2', code: 'I.2', statement: 'The key officials follow the functional relationship structure in decision-making.' },
+                                { id: 'ss_i_i1a_3', code: 'I.3', statement: 'The organizational structure is used in defining the lines of communication and coordination.' },
+                                { id: 'ss_i_i1a_4', code: 'I.4', statement: 'The Administrative and Academic Councils function effectively.' }
+                            ],
+                            outcome: [
+                                { id: 'ss_o_i1a_1', code: 'O.1', statement: 'Functions of various units and implementation of programs and projects are well-coordinated.' },
+                                { id: 'ss_o_i1a_2', code: 'O.2', statement: 'Conflict in administrative jurisdictions and official relationships are minimal.' },
+                                { id: 'ss_o_i1a_3', code: 'O.3', statement: 'Stakeholders feel satisfied in the management of the institution.' },
+                                { id: 'ss_o_i1a_4', code: 'O.4', statement: 'Stronger cooperation and coordination among individuals and units are observable.' },
+                                { id: 'ss_o_i1a_5', code: 'O.5', statement: 'The governing body demonstrates integrity and objectivity in all transactions in the pursuit of the mission of the institution.' },
+                                { id: 'ss_o_i1a_6', code: 'O.6', statement: 'Various stakeholders express satisfaction with openness and transparency in the dissemination of the Governing Body\'s decisions.' }
+                            ]
+                        }
+                    },
+                    {
+                        id: 'ss_param_i1_b',
+                        code: 'B',
+                        title: 'PROBITY',
+                        sections: {
+                            system: [
+                                { id: 'ss_s_i1b_1', code: 'S.1', statement: 'Guidelines and protocols are in place.' },
+                                { id: 'ss_s_i1b_2', code: 'S.2', statement: 'Major policies and decisions are available.' },
+                                { id: 'ss_s_i1b_3', code: 'S.3', statement: 'Policies and decisions are in accordance with existing laws, rules and regulations.' }
+                            ],
+                            implementation: [
+                                { id: 'ss_i_i1b_1', code: 'I.1', statement: 'Key officials exercise sound judgment and prudent decision-making.' },
+                                { id: 'ss_i_i1b_2', code: 'I.2', statement: 'Officials are accountable and transparent in all transactions.' }
+                            ],
+                            outcome: [
+                                { id: 'ss_o_i1b_1', code: 'O.1', statement: 'The institution demonstrates integrity and probity in governance.' },
+                                { id: 'ss_o_i1b_2', code: 'O.2', statement: 'Stakeholders express confidence in the institution\'s leadership.' }
+                            ]
+                        }
+                    },
+                    {
+                        id: 'ss_param_i1_c',
+                        code: 'C',
+                        title: 'PLANNING',
+                        sections: {
+                            system: [
+                                { id: 'ss_s_i1c_1', code: 'S.1', statement: 'A system of planning exists and is operational.' },
+                                { id: 'ss_s_i1c_2', code: 'S.2', statement: 'All units participate in the planning process.' }
+                            ],
+                            implementation: [
+                                { id: 'ss_i_i1c_1', code: 'I.1', statement: 'The institutional plan is implemented, monitored, and evaluated.' },
+                                { id: 'ss_i_i1c_2', code: 'I.2', statement: 'Resources are allocated according to the institutional plan.' }
+                            ],
+                            outcome: [
+                                { id: 'ss_o_i1c_1', code: 'O.1', statement: 'Goals and targets in the institutional plan are achieved.' },
+                                { id: 'ss_o_i1c_2', code: 'O.2', statement: 'The institution is responsive to changes in its external environment.' }
+                            ]
+                        }
+                    }
+                ]
+            },
+            {
+                id: 'ss_area_i2',
+                code: 'Area II',
+                title: 'Administration',
+                color: 'bg-indigo-600',
+                lightColor: 'bg-indigo-50',
+                textColor: 'text-indigo-700',
+                borderColor: 'border-indigo-200',
+                parameters: [
+                    {
+                        id: 'ss_param_i2_a',
+                        code: 'A',
+                        title: 'ADMINISTRATIVE STAFFING AND PERSONNEL MANAGEMENT',
+                        sections: {
+                            system: [
+                                { id: 'ss_s_i2a_1', code: 'S.1', statement: 'Administrative offices are staffed with qualified personnel meeting civil service requirements.' },
+                                { id: 'ss_s_i2a_2', code: 'S.2', statement: 'A merit-based promotion and appointment system exists.' }
+                            ],
+                            implementation: [
+                                { id: 'ss_i_i2a_1', code: 'I.1', statement: 'Personnel policies are implemented fairly and consistently.' },
+                                { id: 'ss_i_i2a_2', code: 'I.2', statement: 'Staff development programs are regularly conducted.' }
+                            ],
+                            outcome: [
+                                { id: 'ss_o_i2a_1', code: 'O.1', statement: 'Administrative offices operate efficiently and effectively.' },
+                                { id: 'ss_o_i2a_2', code: 'O.2', statement: 'Staff demonstrate competence and professionalism.' }
+                            ]
+                        }
+                    },
+                    {
+                        id: 'ss_param_i2_b',
+                        code: 'B',
+                        title: 'FISCAL MANAGEMENT',
+                        sections: {
+                            system: [
+                                { id: 'ss_s_i2b_1', code: 'S.1', statement: 'A budgeting system is established and operational.' },
+                                { id: 'ss_s_i2b_2', code: 'S.2', statement: 'Financial reports are regularly prepared and disseminated.' }
+                            ],
+                            implementation: [
+                                { id: 'ss_i_i2b_1', code: 'I.1', statement: 'Budget allocations are in accordance with institutional priorities.' },
+                                { id: 'ss_i_i2b_2', code: 'I.2', statement: 'Financial transactions are properly documented and audited.' }
+                            ],
+                            outcome: [
+                                { id: 'ss_o_i2b_1', code: 'O.1', statement: 'The institution demonstrates sound fiscal management.' },
+                                { id: 'ss_o_i2b_2', code: 'O.2', statement: 'Resources are utilized efficiently and judiciously.' }
+                            ]
+                        }
+                    }
+                ]
+            },
+            {
+                id: 'ss_area_i3',
+                code: 'Area III',
+                title: 'Curriculum and Instruction',
+                color: 'bg-violet-600',
+                lightColor: 'bg-violet-50',
+                textColor: 'text-violet-700',
+                borderColor: 'border-violet-200',
+                parameters: [
+                    {
+                        id: 'ss_param_i3_a',
+                        code: 'A',
+                        title: 'CURRICULUM DEVELOPMENT AND IMPLEMENTATION',
+                        sections: {
+                            system: [
+                                { id: 'ss_s_i3a_1', code: 'S.1', statement: 'The institution has clearly defined instructional objectives aligned with its VMGO.' },
+                                { id: 'ss_s_i3a_2', code: 'S.2', statement: 'Curricula are regularly reviewed and updated in consultation with stakeholders.' }
+                            ],
+                            implementation: [
+                                { id: 'ss_i_i3a_1', code: 'I.1', statement: 'Faculty implement the approved curriculum effectively.' },
+                                { id: 'ss_i_i3a_2', code: 'I.2', statement: 'Innovative pedagogical approaches are employed in instruction.' }
+                            ],
+                            outcome: [
+                                { id: 'ss_o_i3a_1', code: 'O.1', statement: 'Graduates demonstrate competencies expected by industry and society.' },
+                                { id: 'ss_o_i3a_2', code: 'O.2', statement: 'Board examination passing rates meet or exceed national averages.' }
+                            ]
+                        }
+                    }
+                ]
+            },
+            {
+                id: 'ss_area_i4',
+                code: 'Area IV',
+                title: 'Support to Students',
+                color: 'bg-emerald-600',
+                lightColor: 'bg-emerald-50',
+                textColor: 'text-emerald-700',
+                borderColor: 'border-emerald-200',
+                parameters: [
+                    {
+                        id: 'ss_param_i4_a',
+                        code: 'A',
+                        title: 'STUDENT SERVICES AND WELFARE',
+                        sections: {
+                            system: [
+                                { id: 'ss_s_i4a_1', code: 'S.1', statement: 'A comprehensive student handbook is published and disseminated annually.' },
+                                { id: 'ss_s_i4a_2', code: 'S.2', statement: 'Guidance and counseling services are available to all students.' }
+                            ],
+                            implementation: [
+                                { id: 'ss_i_i4a_1', code: 'I.1', statement: 'Student organizations are active and duly recognized.' },
+                                { id: 'ss_i_i4a_2', code: 'I.2', statement: 'Scholarship and financial assistance programs are operational.' }
+                            ],
+                            outcome: [
+                                { id: 'ss_o_i4a_1', code: 'O.1', statement: 'Students feel adequately supported in their academic journey.' },
+                                { id: 'ss_o_i4a_2', code: 'O.2', statement: 'Retention and graduation rates are satisfactory.' }
+                            ]
+                        }
+                    }
+                ]
+            },
+            {
+                id: 'ss_area_i5',
+                code: 'Area V',
+                title: 'Research',
+                color: 'bg-amber-600',
+                lightColor: 'bg-amber-50',
+                textColor: 'text-amber-700',
+                borderColor: 'border-amber-200',
+                parameters: [
+                    {
+                        id: 'ss_param_i5_a',
+                        code: 'A',
+                        title: 'RESEARCH AGENDA AND PRODUCTION',
+                        sections: {
+                            system: [
+                                { id: 'ss_s_i5a_1', code: 'S.1', statement: 'Research priorities are aligned with regional and national development goals.' },
+                                { id: 'ss_s_i5a_2', code: 'S.2', statement: 'A research agenda is formulated and approved.' }
+                            ],
+                            implementation: [
+                                { id: 'ss_i_i5a_1', code: 'I.1', statement: 'Faculty engage in research activities aligned with the university research agenda.' },
+                                { id: 'ss_i_i5a_2', code: 'I.2', statement: 'Research outputs are published in reputable journals.' }
+                            ],
+                            outcome: [
+                                { id: 'ss_o_i5a_1', code: 'O.1', statement: 'Research outputs contribute to knowledge and community development.' },
+                                { id: 'ss_o_i5a_2', code: 'O.2', statement: 'The institution receives research recognition and awards.' }
+                            ]
+                        }
+                    }
+                ]
+            },
+            {
+                id: 'ss_area_i6',
+                code: 'Area VI',
+                title: 'Extension and Community Involvement',
+                color: 'bg-orange-600',
+                lightColor: 'bg-orange-50',
+                textColor: 'text-orange-700',
+                borderColor: 'border-orange-200',
+                parameters: [
+                    {
+                        id: 'ss_param_i6_a',
+                        code: 'A',
+                        title: 'EXTENSION PROGRAMS AND SERVICES',
+                        sections: {
+                            system: [
+                                { id: 'ss_s_i6a_1', code: 'S.1', statement: 'Community extension programs are designed based on community needs assessment.' },
+                                { id: 'ss_s_i6a_2', code: 'S.2', statement: 'Extension activities are aligned with the institutional VMGO.' }
+                            ],
+                            implementation: [
+                                { id: 'ss_i_i6a_1', code: 'I.1', statement: 'Faculty and students actively participate in extension activities.' },
+                                { id: 'ss_i_i6a_2', code: 'I.2', statement: 'Community partners are engaged in co-implementing programs.' }
+                            ],
+                            outcome: [
+                                { id: 'ss_o_i6a_1', code: 'O.1', statement: 'Extension programs create measurable positive impact on communities.' },
+                                { id: 'ss_o_i6a_2', code: 'O.2', statement: 'The institution is recognized as a partner in community development.' }
+                            ]
+                        }
+                    }
+                ]
+            },
+            {
+                id: 'ss_area_i7',
+                code: 'Area VII',
+                title: 'Library',
+                color: 'bg-teal-600',
+                lightColor: 'bg-teal-50',
+                textColor: 'text-teal-700',
+                borderColor: 'border-teal-200',
+                parameters: [
+                    {
+                        id: 'ss_param_i7_a',
+                        code: 'A',
+                        title: 'LIBRARY HOLDINGS AND RESOURCES',
+                        sections: {
+                            system: [
+                                { id: 'ss_s_i7a_1', code: 'S.1', statement: 'Adequate physical and digital academic reference holdings are available for university programs.' },
+                                { id: 'ss_s_i7a_2', code: 'S.2', statement: 'The library has a system for acquisition, cataloging, and circulation.' }
+                            ],
+                            implementation: [
+                                { id: 'ss_i_i7a_1', code: 'I.1', statement: 'Library resources are regularly updated and maintained.' },
+                                { id: 'ss_i_i7a_2', code: 'I.2', statement: 'Electronic databases and e-resources are accessible to students and faculty.' }
+                            ],
+                            outcome: [
+                                { id: 'ss_o_i7a_1', code: 'O.1', statement: 'Students and faculty make effective use of library resources.' },
+                                { id: 'ss_o_i7a_2', code: 'O.2', statement: 'Library holdings meet accreditation standards.' }
+                            ]
+                        }
+                    }
+                ]
+            },
+            {
+                id: 'ss_area_i8',
+                code: 'Area VIII',
+                title: 'Physical Plant and Facilities',
+                color: 'bg-rose-600',
+                lightColor: 'bg-rose-50',
+                textColor: 'text-rose-700',
+                borderColor: 'border-rose-200',
+                parameters: [
+                    {
+                        id: 'ss_param_i8_a',
+                        code: 'A',
+                        title: 'BUILDINGS AND CAMPUS FACILITIES',
+                        sections: {
+                            system: [
+                                { id: 'ss_s_i8a_1', code: 'S.1', statement: 'University buildings comply with environmental, safety, and fire protection codes.' },
+                                { id: 'ss_s_i8a_2', code: 'S.2', statement: 'Facilities are adequate, well-maintained, and safe for use.' }
+                            ],
+                            implementation: [
+                                { id: 'ss_i_i8a_1', code: 'I.1', statement: 'Regular inspection and maintenance of facilities are conducted.' },
+                                { id: 'ss_i_i8a_2', code: 'I.2', statement: 'Facility improvement plans are implemented systematically.' }
+                            ],
+                            outcome: [
+                                { id: 'ss_o_i8a_1', code: 'O.1', statement: 'The campus environment is conducive to learning and working.' },
+                                { id: 'ss_o_i8a_2', code: 'O.2', statement: 'All buildings and facilities meet safety standards.' }
+                            ]
+                        }
+                    }
+                ]
+            },
+            {
+                id: 'ss_area_i9',
+                code: 'Area IX',
+                title: 'Laboratories',
+                color: 'bg-cyan-600',
+                lightColor: 'bg-cyan-50',
+                textColor: 'text-cyan-700',
+                borderColor: 'border-cyan-200',
+                parameters: [
+                    {
+                        id: 'ss_param_i9_a',
+                        code: 'A',
+                        title: 'LABORATORY FACILITIES AND EQUIPMENT',
+                        sections: {
+                            system: [
+                                { id: 'ss_s_i9a_1', code: 'S.1', statement: 'Specialized laboratory rooms are fully equipped with working research apparatuses.' },
+                                { id: 'ss_s_i9a_2', code: 'S.2', statement: 'Safety protocols and equipment are in place in all laboratories.' }
+                            ],
+                            implementation: [
+                                { id: 'ss_i_i9a_1', code: 'I.1', statement: 'Laboratory equipment is regularly calibrated and maintained.' },
+                                { id: 'ss_i_i9a_2', code: 'I.2', statement: 'Students follow laboratory safety rules and procedures.' }
+                            ],
+                            outcome: [
+                                { id: 'ss_o_i9a_1', code: 'O.1', statement: 'Laboratory facilities support quality research and learning.' },
+                                { id: 'ss_o_i9a_2', code: 'O.2', statement: 'Students demonstrate practical competencies through laboratory work.' }
+                            ]
+                        }
+                    }
+                ]
+            }
+        ],
+
         selectedCategory: null,
         searchQuery: '',
         filterType: 'all',
@@ -1075,6 +1423,60 @@ window.documentWorkspace = function() {
                 this.accredActiveParamId = null;
             }
             this.accredActiveSection = 'systems';
+        },
+
+        // ── Self-Survey helpers ──────────────────────────────────────
+
+        /** Open a survey area table; load saved ratings from DB */
+        selectSurveyArea(areaId) {
+            this.selfSurveyActiveAreaId = areaId;
+            this.loadSurveyRatings(areaId);
+        },
+
+        /** Fetch saved ratings for this area from the server */
+        loadSurveyRatings(areaId) {
+            const area = this.institutionalSurveyAreas.find(a => a.id === areaId);
+            if (!area) return;
+            // Collect all indicator IDs for this area to initialise the map
+            area.parameters.forEach(param => {
+                Object.values(param.sections).forEach(indicators => {
+                    indicators.forEach(ind => {
+                        if (!(ind.id in this.selfSurveyRatings)) {
+                            this.selfSurveyRatings[ind.id] = null;
+                        }
+                    });
+                });
+            });
+            // No DB seeded yet – ratings stay as null until user sets them
+        },
+
+        /** Compute the mean of IR values for a given array of indicators */
+        sectionMean(indicators) {
+            const rated = indicators
+                .map(ind => this.selfSurveyRatings[ind.id])
+                .filter(v => v !== null && v !== undefined && v !== '');
+            if (!rated.length) return null;
+            return (rated.reduce((s, v) => s + Number(v), 0) / rated.length).toFixed(2);
+        },
+
+        /** Compute PM: average of non-null section means for a parameter */
+        paramMean(param) {
+            const means = ['system', 'implementation', 'outcome']
+                .map(sec => this.sectionMean(param.sections[sec] || []))
+                .filter(v => v !== null);
+            if (!means.length) return null;
+            return (means.reduce((s, v) => s + Number(v), 0) / means.length).toFixed(2);
+        },
+
+        /** Save a single IR rating to the server (debounced) */
+        saveRating(indicatorId, value) {
+            this.selfSurveyRatings[indicatorId] = value === '' ? null : Number(value);
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+            fetch('/api/self-survey/ratings', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+                body: JSON.stringify({ indicator_id: indicatorId, rating: value === '' ? null : Number(value) })
+            }).catch(err => console.warn('Rating save failed (offline mode):', err));
         },
         categories: [],
         documents: [],

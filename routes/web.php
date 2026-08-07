@@ -187,6 +187,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('api/common-documents', [\App\Http\Controllers\DocumentCategoryController::class, 'storeDocument'])->name('api.common-documents.store');
     Route::delete('api/common-documents/{id}', [\App\Http\Controllers\DocumentCategoryController::class, 'destroyDocument'])->name('api.common-documents.destroy');
     Route::get('documents/{id}/view', [\App\Http\Controllers\DocumentCategoryController::class, 'serveDocument'])->name('documents.serve');
+
+    // Self-Survey API routes (Institutional Accreditation)
+    Route::get('api/self-survey/areas', [\App\Http\Controllers\SelfSurveyController::class, 'getAreas'])->name('api.self-survey.areas');
+    Route::get('api/self-survey/ratings', [\App\Http\Controllers\SelfSurveyController::class, 'getRatings'])->name('api.self-survey.ratings');
+    Route::post('api/self-survey/ratings', [\App\Http\Controllers\SelfSurveyController::class, 'saveRating'])->name('api.self-survey.ratings.save');
+    Route::post('api/self-survey/best-practices', [\App\Http\Controllers\SelfSurveyController::class, 'saveBestPractices'])->name('api.self-survey.best-practices');
 });
 
 if (app()->environment('local')) {

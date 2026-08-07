@@ -526,21 +526,350 @@
     </div>
 
     <!-- LEVEL 3B: SELF SURVEY VIEW -->
-    <div x-show="(accredLevel === 'institutional' || (accredLevel === 'program' && accredProgram !== null)) && accredCategory === 'Self-Survey Documents'" x-transition class="flex flex-col items-center justify-center text-center p-12 bg-white border border-slate-200/60 rounded-2xl shadow-3xs min-h-[400px] gap-4 max-w-2xl mx-auto w-full">
-        <div class="w-16 h-16 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center mb-2">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v5.75c0 .621-.504 1.125-1.125 1.125h-2.25A1.125 1.125 0 013 18.875v-5.75zM18 10.5c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v8.25c0 .621-.504 1.125-1.125 1.125h-2.25A1.125 1.125 0 0118 19.875v-8.25zM10.5 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v10.125c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625z" />
-            </svg>
+    <div x-show="(accredLevel === 'institutional' || (accredLevel === 'program' && accredProgram !== null)) && accredCategory === 'Self-Survey Documents'" x-transition class="flex flex-col gap-5 w-full">
+
+        <!-- ── Stage 1: AREA SELECTOR GRID ─────────────────────────────── -->
+        <div x-show="selfSurveyActiveAreaId === null" x-transition class="flex flex-col gap-5">
+
+            <!-- Header Banner -->
+            <div class="bg-white border border-slate-200/70 rounded-2xl p-5 shadow-3xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-11 h-11 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v5.75c0 .621-.504 1.125-1.125 1.125h-2.25A1.125 1.125 0 013 18.875v-5.75zM18 10.5c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v8.25c0 .621-.504 1.125-1.125 1.125h-2.25A1.125 1.125 0 0118 19.875v-8.25zM10.5 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v10.125c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-extrabold text-[#1b355a]">Institutional Self-Survey</h2>
+                        <p class="text-xs text-zinc-500 mt-0.5">Select an Area to begin self-rating the accreditation criteria.</p>
+                    </div>
+                </div>
+                <span class="text-[11px] font-bold text-zinc-400 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg">9 Areas · AACCUP Rating Scale 0–5</span>
+            </div>
+
+            <!-- 9 Area Boxes -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <template x-for="area in institutionalSurveyAreas" :key="area.id">
+                    <button type="button"
+                        @click="selectSurveyArea(area.id)"
+                        class="group bg-white border border-slate-200/70 rounded-2xl p-5 shadow-3xs hover:shadow-md transition-all duration-300 text-left flex flex-col gap-3 cursor-pointer hover:border-slate-350 relative overflow-hidden">
+
+                        <!-- Color accent bar -->
+                        <div class="absolute top-0 left-0 w-full h-1 rounded-t-2xl transition-all duration-300"
+                             :class="area.color + ' opacity-80'"></div>
+
+                        <div class="flex items-start gap-3 pt-1">
+                            <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 font-black text-xs transition"
+                                 :class="area.lightColor + ' ' + area.textColor">
+                                <span x-text="area.code.replace('Area ', '')"></span>
+                            </div>
+                            <div>
+                                <div class="text-[10px] font-bold uppercase tracking-wider text-zinc-400 mb-0.5" x-text="area.code"></div>
+                                <div class="text-sm font-bold text-[#1b355a] leading-snug group-hover:text-blue-700 transition" x-text="area.title"></div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between mt-1">
+                            <span class="text-[11px] text-zinc-400" x-text="area.parameters.length + ' Parameter' + (area.parameters.length > 1 ? 's' : '')"></span>
+                            <span class="text-[11px] font-bold flex items-center gap-1" :class="area.textColor">
+                                Start Rating
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+                            </span>
+                        </div>
+                    </button>
+                </template>
+            </div>
         </div>
-        <h2 class="text-lg font-extrabold text-zinc-900">Self Survey Documents Workspace</h2>
-        <p class="text-sm text-zinc-500 max-w-md leading-relaxed">
-            <span x-text="accredLevel === 'program' ? ('Self survey rating guides and scoresheets for ' + accredProgram?.name) : 'Institutional self-survey rating guides and scoresheets.'"></span>
-            Click the breadcrumbs to return to your folders.
-        </p>
-        <button type="button" @click="accredCategory = null" class="mt-2 px-6 py-2.5 bg-slate-100 hover:bg-slate-200 text-zinc-700 font-bold rounded-lg transition text-sm cursor-pointer shadow-3xs">
-            Back to Folders
-        </button>
-    </div>
+
+        <!-- ── Stage 2: SURVEY TABLE (per Area) ──────────────────────────── -->
+        <div x-show="selfSurveyActiveAreaId !== null" x-transition class="flex flex-col gap-5">
+
+
+                <!-- Back + Area Title Header -->
+                <div class="bg-white border border-slate-200/70 rounded-2xl p-5 shadow-3xs flex items-center justify-between gap-4">
+                    <div class="flex items-center gap-4">
+                        <button type="button" @click="selfSurveyActiveAreaId = null"
+                            class="flex items-center justify-center w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#1b355a] transition cursor-pointer shrink-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
+                        </button>
+                    <div>
+                            <div class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider" x-text="institutionalSurveyAreas.find(a => a.id === selfSurveyActiveAreaId)?.code"></div>
+                            <h2 class="text-base font-extrabold text-[#1b355a] mt-0.5" x-text="(institutionalSurveyAreas.find(a => a.id === selfSurveyActiveAreaId)?.code || '') + ': ' + (institutionalSurveyAreas.find(a => a.id === selfSurveyActiveAreaId)?.title || '')"></h2>
+                        </div>
+                    </div>
+                    <button type="button"
+                        @click="selfSurveyActiveAreaId = null"
+                        class="hidden sm:flex items-center gap-1.5 text-xs font-bold text-zinc-500 hover:text-[#1b355a] transition cursor-pointer">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" /></svg>
+                        All Areas
+                    </button>
+                </div>
+
+                <!-- RATING SCALE LEGEND -->
+                <div class="bg-white border border-slate-200/60 rounded-2xl shadow-3xs overflow-hidden">
+                    <div class="bg-slate-50 border-b border-slate-200 px-5 py-2.5 text-center">
+                        <span class="text-xs font-extrabold text-[#1b355a] uppercase tracking-widest">Rating Scale</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs text-center border-collapse">
+                            <thead>
+                                <tr class="bg-slate-50 border-b border-slate-200">
+                                    <th class="px-3 py-2.5 font-extrabold text-zinc-600 border-r border-slate-200 w-20">NA</th>
+                                    <th class="px-3 py-2.5 font-extrabold text-zinc-600 border-r border-slate-200 w-16">0</th>
+                                    <th class="px-3 py-2.5 font-extrabold text-zinc-800 border-r border-slate-200">1</th>
+                                    <th class="px-3 py-2.5 font-extrabold text-zinc-800 border-r border-slate-200">2</th>
+                                    <th class="px-3 py-2.5 font-extrabold text-[#1b355a] border-r border-slate-200">3</th>
+                                    <th class="px-3 py-2.5 font-extrabold text-blue-700 border-r border-slate-200">4</th>
+                                    <th class="px-3 py-2.5 font-extrabold text-emerald-700">5</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b border-slate-100">
+                                    <td class="px-3 py-2 text-zinc-500 font-semibold border-r border-slate-100">–</td>
+                                    <td class="px-3 py-2 text-zinc-500 font-semibold border-r border-slate-100">–</td>
+                                    <td class="px-3 py-2 text-zinc-700 font-bold border-r border-slate-100">Poor</td>
+                                    <td class="px-3 py-2 text-zinc-700 font-bold border-r border-slate-100">Fair</td>
+                                    <td class="px-3 py-2 text-[#1b355a] font-bold border-r border-slate-100">Satisfactory</td>
+                                    <td class="px-3 py-2 text-blue-700 font-bold border-r border-slate-100">Very Satisfactory</td>
+                                    <td class="px-3 py-2 text-emerald-700 font-bold">Excellent</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-3 py-2.5 text-zinc-500 italic leading-relaxed border-r border-slate-100 align-top">Not Applicable</td>
+                                    <td class="px-3 py-2.5 text-zinc-500 italic leading-relaxed border-r border-slate-100 align-top">Missing</td>
+                                    <td class="px-3 py-2.5 text-zinc-500 leading-relaxed border-r border-slate-100 align-top">Criterion is met minimally in some respects, but much improvement is needed to overcome weaknesses<br><span class="italic">(75% lesser than the standards)</span></td>
+                                    <td class="px-3 py-2.5 text-zinc-500 leading-relaxed border-r border-slate-100 align-top">Criterion is met in most respects, but some improvement is needed to overcome weaknesses<br><span class="italic">(50% lesser than the standards)</span></td>
+                                    <td class="px-3 py-2.5 text-zinc-500 leading-relaxed border-r border-slate-100 align-top">Criterion is met in all respects<br><span class="italic">(100% compliance with the standards)</span></td>
+                                    <td class="px-3 py-2.5 text-zinc-500 leading-relaxed border-r border-slate-100 align-top">Criterion is fully met in all respects, at a level that demonstrates good practice<br><span class="italic">(50% greater than the standards)</span></td>
+                                    <td class="px-3 py-2.5 text-zinc-500 leading-relaxed align-top">Criterion is fully met with substantial number of good practices, at a level that provides a model for others<br><span class="italic">(75% greater than the standards)</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- SURVEY TABLE -->
+                <div class="bg-white border border-slate-200/60 rounded-2xl shadow-3xs overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full border-collapse text-sm" style="table-layout:fixed; min-width:680px;">
+                            <!-- Column widths -->
+                            <colgroup>
+                                <col>
+                                <col style="width:80px;">
+                                <col style="width:100px;">
+                                <col style="width:90px;">
+                            </colgroup>
+                            <!-- Column Headers -->
+                            <thead>
+                                <tr class="bg-slate-50 border-b-2 border-slate-200" style="height:110px;">
+                                    <!-- Indicators -->
+                                    <th class="px-5 text-left text-xs font-extrabold text-[#1b355a] border-r border-slate-200 align-bottom pb-3">Indicators</th>
+                                    <!-- IR: rotated header -->
+                                    <th class="border-r border-slate-200 align-bottom p-0 text-center w-[80px] min-w-[80px] max-w-[80px]">
+                                        <div class="flex items-end justify-center pb-2.5 h-[110px] w-full overflow-hidden mx-auto">
+                                            <span class="text-[10px] font-extrabold text-[#1b355a] uppercase tracking-wider block" style="writing-mode:vertical-rl; transform:rotate(180deg); white-space:nowrap;">
+                                                Item Rating (IR)
+                                            </span>
+                                        </div>
+                                    </th>
+                                    <!-- SIOM: rotated header -->
+                                    <th class="border-r border-slate-200 align-bottom p-0 text-center w-[100px] min-w-[100px] max-w-[100px]">
+                                        <div class="flex items-end justify-center pb-2.5 h-[110px] w-full overflow-hidden mx-auto">
+                                            <span class="text-[10px] font-extrabold text-[#1b355a] uppercase tracking-wider block" style="writing-mode:vertical-rl; transform:rotate(180deg); white-space:nowrap;">
+                                                System–Implementation–Outcome Mean (SIOM)
+                                            </span>
+                                        </div>
+                                    </th>
+                                    <!-- PM: rotated header -->
+                                    <th class="align-bottom p-0 text-center w-[90px] min-w-[90px] max-w-[90px]">
+                                        <div class="flex items-end justify-center pb-2.5 h-[110px] w-full overflow-hidden mx-auto">
+                                            <span class="text-[10px] font-extrabold text-[#1b355a] uppercase tracking-wider block" style="writing-mode:vertical-rl; transform:rotate(180deg); white-space:nowrap;">
+                                                Parameter Mean (PM)
+                                            </span>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+
+                            <template x-for="(param, pIdx) in institutionalSurveyAreas.find(a => a.id === selfSurveyActiveAreaId)?.parameters" :key="param.id">
+                                <tbody class="border-b-2 border-slate-300">
+                                    <!-- PARAMETER HEADER ROW -->
+                                    <tr class="bg-[#1b355a]">
+                                        <td colspan="4" class="px-5 py-2.5 text-xs font-extrabold text-white uppercase tracking-wide">
+                                            <span x-text="'PARAMETER ' + param.code + ': ' + param.title"></span>
+                                        </td>
+                                    </tr>
+
+                                    <!-- ── SYSTEM – INPUTS AND PROCESSES ── -->
+                                    <tr class="bg-slate-100 border-b border-slate-200">
+                                        <td colspan="4" class="px-5 py-1.5 text-[11px] font-extrabold text-zinc-600 uppercase tracking-wider">SYSTEM – INPUTS AND PROCESSES</td>
+                                    </tr>
+                                    <template x-for="ind in param.sections.system" :key="ind.id">
+                                        <tr class="border-b border-slate-100 hover:bg-slate-50/60 transition">
+                                            <td class="px-5 py-3 text-sm text-[#1b355a] border-r border-slate-200">
+                                                <div class="flex items-start gap-3">
+                                                    <span class="font-bold shrink-0 text-zinc-500 mt-0.5 w-8" x-text="ind.code + '.'"></span>
+                                                    <span class="leading-relaxed" x-text="ind.statement"></span>
+                                                </div>
+                                            </td>
+                                            <td class="border-r border-slate-200 text-center p-1 w-[80px] min-w-[80px] max-w-[80px]">
+                                                <select
+                                                    :value="selfSurveyRatings[ind.id] ?? ''"
+                                                    @change="saveRating(ind.id, $event.target.value)"
+                                                    class="w-12 mx-auto text-center text-xs font-bold text-[#1b355a] bg-white border border-slate-200 rounded-lg py-1 focus:outline-none focus:ring-2 focus:ring-[#1b355a]/20 focus:border-[#1b355a] cursor-pointer transition block">
+                                                    <option value=""></option>
+                                                    <option value="0">0</option>
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                    <option value="3">3</option>
+                                                    <option value="4">4</option>
+                                                    <option value="5">5</option>
+                                                </select>
+                                            </td>
+                                            <td class="border-r border-slate-200 text-center p-1 w-[100px] min-w-[100px] max-w-[100px]"></td>
+                                            <td class="text-center p-1 w-[90px] min-w-[90px] max-w-[90px]"></td>
+                                        </tr>
+                                    </template>
+                                    <!-- System SIOM average row -->
+                                    <tr class="bg-blue-50/60 border-b border-slate-200">
+                                        <td class="px-5 py-2 text-xs font-semibold text-zinc-400 italic border-r border-slate-200">System mean</td>
+                                        <td class="border-r border-slate-200 text-center p-1 w-[80px] min-w-[80px] max-w-[80px]"></td>
+                                        <td class="border-r border-slate-200 text-center p-1 w-[100px] min-w-[100px] max-w-[100px]">
+                                            <span class="text-sm font-extrabold text-[#1b355a]" x-text="sectionMean(param.sections.system) ?? ''"></span>
+                                        </td>
+                                        <td class="text-center p-1 w-[90px] min-w-[90px] max-w-[90px]"></td>
+                                    </tr>
+
+                                    <!-- ── IMPLEMENTATION ── -->
+                                    <tr class="bg-slate-100 border-b border-slate-200">
+                                        <td colspan="4" class="px-5 py-1.5 text-[11px] font-extrabold text-zinc-600 uppercase tracking-wider">IMPLEMENTATION</td>
+                                    </tr>
+                                    <template x-for="ind in param.sections.implementation" :key="ind.id">
+                                        <tr class="border-b border-slate-100 hover:bg-slate-50/60 transition">
+                                            <td class="px-5 py-3 text-sm text-[#1b355a] border-r border-slate-200">
+                                                <div class="flex items-start gap-3">
+                                                    <span class="font-bold shrink-0 text-zinc-500 mt-0.5 w-8" x-text="ind.code + '.'"></span>
+                                                    <span class="leading-relaxed" x-text="ind.statement"></span>
+                                                </div>
+                                            </td>
+                                            <td class="border-r border-slate-200 text-center p-1 w-[80px] min-w-[80px] max-w-[80px]">
+                                                <select
+                                                    :value="selfSurveyRatings[ind.id] ?? ''"
+                                                    @change="saveRating(ind.id, $event.target.value)"
+                                                    class="w-12 mx-auto text-center text-xs font-bold text-[#1b355a] bg-white border border-slate-200 rounded-lg py-1 focus:outline-none focus:ring-2 focus:ring-[#1b355a]/20 focus:border-[#1b355a] cursor-pointer transition block">
+                                                    <option value=""></option>
+                                                    <option value="0">0</option>
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                    <option value="3">3</option>
+                                                    <option value="4">4</option>
+                                                    <option value="5">5</option>
+                                                </select>
+                                            </td>
+                                            <td class="border-r border-slate-200 text-center p-1 w-[100px] min-w-[100px] max-w-[100px]"></td>
+                                            <td class="text-center p-1 w-[90px] min-w-[90px] max-w-[90px]"></td>
+                                        </tr>
+                                    </template>
+                                    <!-- Implementation SIOM average row -->
+                                    <tr class="bg-blue-50/60 border-b border-slate-200">
+                                        <td class="px-5 py-2 text-xs font-semibold text-zinc-400 italic border-r border-slate-200">Implementation mean</td>
+                                        <td class="border-r border-slate-200 text-center p-1 w-[80px] min-w-[80px] max-w-[80px]"></td>
+                                        <td class="border-r border-slate-200 text-center p-1 w-[100px] min-w-[100px] max-w-[100px]">
+                                            <span class="text-sm font-extrabold text-[#1b355a]" x-text="sectionMean(param.sections.implementation) ?? ''"></span>
+                                        </td>
+                                        <td class="text-center p-1 w-[90px] min-w-[90px] max-w-[90px]"></td>
+                                    </tr>
+
+                                    <!-- ── OUTCOME/S ── -->
+                                    <tr class="bg-slate-100 border-b border-slate-200">
+                                        <td colspan="4" class="px-5 py-1.5 text-[11px] font-extrabold text-zinc-600 uppercase tracking-wider">OUTCOME/S</td>
+                                    </tr>
+                                    <template x-for="ind in param.sections.outcome" :key="ind.id">
+                                        <tr class="border-b border-slate-100 hover:bg-slate-50/60 transition">
+                                            <td class="px-5 py-3 text-sm text-[#1b355a] border-r border-slate-200">
+                                                <div class="flex items-start gap-3">
+                                                    <span class="font-bold shrink-0 text-zinc-500 mt-0.5 w-8" x-text="ind.code + '.'"></span>
+                                                    <span class="leading-relaxed" x-text="ind.statement"></span>
+                                                </div>
+                                            </td>
+                                            <td class="border-r border-slate-200 text-center p-1 w-[80px] min-w-[80px] max-w-[80px]">
+                                                <select
+                                                    :value="selfSurveyRatings[ind.id] ?? ''"
+                                                    @change="saveRating(ind.id, $event.target.value)"
+                                                    class="w-12 mx-auto text-center text-xs font-bold text-[#1b355a] bg-white border border-slate-200 rounded-lg py-1 focus:outline-none focus:ring-2 focus:ring-[#1b355a]/20 focus:border-[#1b355a] cursor-pointer transition block">
+                                                    <option value=""></option>
+                                                    <option value="0">0</option>
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                    <option value="3">3</option>
+                                                    <option value="4">4</option>
+                                                    <option value="5">5</option>
+                                                </select>
+                                            </td>
+                                            <td class="border-r border-slate-200 text-center p-1 w-[100px] min-w-[100px] max-w-[100px]"></td>
+                                            <td class="text-center p-1 w-[90px] min-w-[90px] max-w-[90px]"></td>
+                                        </tr>
+                                    </template>
+                                    <!-- Outcome SIOM average row -->
+                                    <tr class="bg-blue-50/60 border-b border-slate-200">
+                                        <td class="px-5 py-2 text-xs font-semibold text-zinc-400 italic border-r border-slate-200">Outcome mean</td>
+                                        <td class="border-r border-slate-200 text-center p-1 w-[80px] min-w-[80px] max-w-[80px]"></td>
+                                        <td class="border-r border-slate-200 text-center p-1 w-[100px] min-w-[100px] max-w-[100px]">
+                                            <span class="text-sm font-extrabold text-[#1b355a]" x-text="sectionMean(param.sections.outcome) ?? ''"></span>
+                                        </td>
+                                        <td class="text-center p-1 w-[90px] min-w-[90px] max-w-[90px]"></td>
+                                    </tr>
+
+                                    <!-- ── BEST PRACTICES row ── -->
+                                    <tr class="border-b border-slate-200">
+                                        <td colspan="4" class="px-5 py-3">
+                                            <div class="flex flex-col gap-1.5">
+                                                <span class="text-xs font-extrabold text-zinc-500 uppercase tracking-wide">Best Practices:</span>
+                                                <textarea
+                                                    :id="'bp_' + param.id"
+                                                    x-model="selfSurveyBestPractices[param.id]"
+                                                    rows="3"
+                                                    placeholder="Describe notable best practices for this parameter…"
+                                                    class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-zinc-700 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-[#1b355a]/15 focus:border-[#1b355a] resize-none transition leading-relaxed">
+                                                </textarea>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <!-- ── PM row ── -->
+                                    <tr class="bg-emerald-50/80 border-b-2 border-slate-300">
+                                        <td class="px-5 py-2.5 text-xs font-bold text-zinc-500 border-r border-slate-200 italic">
+                                            Parameter Mean —
+                                            <span class="text-[#1b355a] not-italic font-extrabold" x-text="'Parameter ' + param.code + ': ' + param.title"></span>
+                                        </td>
+                                        <td class="border-r border-slate-200 text-center p-1 w-[80px] min-w-[80px] max-w-[80px]"></td>
+                                        <td class="border-r border-slate-200 text-center p-1 w-[100px] min-w-[100px] max-w-[100px]"></td>
+                                        <td class="text-center p-1 w-[90px] min-w-[90px] max-w-[90px]">
+                                            <span class="text-sm font-extrabold text-emerald-700" x-text="paramMean(param) ?? ''"></span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </template>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Save / Print Actions -->
+                <div class="flex items-center justify-end gap-3">
+                    <button type="button" @click="selfSurveyActiveAreaId = null"
+                        class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-zinc-700 font-bold text-sm rounded-xl transition cursor-pointer shadow-3xs">
+                        ← Back to Areas
+                    </button>
+                    <button type="button"
+                        onclick="window.print()"
+                        class="px-5 py-2.5 bg-[#1b355a] hover:bg-[#112239] text-white font-bold text-sm rounded-xl transition cursor-pointer shadow-3xs flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z" /></svg>
+                        Print / Export
+                    </button>
+                </div>
+                </div>
+            </div>
+        </div>
+
 
     <!-- LEVEL 3C: COMPLIANCE REPORTS VIEW -->
     <div x-show="(accredLevel === 'institutional' || (accredLevel === 'program' && accredProgram !== null)) && accredCategory === 'Compliance Reports'" x-transition class="flex flex-col items-center justify-center text-center p-12 bg-white border border-slate-200/60 rounded-2xl shadow-3xs min-h-[400px] gap-4 max-w-2xl mx-auto w-full">

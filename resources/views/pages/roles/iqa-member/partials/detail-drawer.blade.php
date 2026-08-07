@@ -1,6 +1,8 @@
 <!-- ================= SIDE DRAWERS & MODALS ================= -->
 <!-- Background Overlay -->
-<div x-show="showDrawer" 
+<div x-show="showDrawer"
+     x-cloak
+     style="display: none;"
      @click="closeDrawer()" 
      x-transition:enter="transition ease-out duration-300"
      x-transition:enter-start="opacity-0"
@@ -13,6 +15,8 @@
 
 <!-- Document Preview Drawer Panel -->
 <aside x-show="showDrawer"
+       x-cloak
+       style="display: none;"
        x-transition:enter="transition transform ease-out duration-300"
        x-transition:enter-start="translate-x-full"
        x-transition:enter-end="translate-x-0"
