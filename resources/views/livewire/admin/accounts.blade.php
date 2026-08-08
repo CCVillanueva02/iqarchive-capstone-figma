@@ -3,7 +3,7 @@
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
             <h1 class="text-2xl font-bold text-[#1b355a]">Accounts Management</h1>
-            <p class="text-xs text-zinc-500 mt-1">Workspace: System Administrator &bull; Pre-register institutional identities &amp; roles</p>
+            <p class="text-xs text-zinc-500 mt-1">Workspace: {{ auth()->user()->role === 'system-administrator' ? 'System Administrator' : 'IQA Administrator' }} &bull; Pre-register institutional identities &amp; roles</p>
         </div>
 
         <div>

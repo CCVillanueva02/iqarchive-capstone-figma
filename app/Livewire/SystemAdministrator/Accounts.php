@@ -372,7 +372,7 @@ class Accounts extends Component
         $pendingCount = (clone $baseQuery)->where('status', 'pending_activation')->count();
         $inactiveCount = (clone $baseQuery)->where('status', 'inactive')->count();
 
-        return view('pages.roles.system-administrator.accounts', [
+        return view('livewire.admin.accounts', [
             'users' => $users,
             'roles' => $roles,
             'colleges' => $colleges,
