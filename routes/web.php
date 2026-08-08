@@ -112,8 +112,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             if ($user->hasRole($role)) {
                 session(['active_role' => $role]);
             }
-            $viewName = view()->exists("pages.roles.{$role}.documents") ? "pages.roles.{$role}.documents" : "pages.roles.task-force.documents";
-            return view($viewName);
+            return view('pages.documents.index');
         })->name("documents.{$role}");
 
         Route::get("roles/{$role}/submissions", function () use ($role) {
@@ -124,8 +123,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
             if ($user->hasRole($role)) {
                 session(['active_role' => $role]);
             }
-            $viewName = view()->exists("pages.roles.{$role}.submissions") ? "pages.roles.{$role}.submissions" : "pages.roles.task-force.submissions";
-            return view($viewName);
+            return view('pages.workspace.placeholder', [
+                'title' => 'Submissions',
+                'roleName' => ucwords(str_replace('-', ' ', $role)),
+            ]);
         })->name("submissions.{$role}");
 
         Route::get("roles/{$role}/reports", function () use ($role) {
@@ -136,8 +137,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
             if ($user->hasRole($role)) {
                 session(['active_role' => $role]);
             }
-            $viewName = view()->exists("pages.roles.{$role}.reports") ? "pages.roles.{$role}.reports" : "pages.roles.task-force.reports";
-            return view($viewName);
+            return view('pages.workspace.placeholder', [
+                'title' => 'Reports',
+                'roleName' => ucwords(str_replace('-', ' ', $role)),
+            ]);
         })->name("reports.{$role}");
 
         Route::get("roles/{$role}/settings", function () use ($role) {
@@ -148,8 +151,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
             if ($user->hasRole($role)) {
                 session(['active_role' => $role]);
             }
-            $viewName = view()->exists("pages.roles.{$role}.settings") ? "pages.roles.{$role}.settings" : "pages.roles.task-force.settings";
-            return view($viewName);
+            return view('pages.workspace.placeholder', [
+                'title' => 'Settings',
+                'roleName' => ucwords(str_replace('-', ' ', $role)),
+            ]);
         })->name("settings.{$role}");
     }
 

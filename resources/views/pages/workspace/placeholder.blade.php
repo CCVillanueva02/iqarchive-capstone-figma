@@ -1,9 +1,9 @@
-<x-layouts::app :title="__('Submissions')">
+<x-layouts::app :title="__($title ?? 'Workspace')">
     <div class="w-full px-8 py-8 flex flex-col gap-6 bg-[#f4f6fa] min-h-screen">
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-                <h1 class="text-2xl font-bold text-[#1b355a]">Submissions</h1>
-                <p class="text-xs text-zinc-500 mt-1">Workspace: University Administrator</p>
+                <h1 class="text-2xl font-bold text-[#1b355a]">{{ $title ?? 'Workspace' }}</h1>
+                <p class="text-xs text-zinc-500 mt-1">Workspace: {{ $roleName ?? ucwords(str_replace('-', ' ', auth()->user()->role)) }}</p>
             </div>
         </div>
 
@@ -15,7 +15,7 @@
             </div>
             <flux:heading size="lg" class="font-extrabold text-zinc-900">Welcome, {{ auth()->user()->name }}!</flux:heading>
             <flux:text class="text-sm text-zinc-500 max-w-md">
-                You have accessed the <strong>Submissions</strong> workspace for the <strong>University Administrator</strong>. This page is currently under development.
+                You have accessed the <strong>{{ $title ?? 'Workspace' }}</strong> for <strong>{{ $roleName ?? ucwords(str_replace('-', ' ', auth()->user()->role)) }}</strong>. This page is currently under development.
             </flux:text>
         </div>
     </div>
