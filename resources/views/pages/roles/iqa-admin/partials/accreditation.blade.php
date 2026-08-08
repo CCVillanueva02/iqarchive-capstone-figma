@@ -621,98 +621,52 @@
     </div>
 
     <!-- LEVEL 3B: SELF SURVEY VIEW -->
-    <div x-show="(accredLevel === 'institutional' || (accredLevel === 'program' && accredProgram !== null)) && accredCategory === 'Self-Survey Documents'" x-transition class="flex flex-col gap-5 w-full">
+    <div x-show="(accredLevel === 'institutional' || (accredLevel === 'program' && accredProgram !== null)) && accredCategory === 'Self-Survey Documents'"
+         x-init="$watch('accredCategory', val => { if (val === 'Self-Survey Documents' && !selfSurveyActiveAreaId && institutionalSurveyAreas.length) selectSurveyArea(institutionalSurveyAreas[0].id); })"
+         x-transition class="flex flex-col gap-5 w-full">
 
-        <!-- ── Stage 1: AREA SELECTOR GRID ─────────────────────────────── -->
-        <div x-show="selfSurveyActiveAreaId === null" x-transition class="flex flex-col gap-5">
+        <!-- ── SURVEY TABLE ──────────────────────────── -->
+        <div class="flex flex-col gap-5">
 
-            <!-- Header Banner -->
-            <div class="bg-white border border-slate-200/70 rounded-2xl p-5 shadow-3xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div class="flex items-center gap-4">
-                    <div class="w-11 h-11 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center shrink-0">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v5.75c0 .621-.504 1.125-1.125 1.125h-2.25A1.125 1.125 0 013 18.875v-5.75zM18 10.5c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v8.25c0 .621-.504 1.125-1.125 1.125h-2.25A1.125 1.125 0 0118 19.875v-8.25zM10.5 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v10.125c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625z" />
-                        </svg>
-                    </div>
-                    <div>
-                        <h2 class="text-lg font-extrabold text-[#1b355a]">Institutional Self-Survey</h2>
-                        <p class="text-xs text-zinc-500 mt-0.5">Select an Area to begin self-rating the accreditation criteria.</p>
-                    </div>
-                </div>
-                <span class="text-[11px] font-bold text-zinc-400 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg">9 Areas · AACCUP Rating Scale 0–5</span>
-            </div>
 
-            <!-- 9 Area Boxes -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <template x-for="area in institutionalSurveyAreas" :key="area.id">
-                    <button type="button"
-                        @click="selectSurveyArea(area.id)"
-                        class="group bg-white border border-slate-200/70 rounded-2xl p-5 shadow-3xs hover:shadow-md transition-all duration-300 text-left flex flex-col gap-3 cursor-pointer hover:border-slate-350 relative overflow-hidden">
 
-                        <!-- Color accent bar -->
-                        <div class="absolute top-0 left-0 w-full h-1 rounded-t-2xl transition-all duration-300"
-                             :class="area.color + ' opacity-80'"></div>
-
-                        <div class="flex items-start gap-3 pt-1">
-                            <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 font-black text-xs transition"
-                                 :class="area.lightColor + ' ' + area.textColor">
-                                <span x-text="area.code.replace('Area ', '')"></span>
-                            </div>
+                <!-- ── HORIZONTAL AREA TAB STRIP (matches Supporting Documents style) ── -->
+                <div class="flex overflow-x-auto gap-3 pb-2 w-full select-none">
+                    <template x-for="area in institutionalSurveyAreas" :key="area.id">
+                        <button type="button"
+                            class="flex-1 shrink-0 min-w-[200px] bg-white rounded-xl border p-4 text-left shadow-3xs transition cursor-pointer flex flex-col justify-between h-24"
+                            :class="selfSurveyActiveAreaId === area.id ? 'border-[#1b355a] ring-1 ring-[#1b355a]/30 shadow-xs' : 'border-slate-200/60 hover:border-slate-350'"
+                            @click="selectSurveyArea(area.id)">
                             <div>
-                                <div class="text-[10px] font-bold uppercase tracking-wider text-zinc-400 mb-0.5" x-text="area.code"></div>
-                                <div class="text-sm font-bold text-[#1b355a] leading-snug group-hover:text-blue-700 transition" x-text="area.title"></div>
+                                <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block" x-text="area.code"></span>
+                                <span class="text-sm font-bold text-[#1b355a] mt-1 leading-tight line-clamp-2 block" x-text="area.title"></span>
                             </div>
-                        </div>
-
-                        <div class="flex items-center justify-between mt-1">
-                            <span class="text-[11px] text-zinc-400" x-text="area.parameters.length + ' Parameter' + (area.parameters.length > 1 ? 's' : '')"></span>
-                            <span class="text-[11px] font-bold flex items-center gap-1" :class="area.textColor">
-                                Start Rating
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
-                            </span>
-                        </div>
-                    </button>
-                </template>
-            </div>
-        </div>
-
-        <!-- ── Stage 2: SURVEY TABLE (per Area) ──────────────────────────── -->
-        <div x-show="selfSurveyActiveAreaId !== null" x-transition class="flex flex-col gap-5">
-
-
-                <!-- Back + Area Title Header -->
-                <div class="bg-white border border-slate-200/70 rounded-2xl p-5 shadow-3xs flex items-center justify-between gap-4">
-                    <div class="flex items-center gap-4">
-                        <button type="button" @click="selfSurveyActiveAreaId = null"
-                            class="flex items-center justify-center w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 text-[#1b355a] transition cursor-pointer shrink-0">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" /></svg>
+                            <div class="w-full mt-2">
+                                <div class="w-full h-1 bg-slate-100 rounded-full overflow-hidden">
+                                    <div class="h-full bg-emerald-500 rounded-full transition-all duration-300" :style="'width: ' + (areaMeanPct(area)) + '%'"></div>
+                                </div>
+                            </div>
                         </button>
-                    <div>
-                            <div class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider" x-text="institutionalSurveyAreas.find(a => a.id === selfSurveyActiveAreaId)?.code"></div>
-                            <h2 class="text-base font-extrabold text-[#1b355a] mt-0.5" x-text="(institutionalSurveyAreas.find(a => a.id === selfSurveyActiveAreaId)?.code || '') + ': ' + (institutionalSurveyAreas.find(a => a.id === selfSurveyActiveAreaId)?.title || '')"></h2>
-                        </div>
-                    </div>
-                    <button type="button"
-                        @click="selfSurveyActiveAreaId = null"
-                        class="hidden sm:flex items-center gap-1.5 text-xs font-bold text-zinc-500 hover:text-[#1b355a] transition cursor-pointer">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" /></svg>
-                        All Areas
-                    </button>
+                    </template>
                 </div>
 
-                <!-- RATING SCALE LEGEND -->
-                <div class="bg-white border border-slate-200/60 rounded-2xl shadow-3xs overflow-hidden">
-                    <div class="bg-slate-50 border-b border-slate-200 px-5 py-2.5 text-center">
-                        <span class="text-xs font-extrabold text-[#1b355a] uppercase tracking-widest">Rating Scale</span>
-                    </div>
-                    <div class="overflow-x-auto">
+                <!-- RATING SCALE LEGEND — collapsible dropdown -->
+                <details class="group bg-white border border-slate-200/60 rounded-2xl shadow-3xs overflow-hidden">
+                    <summary class="flex items-center justify-between px-5 py-3 cursor-pointer select-none list-none bg-slate-50 hover:bg-slate-100 transition">
+                        <span class="text-xs font-extrabold text-[#1b355a] uppercase tracking-widest">Rating Scale Reference</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"
+                            class="w-4 h-4 text-zinc-400 transition-transform duration-200 group-open:rotate-180">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                        </svg>
+                    </summary>
+                    <div class="overflow-x-auto border-t border-slate-200">
                         <table class="w-full text-xs text-center border-collapse">
                             <thead>
                                 <tr class="bg-slate-50 border-b border-slate-200">
-                                    <th class="px-3 py-2.5 font-extrabold text-zinc-600 border-r border-slate-200 w-20">NA</th>
-                                    <th class="px-3 py-2.5 font-extrabold text-zinc-600 border-r border-slate-200 w-16">0</th>
-                                    <th class="px-3 py-2.5 font-extrabold text-zinc-800 border-r border-slate-200">1</th>
-                                    <th class="px-3 py-2.5 font-extrabold text-zinc-800 border-r border-slate-200">2</th>
+                                    <th class="px-3 py-2.5 font-extrabold text-zinc-500 border-r border-slate-200 w-20">NA</th>
+                                    <th class="px-3 py-2.5 font-extrabold text-zinc-500 border-r border-slate-200 w-16">0</th>
+                                    <th class="px-3 py-2.5 font-extrabold text-zinc-700 border-r border-slate-200">1</th>
+                                    <th class="px-3 py-2.5 font-extrabold text-zinc-700 border-r border-slate-200">2</th>
                                     <th class="px-3 py-2.5 font-extrabold text-[#1b355a] border-r border-slate-200">3</th>
                                     <th class="px-3 py-2.5 font-extrabold text-blue-700 border-r border-slate-200">4</th>
                                     <th class="px-3 py-2.5 font-extrabold text-emerald-700">5</th>
@@ -729,8 +683,8 @@
                                     <td class="px-3 py-2 text-emerald-700 font-bold">Excellent</td>
                                 </tr>
                                 <tr>
-                                    <td class="px-3 py-2.5 text-zinc-500 italic leading-relaxed border-r border-slate-100 align-top">Not Applicable</td>
-                                    <td class="px-3 py-2.5 text-zinc-500 italic leading-relaxed border-r border-slate-100 align-top">Missing</td>
+                                    <td class="px-3 py-2.5 text-zinc-400 italic leading-relaxed border-r border-slate-100 align-top">Not Applicable</td>
+                                    <td class="px-3 py-2.5 text-zinc-400 italic leading-relaxed border-r border-slate-100 align-top">Missing</td>
                                     <td class="px-3 py-2.5 text-zinc-500 leading-relaxed border-r border-slate-100 align-top">Criterion is met minimally in some respects, but much improvement is needed to overcome weaknesses<br><span class="italic">(75% lesser than the standards)</span></td>
                                     <td class="px-3 py-2.5 text-zinc-500 leading-relaxed border-r border-slate-100 align-top">Criterion is met in most respects, but some improvement is needed to overcome weaknesses<br><span class="italic">(50% lesser than the standards)</span></td>
                                     <td class="px-3 py-2.5 text-zinc-500 leading-relaxed border-r border-slate-100 align-top">Criterion is met in all respects<br><span class="italic">(100% compliance with the standards)</span></td>
@@ -740,47 +694,38 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
+                </details>
 
                 <!-- SURVEY TABLE -->
                 <div class="bg-white border border-slate-200/60 rounded-2xl shadow-3xs overflow-hidden">
                     <div class="overflow-x-auto">
-                        <table class="w-full border-collapse text-sm" style="table-layout:fixed; min-width:680px;">
+                        <table class="w-full border-collapse text-sm" style="table-layout:fixed; min-width:780px;">
                             <!-- Column widths -->
                             <colgroup>
                                 <col>
-                                <col style="width:80px;">
-                                <col style="width:100px;">
                                 <col style="width:90px;">
+                                <col style="width:120px;">
+                                <col style="width:110px;">
                             </colgroup>
-                            <!-- Column Headers -->
+                            <!-- Column Headers — HORIZONTAL (not rotated) -->
                             <thead>
-                                <tr class="bg-slate-50 border-b-2 border-slate-200" style="height:110px;">
+                                <tr class="bg-slate-50 border-b-2 border-slate-200">
                                     <!-- Indicators -->
-                                    <th class="px-5 text-left text-xs font-extrabold text-[#1b355a] border-r border-slate-200 align-bottom pb-3">Indicators</th>
-                                    <!-- IR: rotated header -->
-                                    <th class="border-r border-slate-200 align-bottom p-0 text-center w-[80px] min-w-[80px] max-w-[80px]">
-                                        <div class="flex items-end justify-center pb-2.5 h-[110px] w-full overflow-hidden mx-auto">
-                                            <span class="text-[10px] font-extrabold text-[#1b355a] uppercase tracking-wider block" style="writing-mode:vertical-rl; transform:rotate(180deg); white-space:nowrap;">
-                                                Item Rating (IR)
-                                            </span>
-                                        </div>
+                                    <th class="px-5 py-3 text-left text-xs font-extrabold text-[#1b355a] border-r border-slate-200">Indicators</th>
+                                    <!-- IR -->
+                                    <th class="border-r border-slate-200 py-3 px-2 text-center w-[90px] min-w-[90px] max-w-[90px]">
+                                        <div class="text-[10px] font-extrabold text-[#1b355a] uppercase tracking-wider leading-snug">IR</div>
+                                        <div class="text-[9px] text-zinc-400 font-semibold mt-0.5 leading-tight">Item Rating</div>
                                     </th>
-                                    <!-- SIOM: rotated header -->
-                                    <th class="border-r border-slate-200 align-bottom p-0 text-center w-[100px] min-w-[100px] max-w-[100px]">
-                                        <div class="flex items-end justify-center pb-2.5 h-[110px] w-full overflow-hidden mx-auto">
-                                            <span class="text-[10px] font-extrabold text-[#1b355a] uppercase tracking-wider block" style="writing-mode:vertical-rl; transform:rotate(180deg); white-space:nowrap;">
-                                                System–Implementation–Outcome Mean (SIOM)
-                                            </span>
-                                        </div>
+                                    <!-- SIOM -->
+                                    <th class="border-r border-slate-200 py-3 px-2 text-center w-[120px] min-w-[120px] max-w-[120px]">
+                                        <div class="text-[10px] font-extrabold text-[#1b355a] uppercase tracking-wider leading-snug">SIOM</div>
+                                        <div class="text-[9px] text-zinc-400 font-semibold mt-0.5 leading-tight">System–Impl–Outcome Mean</div>
                                     </th>
-                                    <!-- PM: rotated header -->
-                                    <th class="align-bottom p-0 text-center w-[90px] min-w-[90px] max-w-[90px]">
-                                        <div class="flex items-end justify-center pb-2.5 h-[110px] w-full overflow-hidden mx-auto">
-                                            <span class="text-[10px] font-extrabold text-[#1b355a] uppercase tracking-wider block" style="writing-mode:vertical-rl; transform:rotate(180deg); white-space:nowrap;">
-                                                Parameter Mean (PM)
-                                            </span>
-                                        </div>
+                                    <!-- PM -->
+                                    <th class="py-3 px-2 text-center w-[110px] min-w-[110px] max-w-[110px]">
+                                        <div class="text-[10px] font-extrabold text-[#1b355a] uppercase tracking-wider leading-snug">PM</div>
+                                        <div class="text-[9px] text-zinc-400 font-semibold mt-0.5 leading-tight">Parameter Mean</div>
                                     </th>
                                 </tr>
                             </thead>
@@ -806,11 +751,11 @@
                                                     <span class="leading-relaxed" x-text="ind.statement"></span>
                                                 </div>
                                             </td>
-                                            <td class="border-r border-slate-200 text-center p-1 w-[80px] min-w-[80px] max-w-[80px]">
+                                            <td class="border-r border-slate-200 text-center p-1 w-[90px] min-w-[90px] max-w-[90px]">
                                                 <select
                                                     :value="selfSurveyRatings[ind.id] ?? ''"
                                                     @change="saveRating(ind.id, $event.target.value)"
-                                                    class="w-12 mx-auto text-center text-xs font-bold text-[#1b355a] bg-white border border-slate-200 rounded-lg py-1 focus:outline-none focus:ring-2 focus:ring-[#1b355a]/20 focus:border-[#1b355a] cursor-pointer transition block">
+                                                    class="w-14 mx-auto text-center text-xs font-bold text-[#1b355a] bg-white border border-slate-200 rounded-lg py-1 focus:outline-none focus:ring-2 focus:ring-[#1b355a]/20 focus:border-[#1b355a] cursor-pointer transition block">
                                                     <option value=""></option>
                                                     <option value="0">0</option>
                                                     <option value="1">1</option>
@@ -820,18 +765,18 @@
                                                     <option value="5">5</option>
                                                 </select>
                                             </td>
-                                            <td class="border-r border-slate-200 text-center p-1 w-[100px] min-w-[100px] max-w-[100px]"></td>
-                                            <td class="text-center p-1 w-[90px] min-w-[90px] max-w-[90px]"></td>
+                                            <td class="border-r border-slate-200 text-center p-1 w-[120px] min-w-[120px] max-w-[120px]"></td>
+                                            <td class="text-center p-1 w-[110px] min-w-[110px] max-w-[110px]"></td>
                                         </tr>
                                     </template>
-                                    <!-- System SIOM average row -->
+                                    <!-- System mean row — label RIGHT-ALIGNED -->
                                     <tr class="bg-blue-50/60 border-b border-slate-200">
-                                        <td class="px-5 py-2 text-xs font-semibold text-zinc-400 italic border-r border-slate-200">System mean</td>
-                                        <td class="border-r border-slate-200 text-center p-1 w-[80px] min-w-[80px] max-w-[80px]"></td>
-                                        <td class="border-r border-slate-200 text-center p-1 w-[100px] min-w-[100px] max-w-[100px]">
+                                        <td class="px-5 py-2 text-xs font-semibold text-zinc-400 italic border-r border-slate-200 text-right">System mean</td>
+                                        <td class="border-r border-slate-200 text-center p-1 w-[90px] min-w-[90px] max-w-[90px]"></td>
+                                        <td class="border-r border-slate-200 text-center p-1 w-[120px] min-w-[120px] max-w-[120px]">
                                             <span class="text-sm font-extrabold text-[#1b355a]" x-text="sectionMean(param.sections.system) ?? ''"></span>
                                         </td>
-                                        <td class="text-center p-1 w-[90px] min-w-[90px] max-w-[90px]"></td>
+                                        <td class="text-center p-1 w-[110px] min-w-[110px] max-w-[110px]"></td>
                                     </tr>
 
                                     <!-- ── IMPLEMENTATION ── -->
@@ -846,11 +791,11 @@
                                                     <span class="leading-relaxed" x-text="ind.statement"></span>
                                                 </div>
                                             </td>
-                                            <td class="border-r border-slate-200 text-center p-1 w-[80px] min-w-[80px] max-w-[80px]">
+                                            <td class="border-r border-slate-200 text-center p-1 w-[90px] min-w-[90px] max-w-[90px]">
                                                 <select
                                                     :value="selfSurveyRatings[ind.id] ?? ''"
                                                     @change="saveRating(ind.id, $event.target.value)"
-                                                    class="w-12 mx-auto text-center text-xs font-bold text-[#1b355a] bg-white border border-slate-200 rounded-lg py-1 focus:outline-none focus:ring-2 focus:ring-[#1b355a]/20 focus:border-[#1b355a] cursor-pointer transition block">
+                                                    class="w-14 mx-auto text-center text-xs font-bold text-[#1b355a] bg-white border border-slate-200 rounded-lg py-1 focus:outline-none focus:ring-2 focus:ring-[#1b355a]/20 focus:border-[#1b355a] cursor-pointer transition block">
                                                     <option value=""></option>
                                                     <option value="0">0</option>
                                                     <option value="1">1</option>
@@ -860,18 +805,18 @@
                                                     <option value="5">5</option>
                                                 </select>
                                             </td>
-                                            <td class="border-r border-slate-200 text-center p-1 w-[100px] min-w-[100px] max-w-[100px]"></td>
-                                            <td class="text-center p-1 w-[90px] min-w-[90px] max-w-[90px]"></td>
+                                            <td class="border-r border-slate-200 text-center p-1 w-[120px] min-w-[120px] max-w-[120px]"></td>
+                                            <td class="text-center p-1 w-[110px] min-w-[110px] max-w-[110px]"></td>
                                         </tr>
                                     </template>
-                                    <!-- Implementation SIOM average row -->
+                                    <!-- Implementation mean row — label RIGHT-ALIGNED -->
                                     <tr class="bg-blue-50/60 border-b border-slate-200">
-                                        <td class="px-5 py-2 text-xs font-semibold text-zinc-400 italic border-r border-slate-200">Implementation mean</td>
-                                        <td class="border-r border-slate-200 text-center p-1 w-[80px] min-w-[80px] max-w-[80px]"></td>
-                                        <td class="border-r border-slate-200 text-center p-1 w-[100px] min-w-[100px] max-w-[100px]">
+                                        <td class="px-5 py-2 text-xs font-semibold text-zinc-400 italic border-r border-slate-200 text-right">Implementation mean</td>
+                                        <td class="border-r border-slate-200 text-center p-1 w-[90px] min-w-[90px] max-w-[90px]"></td>
+                                        <td class="border-r border-slate-200 text-center p-1 w-[120px] min-w-[120px] max-w-[120px]">
                                             <span class="text-sm font-extrabold text-[#1b355a]" x-text="sectionMean(param.sections.implementation) ?? ''"></span>
                                         </td>
-                                        <td class="text-center p-1 w-[90px] min-w-[90px] max-w-[90px]"></td>
+                                        <td class="text-center p-1 w-[110px] min-w-[110px] max-w-[110px]"></td>
                                     </tr>
 
                                     <!-- ── OUTCOME/S ── -->
@@ -886,11 +831,11 @@
                                                     <span class="leading-relaxed" x-text="ind.statement"></span>
                                                 </div>
                                             </td>
-                                            <td class="border-r border-slate-200 text-center p-1 w-[80px] min-w-[80px] max-w-[80px]">
+                                            <td class="border-r border-slate-200 text-center p-1 w-[90px] min-w-[90px] max-w-[90px]">
                                                 <select
                                                     :value="selfSurveyRatings[ind.id] ?? ''"
                                                     @change="saveRating(ind.id, $event.target.value)"
-                                                    class="w-12 mx-auto text-center text-xs font-bold text-[#1b355a] bg-white border border-slate-200 rounded-lg py-1 focus:outline-none focus:ring-2 focus:ring-[#1b355a]/20 focus:border-[#1b355a] cursor-pointer transition block">
+                                                    class="w-14 mx-auto text-center text-xs font-bold text-[#1b355a] bg-white border border-slate-200 rounded-lg py-1 focus:outline-none focus:ring-2 focus:ring-[#1b355a]/20 focus:border-[#1b355a] cursor-pointer transition block">
                                                     <option value=""></option>
                                                     <option value="0">0</option>
                                                     <option value="1">1</option>
@@ -900,70 +845,109 @@
                                                     <option value="5">5</option>
                                                 </select>
                                             </td>
-                                            <td class="border-r border-slate-200 text-center p-1 w-[100px] min-w-[100px] max-w-[100px]"></td>
-                                            <td class="text-center p-1 w-[90px] min-w-[90px] max-w-[90px]"></td>
+                                            <td class="border-r border-slate-200 text-center p-1 w-[120px] min-w-[120px] max-w-[120px]"></td>
+                                            <td class="text-center p-1 w-[110px] min-w-[110px] max-w-[110px]"></td>
                                         </tr>
                                     </template>
-                                    <!-- Outcome SIOM average row -->
+                                    <!-- Outcome mean row — label RIGHT-ALIGNED -->
                                     <tr class="bg-blue-50/60 border-b border-slate-200">
-                                        <td class="px-5 py-2 text-xs font-semibold text-zinc-400 italic border-r border-slate-200">Outcome mean</td>
-                                        <td class="border-r border-slate-200 text-center p-1 w-[80px] min-w-[80px] max-w-[80px]"></td>
-                                        <td class="border-r border-slate-200 text-center p-1 w-[100px] min-w-[100px] max-w-[100px]">
+                                        <td class="px-5 py-2 text-xs font-semibold text-zinc-400 italic border-r border-slate-200 text-right">Outcome mean</td>
+                                        <td class="border-r border-slate-200 text-center p-1 w-[90px] min-w-[90px] max-w-[90px]"></td>
+                                        <td class="border-r border-slate-200 text-center p-1 w-[120px] min-w-[120px] max-w-[120px]">
                                             <span class="text-sm font-extrabold text-[#1b355a]" x-text="sectionMean(param.sections.outcome) ?? ''"></span>
                                         </td>
-                                        <td class="text-center p-1 w-[90px] min-w-[90px] max-w-[90px]"></td>
+                                        <td class="text-center p-1 w-[110px] min-w-[110px] max-w-[110px]"></td>
                                     </tr>
 
-                                    <!-- ── BEST PRACTICES row ── -->
-                                    <tr class="border-b border-slate-200">
+                                    <!-- ── PM row — ABOVE Best Practices ── -->
+                                    <tr class="bg-emerald-50/80 border-b border-slate-200">
+                                        <td class="px-5 py-2.5 text-xs font-bold text-zinc-500 border-r border-slate-200 italic">
+                                            Parameter Mean —
+                                            <span class="text-[#1b355a] not-italic font-extrabold" x-text="'Parameter ' + param.code + ': ' + param.title"></span>
+                                        </td>
+                                        <td class="border-r border-slate-200 text-center p-1 w-[90px] min-w-[90px] max-w-[90px]"></td>
+                                        <td class="border-r border-slate-200 text-center p-1 w-[120px] min-w-[120px] max-w-[120px]"></td>
+                                        <td class="text-center p-1 w-[110px] min-w-[110px] max-w-[110px]">
+                                            <span class="text-sm font-extrabold text-emerald-700" x-text="paramMean(param) ?? ''"></span>
+                                        </td>
+                                    </tr>
+
+                                    <!-- ── BEST PRACTICES row — BELOW Parameter Mean ── -->
+                                    <tr class="border-b border-slate-200 bg-amber-50/30">
                                         <td colspan="4" class="px-5 py-3">
                                             <div class="flex flex-col gap-1.5">
-                                                <span class="text-xs font-extrabold text-zinc-500 uppercase tracking-wide">Best Practices:</span>
+                                                <span class="text-xs font-extrabold text-zinc-500 uppercase tracking-wide">Best Practices: <span class="text-zinc-400 font-normal normal-case">(optional)</span></span>
                                                 <textarea
                                                     :id="'bp_' + param.id"
                                                     x-model="selfSurveyBestPractices[param.id]"
                                                     rows="3"
                                                     placeholder="Describe notable best practices for this parameter…"
-                                                    class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-zinc-700 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-[#1b355a]/15 focus:border-[#1b355a] resize-none transition leading-relaxed">
+                                                    class="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-sm text-zinc-700 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-[#1b355a]/15 focus:border-[#1b355a] resize-none transition leading-relaxed">
                                                 </textarea>
                                             </div>
                                         </td>
                                     </tr>
-
-                                    <!-- ── PM row ── -->
-                                    <tr class="bg-emerald-50/80 border-b-2 border-slate-300">
-                                        <td class="px-5 py-2.5 text-xs font-bold text-zinc-500 border-r border-slate-200 italic">
-                                            Parameter Mean —
-                                            <span class="text-[#1b355a] not-italic font-extrabold" x-text="'Parameter ' + param.code + ': ' + param.title"></span>
-                                        </td>
-                                        <td class="border-r border-slate-200 text-center p-1 w-[80px] min-w-[80px] max-w-[80px]"></td>
-                                        <td class="border-r border-slate-200 text-center p-1 w-[100px] min-w-[100px] max-w-[100px]"></td>
-                                        <td class="text-center p-1 w-[90px] min-w-[90px] max-w-[90px]">
-                                            <span class="text-sm font-extrabold text-emerald-700" x-text="paramMean(param) ?? ''"></span>
-                                        </td>
-                                    </tr>
                                 </tbody>
                             </template>
+
+                            <!-- ── TOTAL RATING ROW (sum of all IR in this area) ── -->
+                            <tfoot>
+                                <tr class="bg-[#1b355a]/10 border-t-2 border-[#1b355a]/30">
+                                    <td class="px-5 py-3 text-xs font-extrabold text-[#1b355a] uppercase tracking-wide border-r border-slate-200 text-right">
+                                        Total Rating
+                                        <span class="text-zinc-400 font-normal normal-case text-[10px] ml-1">(sum of all IR)</span>
+                                    </td>
+                                    <td class="border-r border-slate-200 text-center p-2 w-[90px] min-w-[90px] max-w-[90px]">
+                                        <span class="text-base font-extrabold text-[#1b355a]"
+                                            x-text="(() => { const area = institutionalSurveyAreas.find(a => a.id === selfSurveyActiveAreaId); if (!area) return ''; let total = 0; area.parameters.forEach(p => { [...(p.sections.system||[]),...(p.sections.implementation||[]),...(p.sections.outcome||[])].forEach(ind => { const v = parseFloat(selfSurveyRatings[ind.id]); if (!isNaN(v)) total += v; }); }); return total; })()">
+                                        </span>
+                                    </td>
+                                    <td class="border-r border-slate-200 text-center p-2 w-[120px] min-w-[120px] max-w-[120px]"></td>
+                                    <td class="text-center p-2 w-[110px] min-w-[110px] max-w-[110px]"></td>
+                                </tr>
+                                <!-- ── AREA MEAN ROW (mean of all Parameter Means) ── -->
+                                <tr class="bg-emerald-600 text-white">
+                                    <td class="px-5 py-3 text-xs font-extrabold uppercase tracking-wide border-r border-emerald-500 text-right">
+                                        Area Mean
+                                        <span class="font-normal normal-case text-emerald-100 text-[10px] ml-1">(mean of all parameter means)</span>
+                                    </td>
+                                    <td class="border-r border-emerald-500 text-center p-2 w-[90px] min-w-[90px] max-w-[90px]"></td>
+                                    <td class="border-r border-emerald-500 text-center p-2 w-[120px] min-w-[120px] max-w-[120px]"></td>
+                                    <td class="text-center p-2 w-[110px] min-w-[110px] max-w-[110px]">
+                                        <span class="text-base font-extrabold"
+                                            x-text="(() => { const area = institutionalSurveyAreas.find(a => a.id === selfSurveyActiveAreaId); if (!area) return ''; const means = area.parameters.map(p => paramMean(p)).filter(v => v !== null && v !== undefined && v !== ''); if (!means.length) return ''; return (means.reduce((a,b) => a + parseFloat(b), 0) / means.length).toFixed(2); })()">
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tfoot>
                         </table>
                     </div>
                 </div>
 
-                <!-- Save / Print Actions -->
-                <div class="flex items-center justify-end gap-3">
-                    <button type="button" @click="selfSurveyActiveAreaId = null"
-                        class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-zinc-700 font-bold text-sm rounded-xl transition cursor-pointer shadow-3xs">
-                        ← Back to Areas
-                    </button>
-                    <button type="button"
-                        onclick="window.print()"
-                        class="px-5 py-2.5 bg-[#1b355a] hover:bg-[#112239] text-white font-bold text-sm rounded-xl transition cursor-pointer shadow-3xs flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z" /></svg>
-                        Print / Export
-                    </button>
+                <!-- Print / Submit Actions -->
+                <div class="flex items-center justify-end gap-3 flex-wrap">
+                    <div class="flex items-center gap-3">
+                        <button type="button"
+                            onclick="window.print()"
+                            class="px-5 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 text-[#1b355a] font-bold text-sm rounded-xl transition cursor-pointer shadow-3xs flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z" /></svg>
+                            Print / Export
+                        </button>
+                        <!-- Submit Button — enabled only when all mandatory IR dropdowns in this area are filled -->
+                        <button type="button"
+                            :disabled="!isAreaComplete(selfSurveyActiveAreaId)"
+                            :class="isAreaComplete(selfSurveyActiveAreaId) ? 'bg-[#1b355a] hover:bg-[#112239] text-white cursor-pointer shadow-3xs' : 'bg-slate-200 text-zinc-400 cursor-not-allowed'"
+                            class="px-6 py-2.5 font-bold text-sm rounded-xl transition flex items-center gap-2"
+                            @click="isAreaComplete(selfSurveyActiveAreaId) && alert('Self-survey submitted successfully!')">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span x-text="isAreaComplete(selfSurveyActiveAreaId) ? 'Submit Self-Survey' : 'Submit Self-Survey'"></span>
+                        </button>
+                    </div>
                 </div>
-                </div>
-            </div>
         </div>
+    </div>
 
 
     <!-- LEVEL 3C: COMPLIANCE REPORTS VIEW -->

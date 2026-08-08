@@ -13,7 +13,7 @@ window.documentWorkspace = function() {
         accredActiveSection: 'systems',
 
         // === Self-Survey State ===
-        selfSurveyActiveAreaId: null,      // null = show area grid; string = viewing that area's table
+        selfSurveyActiveAreaId: 'ss_area_i1', // default to Area I; string = viewing that area's table
         selfSurveyRatings: {},             // { indicatorKey: 1-5 | null }
         selfSurveyBestPractices: {},       // { paramKey: 'text...' }
         selfSurveySaving: false,           // debounce guard
@@ -1013,7 +1013,7 @@ window.documentWorkspace = function() {
             {
                 id: 'ss_area_i1',
                 code: 'Area I',
-                title: 'Governance and Management (including resource generation)',
+                title: 'Governance and Management',
                 color: 'bg-blue-600',
                 lightColor: 'bg-blue-50',
                 textColor: 'text-blue-700',
@@ -1525,11 +1525,13 @@ window.documentWorkspace = function() {
 
         /** Compute the mean of IR values for a given array of indicators */
         sectionMean(indicators) {
+            if (!indicators.length) return null;
             const rated = indicators
                 .map(ind => this.selfSurveyRatings[ind.id])
                 .filter(v => v !== null && v !== undefined && v !== '');
             if (!rated.length) return null;
-            return (rated.reduce((s, v) => s + Number(v), 0) / rated.length).toFixed(2);
+            // Divide by total indicators (not just rated) so partial completion shows partial progress
+            return (rated.reduce((s, v) => s + Number(v), 0) / indicators.length).toFixed(2);
         },
 
         /** Compute PM: average of non-null section means for a parameter */
@@ -1539,6 +1541,48 @@ window.documentWorkspace = function() {
                 .filter(v => v !== null);
             if (!means.length) return null;
             return (means.reduce((s, v) => s + Number(v), 0) / means.length).toFixed(2);
+        },
+
+        /** Compute area completion as 0-100 percentage (for the tab strip progress bar).
+         *  Counts how many indicators have ANY rating (including 0) out of the total. */
+        areaMeanPct(area) {
+            if (!area || !area.parameters || !area.parameters.length) return 0;
+            let total = 0;
+            let rated = 0;
+            for (const param of area.parameters) {
+                const allIndicators = [
+                    ...(param.sections.system || []),
+                    ...(param.sections.implementation || []),
+                    ...(param.sections.outcome || []),
+                ];
+                total += allIndicators.length;
+                rated += allIndicators.filter(ind => {
+                    const v = this.selfSurveyRatings[ind.id];
+                    return v !== null && v !== undefined && v !== '';
+                }).length;
+            }
+            if (!total) return 0;
+            return Math.round((rated / total) * 100);
+        },
+
+        /** Returns true when every mandatory indicator (system, implementation, outcome)
+         *  in the given area has a rating selected (not empty). Best Practices are optional. */
+        isAreaComplete(areaId) {
+            if (!areaId) return false;
+            const area = this.institutionalSurveyAreas.find(a => a.id === areaId);
+            if (!area) return false;
+            for (const param of area.parameters) {
+                const mandatoryIndicators = [
+                    ...(param.sections.system || []),
+                    ...(param.sections.implementation || []),
+                    ...(param.sections.outcome || []),
+                ];
+                for (const ind of mandatoryIndicators) {
+                    const val = this.selfSurveyRatings[ind.id];
+                    if (val === null || val === undefined || val === '') return false;
+                }
+            }
+            return true;
         },
 
         /** Save a single IR rating to the server (debounced) */
