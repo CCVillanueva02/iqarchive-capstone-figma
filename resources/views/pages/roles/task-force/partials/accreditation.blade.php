@@ -245,7 +245,7 @@
                 </div>
             </div>
 
-            <!-- Action Buttons: Count Badge & Add Program Button -->
+            <!-- Action Buttons: Count Badge & Change College Button -->
             <div class="flex flex-wrap items-center gap-3 shrink-0 self-start md:self-auto">
                 <button type="button" @click="clearCollege()" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-zinc-700 font-bold text-xs rounded-xl shadow-2xs transition cursor-pointer flex items-center gap-1.5">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5">
@@ -258,13 +258,6 @@
                     <span class="text-xs font-semibold text-zinc-500">Available Programs:</span>
                     <span class="text-xs font-extrabold text-[#1b355a] bg-white px-2 py-0.5 rounded-md border border-slate-200/50" x-text="filteredPrograms.length"></span>
                 </div>
-
-                <button type="button" @click="openAddProgramModal()" class="px-4 py-2 bg-[#f27224] hover:bg-[#d65f1a] text-white font-bold text-xs rounded-xl shadow-2xs transition cursor-pointer flex items-center gap-1.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                    </svg>
-                    <span>Add New Program</span>
-                </button>
             </div>
         </div>
 
@@ -533,7 +526,7 @@
                     </button>
                     <button type="button"
                         class="pb-3 border-b-2 transition cursor-pointer whitespace-nowrap"
-                        :class="accredActiveSection === 'implementation' ? 'border-[#1b355a] text-[#1b355a]' : 'border-transparent text-zinc-450 hover:text-zinc-650'"
+                        :class="accredActiveSection === 'implementation' ? 'border-[#1b355a] text-[#1b355a]' : 'border-transparent text-zinc-450 hover:text-[#1b355a]'"
                         @click="accredActiveSection = 'implementation'">
                         Implementation
                     </button>
@@ -602,7 +595,7 @@
                                         </div>
                                     </template>
 
-                                    <!-- No documents linked -> Upload button -->
+                                    <!-- Upload button -->
                                     <template x-if="!item.documents || item.documents.length === 0">
                                         <button type="button" class="border border-dashed border-slate-300 hover:border-slate-400 bg-slate-50/50 hover:bg-slate-50 text-[#1b355a] text-sm font-bold px-4 py-3 rounded-lg flex items-center justify-center gap-2 cursor-pointer transition w-full" @click="alert('Upload & link files for: ' + item.statement)">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-[#f27224]">
@@ -962,101 +955,5 @@
         <button type="button" @click="accredCategory = null" class="mt-2 px-6 py-2.5 bg-slate-100 hover:bg-slate-200 text-zinc-700 font-bold rounded-lg transition text-sm cursor-pointer shadow-3xs">
             Back to Folders
         </button>
-    </div>
-
-    <!-- Modal for Adding New Program (For IQA Admin & System Admin) -->
-    <div x-show="showAddProgramModal" 
-         x-cloak
-         @click="closeAddProgramModal()" 
-         x-transition:enter="transition ease-out duration-300"
-         x-transition:enter-start="opacity-0"
-         x-transition:enter-end="opacity-100"
-         x-transition:leave="transition ease-in duration-200"
-         x-transition:leave-start="opacity-100"
-         x-transition:leave-end="opacity-0"
-         class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-[300] flex items-center justify-center p-4">
-        
-        <div @click.stop 
-             x-show="showAddProgramModal"
-             x-cloak
-             x-transition:enter="transition ease-out duration-300 transform"
-             x-transition:enter-start="opacity-0 scale-95"
-             x-transition:enter-end="opacity-100 scale-100"
-             class="bg-white rounded-2xl shadow-2xl border border-slate-200/80 max-w-lg w-full p-6 flex flex-col gap-5 relative z-[310]">
-            
-            <!-- Modal Header -->
-            <div class="flex items-center justify-between border-b border-slate-100 pb-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-orange-50 text-[#f27224] flex items-center justify-center font-bold">
-                        <x-lucide-graduation-cap class="w-5 h-5" />
-                    </div>
-                    <div>
-                        <h3 class="text-base font-extrabold text-[#1b355a]">Add Academic Program</h3>
-                        <p class="text-xs text-zinc-400 mt-0.5">Register a new degree program into the backend system</p>
-                    </div>
-                </div>
-                <button type="button" @click="closeAddProgramModal()" class="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-600 hover:bg-slate-100 transition cursor-pointer">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-
-            <!-- Alert messages -->
-            <template x-if="addProgramError">
-                <div class="p-3.5 bg-rose-50 border border-rose-200 text-rose-700 rounded-xl text-xs font-semibold" x-text="addProgramError"></div>
-            </template>
-            <template x-if="addProgramSuccess">
-                <div class="p-3.5 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-xl text-xs font-semibold" x-text="addProgramSuccess"></div>
-            </template>
-
-            <!-- Form Body -->
-            <form @submit.prevent="submitNewProgram()" class="flex flex-col gap-4">
-                <!-- Program Name -->
-                <div class="flex flex-col gap-1.5">
-                    <label class="text-xs font-bold text-[#1b355a]">Program Name <span class="text-rose-500">*</span></label>
-                    <input type="text" x-model="newProgram.name" placeholder="e.g. BS Data Analytics" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#1b355a]/20 focus:border-[#1b355a]" />
-                </div>
-
-                <!-- Program Code -->
-                <div class="flex flex-col gap-1.5">
-                    <label class="text-xs font-bold text-[#1b355a]">Program Code <span class="text-rose-500">*</span></label>
-                    <input type="text" x-model="newProgram.code" placeholder="e.g. BSDA" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#1b355a]/20 focus:border-[#1b355a]" />
-                </div>
-
-                <!-- College Select -->
-                <div class="flex flex-col gap-1.5">
-                    <label class="text-xs font-bold text-[#1b355a]">Assigned College <span class="text-rose-500">*</span></label>
-                    <select x-model="newProgram.college_id" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#1b355a]/20 focus:border-[#1b355a]">
-                        <template x-for="col in collegesList" :key="col.id">
-                            <option :value="col.id" x-text="col.name + ' (' + col.code + ')'"></option>
-                        </template>
-                    </select>
-                </div>
-
-                <!-- Accreditation Level Select (Fetched from Backend) -->
-                <div class="flex flex-col gap-1.5">
-                    <label class="text-xs font-bold text-[#1b355a]">Accreditation Level <span class="text-rose-500">*</span></label>
-                    <select x-model="newProgram.accreditation_level" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#1b355a]/20 focus:border-[#1b355a]">
-                        <option value="Level IV Re-accredited">Level IV Re-accredited</option>
-                        <option value="Level III Accredited">Level III Accredited</option>
-                        <option value="Level II Accredited">Level II Accredited</option>
-                        <option value="Level I Accredited">Level I Accredited</option>
-                        <option value="Candidate Status">Candidate Status</option>
-                        <option value="Not Accredited">Not Accredited</option>
-                    </select>
-                </div>
-
-                <!-- Modal Action Footer -->
-                <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
-                    <button type="button" @click="closeAddProgramModal()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-zinc-700 font-bold text-xs rounded-xl transition cursor-pointer">
-                        Cancel
-                    </button>
-                    <button type="submit" :disabled="addProgramLoading" class="px-5 py-2.5 bg-[#1b355a] hover:bg-[#112239] text-white font-bold text-xs rounded-xl transition shadow-2xs cursor-pointer flex items-center gap-2">
-                        <span x-text="addProgramLoading ? 'Saving...' : 'Save Program'"></span>
-                    </button>
-                </div>
-            </form>
-        </div>
     </div>
 </div>
