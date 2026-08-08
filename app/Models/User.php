@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Contracts\PasskeyUser;
 use Laravel\Fortify\PasskeyAuthenticatable;
@@ -31,11 +32,14 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  * @property Carbon|null $two_factor_confirmed_at
  * @property string|null $remember_token
  * @property string|null $avatar
+ * @property string|null $google_id
+ * @property string|null $google_avatar
  * @property string $status
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property-read string|null $avatar_url
  */
-#[Fillable(['role_id', 'program_id', 'college_id', 'first_name', 'middle_name', 'last_name', 'name', 'email', 'avatar', 'password', 'status', 'google_id', 'email_verified_at'])]
+#[Fillable(['role_id', 'program_id', 'college_id', 'first_name', 'middle_name', 'last_name', 'name', 'email', 'avatar', 'password', 'status', 'google_id', 'google_avatar', 'email_verified_at'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable implements PasskeyUser
 {
@@ -204,5 +208,23 @@ class User extends Authenticatable implements PasskeyUser
         return Str::length($initials) > 1
             ? Str::substr($initials, 0, 1).Str::substr($initials, -1)
             : $initials;
+    }
+
+    /**
+     * Get the resolved avatar URL for the user.
+     */
+    public function getAvatarUrlAttribute(): ?string
+    {
+        if ($this->avatar) {
+            return Str::startsWith($this->avatar, ['http://', 'https://'])
+                ? $this->avatar
+                : Storage::url($this->avatar);
+        }
+
+        if ($this->google_avatar) {
+            return $this->google_avatar;
+        }
+
+        return null;
     }
 }

@@ -43,6 +43,35 @@ test('email verification status is unchanged when email address is unchanged', f
     expect($user->refresh()->email_verified_at)->not->toBeNull();
 });
 
+test('user can switch avatar to google profile picture', function () {
+    $user = User::factory()->create([
+        'google_avatar' => 'https://lh3.googleusercontent.com/a/google-avatar-url',
+    ]);
+
+    $this->actingAs($user);
+
+    Livewire::test('pages::settings.profile')
+        ->call('useGoogleAvatar')
+        ->assertHasNoErrors();
+
+    expect($user->refresh()->avatar)->toBe('https://lh3.googleusercontent.com/a/google-avatar-url');
+    expect($user->avatar_url)->toBe('https://lh3.googleusercontent.com/a/google-avatar-url');
+});
+
+test('user can remove profile photo', function () {
+    $user = User::factory()->create([
+        'avatar' => 'avatars/test.jpg',
+    ]);
+
+    $this->actingAs($user);
+
+    Livewire::test('pages::settings.profile')
+        ->call('removeAvatar')
+        ->assertHasNoErrors();
+
+    expect($user->refresh()->avatar)->toBeNull();
+});
+
 test('user can delete their account', function () {
     $user = User::factory()->create();
 

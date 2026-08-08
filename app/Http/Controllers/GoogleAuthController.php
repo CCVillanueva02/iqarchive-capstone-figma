@@ -112,6 +112,15 @@ class GoogleAuthController extends Controller
             $updates['google_id'] = $googleUser->getId();
         }
 
+        $googleAvatar = method_exists($googleUser, 'getAvatar') ? $googleUser->getAvatar() : ($googleUser->avatar ?? null);
+        if ($googleAvatar) {
+            $updates['google_avatar'] = $googleAvatar;
+            // If user has no custom local avatar, or already uses a google avatar URL, update avatar column with latest Google profile picture
+            if (!$user->avatar || Str::startsWith($user->avatar, ['http://', 'https://'])) {
+                $updates['avatar'] = $googleAvatar;
+            }
+        }
+
         $rawGiven = $googleUser->user['given_name'] ?? null;
         $rawFamily = $googleUser->user['family_name'] ?? null;
 

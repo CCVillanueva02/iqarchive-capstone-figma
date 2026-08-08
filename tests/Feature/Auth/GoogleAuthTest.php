@@ -11,12 +11,13 @@ beforeEach(function () {
     Role::firstOrCreate(['role_name' => 'iqa-admin'], ['description' => 'IQA Administrator']);
 });
 
-function mockGoogleUser(string $id, string $email, string $name)
+function mockGoogleUser(string $id, string $email, string $name, ?string $avatarUrl = 'https://lh3.googleusercontent.com/a/mock-avatar')
 {
     $abstractUser = Mockery::mock(\Laravel\Socialite\Two\User::class);
     $abstractUser->shouldReceive('getId')->andReturn($id);
     $abstractUser->shouldReceive('getEmail')->andReturn($email);
     $abstractUser->shouldReceive('getName')->andReturn($name);
+    $abstractUser->shouldReceive('getAvatar')->andReturn($avatarUrl);
 
     $provider = Mockery::mock(\Laravel\Socialite\Contracts\Provider::class);
     $provider->shouldReceive('user')->andReturn($abstractUser);
@@ -51,6 +52,8 @@ test('pre-registered user with pending_activation is activated on google login',
     $user->refresh();
     expect($user->status)->toBe('active');
     expect($user->google_id)->toBe('google-id-123');
+    expect($user->google_avatar)->toBe('https://lh3.googleusercontent.com/a/mock-avatar');
+    expect($user->avatar)->toBe('https://lh3.googleusercontent.com/a/mock-avatar');
     expect($user->first_name)->toBe('Juan');
     expect($user->last_name)->toBe('Dela Cruz');
     expect($user->email_verified_at)->not->toBeNull();
