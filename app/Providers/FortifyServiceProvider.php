@@ -59,7 +59,7 @@ class FortifyServiceProvider extends ServiceProvider
             if ($user && \Illuminate\Support\Facades\Hash::check($password, $user->password)) {
                 if ($user->status !== 'active') {
                     throw \Illuminate\Validation\ValidationException::withMessages([
-                        'email' => ['Your account has been deactivated. Please contact an IQA Administrator.'],
+                        'email' => ['Your account has been deactivated.'],
                     ]);
                 }
                 return $user;

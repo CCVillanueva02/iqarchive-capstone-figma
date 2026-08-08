@@ -103,7 +103,7 @@ class GoogleAuthController extends Controller
         // Block deactivated accounts
         if ($user->status === 'inactive' || $user->status === 'revoked') {
             return redirect()->route('login')->withErrors([
-                'email' => 'Your account has been deactivated. Please contact an IQA Administrator.',
+                'email' => 'Your account has been deactivated.',
             ]);
         }
 
