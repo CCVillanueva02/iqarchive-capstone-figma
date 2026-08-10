@@ -6,7 +6,7 @@
             <template x-if="selectedCategory === null">
                 <div>
                     <h1 class="text-3xl font-bold text-[#1b355a]">Common Documents</h1>
-                    <p class="text-sm text-zinc-500 mt-1">Manage your common documents</p>
+                    <p class="text-sm text-zinc-500 mt-1"><span x-text="categories.length">9</span> categories &middot; manage your common documents</p>
                 </div>
             </template>
             <template x-if="selectedCategory !== null">

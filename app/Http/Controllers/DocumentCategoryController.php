@@ -13,22 +13,57 @@ class DocumentCategoryController extends Controller
      */
     public function index()
     {
-        // Ensure default Uncategorized Documents category exists in database
-        DocumentCategory::firstOrCreate(
-            ['name' => 'Uncategorized Documents'],
-            ['description' => 'General and uncategorized institution documents.']
-        );
+        $defaultCategories = [
+            'Faculty profile' => 'Credentials, CVs, and loads.',
+            'Curriculum / syllabus' => 'Course structure and syllabi.',
+            'Policies & Issuances' => 'Administrative orders, memorandums, circulars, and university code documents.',
+            'Instruments' => 'Internal QA self-evaluation spreadsheets, numerical rating guides, and diagnostic compliance evaluations.',
+            'Memoranda' => 'Official office memorandums, notices of meetings, and executive directives.',
+            'Correspondences' => 'Official letters to/from colleges, AACCUP, and administrative offices.',
+            'Board Exam Performance' => 'Results and statistics of professional board examinations.',
+            'Student Performance' => 'Student achievement and grades summaries.',
+            'Uncategorized' => 'No documents yet.',
+        ];
+
+        foreach ($defaultCategories as $name => $desc) {
+            DocumentCategory::firstOrCreate(
+                ['name' => $name],
+                ['description' => $desc]
+            );
+        }
 
         $categories = DocumentCategory::withCount('documents')
             ->get()
             ->map(function ($cat) {
+                $name = str_contains(strtolower($cat->name), 'uncategorized') ? 'Uncategorized' : $cat->name;
+                $docCount = $cat->documents_count ?: 0;
+                $description = $cat->description;
+
+                if ($name === 'Uncategorized') {
+                    if ($docCount > 0) {
+                        $description = ($description && $description !== 'No documents yet.') 
+                            ? $description 
+                            : 'General and uncategorized institution documents.';
+                    } else {
+                        $description = 'No documents yet.';
+                    }
+                }
+
                 return [
                     'id' => $cat->id,
-                    'name' => $cat->name,
-                    'description' => $cat->description ?: 'Common document category for ' . $cat->name,
-                    'docCount' => $cat->documents_count ?: 0,
+                    'name' => $name,
+                    'description' => $description ?: 'Common document category for ' . $name,
+                    'docCount' => $docCount,
                 ];
-            });
+            })
+            ->sort(function ($a, $b) {
+                $aIsUncat = str_contains(strtolower($a['name']), 'uncategorized');
+                $bIsUncat = str_contains(strtolower($b['name']), 'uncategorized');
+                if ($aIsUncat && !$bIsUncat) return 1;
+                if (!$aIsUncat && $bIsUncat) return -1;
+                return 0;
+            })
+            ->values();
 
         return response()->json($categories);
     }

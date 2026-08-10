@@ -45,20 +45,40 @@
     <!-- Showcase grid: strictly max 3 columns -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <template x-for="cat in filteredCategories" :key="cat.id || cat.name">
-            <div @click="selectCategory(cat.name)" class="bg-white border border-slate-200/65 rounded-xl p-5 shadow-3xs flex flex-col justify-between transition-all duration-300 hover:-translate-y-1.5 hover:shadow-md hover:border-slate-300 cursor-pointer group font-sans">
+            <div @click="selectCategory(cat.name)" 
+                 class="bg-white border border-slate-200/90 rounded-2xl p-6 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 hover:border-[#002B61]/30 hover:shadow-md cursor-pointer group font-sans">
                 <div>
-                    <div class="w-10 h-10 rounded-lg bg-blue-50 text-blue-800 flex items-center justify-center mb-4 transition-colors group-hover:bg-[#F27224]/10 group-hover:text-[#F27224]" x-html="cat.icon || '<svg class=\'w-5 h-5\' fill=\'none\' stroke=\'currentColor\' viewBox=\'0 0 24 24\'><path stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z\'></path></svg>'">
+                    <!-- Top Row: Icon Badge & Category Tag -->
+                    <div class="flex items-start justify-between">
+                        <!-- Icon Badge Container with Counter Badge -->
+                        <div class="relative w-12 h-12 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center shrink-0 transition-colors group-hover:bg-blue-100/70">
+                            <!-- Blue stroke folder icon (Lucide folder icon) -->
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-[#002B61] group-hover:text-[#003E8A] transition-colors">
+                                <path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L8.6 3.3A2 2 0 0 0 7.1 2.5H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2z"/>
+                            </svg>
+                            <!-- Badge for Document Count (Dark Blue Badge) -->
+                            <div class="absolute -top-1.5 -right-1.5 w-5.5 h-5.5 rounded-full flex items-center justify-center text-[11px] transition-colors shadow-2xs"
+                                 :class="(cat.docCount && cat.docCount > 0) ? 'bg-[#002B61] text-white font-bold' : 'bg-slate-200 text-slate-500 font-semibold'">
+                                <span x-text="cat.docCount || 0"></span>
+                            </div>
+                        </div>
+
+                        <!-- Category Label -->
+                        <span class="text-[11px] font-bold text-slate-400 tracking-wider uppercase mt-1 select-none">CATEGORY</span>
                     </div>
-                    <h3 class="font-bold text-base text-[#1b355a] leading-tight" x-text="cat.name"></h3>
-                    <p class="text-xs text-zinc-500 mt-1.5 leading-normal" x-text="cat.description"></p>
+
+                    <!-- Card Title -->
+                    <h3 class="font-bold text-lg text-[#002B61] group-hover:text-[#F47920] transition-colors leading-snug mt-4" x-text="cat.name"></h3>
+
+                    <!-- Card Description -->
+                    <p class="text-sm text-slate-500 mt-1 leading-normal" x-text="cat.description || 'No documents yet.'"></p>
                 </div>
-                <div class="mt-5 pt-3 border-t border-slate-100 flex items-center justify-between">
-                    <span class="text-sm font-semibold text-zinc-400" x-text="(cat.docCount || 0) + ' documents'"></span>
-                    <span class="text-sm font-bold text-[#F27224] transition-all group-hover:translate-x-1 flex items-center gap-1 select-none">
-                        <span>View documents</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                        </svg>
+
+                <!-- Footer: Open Folder Link -->
+                <div class="mt-5 pt-3.5 border-t border-slate-100 flex items-center justify-end">
+                    <span class="text-sm font-bold text-[#F47920] flex items-center gap-1.5 select-none transition-transform group-hover:translate-x-1">
+                        <span>Open folder</span>
+                        <span class="text-base leading-none">&rarr;</span>
                     </span>
                 </div>
             </div>

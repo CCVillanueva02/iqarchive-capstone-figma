@@ -1600,12 +1600,21 @@ window.documentWorkspace = function() {
         
         get filteredCategories() {
             if (this.selectedCategory !== null) return [];
-            if (!this.searchQuery) return this.categories;
-            const query = this.searchQuery.toLowerCase();
-            return this.categories.filter(c => 
-                c.name.toLowerCase().includes(query) || 
-                c.description.toLowerCase().includes(query)
-            );
+            let cats = this.categories;
+            if (this.searchQuery) {
+                const query = this.searchQuery.toLowerCase();
+                cats = cats.filter(c => 
+                    c.name.toLowerCase().includes(query) || 
+                    c.description.toLowerCase().includes(query)
+                );
+            }
+            return [...cats].sort((a, b) => {
+                const aIsUncat = a.name.toLowerCase().includes('uncategorized');
+                const bIsUncat = b.name.toLowerCase().includes('uncategorized');
+                if (aIsUncat && !bIsUncat) return 1;
+                if (!aIsUncat && bIsUncat) return -1;
+                return 0;
+            });
         },
         
         get filteredDocuments() {
