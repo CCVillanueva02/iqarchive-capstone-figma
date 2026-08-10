@@ -10,6 +10,15 @@
         ->orderBy('created_at', 'desc')
         ->take(5)
         ->get();
+
+    // Pending Common Documents
+    $pendingCommonDocsCount = \App\Models\Document::whereNull('program_id')->where('status', 'Pending')->count();
+    $recentPendingCommonDocs = \App\Models\Document::with(['uploader', 'category'])
+        ->whereNull('program_id')
+        ->where('status', 'Pending')
+        ->orderBy('created_at', 'desc')
+        ->take(4)
+        ->get();
         
     $complianceRate = $totalRequirements > 0 ? round(($compliedRequirements / $totalRequirements) * 100) : 0;
 @endphp
@@ -25,6 +34,34 @@
             <div class="flex items-center gap-3">
                 <span class="text-xs text-zinc-400 font-medium">System Time: {{ now()->format('Y-m-d H:i') }}</span>
             </div>
+        </div>
+
+        <!-- Pending Common Documents Quick Access Alert Widget -->
+        <div class="bg-gradient-to-r from-[#002B61] to-[#003A82] text-white rounded-2xl p-6 shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-5 border border-blue-900/40">
+            <div class="flex items-start gap-4">
+                <div class="p-3 bg-amber-500/20 border border-amber-400/30 rounded-xl text-amber-300 shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-7 h-7">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+                    </svg>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h2 class="text-lg font-bold text-white">Pending Common Documents Verification</h2>
+                        <span class="px-2.5 py-0.5 rounded-full text-xs font-black bg-amber-400 text-amber-950 shadow-2xs">
+                            {{ $pendingCommonDocsCount }} Pending
+                        </span>
+                    </div>
+                    <p class="text-xs text-blue-100/90 mt-1 max-w-2xl leading-relaxed">
+                        There {{ $pendingCommonDocsCount === 1 ? 'is' : 'are' }} {{ $pendingCommonDocsCount }} common document(s) uploaded by staff awaiting verification. Review uploaded files, manage approval status, or flag documents.
+                    </p>
+                </div>
+            </div>
+            <a href="{{ route('documents.iqa-admin', ['status' => 'Pending']) }}" class="px-5 py-3 bg-[#F47920] hover:bg-[#d86512] text-white font-bold text-xs rounded-xl shadow-md transition shrink-0 flex items-center gap-2 select-none cursor-pointer" wire:navigate>
+                <span>Review Pending Documents</span>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                </svg>
+            </a>
         </div>
 
         <!-- Four Stats Cards Grid -->

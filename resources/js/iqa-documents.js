@@ -1,5 +1,7 @@
-window.documentWorkspace = function() {
+window.documentWorkspace = function(initialState = {}) {
     return {
+        currentUserId: initialState.userId || null,
+        currentUserRole: initialState.userRole || '',
         activeTab: 'common', // 'common' or 'accreditation'
         accredLevel: null, // 'program' or 'institutional'
         accredCollege: null, // selected college object
@@ -1665,14 +1667,63 @@ window.documentWorkspace = function() {
             this.showDrawer = false;
         },
 
-        approveDoc() {
-            this.selectedDoc.status = 'Verified';
-            this.closeDrawer();
+        async updateDocStatus(doc, newStatus) {
+            if (!doc) return;
+            try {
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+                const response = await fetch(`/api/common-documents/${doc.id}/status`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify({ status: newStatus })
+                });
+
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.message || data.error || 'Failed to update document status.');
+                }
+
+                doc.status = newStatus;
+                if (this.selectedDoc && this.selectedDoc.id === doc.id) {
+                    this.selectedDoc.status = newStatus;
+                }
+
+                Swal.fire({
+                    title: 'Status Updated!',
+                    text: data.message || `Document marked as ${newStatus}.`,
+                    icon: 'success',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+
+                this.initCategories();
+            } catch (error) {
+                Swal.fire({
+                    title: 'Error',
+                    text: error.message || 'An error occurred while updating status.',
+                    icon: 'error',
+                    confirmButtonColor: '#F47920'
+                });
+            }
         },
 
-        flagDoc() {
-            this.selectedDoc.status = 'Flagged';
-            this.closeDrawer();
+        approveDoc() {
+            if (this.selectedDoc) {
+                this.updateDocStatus(this.selectedDoc, 'Verified');
+                this.closeDrawer();
+            }
+        },
+
+        rejectDoc() {
+            if (this.selectedDoc) {
+                this.updateDocStatus(this.selectedDoc, 'Rejected');
+                this.closeDrawer();
+            }
         },
 
         async deleteDoc(doc) {
@@ -1757,6 +1808,18 @@ window.documentWorkspace = function() {
 
         init() {
             this.initBackendData();
+
+            // Check URL parameters for status filter or category
+            const urlParams = new URLSearchParams(window.location.search);
+            const statusParam = urlParams.get('status');
+            const categoryParam = urlParams.get('category');
+
+            if (statusParam) {
+                this.filterStatus = statusParam;
+            }
+            if (categoryParam) {
+                this.selectedCategory = categoryParam;
+            }
         },
 
         initBackendData() {

@@ -50,12 +50,12 @@
                         <span>Pending</span>
                     </span>
                 </template>
-                <template x-if="selectedDoc?.status === 'Flagged'">
+                <template x-if="selectedDoc?.status === 'Rejected'">
                     <span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-bold bg-rose-100 text-rose-700 border border-rose-200">
                         <svg class="w-3.5 h-3.5 shrink-0 text-rose-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 3v1.5M3 21v-6m0 0l2.77-.693a9 9 0 016.208.682l.108.054a9 9 0 006.086.71l3.114-.732a48.524 48.524 0 00-.005-10.499l-3.11.732a9 9 0 01-6.085-.71l-.108-.054a9 9 0 00-6.208-.682L3 4.5M3 15V4.5" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                         </svg>
-                        <span>Flagged</span>
+                        <span>Rejected</span>
                     </span>
                 </template>
             </div>
@@ -115,6 +115,7 @@
                 </svg>
                 <span>Open document</span>
             </button>
+            @if(auth()->user()->role === 'iqa-admin' || auth()->user()->hasRole('iqa-admin'))
             <button type="button" 
                     @click="deleteDoc(selectedDoc)" 
                     title="Delete document" 
@@ -123,6 +124,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                 </svg>
             </button>
+            @endif
         </div>
 
         <!-- Original Document Preview Section -->
@@ -152,7 +154,8 @@
             </div>
         </div>
 
-        <!-- Compliance Audit Review Section -->
+        @if(auth()->user()->role === 'iqa-admin' || auth()->user()->hasRole('iqa-admin'))
+        <!-- Compliance Audit Review Section (IQA Admin Only) -->
         <div class="flex flex-col gap-3 pt-2">
             <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">REVIEW DOCUMENT</span>
             <div class="grid grid-cols-2 gap-3">
@@ -162,11 +165,11 @@
                     </svg>
                     <span>Approve and verify</span>
                 </button>
-                <button @click="flagDoc()" class="py-3 px-4 bg-white hover:bg-rose-50 text-rose-700 border border-rose-200 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition cursor-pointer shadow-2xs">
+                <button @click="rejectDoc()" class="py-3 px-4 bg-white hover:bg-rose-50 text-rose-700 border border-rose-200 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition cursor-pointer shadow-2xs">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-rose-600">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
-                    <span>Flag for revision</span>
+                    <span>Reject document</span>
                 </button>
             </div>
             
@@ -176,9 +179,10 @@
                     <circle cx="12" cy="12" r="9" />
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01" />
                 </svg>
-                <span>Flagging asks for a reason before it's sent back to the uploader.</span>
+                <span>Rejecting sends a notification back to the document uploader.</span>
             </div>
         </div>
+        @endif
     </div>
 </aside>
 

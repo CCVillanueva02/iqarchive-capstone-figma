@@ -73,7 +73,7 @@ class TestPdfSeeder extends Seeder
         }
 
         // 5. Generate 50 test PDF documents (test1.pdf to test50.pdf)
-        $statuses = ['Verified', 'Verified', 'Pending', 'Flagged'];
+        $statuses = ['Verified', 'Verified', 'Pending', 'Rejected'];
         $offices = [
             'IQA Central Office',
             'Office of the President',

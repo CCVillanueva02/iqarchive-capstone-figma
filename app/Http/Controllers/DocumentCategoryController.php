@@ -32,8 +32,21 @@ class DocumentCategoryController extends Controller
             );
         }
 
-        $categories = DocumentCategory::withCount('documents')
-            ->get()
+        $user = auth()->user();
+        $userRole = $user ? $user->role : '';
+        $isIqaAdmin = $user && ($userRole === 'iqa-admin' || $user->hasRole('iqa-admin'));
+        $isSysAdmin = $user && ($userRole === 'system-administrator' || $user->hasRole('system-administrator'));
+
+        if ($isIqaAdmin || $isSysAdmin) {
+            $categoriesQuery = DocumentCategory::withCount('documents');
+        } else {
+            // For IQA MEMBER | TASKFORCE | COLLEGE HEAD | PROGRAM CHAIR: count ONLY verified documents
+            $categoriesQuery = DocumentCategory::withCount(['documents' => function ($q) {
+                $q->where('status', 'Verified');
+            }]);
+        }
+
+        $categories = $categoriesQuery->get()
             ->map(function ($cat) {
                 $name = str_contains(strtolower($cat->name), 'uncategorized') ? 'Uncategorized' : $cat->name;
                 $docCount = $cat->documents_count ?: 0;
@@ -110,14 +123,41 @@ class DocumentCategoryController extends Controller
     }
 
     /**
-     * Get all common documents.
+     * Get all common documents filtered by user role permissions.
      */
     public function getDocuments()
     {
-        $documents = Document::with(['category', 'uploader'])
-            ->whereNull('program_id')
-            ->orWhere('visibility', 'public')
-            ->orderBy('created_at', 'desc')
+        $user = auth()->user();
+
+        if (!$user) {
+            return response()->json(['error' => 'Unauthenticated.'], 401);
+        }
+
+        $userRole = $user->role;
+        $isUniversityAdmin = $userRole === 'university-administrator' || $user->hasRole('university-administrator');
+        $isAccreditor = $userRole === 'accreditor' || $user->hasRole('accreditor');
+
+        if ($isUniversityAdmin || $isAccreditor) {
+            return response()->json(['error' => 'Unauthorized. University Admin and Accreditors cannot view common documents.'], 403);
+        }
+
+        $isIqaAdmin = $userRole === 'iqa-admin' || $user->hasRole('iqa-admin');
+        $isSysAdmin = $userRole === 'system-administrator' || $user->hasRole('system-administrator');
+
+        $query = Document::with(['category', 'uploader'])
+            ->where(function ($q) {
+                $q->whereNull('program_id')->orWhere('visibility', 'public');
+            });
+
+        // Non-admin roles can ONLY see Verified documents OR documents they uploaded themselves
+        if (!$isIqaAdmin && !$isSysAdmin) {
+            $query->where(function ($q) use ($user) {
+                $q->where('status', 'Verified')
+                  ->orWhere('uploaded_by', $user->id);
+            });
+        }
+
+        $documents = $query->orderBy('created_at', 'desc')
             ->get()
             ->map(function ($doc) {
                 $filePath = $doc->file_path ?: ('documents/' . $doc->title . '.pdf');
@@ -131,6 +171,7 @@ class DocumentCategoryController extends Controller
                     'size' => '1.5 MB',
                     'date' => $doc->created_at ? $doc->created_at->format('Y-m-d') : now()->format('Y-m-d'),
                     'uploader' => $doc->uploader ? ($doc->uploader->first_name . ' ' . $doc->uploader->last_name) : 'IQA Office',
+                    'uploaded_by_id' => $doc->uploaded_by,
                     'status' => $doc->status ?: 'Verified',
                     'file_path' => $filePath,
                     'file_url' => $fileUrl,
@@ -143,8 +184,8 @@ class DocumentCategoryController extends Controller
 
     /**
      * Store a new common document.
-     * Category is optional; defaults to 'Uncategorized Documents' if omitted or empty.
-     * Supports actual file uploads via multipart request or falls back to generated PDF.
+     * Documents uploaded by IQA Admin are automatically verified.
+     * Documents uploaded by other staff/members default to Pending.
      */
     public function storeDocument(Request $request)
     {
@@ -154,11 +195,16 @@ class DocumentCategoryController extends Controller
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
 
-        $allowedRoles = ['iqa-admin', 'iqa-member', 'system-administrator'];
-        $isAllowed = in_array($user->role, $allowedRoles) || $user->hasRole('iqa-admin') || $user->hasRole('iqa-member') || $user->hasRole('system-administrator');
+        $userRole = $user->role;
+        $isUniversityAdmin = $userRole === 'university-administrator' || $user->hasRole('university-administrator');
+        $isAccreditor = $userRole === 'accreditor' || $user->hasRole('accreditor');
 
-        if (!$isAllowed) {
-            return response()->json(['error' => 'Unauthorized. Only IQA Admin, IQA Member, and System Admin can upload common documents.'], 403);
+        if ($isUniversityAdmin || $isAccreditor) {
+            return response()->json(['error' => 'Unauthorized.'], 403);
+        }
+
+        if ($userRole === 'system-administrator' && !$user->hasRole('iqa-admin')) {
+            return response()->json(['error' => 'Unauthorized. System Administrator can only view logs.'], 403);
         }
 
         $validated = $request->validate([
@@ -211,27 +257,35 @@ class DocumentCategoryController extends Controller
             $fileSizeStr = '1.8 MB';
         }
 
+        $isIqaAdmin = $user->role === 'iqa-admin' || $user->hasRole('iqa-admin');
+        $initialStatus = $isIqaAdmin ? 'Verified' : 'Pending';
+
         $doc = Document::create([
             'title' => $validated['title'],
             'category_id' => $category->id,
             'uploaded_by' => $user->id,
+            'confirmed_by' => $isIqaAdmin ? $user->id : null,
+            'confirmed_at' => $isIqaAdmin ? now() : null,
             'file_path' => $relativeFilePath,
-            'status' => 'Pending',
+            'status' => $initialStatus,
             'visibility' => 'public',
         ]);
 
         $fileUrl = asset('storage/' . $relativeFilePath);
 
         return response()->json([
-            'message' => 'Document uploaded successfully.',
+            'message' => $isIqaAdmin 
+                ? 'Document uploaded and automatically verified.' 
+                : 'Document uploaded successfully and is awaiting verification.',
             'document' => [
                 'id' => $doc->id,
                 'name' => $doc->title,
                 'category' => $category->name,
                 'size' => $fileSizeStr,
                 'uploader' => $user->first_name . ' ' . $user->last_name,
+                'uploaded_by_id' => $user->id,
                 'date' => now()->format('Y-m-d'),
-                'status' => 'Pending',
+                'status' => $initialStatus,
                 'type' => $fileExtension,
                 'file_path' => $relativeFilePath,
                 'file_url' => $fileUrl,
@@ -241,7 +295,41 @@ class DocumentCategoryController extends Controller
     }
 
     /**
-     * Delete a document by ID — removes DB record and physical file from storage.
+     * Update common document status (Approve/Verify or Flag/Deny). Restricted to IQA Admin.
+     */
+    public function updateStatus(Request $request, $id)
+    {
+        $user = auth()->user();
+
+        if (!$user) {
+            return response()->json(['error' => 'Unauthenticated.'], 401);
+        }
+
+        $isIqaAdmin = $user->role === 'iqa-admin' || $user->hasRole('iqa-admin');
+
+        if (!$isIqaAdmin) {
+            return response()->json(['error' => 'Unauthorized. Only IQA Admin can verify or flag common documents.'], 403);
+        }
+
+        $validated = $request->validate([
+            'status' => 'required|string|in:Verified,Pending,Flagged,Rejected',
+        ]);
+
+        $doc = Document::findOrFail($id);
+        $doc->status = $validated['status'];
+        $doc->confirmed_by = $user->id;
+        $doc->confirmed_at = now();
+        $doc->save();
+
+        return response()->json([
+            'message' => 'Document status updated to ' . $doc->status . '.',
+            'status' => $doc->status,
+            'document_id' => $doc->id,
+        ]);
+    }
+
+    /**
+     * Delete a document by ID — strictly allowed ONLY for IQA Admin.
      */
     public function destroyDocument($id)
     {
@@ -251,14 +339,10 @@ class DocumentCategoryController extends Controller
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
 
-        $allowedRoles = ['iqa-admin', 'iqa-member', 'system-administrator'];
-        $isAllowed = in_array($user->role, $allowedRoles)
-            || $user->hasRole('iqa-admin')
-            || $user->hasRole('iqa-member')
-            || $user->hasRole('system-administrator');
+        $isIqaAdmin = $user->role === 'iqa-admin' || $user->hasRole('iqa-admin');
 
-        if (!$isAllowed) {
-            return response()->json(['error' => 'Unauthorized.'], 403);
+        if (!$isIqaAdmin) {
+            return response()->json(['error' => 'Unauthorized. Only IQA Admin can delete common documents.'], 403);
         }
 
         $doc = Document::findOrFail($id);

@@ -190,6 +190,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('api/categories', [\App\Http\Controllers\DocumentCategoryController::class, 'store'])->name('api.categories.store');
     Route::get('api/common-documents', [\App\Http\Controllers\DocumentCategoryController::class, 'getDocuments'])->name('api.common-documents.index');
     Route::post('api/common-documents', [\App\Http\Controllers\DocumentCategoryController::class, 'storeDocument'])->name('api.common-documents.store');
+    Route::post('api/common-documents/{id}/status', [\App\Http\Controllers\DocumentCategoryController::class, 'updateStatus'])->name('api.common-documents.update-status');
     Route::delete('api/common-documents/{id}', [\App\Http\Controllers\DocumentCategoryController::class, 'destroyDocument'])->name('api.common-documents.destroy');
     Route::get('documents/{id}/view', [\App\Http\Controllers\DocumentCategoryController::class, 'serveDocument'])->name('documents.serve');
 
