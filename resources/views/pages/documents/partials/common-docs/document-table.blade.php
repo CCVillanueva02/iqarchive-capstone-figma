@@ -132,12 +132,12 @@
         <!-- Quick One-Click Sort & Status Filter Pills (Admin Only) -->
         <div class="flex items-center gap-2 pt-3 border-t border-slate-100 flex-wrap">
             <span class="text-[11px] font-bold text-zinc-400 uppercase tracking-wider mr-1">Quick Filter:</span>
-            <button type="button" 
+            <!-- <button type="button" 
                     @click="filterStatus = 'all'" 
                     class="px-3 py-1 rounded-full text-xs font-bold transition cursor-pointer border"
                     :class="filterStatus === 'all' ? 'bg-[#002B61] text-white border-[#002B61]' : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'">
                 All <span x-text="'(' + documents.filter(d => !selectedCategory || d.category === selectedCategory).length + ')'"></span>
-            </button>
+            </button> -->
             <button type="button" 
                     @click="filterStatus = 'Verified'" 
                     class="px-3 py-1 rounded-full text-xs font-bold transition cursor-pointer border"
