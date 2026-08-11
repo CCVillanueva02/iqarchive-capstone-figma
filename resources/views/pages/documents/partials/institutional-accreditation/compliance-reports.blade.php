@@ -1,16 +1,148 @@
 <!-- LEVEL 2C: COMPLIANCE REPORTS VIEW -->
-<div x-show="accredCategory === 'Compliance Reports'" x-transition class="flex flex-col items-center justify-center text-center p-12 bg-white border border-slate-200/60 rounded-2xl shadow-3xs min-h-[400px] gap-4 max-w-2xl mx-auto w-full">
-    <div class="w-16 h-16 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center mb-2">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.504-1.125-1.125-1.125h-6.75a1.125 1.125 0 00-1.125 1.125v3.375m9 0h-9M9 12h6m-6 3H6.75a3 3 0 01-3-3V6.75a3 3 0 013-3h10.5a3 3 0 013 3V12a3 3 0 01-3 3H15" />
-        </svg>
+<div x-show="accredCategory === 'Compliance Reports'" x-transition class="flex flex-col gap-5"
+     x-data="{ expandedDocs: {}, toggleDocs(recId) { this.expandedDocs[recId] = !this.expandedDocs[recId]; } }">
+
+    <!-- ─── Area Selector Horizontal Cards (Image 3 style - thin progress bar) ─── -->
+    <div class="flex overflow-x-auto gap-3 pb-2 w-full select-none no-scrollbar">
+        <template x-for="area in complianceReports" :key="area.id">
+            <button type="button"
+                class="flex-1 shrink-0 min-w-[180px] bg-white rounded-xl border p-4 text-left shadow-3xs transition cursor-pointer flex flex-col justify-between h-24"
+                :class="complianceActiveAreaId === area.id ? 'border-[#1b355a] ring-1 ring-[#1b355a]/30 shadow-xs' : 'border-slate-200/60 hover:border-slate-300'"
+                @click="selectComplianceArea(area.id)">
+                <div>
+                    <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block" x-text="area.code"></span>
+                    <span class="text-sm font-bold text-[#1b355a] mt-1 leading-tight line-clamp-2 block" x-text="area.title"></span>
+                </div>
+                <div class="w-full mt-2">
+                    <div class="w-full h-1 bg-slate-100 rounded-full overflow-hidden">
+                        <div class="h-full rounded-full transition-all duration-500"
+                             :class="area.progress > 0 ? 'bg-emerald-500' : 'bg-slate-200'"
+                             :style="'width: ' + area.progress + '%'"></div>
+                    </div>
+                </div>
+            </button>
+        </template>
     </div>
-    <h2 class="text-lg font-extrabold text-zinc-900">Institutional Compliance & Accreditation Reports</h2>
-    <p class="text-sm text-zinc-500 max-w-md leading-relaxed">
-        Institutional evaluation audits, governance records, and university accreditation certificates.
-        Click the breadcrumbs to return to your folders.
-    </p>
-    <button type="button" @click="accredCategory = null" class="mt-2 px-6 py-2.5 bg-slate-100 hover:bg-slate-200 text-zinc-700 font-bold rounded-lg transition text-sm cursor-pointer shadow-3xs">
-        Back to Folders
-    </button>
+
+    <!-- ─── Summary Statistics Bar (Image 2 top) ─── -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3" x-data="{ stats: $el.__x_compStats }" x-effect="stats = complianceStats(activeComplianceArea)">
+        <!-- Recommendations -->
+        <div class="bg-slate-50 border border-slate-200/60 rounded-xl p-4">
+            <span class="text-[11px] font-bold text-zinc-500 uppercase tracking-wide block">Recommendations</span>
+            <span class="text-2xl font-extrabold text-[#1b355a] mt-1 block" x-text="complianceStats(activeComplianceArea).total"></span>
+        </div>
+        <!-- Fully complied -->
+        <div class="bg-emerald-50/60 border border-emerald-100 rounded-xl p-4">
+            <span class="text-[11px] font-bold text-emerald-700 uppercase tracking-wide block">Fully complied</span>
+            <span class="text-2xl font-extrabold text-emerald-700 mt-1 block" x-text="complianceStats(activeComplianceArea).complied"></span>
+        </div>
+        <!-- Partial -->
+        <div class="bg-amber-50/60 border border-amber-100 rounded-xl p-4">
+            <span class="text-[11px] font-bold text-amber-700 uppercase tracking-wide block">Partial</span>
+            <span class="text-2xl font-extrabold text-amber-700 mt-1 block" x-text="complianceStats(activeComplianceArea).partial"></span>
+        </div>
+        <!-- Not started -->
+        <div class="bg-rose-50/60 border border-rose-100 rounded-xl p-4">
+            <span class="text-[11px] font-bold text-rose-700 uppercase tracking-wide block">Not started</span>
+            <span class="text-2xl font-extrabold text-rose-700 mt-1 block" x-text="complianceStats(activeComplianceArea).notStarted"></span>
+        </div>
+    </div>
+
+    <!-- ─── Recommendation Cards ─── -->
+    <div class="flex flex-col gap-4">
+        <template x-for="rec in activeComplianceArea?.recommendations || []" :key="rec.id">
+            <div class="bg-white border border-slate-200/60 rounded-xl shadow-3xs overflow-hidden">
+
+                <!-- Recommendation Header -->
+                <div class="flex items-start justify-between gap-4 p-5 pb-0">
+                    <div class="flex items-start gap-3 flex-1">
+                        <span class="shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-extrabold"
+                              :class="{
+                                  'bg-emerald-50 text-emerald-700': rec.status === 'Fully complied',
+                                  'bg-amber-50 text-amber-700': rec.status === 'Partial',
+                                  'bg-rose-50 text-rose-600': rec.status === 'Not started'
+                              }"
+                              x-text="rec.id"></span>
+                        <p class="text-sm font-semibold text-[#1b355a] leading-relaxed pt-1" x-text="rec.text"></p>
+                    </div>
+                    <span class="shrink-0 px-3 py-1 rounded-full text-[11px] font-bold whitespace-nowrap"
+                          :class="{
+                              'bg-emerald-50 text-emerald-700 border border-emerald-200': rec.status === 'Fully complied',
+                              'bg-amber-50 text-amber-700 border border-amber-200': rec.status === 'Partial',
+                              'bg-rose-50 text-rose-600 border border-rose-200': rec.status === 'Not started'
+                          }"
+                          x-text="rec.status"></span>
+                </div>
+
+                <!-- Actions Taken & Supporting Documents -->
+                <div class="p-5 pt-4">
+                    <div class="flex flex-col lg:flex-row gap-6">
+
+                        <!-- Actions Taken Column -->
+                        <div class="flex-1 min-w-0" x-show="rec.actions && rec.actions.length > 0">
+                            <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block mb-2">Actions Taken</span>
+                            <ul class="space-y-1.5">
+                                <template x-for="(action, idx) in rec.actions" :key="idx">
+                                    <li class="flex items-start gap-2 text-sm text-zinc-600 leading-relaxed">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-zinc-300 shrink-0 mt-[7px]"></span>
+                                        <span x-text="action"></span>
+                                    </li>
+                                </template>
+                            </ul>
+                        </div>
+
+                        <!-- Supporting Documents Column -->
+                        <div class="flex-1 min-w-0">
+                            <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block mb-2"
+                                  x-text="'Supporting Documents (' + (rec.documents ? rec.documents.length : 0) + ')'"></span>
+
+                            <template x-if="rec.documents && rec.documents.length > 0">
+                                <div class="flex flex-col gap-2">
+                                    <!-- Show first 2 documents always -->
+                                    <template x-for="(doc, dIdx) in (expandedDocs[rec.id] ? rec.documents : rec.documents.slice(0, 2))" :key="doc.name">
+                                        <div class="flex items-center justify-between p-3 bg-slate-50/60 border border-slate-150 rounded-lg text-sm gap-3">
+                                            <div class="flex items-center gap-2.5 min-w-0">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-rose-400 shrink-0">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                                                </svg>
+                                                <span class="font-semibold text-[#1b355a] truncate" x-text="doc.name"></span>
+                                            </div>
+                                            <span class="shrink-0 px-2 py-0.5 rounded-full text-[10px] font-bold"
+                                                  :class="doc.status === 'Verified' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-amber-50 text-amber-700 border border-amber-100'"
+                                                  x-text="doc.status"></span>
+                                        </div>
+                                    </template>
+
+                                    <!-- +N more toggle -->
+                                    <template x-if="rec.documents.length > 2">
+                                        <button type="button"
+                                            class="text-xs font-bold text-blue-600 hover:text-blue-800 cursor-pointer border border-slate-200 rounded-lg px-3 py-1.5 bg-white hover:bg-slate-50 transition w-fit"
+                                            @click="toggleDocs(rec.id)"
+                                            x-text="expandedDocs[rec.id] ? 'Show less' : '+' + (rec.documents.length - 2) + ' more'">
+                                        </button>
+                                    </template>
+                                </div>
+                            </template>
+
+                            <!-- Empty state -->
+                            <template x-if="!rec.documents || rec.documents.length === 0">
+                                <div class="text-xs text-zinc-400 italic py-2">No supporting documents attached yet.</div>
+                            </template>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Remarks Section -->
+                <div class="px-5 pb-5 -mt-1" x-show="rec.remarks">
+                    <div class="bg-slate-50 border border-slate-150 rounded-lg p-3.5">
+                        <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block mb-1">Remarks</span>
+                        <p class="text-sm text-zinc-600 leading-relaxed" x-text="rec.remarks"></p>
+                    </div>
+                </div>
+
+            </div>
+        </template>
+    </div>
+
 </div>

@@ -1,4 +1,4 @@
-window.documentWorkspace = function(initialState = {}) {
+window.documentWorkspace = function (initialState = {}) {
     const userRole = initialState.userRole || '';
     const canSeeCommonDocs = ['iqa-admin', 'iqa-member'].includes(userRole);
     const canSeeInstitutionalDocs = ['iqa-admin', 'iqa-member'].includes(userRole);
@@ -196,7 +196,7 @@ window.documentWorkspace = function(initialState = {}) {
                 iconBg: 'bg-emerald-50 text-emerald-700'
             }
         ],
-        
+
         // Accreditation mock data
         accredData: {
             program: {
@@ -1025,6 +1025,441 @@ window.documentWorkspace = function(initialState = {}) {
         },
 
         // ================================================================
+        // COMPLIANCE REPORTS – Institutional Accreditation
+        // Recommendations, Actions Taken, Supporting Documents, Remarks
+        // ================================================================
+        complianceActiveAreaId: 'comp_area_1',
+        complianceReports: [
+            {
+                id: 'comp_area_1',
+                code: 'AREA I',
+                title: 'Governance & Management',
+                progress: 60,
+                recommendations: [
+                    {
+                        id: 1,
+                        text: 'The university charter is obsolete and needs updating through IRR (University Code) to better articulate current mandate and CHED/DBM/COA/CSC policy guidelines.',
+                        status: 'Fully complied',
+                        actions: [
+                            'TWG constituted to review and revise the BU Code of 2016',
+                            'Administrative and Academic Councils endorsed the proposed revision',
+                            'Presented to BU Administrative Clearing House and Academic Council',
+                            'Presentation of the Proposed Revised BU Code to the Board of Regents'
+                        ],
+                        documents: [
+                            { name: 'AO No. 453, s. 2024', type: 'PDF', size: '1.4 MB', date: '2024-05-10', status: 'Verified', uploader: 'Maria Reyes', office: 'IQA Central Office', ocrText: 'ADMINISTRATIVE ORDER NO. 453, SERIES OF 2024' },
+                            { name: 'BU Code 2024 (revised)', type: 'PDF', size: '4.8 MB', date: '2024-11-20', status: 'Verified', uploader: 'Dr. Albert Santos', office: 'Office of the President', ocrText: 'REVISED UNIVERSITY CODE OF BICOL UNIVERSITY' },
+                            { name: 'Office Memorandum No. 153 s. 2024', type: 'PDF', size: '980 KB', date: '2024-06-15', status: 'Verified', uploader: 'Maria Reyes', office: 'IQA Central Office', ocrText: 'OFFICE MEMORANDUM - TWG REVIEW OF BU CODE' },
+                            { name: 'Notice of Administrative Council Meeting', type: 'PDF', size: '520 KB', date: '2024-07-20', status: 'Verified', uploader: 'Maria Reyes', office: 'IQA Central Office', ocrText: 'NOTICE OF MEETING - ADMINISTRATIVE COUNCIL' },
+                            { name: 'BOR Resolution on University Code Revision', type: 'PDF', size: '1.1 MB', date: '2024-09-05', status: 'Pending', uploader: 'Maria Reyes', office: 'IQA Central Office', ocrText: 'BOARD OF REGENTS RESOLUTION' }
+                        ],
+                        remarks: 'The revised BU Code has been presented and endorsed. Final BOR approval is pending for the updated University Code reflecting current policy guidelines.'
+                    },
+                    {
+                        id: 2,
+                        text: 'Strengthen disaster preparedness and risk mitigation given the university\'s hazard-prone location.',
+                        status: 'Partial',
+                        actions: [
+                            'Issuance of Administrative Order No. 750, s. of 2023 constituting the DRRM Council',
+                            'Conducted annual earthquake and fire drills across all campuses',
+                            'Developed campus-level contingency and evacuation plans'
+                        ],
+                        documents: [
+                            { name: 'DRRM Protocol 2024', type: 'PDF', size: '2.1 MB', date: '2024-03-15', status: 'Verified', uploader: 'Maria Reyes', office: 'IQA Central Office', ocrText: 'DISASTER RISK REDUCTION AND MANAGEMENT PROTOCOL' },
+                            { name: 'AO No. 750, s. 2023', type: 'PDF', size: '890 KB', date: '2023-11-08', status: 'Verified', uploader: 'Maria Reyes', office: 'IQA Central Office', ocrText: 'ADMINISTRATIVE ORDER 750 - DRRM COUNCIL CONSTITUTION' }
+                        ],
+                        remarks: 'DRRM Council constituted and protocols established. Full implementation of campus-level contingency plans is still in progress for satellite campuses.'
+                    },
+                    {
+                        id: 3,
+                        text: 'Improve transparency mechanisms and public access to institutional financial information.',
+                        status: 'Fully complied',
+                        actions: [
+                            'Digital Transparency Seal published on university website',
+                            'Quarterly financial reports posted publicly',
+                            'Annual COA audit compliance maintained'
+                        ],
+                        documents: [
+                            { name: 'Transparency Seal Compliance Certificate 2025', type: 'PDF', size: '980 KB', date: '2025-08-15', status: 'Verified', uploader: 'Maria Reyes', office: 'IQA Central Office', ocrText: 'NATIONAL TRANSPARENCY SEAL COMPLIANCE' }
+                        ],
+                        remarks: 'Full compliance achieved. Transparency Seal is published and financial documents are accessible to the public through the official university website.'
+                    },
+                    {
+                        id: 4,
+                        text: 'Strengthen internal audit mechanisms and financial controls across satellite campuses.',
+                        status: 'Not started',
+                        actions: [],
+                        documents: [],
+                        remarks: 'No action has been initiated yet. Awaiting appointment of additional internal audit staff for satellite campus coverage.'
+                    },
+                    {
+                        id: 5,
+                        text: 'Institutionalize regular bi-monthly EXECOM meetings with documentation of action items and follow-up.',
+                        status: 'Fully complied',
+                        actions: [
+                            'Regular bi-monthly EXECOM meetings conducted since 2023',
+                            'Minutes and action items documented and distributed',
+                            'Follow-up tracking system implemented'
+                        ],
+                        documents: [
+                            { name: 'EXECOM Minutes Compilation 2024-2025', type: 'PDF', size: '3.2 MB', date: '2025-06-20', status: 'Verified', uploader: 'Maria Reyes', office: 'IQA Central Office', ocrText: 'EXECUTIVE COMMITTEE MEETING MINUTES COMPILATION' }
+                        ],
+                        remarks: 'Fully complied. Regular bi-monthly EXECOM meetings are conducted with documented minutes and tracked action items.'
+                    }
+                ]
+            },
+            {
+                id: 'comp_area_2',
+                code: 'AREA II',
+                title: 'Teaching, Learning and Evaluation',
+                progress: 45,
+                recommendations: [
+                    {
+                        id: 1,
+                        text: 'Review and update OBE syllabi across all degree programs to align with current CHED memoranda and industry standards.',
+                        status: 'Partial',
+                        actions: [
+                            'Curriculum review committees established per college',
+                            'OBE syllabi audit initiated for priority programs',
+                            'Industry consultations conducted for selected programs'
+                        ],
+                        documents: [
+                            { name: 'OBE Syllabi Audit Report 2025', type: 'PDF', size: '3.1 MB', date: '2025-07-22', status: 'Verified', uploader: 'Maria Reyes', office: 'Office of Academic Affairs', ocrText: 'OUTCOMES-BASED EDUCATION SYLLABI AUDIT REPORT' }
+                        ],
+                        remarks: 'OBE syllabi audit is ongoing. Priority programs have completed alignment review. Remaining programs scheduled for completion by end of AY 2025-2026.'
+                    },
+                    {
+                        id: 2,
+                        text: 'Enhance faculty development programs on modern pedagogical approaches including blended and flexible learning.',
+                        status: 'Fully complied',
+                        actions: [
+                            'Series of faculty training workshops on blended learning conducted',
+                            'LMS training for all faculty members completed',
+                            'Flexible learning policy framework adopted'
+                        ],
+                        documents: [
+                            { name: 'Faculty Development Program Report 2025', type: 'PDF', size: '2.4 MB', date: '2025-09-10', status: 'Verified', uploader: 'Maria Reyes', office: 'Office of Academic Affairs', ocrText: 'FACULTY DEVELOPMENT AND PEDAGOGICAL TRAINING REPORT' }
+                        ],
+                        remarks: 'All faculty members have undergone training on blended learning modalities and LMS usage. Continuing education units credited for participants.'
+                    },
+                    {
+                        id: 3,
+                        text: 'Establish a standardized student evaluation system across all colleges.',
+                        status: 'Not started',
+                        actions: [],
+                        documents: [],
+                        remarks: 'Awaiting development of a unified online Student Evaluation of Teaching (SET) platform. Currently, colleges use varied formats.'
+                    }
+                ]
+            },
+            {
+                id: 'comp_area_3',
+                code: 'AREA III',
+                title: 'Faculty & Staff',
+                progress: 55,
+                recommendations: [
+                    {
+                        id: 1,
+                        text: 'Address faculty-to-student ratio deficiencies particularly in high-enrollment programs.',
+                        status: 'Partial',
+                        actions: [
+                            'Requests for new faculty plantilla positions submitted to DBM',
+                            'Adjunct faculty hiring policy updated',
+                            'Part-time faculty engagement guidelines established'
+                        ],
+                        documents: [
+                            { name: 'Faculty Plantilla Request FY 2025', type: 'PDF', size: '1.5 MB', date: '2025-03-10', status: 'Verified', uploader: 'Maria Reyes', office: 'HRMO', ocrText: 'FACULTY PLANTILLA POSITION REQUESTS' }
+                        ],
+                        remarks: 'DBM requests filed. Adjunct faculty hiring initiated for critical programs. Full plantilla filling subject to national budget approval.'
+                    },
+                    {
+                        id: 2,
+                        text: 'Strengthen faculty research competency through structured capacity building programs.',
+                        status: 'Fully complied',
+                        actions: [
+                            'Research methodology training series conducted quarterly',
+                            'Research writing workshops with journal editors organized',
+                            'Faculty research incentive program established'
+                        ],
+                        documents: [
+                            { name: 'Research Capacity Building Report 2025', type: 'PDF', size: '2.8 MB', date: '2025-08-20', status: 'Verified', uploader: 'Maria Reyes', office: 'RDC Office', ocrText: 'FACULTY RESEARCH CAPACITY BUILDING SUMMARY' },
+                            { name: 'Research Incentive Guidelines', type: 'PDF', size: '1.2 MB', date: '2025-01-15', status: 'Verified', uploader: 'Maria Reyes', office: 'RDC Office', ocrText: 'RESEARCH INCENTIVE AND CITATION BONUS SCHEME GUIDELINES' }
+                        ],
+                        remarks: 'Quarterly training conducted. Faculty research publications increased by 35% compared to previous year.'
+                    },
+                    {
+                        id: 3,
+                        text: 'Implement a comprehensive faculty and staff performance management system aligned with CSC guidelines.',
+                        status: 'Partial',
+                        actions: [
+                            'SPMS orientation conducted for all units',
+                            'IPCR templates standardized across university'
+                        ],
+                        documents: [
+                            { name: 'SPMS Implementation Report', type: 'PDF', size: '1.8 MB', date: '2025-06-30', status: 'Pending', uploader: 'Maria Reyes', office: 'HRMO', ocrText: 'STRATEGIC PERFORMANCE MANAGEMENT SYSTEM REPORT' }
+                        ],
+                        remarks: 'SPMS partially implemented. Automated IPCR submission system under development for full digital compliance.'
+                    }
+                ]
+            },
+            {
+                id: 'comp_area_4',
+                code: 'AREA IV',
+                title: 'Research',
+                progress: 40,
+                recommendations: [
+                    {
+                        id: 1,
+                        text: 'Update the institutional research agenda to reflect emerging national priorities and regional development needs.',
+                        status: 'Fully complied',
+                        actions: [
+                            'Research agenda reviewed and updated in consultation with DOST and CHED',
+                            'Multi-stakeholder validation workshops conducted',
+                            'Updated research agenda approved by the Academic Council'
+                        ],
+                        documents: [
+                            { name: 'BU Institutional Research Agenda 2024-2028', type: 'PDF', size: '2.8 MB', date: '2024-03-12', status: 'Verified', uploader: 'Maria Reyes', office: 'RDC Office', ocrText: 'UNIVERSITY RESEARCH PRIORITIES AND GUIDELINES 2024-2028' }
+                        ],
+                        remarks: 'Research agenda fully updated and aligned with Harmonized National Research and Development Agenda.'
+                    },
+                    {
+                        id: 2,
+                        text: 'Increase research publication output in Scopus/WoS indexed journals.',
+                        status: 'Partial',
+                        actions: [
+                            'Research publication incentive scheme implemented',
+                            'Partnership with journal editors for manuscript mentoring',
+                            'Writing clinics and manuscript bootcamps conducted'
+                        ],
+                        documents: [
+                            { name: 'Faculty Research Grant Awards Summary 2025', type: 'PDF', size: '1.6 MB', date: '2025-08-20', status: 'Verified', uploader: 'Maria Reyes', office: 'RDC Office', ocrText: 'SUMMARY OF APPROVED INTERNAL RESEARCH GRANTS AND PUBLICATION INCENTIVES' }
+                        ],
+                        remarks: 'Research output increased but target of 50 Scopus publications per year has not yet been met. Currently at 32 publications.'
+                    },
+                    {
+                        id: 3,
+                        text: 'Establish a functional Technology Transfer Office for IP protection and commercialization.',
+                        status: 'Not started',
+                        actions: [],
+                        documents: [],
+                        remarks: 'Awaiting organizational restructuring approval. TTO establishment is included in the university development plan for 2026.'
+                    }
+                ]
+            },
+            {
+                id: 'comp_area_5',
+                code: 'AREA V',
+                title: 'Extension, Occupancy and Linkages',
+                progress: 50,
+                recommendations: [
+                    {
+                        id: 1,
+                        text: 'Develop a comprehensive community engagement framework that integrates extension services with research and instruction.',
+                        status: 'Partial',
+                        actions: [
+                            'Community needs assessment conducted in partner barangays',
+                            'Extension manual drafted with integration guidelines',
+                            'Pilot community engagement projects initiated in 3 municipalities'
+                        ],
+                        documents: [
+                            { name: 'Community Engagement Framework Draft', type: 'PDF', size: '2.5 MB', date: '2025-04-15', status: 'Pending', uploader: 'Maria Reyes', office: 'Extension Office', ocrText: 'COMMUNITY ENGAGEMENT FRAMEWORK AND INTEGRATION GUIDELINES' }
+                        ],
+                        remarks: 'Framework drafted and undergoing stakeholder consultations. Final version expected by Q1 2026.'
+                    },
+                    {
+                        id: 2,
+                        text: 'Strengthen institutional linkages with industry, government agencies, and international partners.',
+                        status: 'Fully complied',
+                        actions: [
+                            'MOAs signed with 15 new industry partners',
+                            'International academic exchange agreements with 3 ASEAN universities',
+                            'Regular industry-academe roundtable discussions institutionalized'
+                        ],
+                        documents: [
+                            { name: 'MOA Compilation 2024-2025', type: 'PDF', size: '5.2 MB', date: '2025-10-01', status: 'Verified', uploader: 'Maria Reyes', office: 'Extension Office', ocrText: 'MEMORANDA OF AGREEMENT AND INSTITUTIONAL PARTNERSHIPS COMPILATION' },
+                            { name: 'International Linkages Report', type: 'PDF', size: '1.8 MB', date: '2025-09-20', status: 'Verified', uploader: 'Maria Reyes', office: 'International Affairs', ocrText: 'INTERNATIONAL ACADEMIC EXCHANGE AND PARTNERSHIP REPORT' }
+                        ],
+                        remarks: 'Active partnerships established and maintained. Number of institutional linkages increased by 40% from the previous evaluation period.'
+                    }
+                ]
+            },
+            {
+                id: 'comp_area_6',
+                code: 'AREA VI',
+                title: 'Support to Students',
+                progress: 70,
+                recommendations: [
+                    {
+                        id: 1,
+                        text: 'Expand scholarship and financial assistance programs to cover more marginalized students.',
+                        status: 'Fully complied',
+                        actions: [
+                            'Expanded TES and institutional scholarship programs',
+                            'Emergency financial assistance fund established',
+                            'Student assistantship program broadened to cover more slots'
+                        ],
+                        documents: [
+                            { name: 'Scholarship Recipients & Fund Allocation Summary', type: 'PDF', size: '1.7 MB', date: '2025-09-15', status: 'Verified', uploader: 'Maria Reyes', office: 'OSAS', ocrText: 'FINANCIAL ASSISTANCE AND SCHOLARSHIP SUMMARY' }
+                        ],
+                        remarks: 'Scholarship coverage increased by 25%. Emergency financial assistance accessed by 150+ students since establishment.'
+                    },
+                    {
+                        id: 2,
+                        text: 'Strengthen mental health support services and guidance counseling across all campuses.',
+                        status: 'Partial',
+                        actions: [
+                            'Licensed guidance counselors assigned to main campus',
+                            'Mental health awareness programs conducted per semester',
+                            'Online counseling platform being developed'
+                        ],
+                        documents: [
+                            { name: 'Guidance & Counseling Annual Report 2025', type: 'PDF', size: '2.0 MB', date: '2025-11-10', status: 'Verified', uploader: 'Maria Reyes', office: 'OSAS', ocrText: 'GUIDANCE AND COUNSELING SERVICES ANNUAL REPORT' }
+                        ],
+                        remarks: 'Main campus fully covered. Satellite campus counselor deployment still below the ideal ratio. Online counseling platform under development.'
+                    },
+                    {
+                        id: 3,
+                        text: 'Establish a comprehensive career services and job placement tracking system.',
+                        status: 'Not started',
+                        actions: [],
+                        documents: [],
+                        remarks: 'Career services office restructuring planned. Graduate employment tracking system to be developed as part of the alumni management project.'
+                    }
+                ]
+            },
+            {
+                id: 'comp_area_7',
+                code: 'AREA VII',
+                title: 'Library',
+                progress: 65,
+                recommendations: [
+                    {
+                        id: 1,
+                        text: 'Upgrade digital library infrastructure and expand access to online databases and e-journals.',
+                        status: 'Fully complied',
+                        actions: [
+                            'Subscription to 5 major academic databases renewed and expanded',
+                            'E-library portal redesigned with improved search capabilities',
+                            'Remote access enabled for all enrolled students and faculty'
+                        ],
+                        documents: [
+                            { name: 'Digital Library Infrastructure Report 2025', type: 'PDF', size: '2.3 MB', date: '2025-07-15', status: 'Verified', uploader: 'Maria Reyes', office: 'University Library', ocrText: 'DIGITAL LIBRARY INFRASTRUCTURE AND E-RESOURCES REPORT' }
+                        ],
+                        remarks: 'Digital library fully upgraded. Access to major databases like Scopus, JSTOR, and ProQuest available institution-wide.'
+                    },
+                    {
+                        id: 2,
+                        text: 'Update physical library collections and ensure adequate book-to-student ratios per program.',
+                        status: 'Partial',
+                        actions: [
+                            'Book acquisition budget increased by 30%',
+                            'Priority acquisitions list submitted by all colleges',
+                            'Weeding of outdated materials conducted'
+                        ],
+                        documents: [
+                            { name: 'Library Collection Development Report', type: 'PDF', size: '1.5 MB', date: '2025-08-30', status: 'Pending', uploader: 'Maria Reyes', office: 'University Library', ocrText: 'LIBRARY COLLECTION DEVELOPMENT AND ACQUISITION REPORT' }
+                        ],
+                        remarks: 'Book acquisition ongoing. Some programs still below the recommended book-to-student ratio. Procurement expected to be completed by Q2 2026.'
+                    }
+                ]
+            },
+            {
+                id: 'comp_area_8',
+                code: 'AREA VIII',
+                title: 'Infrastructure and Other Learning Sources',
+                progress: 35,
+                recommendations: [
+                    {
+                        id: 1,
+                        text: 'Modernize classroom facilities and integrate smart classroom technologies across all colleges.',
+                        status: 'Partial',
+                        actions: [
+                            'Smart classroom pilot implemented in 10 rooms',
+                            'ICT equipment inventory and assessment completed',
+                            'Procurement of additional multimedia equipment initiated'
+                        ],
+                        documents: [
+                            { name: 'Smart Classroom Implementation Report', type: 'PDF', size: '2.6 MB', date: '2025-05-20', status: 'Verified', uploader: 'Maria Reyes', office: 'ICT Office', ocrText: 'SMART CLASSROOM PILOT IMPLEMENTATION AND ASSESSMENT REPORT' }
+                        ],
+                        remarks: 'Pilot phase completed in 10 classrooms. Full rollout to 50+ rooms planned for 2026 pending budget allocation.'
+                    },
+                    {
+                        id: 2,
+                        text: 'Ensure all university buildings comply with updated fire safety, accessibility, and environmental codes.',
+                        status: 'Not started',
+                        actions: [],
+                        documents: [],
+                        remarks: 'Building assessment scheduled. Budget for safety compliance upgrades to be included in the next fiscal year capital outlay.'
+                    },
+                    {
+                        id: 3,
+                        text: 'Develop additional laboratory and workshop spaces for STEM and technical-vocational programs.',
+                        status: 'Partial',
+                        actions: [
+                            'Feasibility study for new laboratory building completed',
+                            'Site identified and approved by the Board of Regents'
+                        ],
+                        documents: [
+                            { name: 'Laboratory Building Feasibility Study', type: 'PDF', size: '3.5 MB', date: '2025-02-28', status: 'Verified', uploader: 'Maria Reyes', office: 'Planning Office', ocrText: 'FEASIBILITY STUDY FOR NEW STEM LABORATORY BUILDING' }
+                        ],
+                        remarks: 'Feasibility study approved. Construction pending procurement and budget appropriation.'
+                    }
+                ]
+            },
+            {
+                id: 'comp_area_9',
+                code: 'AREA IX',
+                title: 'Quality Assurance Culture',
+                progress: 75,
+                recommendations: [
+                    {
+                        id: 1,
+                        text: 'Institutionalize quality assurance mechanisms across all academic and administrative units.',
+                        status: 'Fully complied',
+                        actions: [
+                            'IQA Office established as a permanent institutional unit',
+                            'Quality assurance manual developed and disseminated',
+                            'QA orientation conducted for all unit heads and faculty'
+                        ],
+                        documents: [
+                            { name: 'Quality Assurance Manual 2024', type: 'PDF', size: '4.5 MB', date: '2024-08-10', status: 'Verified', uploader: 'Maria Reyes', office: 'IQA Central Office', ocrText: 'INSTITUTIONAL QUALITY ASSURANCE MANUAL AND OPERATIONAL GUIDELINES' },
+                            { name: 'IQA Office Establishment Order', type: 'PDF', size: '890 KB', date: '2024-01-15', status: 'Verified', uploader: 'Maria Reyes', office: 'Office of the President', ocrText: 'ADMINISTRATIVE ORDER ESTABLISHING THE IQA OFFICE' }
+                        ],
+                        remarks: 'IQA Office fully operational. Quality assurance culture embedded in institutional planning and operations.'
+                    },
+                    {
+                        id: 2,
+                        text: 'Develop a continuous quality improvement (CQI) framework with measurable KPIs for all programs.',
+                        status: 'Partial',
+                        actions: [
+                            'CQI framework draft completed with stakeholder input',
+                            'KPI identification workshops conducted per college',
+                            'Pilot CQI implementation in 5 programs'
+                        ],
+                        documents: [
+                            { name: 'CQI Framework Draft Report', type: 'PDF', size: '2.2 MB', date: '2025-10-05', status: 'Pending', uploader: 'Maria Reyes', office: 'IQA Central Office', ocrText: 'CONTINUOUS QUALITY IMPROVEMENT FRAMEWORK AND KPI METRICS' }
+                        ],
+                        remarks: 'CQI framework piloted in 5 programs. Full institutional rollout scheduled for AY 2026-2027.'
+                    },
+                    {
+                        id: 3,
+                        text: 'Train faculty and staff on quality assurance standards and self-assessment procedures.',
+                        status: 'Fully complied',
+                        actions: [
+                            'QA training series conducted for all colleges and units',
+                            'Self-assessment workshop toolkit developed and distributed',
+                            'Online QA resource portal launched on university website'
+                        ],
+                        documents: [
+                            { name: 'QA Training Completion Report', type: 'PDF', size: '1.6 MB', date: '2025-11-15', status: 'Verified', uploader: 'Maria Reyes', office: 'IQA Central Office', ocrText: 'QUALITY ASSURANCE TRAINING COMPLETION AND IMPACT ASSESSMENT' }
+                        ],
+                        remarks: 'All faculty and staff trained. Self-assessment toolkit accessible through the online QA portal.'
+                    }
+                ]
+            }
+        ],
+
+        // ================================================================
         // INSTITUTIONAL SELF-SURVEY – Static Pre-Population Data
         // Used for visual reference when DB has no seeded records.
         // ================================================================
@@ -1460,8 +1895,8 @@ window.documentWorkspace = function(initialState = {}) {
                     const selectedCode = this.accredCollege.code;
                     const selectedId = this.accredCollege.id;
                     const matchCollege = (prog.collegeCode && prog.collegeCode === selectedCode) ||
-                                         (prog.college_id && prog.college_id === selectedId) ||
-                                         (prog.college && this.accredCollege.name && prog.college.toLowerCase().includes(this.accredCollege.name.toLowerCase()));
+                        (prog.college_id && prog.college_id === selectedId) ||
+                        (prog.college && this.accredCollege.name && prog.college.toLowerCase().includes(this.accredCollege.name.toLowerCase()));
                     if (!matchCollege) return false;
                 } else if (this.programCollegeFilter !== 'all' && prog.collegeCode !== this.programCollegeFilter) {
                     return false;
@@ -1469,9 +1904,9 @@ window.documentWorkspace = function(initialState = {}) {
                 if (this.programSearchQuery) {
                     const query = this.programSearchQuery.toLowerCase().trim();
                     const match = prog.name.toLowerCase().includes(query) ||
-                                  prog.code.toLowerCase().includes(query) ||
-                                  (prog.college && prog.college.toLowerCase().includes(query)) ||
-                                  (prog.level && prog.level.toLowerCase().includes(query));
+                        prog.code.toLowerCase().includes(query) ||
+                        (prog.college && prog.college.toLowerCase().includes(query)) ||
+                        (prog.level && prog.level.toLowerCase().includes(query));
                     if (!match) return false;
                 }
                 return true;
@@ -1515,6 +1950,27 @@ window.documentWorkspace = function(initialState = {}) {
                 this.accredActiveParamId = null;
             }
             this.accredActiveSection = 'systems';
+        },
+
+        // ── Compliance Report helpers ────────────────────────────────
+
+        get activeComplianceArea() {
+            return this.complianceReports.find(a => a.id === this.complianceActiveAreaId) || this.complianceReports[0];
+        },
+
+        selectComplianceArea(areaId) {
+            this.complianceActiveAreaId = areaId;
+        },
+
+        complianceStats(area) {
+            if (!area || !area.recommendations) return { total: 0, complied: 0, partial: 0, notStarted: 0 };
+            const recs = area.recommendations;
+            return {
+                total: recs.length,
+                complied: recs.filter(r => r.status === 'Fully complied').length,
+                partial: recs.filter(r => r.status === 'Partial').length,
+                notStarted: recs.filter(r => r.status === 'Not started').length
+            };
         },
 
         // ── Self-Survey helpers ──────────────────────────────────────
@@ -1616,14 +2072,14 @@ window.documentWorkspace = function(initialState = {}) {
         },
         categories: [],
         documents: [],
-        
+
         get filteredCategories() {
             if (this.selectedCategory !== null) return [];
             let cats = this.categories;
             if (this.searchQuery) {
                 const query = this.searchQuery.toLowerCase();
-                cats = cats.filter(c => 
-                    c.name.toLowerCase().includes(query) || 
+                cats = cats.filter(c =>
+                    c.name.toLowerCase().includes(query) ||
                     c.description.toLowerCase().includes(query)
                 );
             }
@@ -1635,33 +2091,33 @@ window.documentWorkspace = function(initialState = {}) {
                 return 0;
             });
         },
-        
+
         get filteredDocuments() {
             if (!this.selectedCategory) return [];
             return this.documents.filter(doc => {
                 if (doc.category !== this.selectedCategory) return false;
-                
+
                 // Search filter
                 if (this.searchQuery) {
                     const query = this.searchQuery.toLowerCase();
-                    const matchesSearch = doc.name.toLowerCase().includes(query) || 
-                                          doc.uploader.toLowerCase().includes(query) ||
-                                          doc.ocrText.toLowerCase().includes(query);
+                    const matchesSearch = doc.name.toLowerCase().includes(query) ||
+                        doc.uploader.toLowerCase().includes(query) ||
+                        doc.ocrText.toLowerCase().includes(query);
                     if (!matchesSearch) return false;
                 }
-                
+
                 // Type filter
                 if (this.filterType !== 'all' && doc.type !== this.filterType) return false;
-                
+
                 // Office filter
                 if (this.filterOffice !== 'all' && doc.office !== this.filterOffice) return false;
-                
+
                 // Date filter
                 if (this.filterDate !== 'all' && !doc.date.startsWith(this.filterDate)) return false;
-                
+
                 // Status filter
                 if (this.filterStatus !== 'all' && doc.status !== this.filterStatus) return false;
-                
+
                 return true;
             });
         },
@@ -1674,12 +2130,12 @@ window.documentWorkspace = function(initialState = {}) {
             this.filterDate = 'all';
             this.filterStatus = 'all';
         },
-        
+
         openDoc(doc) {
             this.selectedDoc = doc;
             this.showDrawer = true;
         },
-        
+
         closeDrawer() {
             this.showDrawer = false;
         },
@@ -1745,7 +2201,7 @@ window.documentWorkspace = function(initialState = {}) {
 
         async deleteDoc(doc) {
             if (!doc) return;
-            
+
             const result = await Swal.fire({
                 title: 'Delete Document?',
                 text: `Are you sure you want to permanently delete "${doc.name}"? This action cannot be undone.`,
@@ -1793,7 +2249,7 @@ window.documentWorkspace = function(initialState = {}) {
                     });
 
                     this.documents = this.documents.filter(d => d.id !== doc.id);
-                    
+
                     if (this.selectedDoc && this.selectedDoc.id === doc.id) {
                         this.closeDrawer();
                     }
@@ -1934,34 +2390,34 @@ window.documentWorkspace = function(initialState = {}) {
                 },
                 body: JSON.stringify(this.newCategoryForm)
             })
-            .then(async res => {
-                const data = await res.json();
-                if (!res.ok) throw new Error(data.message || data.error || 'Failed to create Document Category.');
-                return data;
-            })
-            .then(data => {
-                this.createCategoryLoading = false;
-                this.createCategorySuccess = 'Document Category card created successfully!';
-                
-                if (data.category) {
-                    this.categories.push({
-                        id: 'cat_' + data.category.id,
-                        name: data.category.name,
-                        description: data.category.description || 'Common document category',
-                        icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>`,
-                        docCount: 0
-                    });
-                }
+                .then(async res => {
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.message || data.error || 'Failed to create Document Category.');
+                    return data;
+                })
+                .then(data => {
+                    this.createCategoryLoading = false;
+                    this.createCategorySuccess = 'Document Category card created successfully!';
 
-                setTimeout(() => {
-                    this.closeCreateCategoryModal();
-                    this.createCategorySuccess = '';
-                }, 1000);
-            })
-            .catch(err => {
-                this.createCategoryLoading = false;
-                this.createCategoryError = err.message || 'An error occurred while creating the category.';
-            });
+                    if (data.category) {
+                        this.categories.push({
+                            id: 'cat_' + data.category.id,
+                            name: data.category.name,
+                            description: data.category.description || 'Common document category',
+                            icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" /></svg>`,
+                            docCount: 0
+                        });
+                    }
+
+                    setTimeout(() => {
+                        this.closeCreateCategoryModal();
+                        this.createCategorySuccess = '';
+                    }, 1000);
+                })
+                .catch(err => {
+                    this.createCategoryLoading = false;
+                    this.createCategoryError = err.message || 'An error occurred while creating the category.';
+                });
         },
 
         // Upload Document Modal state & methods
@@ -2017,34 +2473,34 @@ window.documentWorkspace = function(initialState = {}) {
                 },
                 body: formData
             })
-            .then(async res => {
-                const data = await res.json();
-                if (!res.ok) throw new Error(data.message || data.error || 'Failed to upload document.');
-                return data;
-            })
-            .then(data => {
-                this.uploadLoading = false;
-                this.uploadSuccess = 'Document uploaded successfully!';
+                .then(async res => {
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.message || data.error || 'Failed to upload document.');
+                    return data;
+                })
+                .then(data => {
+                    this.uploadLoading = false;
+                    this.uploadSuccess = 'Document uploaded successfully!';
 
-                if (data.document) {
-                    this.documents.unshift(data.document);
-                }
+                    if (data.document) {
+                        this.documents.unshift(data.document);
+                    }
 
-                const catObj = this.categories.find(c => c.name.toLowerCase() === targetCategory.toLowerCase());
-                if (catObj) {
-                    catObj.docCount = (catObj.docCount || 0) + 1;
-                }
+                    const catObj = this.categories.find(c => c.name.toLowerCase() === targetCategory.toLowerCase());
+                    if (catObj) {
+                        catObj.docCount = (catObj.docCount || 0) + 1;
+                    }
 
-                setTimeout(() => {
-                    this.closeUploadModal();
-                    this.uploadForm = { title: '', category_name: '', file: null };
-                    this.uploadSuccess = '';
-                }, 1000);
-            })
-            .catch(err => {
-                this.uploadLoading = false;
-                this.uploadError = err.message || 'An error occurred while uploading.';
-            });
+                    setTimeout(() => {
+                        this.closeUploadModal();
+                        this.uploadForm = { title: '', category_name: '', file: null };
+                        this.uploadSuccess = '';
+                    }, 1000);
+                })
+                .catch(err => {
+                    this.uploadLoading = false;
+                    this.uploadError = err.message || 'An error occurred while uploading.';
+                });
         }
     };
 };
