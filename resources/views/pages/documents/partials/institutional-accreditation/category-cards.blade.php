@@ -1,27 +1,5 @@
-<!-- LEVEL 2: ACCREDITATION SUB-CATEGORY SELECT -->
-<div x-show="(accredLevel === 'institutional' || (accredLevel === 'program' && accredProgram !== null)) && accredCategory === null" x-transition class="flex flex-col gap-5 w-full py-2">
-    
-    <!-- Context Banner for Selected Program (when Level is program) -->
-    <template x-if="accredLevel === 'program' && accredProgram !== null">
-        <div class="bg-blue-50/70 border border-blue-200/70 rounded-xl px-5 py-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-3xs">
-            <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-lg bg-[#1b355a] text-white flex items-center justify-center font-extrabold text-xs shrink-0">
-                    <span x-text="accredProgram.code"></span>
-                </div>
-                <div>
-                    <div class="flex items-center gap-2">
-                        <span class="text-xs font-extrabold text-[#1b355a]" x-text="accredProgram.name"></span>
-                        <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-white border border-blue-200 text-[#1b355a]" x-text="accredProgram.level"></span>
-                    </div>
-                    <p class="text-[11px] text-zinc-500 mt-0.5" x-text="accredProgram.college"></p>
-                </div>
-            </div>
-            <button type="button" @click="clearProgram()" class="px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 text-[#1b355a] text-xs font-bold rounded-lg transition cursor-pointer shrink-0 shadow-3xs">
-                Change Program
-            </button>
-        </div>
-    </template>
-
+<!-- LEVEL 1: INSTITUTIONAL ACCREDITATION SUB-CATEGORY SELECT -->
+<div x-show="accredCategory === null" x-transition class="flex flex-col gap-5 w-full py-2">
     <!-- Sub-Category Grid -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
         <!-- Self-Survey Documents Card -->

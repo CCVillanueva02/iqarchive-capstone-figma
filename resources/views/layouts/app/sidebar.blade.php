@@ -71,12 +71,48 @@
             </svg>
             <span>Dashboard</span>
         </a>
-        <a href="{{ route('documents.' . $role) }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-sm font-semibold transition-all {{ request()->routeIs('documents.' . $role) ? 'bg-white/10 text-white border-l-[#F47920]' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-            </svg>
-            <span>Documents</span>
-        </a>
+        @endif
+
+        @if (in_array($role, ['task-force', 'task-force-member', 'program-chair', 'iqa-admin', 'iqa-member', 'system-administrator']))
+        @php
+            $currentDocTab = request()->query('tab', 'common-documents');
+            if (!in_array($currentDocTab, ['common-documents', 'program-accreditation', 'institutional-accreditation'])) {
+                $currentDocTab = 'common-documents';
+            }
+        @endphp
+
+        <!-- Documents Tab & Subtabs -->
+        <div class="flex flex-col">
+            <a href="{{ route('documents.' . $role, ['tab' => 'common-documents']) }}" class="group flex items-center justify-between px-6 py-[14px] border-l-[4px] text-sm font-semibold transition-all {{ request()->routeIs('documents.' . $role) ? 'bg-white/10 text-white border-l-[#F47920]' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
+                <div class="flex items-center gap-[14px]">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                    <span>Documents</span>
+                </div>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-200 {{ request()->routeIs('documents.' . $role) ? 'rotate-180 text-white' : 'text-white/40 group-hover:text-white/70' }}">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </a>
+
+            @if (request()->routeIs('documents.' . $role))
+            <!-- Documents Subtabs -->
+            <div class="flex flex-col gap-1 pl-9 pr-4 py-2.5 bg-black/15">
+                <a href="{{ route('documents.' . $role, ['tab' => 'common-documents']) }}" class="flex items-center px-4 py-3 rounded-lg text-xs transition-all {{ $currentDocTab === 'common-documents' ? 'bg-white/15 text-white font-bold' : 'text-white/60 hover:text-white hover:bg-white/5 font-medium' }}" wire:navigate>
+                    <span>Common Documents</span>
+                </a>
+                <a href="{{ route('documents.' . $role, ['tab' => 'program-accreditation']) }}" class="flex items-center px-4 py-3 rounded-lg text-xs transition-all {{ $currentDocTab === 'program-accreditation' ? 'bg-white/15 text-white font-bold' : 'text-white/60 hover:text-white hover:bg-white/5 font-medium' }}" wire:navigate>
+                    <span>Program Accreditation</span>
+                </a>
+                <a href="{{ route('documents.' . $role, ['tab' => 'institutional-accreditation']) }}" class="flex items-center px-4 py-3 rounded-lg text-xs transition-all {{ $currentDocTab === 'institutional-accreditation' ? 'bg-white/15 text-white font-bold' : 'text-white/60 hover:text-white hover:bg-white/5 font-medium' }}" wire:navigate>
+                    <span>Institutional Accreditation</span>
+                </a>
+            </div>
+            @endif
+        </div>
+        @endif
+
+        @if ($role === 'task-force' || $role === 'task-force-member' || $role === 'program-chair')
         <a href="{{ route('submissions.' . $role) }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-sm font-semibold transition-all {{ request()->routeIs('submissions.' . $role) ? 'bg-white/10 text-white border-l-[#F47920]' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
@@ -91,16 +127,6 @@
                 <line x1="6" y1="20" x2="6" y2="14"></line>
             </svg>
             <span>Reports</span>
-        </a>
-        @endif
-
-        @if ($role === 'iqa-admin' || $role === 'iqa-member' || $role === 'system-administrator')
-        <!-- Document -->
-        <a href="{{ route('documents.' . $role) }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-sm font-semibold transition-all {{ request()->routeIs('documents.' . $role) ? 'bg-white/10 text-white border-l-[#F47920]' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-            </svg>
-            <span>Document</span>
         </a>
         @endif
 

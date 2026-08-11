@@ -1,9 +1,17 @@
 window.documentWorkspace = function(initialState = {}) {
+    const defaultTab = initialState.activeTab || 'common-documents';
+    let initialAccredLevel = initialState.accredLevel || null;
+    if (defaultTab === 'program-accreditation') {
+        initialAccredLevel = 'program';
+    } else if (defaultTab === 'institutional-accreditation') {
+        initialAccredLevel = 'institutional';
+    }
+
     return {
         currentUserId: initialState.userId || null,
         currentUserRole: initialState.userRole || '',
-        activeTab: 'common', // 'common' or 'accreditation'
-        accredLevel: null, // 'program' or 'institutional'
+        activeTab: defaultTab, // 'common-documents', 'program-accreditation', 'institutional-accreditation'
+        accredLevel: initialAccredLevel, // 'program' or 'institutional'
         accredCollege: null, // selected college object
         accredProgram: null, // selected program object
         collegeSearchQuery: '',

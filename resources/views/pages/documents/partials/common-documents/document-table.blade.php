@@ -132,12 +132,6 @@
         <!-- Quick One-Click Sort & Status Filter Pills (Admin Only) -->
         <div class="flex items-center gap-2 pt-3 border-t border-slate-100 flex-wrap">
             <span class="text-[11px] font-bold text-zinc-400 uppercase tracking-wider mr-1">Quick Filter:</span>
-            <!-- <button type="button" 
-                    @click="filterStatus = 'all'" 
-                    class="px-3 py-1 rounded-full text-xs font-bold transition cursor-pointer border"
-                    :class="filterStatus === 'all' ? 'bg-[#002B61] text-white border-[#002B61]' : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'">
-                All <span x-text="'(' + documents.filter(d => !selectedCategory || d.category === selectedCategory).length + ')'"></span>
-            </button> -->
             <button type="button" 
                     @click="filterStatus = 'Verified'" 
                     class="px-3 py-1 rounded-full text-xs font-bold transition cursor-pointer border"
@@ -166,7 +160,7 @@
             <table class="w-full text-left border-collapse font-sans text-sm">
                 <thead>
                     <tr class="bg-slate-50/90 border-b border-slate-200/80 text-zinc-500 font-bold uppercase tracking-wider select-none text-[11px]">
-                        <!-- Document Title Header (Gives most space to Title) -->
+                        <!-- Document Title Header -->
                         <th class="py-3.5 pl-6 pr-4 cursor-pointer hover:text-[#002B61] transition group/th" @click="toggleSort('name')">
                             <div class="flex items-center gap-1.5">
                                 <span>DOCUMENT TITLE</span>
@@ -243,10 +237,8 @@
                 <tbody class="divide-y divide-slate-100 font-medium">
                     <template x-for="doc in sortedDocuments" :key="doc.id || doc.name">
                         <tr class="hover:bg-slate-50/70 transition group">
-                            <!-- Document Title Column (Flexible, gives maximum space) -->
                             <td class="py-4 pl-6 pr-4">
                                 <div class="flex items-center gap-2.5 cursor-pointer" @click="openDoc(doc)">
-                                    <!-- PDF Icon -->
                                     <template x-if="doc.type === 'PDF' || !doc.type">
                                         <svg class="w-5 h-6 shrink-0" viewBox="0 0 24 28" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M3 2A2 2 0 0 1 5 0H14L21 7V26A2 2 0 0 1 19 28H5A2 2 0 0 1 3 26V2Z" fill="#DC2626"/>
@@ -254,7 +246,6 @@
                                             <text x="3.5" y="22" fill="white" font-size="7" font-weight="900" font-family="sans-serif">PDF</text>
                                         </svg>
                                     </template>
-                                    <!-- Word Icon -->
                                     <template x-if="doc.type === 'Word'">
                                         <svg class="w-5 h-6 shrink-0" viewBox="0 0 24 28" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M3 2A2 2 0 0 1 5 0H14L21 7V26A2 2 0 0 1 19 28H5A2 2 0 0 1 3 26V2Z" fill="#2563EB"/>
@@ -262,7 +253,6 @@
                                             <text x="3" y="22" fill="white" font-size="7" font-weight="900" font-family="sans-serif">DOC</text>
                                         </svg>
                                     </template>
-                                    <!-- Excel Icon -->
                                     <template x-if="doc.type === 'Excel'">
                                         <svg class="w-5 h-6 shrink-0" viewBox="0 0 24 28" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M3 2A2 2 0 0 1 5 0H14L21 7V26A2 2 0 0 1 19 28H5A2 2 0 0 1 3 26V2Z" fill="#059669"/>
@@ -270,23 +260,14 @@
                                             <text x="3" y="22" fill="white" font-size="7" font-weight="900" font-family="sans-serif">XLS</text>
                                         </svg>
                                     </template>
-
-                                    <!-- Document Name text -->
                                     <span class="font-bold text-[#111827] group-hover:text-[#F47920] transition leading-snug break-words" x-text="doc.name"></span>
                                 </div>
                             </td>
-
-                            <!-- Uploader Column -->
                             <td class="py-4 px-4 text-slate-700 font-semibold whitespace-nowrap shrink-0" x-text="doc.uploader || 'Sys Admin'"></td>
-
-                            <!-- Upload Date Column -->
                             <td class="py-4 px-4 text-slate-700 font-semibold whitespace-nowrap shrink-0" x-text="doc.date"></td>
-
                             @if(in_array(auth()->user()->role, ['iqa-admin', 'system-administrator']) || auth()->user()->hasRole('iqa-admin') || auth()->user()->hasRole('system-administrator'))
-                            <!-- Status Badge Column (Admin Only) -->
                             <td class="py-4 px-4 whitespace-nowrap shrink-0">
                                 <div>
-                                    <!-- Verified Status Pill -->
                                     <template x-if="doc.status === 'Verified'">
                                         <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#dcfce7] text-[#15803d] border border-[#bbf7d0] shadow-2xs">
                                             <svg class="w-3.5 h-3.5 shrink-0 text-[#15803d]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
@@ -295,8 +276,6 @@
                                             <span>Verified</span>
                                         </span>
                                     </template>
-
-                                    <!-- Pending Status Pill -->
                                     <template x-if="doc.status === 'Pending'">
                                         <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#fef3c7] text-[#92400e] border border-[#fde68a] shadow-2xs">
                                             <svg class="w-3.5 h-3.5 shrink-0 text-[#92400e]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -306,8 +285,6 @@
                                             <span>Pending</span>
                                         </span>
                                     </template>
-
-                                    <!-- Rejected Status Pill -->
                                     <template x-if="doc.status === 'Rejected'">
                                         <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-700 border border-rose-200 shadow-2xs">
                                             <svg class="w-3.5 h-3.5 shrink-0 text-rose-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -319,8 +296,6 @@
                                 </div>
                             </td>
                             @endif
-
-                            <!-- View Action Button Column -->
                             <td class="py-4 pl-4 pr-6 text-right whitespace-nowrap shrink-0">
                                 <button @click="openDoc(doc)" class="text-xs font-bold text-[#002B61] hover:text-[#F47920] transition cursor-pointer select-none bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg border border-slate-200/80">
                                     View Details
@@ -328,8 +303,6 @@
                             </td>
                         </tr>
                     </template>
-
-                    <!-- Empty State -->
                     <template x-if="sortedDocuments.length === 0">
                         <tr>
                             <td :colspan="currentUserRole === 'iqa-admin' || currentUserRole === 'system-administrator' ? 5 : 4" class="py-12 px-6 text-center text-slate-400">
@@ -345,11 +318,8 @@
             </table>
         </div>
 
-        <!-- Summary & Pagination Bar -->
         <div class="px-6 py-3.5 bg-white border-t border-slate-200/60 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 font-semibold select-none">
             <span x-text="'Showing 1-' + sortedDocuments.length + ' of ' + sortedDocuments.length + ' documents'"></span>
-
-            <!-- Pagination Buttons matching reference image -->
             <div class="flex items-center gap-1.5">
                 <button type="button" class="w-8 h-8 rounded-lg border border-slate-200 bg-white flex items-center justify-center text-slate-600 hover:bg-slate-50 transition cursor-pointer shadow-2xs disabled:opacity-40 disabled:cursor-not-allowed" disabled>
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -365,5 +335,3 @@
         </div>
     </div>
 </div>
-
-

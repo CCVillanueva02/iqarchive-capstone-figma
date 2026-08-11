@@ -1,8 +1,8 @@
 <!-- LEVEL 3A: SUPPORTING DOCUMENTS WORKSPACE -->
-<div x-show="(accredLevel === 'institutional' || (accredLevel === 'program' && accredProgram !== null)) && accredCategory === 'Supporting Documents'" x-transition class="flex flex-col gap-5">
+<div x-show="accredCategory === 'Supporting Documents'" x-transition class="flex flex-col gap-5">
     
     <!-- Context Header Bar for Supporting Docs Workspace -->
-    <template x-if="accredLevel === 'program' && accredProgram !== null">
+    <template x-if="accredProgram !== null">
         <div class="bg-white border border-slate-200/60 rounded-xl px-5 py-3 shadow-3xs flex items-center justify-between">
             <div class="flex items-center gap-2 text-xs font-bold text-[#1b355a]">
                 <span class="px-2 py-0.5 bg-blue-50 text-[#1b355a] rounded border border-blue-100" x-text="accredProgram.code"></span>
@@ -159,11 +159,6 @@
                                                         x-text="doc.status"></span>
                                                     <button type="button" class="text-sm font-bold text-blue-650 hover:underline cursor-pointer" @click="openDoc(doc)">
                                                         View Drawer
-                                                    </button>
-                                                    <button type="button" class="text-zinc-400 hover:text-zinc-655 cursor-pointer" @click="alert('Remove document link logic here!')">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                                                        </svg>
                                                     </button>
                                                 </div>
                                             </div>

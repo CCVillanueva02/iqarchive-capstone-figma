@@ -1,5 +1,5 @@
-<!-- LEVEL 1.5: COLLEGE SELECTION UI (When Program Accreditation is clicked) -->
-<div x-show="accredLevel === 'program' && accredCollege === null" x-transition class="flex flex-col gap-6 w-full py-2">
+<!-- LEVEL 1: COLLEGE SELECTION UI -->
+<div x-show="accredCollege === null" x-transition class="flex flex-col gap-6 w-full py-2">
     <!-- Hero Title Banner for College Selection -->
     <div class="bg-white border border-slate-200/70 rounded-2xl p-6 shadow-3xs flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div class="flex items-start gap-4">

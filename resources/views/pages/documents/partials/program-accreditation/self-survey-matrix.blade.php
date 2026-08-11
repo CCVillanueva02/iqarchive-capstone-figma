@@ -1,5 +1,5 @@
 <!-- LEVEL 3B: SELF SURVEY VIEW -->
-<div x-show="(accredLevel === 'institutional' || (accredLevel === 'program' && accredProgram !== null)) && accredCategory === 'Self-Survey Documents'"
+<div x-show="accredCategory === 'Self-Survey Documents'"
      x-init="$watch('accredCategory', val => { if (val === 'Self-Survey Documents' && !selfSurveyActiveAreaId && institutionalSurveyAreas.length) selectSurveyArea(institutionalSurveyAreas[0].id); })"
      x-transition class="flex flex-col gap-5 w-full">
 
@@ -76,29 +76,23 @@
         <div class="bg-white border border-slate-200/60 rounded-2xl shadow-3xs overflow-hidden">
             <div class="overflow-x-auto">
                 <table class="w-full border-collapse text-sm" style="table-layout:fixed; min-width:820px;">
-                    <!-- Column widths -->
                     <colgroup>
                         <col>
                         <col style="width:100px;">
                         <col style="width:170px;">
                         <col style="width:120px;">
                     </colgroup>
-                    <!-- Column Headers — HORIZONTAL (not rotated) -->
                     <thead>
                         <tr class="bg-slate-50 border-b-2 border-slate-200">
-                            <!-- Indicators -->
                             <th class="px-5 py-3 text-left text-xs font-extrabold text-[#1b355a] border-r border-slate-200">Indicators</th>
-                            <!-- IR -->
                             <th class="border-r border-slate-200 py-3 px-2 text-center w-[100px] min-w-[100px] max-w-[100px]">
                                 <div class="text-[11px] font-extrabold text-[#1b355a] uppercase tracking-wider leading-snug">Item Rating</div>
                                 <div class="text-[10px] text-zinc-400 font-semibold mt-0.5 leading-tight">IR</div>
                             </th>
-                            <!-- SIOM -->
                             <th class="border-r border-slate-200 py-3 px-2 text-center w-[170px] min-w-[170px] max-w-[170px]">
                                 <div class="text-[11px] font-extrabold text-[#1b355a] uppercase tracking-wider leading-snug">System – Implementation – Outcome Mean</div>
                                 <div class="text-[10px] text-zinc-400 font-semibold mt-0.5 leading-tight">SIOM</div>
                             </th>
-                            <!-- PM -->
                             <th class="py-3 px-2 text-center w-[120px] min-w-[120px] max-w-[120px]">
                                 <div class="text-[11px] font-extrabold text-[#1b355a] uppercase tracking-wider leading-snug">Parameter Mean</div>
                                 <div class="text-[10px] text-zinc-400 font-semibold mt-0.5 leading-tight">PM</div>
@@ -108,14 +102,12 @@
 
                     <template x-for="(param, pIdx) in institutionalSurveyAreas.find(a => a.id === selfSurveyActiveAreaId)?.parameters" :key="param.id">
                         <tbody class="border-b-2 border-slate-300">
-                            <!-- PARAMETER HEADER ROW -->
                             <tr class="bg-[#1b355a]">
                                 <td colspan="4" class="px-5 py-2.5 text-xs font-extrabold text-white uppercase tracking-wide">
                                     <span x-text="'PARAMETER ' + param.code + ': ' + param.title"></span>
                                 </td>
                             </tr>
 
-                            <!-- ── SYSTEM – INPUTS AND PROCESSES ── -->
                             <tr class="bg-slate-100 border-b border-slate-200">
                                 <td colspan="4" class="px-5 py-1.5 text-[11px] font-extrabold text-zinc-600 uppercase tracking-wider">SYSTEM – INPUTS AND PROCESSES</td>
                             </tr>
@@ -145,7 +137,6 @@
                                     <td class="text-center p-1 w-[120px] min-w-[120px] max-w-[120px]"></td>
                                 </tr>
                             </template>
-                            <!-- System mean row — label RIGHT-ALIGNED -->
                             <tr class="bg-blue-50/60 border-b border-slate-200">
                                 <td class="px-5 py-2 text-xs font-semibold text-zinc-400 italic border-r border-slate-200 text-right">System mean</td>
                                 <td class="border-r border-slate-200 text-center p-1 w-[100px] min-w-[100px] max-w-[100px]"></td>
@@ -155,7 +146,6 @@
                                 <td class="text-center p-1 w-[120px] min-w-[120px] max-w-[120px]"></td>
                             </tr>
 
-                            <!-- ── IMPLEMENTATION ── -->
                             <tr class="bg-slate-100 border-b border-slate-200">
                                 <td colspan="4" class="px-5 py-1.5 text-[11px] font-extrabold text-zinc-600 uppercase tracking-wider">IMPLEMENTATION</td>
                             </tr>
@@ -185,7 +175,6 @@
                                     <td class="text-center p-1 w-[120px] min-w-[120px] max-w-[120px]"></td>
                                 </tr>
                             </template>
-                            <!-- Implementation mean row — label RIGHT-ALIGNED -->
                             <tr class="bg-blue-50/60 border-b border-slate-200">
                                 <td class="px-5 py-2 text-xs font-semibold text-zinc-400 italic border-r border-slate-200 text-right">Implementation mean</td>
                                 <td class="border-r border-slate-200 text-center p-1 w-[100px] min-w-[100px] max-w-[100px]"></td>
@@ -195,7 +184,6 @@
                                 <td class="text-center p-1 w-[120px] min-w-[120px] max-w-[120px]"></td>
                             </tr>
 
-                            <!-- ── OUTCOME/S ── -->
                             <tr class="bg-slate-100 border-b border-slate-200">
                                 <td colspan="4" class="px-5 py-1.5 text-[11px] font-extrabold text-zinc-600 uppercase tracking-wider">OUTCOME/S</td>
                             </tr>
@@ -225,7 +213,6 @@
                                     <td class="text-center p-1 w-[120px] min-w-[120px] max-w-[120px]"></td>
                                 </tr>
                             </template>
-                            <!-- Outcome mean row — label RIGHT-ALIGNED -->
                             <tr class="bg-blue-50/60 border-b border-slate-200">
                                 <td class="px-5 py-2 text-xs font-semibold text-zinc-400 italic border-r border-slate-200 text-right">Outcome mean</td>
                                 <td class="border-r border-slate-200 text-center p-1 w-[100px] min-w-[100px] max-w-[100px]"></td>
@@ -235,7 +222,6 @@
                                 <td class="text-center p-1 w-[120px] min-w-[120px] max-w-[120px]"></td>
                             </tr>
 
-                            <!-- ── PM row — ABOVE Best Practices ── -->
                             <tr class="bg-emerald-50/80 border-b border-slate-200">
                                 <td class="px-5 py-2.5 text-xs font-bold text-zinc-500 border-r border-slate-200 italic">
                                     Parameter Mean —
@@ -248,7 +234,6 @@
                                 </td>
                             </tr>
 
-                            <!-- ── BEST PRACTICES row — BELOW Parameter Mean ── -->
                             <tr class="border-b border-slate-200 bg-amber-50/30">
                                 <td colspan="4" class="px-5 py-3">
                                     <div class="flex flex-col gap-1.5">
@@ -267,7 +252,6 @@
                         </tbody>
                     </template>
 
-                    <!-- ── TOTAL RATING ROW (sum of all IR in this area) ── -->
                     <tfoot>
                         <tr class="bg-[#1b355a]/10 border-t-2 border-[#1b355a]/30">
                             <td class="px-5 py-3 text-xs font-extrabold text-[#1b355a] uppercase tracking-wide border-r border-slate-200 text-right">
@@ -282,7 +266,6 @@
                             <td class="border-r border-slate-200 text-center p-2 w-[170px] min-w-[170px] max-w-[170px]"></td>
                             <td class="text-center p-2 w-[120px] min-w-[120px] max-w-[120px]"></td>
                         </tr>
-                        <!-- ── AREA MEAN ROW (mean of all Parameter Means) ── -->
                         <tr class="bg-emerald-600 text-white">
                             <td class="px-5 py-3 text-xs font-extrabold uppercase tracking-wide border-r border-emerald-500 text-right">
                                 Area Mean
@@ -301,7 +284,6 @@
             </div>
         </div>
 
-        <!-- Print / Submit Actions -->
         <div class="flex items-center justify-end gap-3 flex-wrap">
             <div class="flex items-center gap-3">
                 <button type="button"
@@ -310,7 +292,6 @@
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z" /></svg>
                     Print / Export
                 </button>
-                <!-- Read-Only Badge for IQA Admin -->
                 <span class="px-4 py-2 bg-slate-100 border border-slate-200 text-zinc-500 font-bold text-xs rounded-xl flex items-center gap-1.5">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-zinc-400"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.573 16.49 16.638 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                     Read-Only View (IQA Admin)
