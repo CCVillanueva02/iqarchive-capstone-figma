@@ -1,4 +1,4 @@
-<flux:sidebar sticky collapsible="mobile" class="border-none text-white flex flex-col gap-0 !p-0 min-h-screen h-screen" style="background: linear-gradient(180deg, #002B61 0%, #003E8A 100%) !important;">
+<flux:sidebar sticky collapsible="mobile" class="border-none text-white flex flex-col gap-0 !p-0 min-h-screen h-screen no-scrollbar" style="background: linear-gradient(180deg, #002B61 0%, #003E8A 100%) !important;">
     <flux:sidebar.header class="flex flex-col gap-3 px-[20px] py-[24px] border-b border-white/10">
         <div class="flex items-center justify-start gap-3 mr-auto text-left w-full">
             <img src="/bulogo.png" alt="BU Logo" class="w-10 h-10 object-contain shrink-0 select-none" />
@@ -17,7 +17,7 @@
     @endphp
 
 
-    <div class="flex flex-col gap-[6px] flex-1 py-6">
+    <div class="flex flex-col gap-[6px] flex-1 py-6 overflow-y-auto no-scrollbar">
 
         <div class="px-6 pb-1">
             <span class="text-[9px] font-bold uppercase tracking-[1.5px] text-white/40">Accreditation</span>
