@@ -44,38 +44,92 @@
         $currentDocTab = $currentDocTab ?? request()->query('tab', $defaultTabForRole);
         @endphp
 
-        <!-- Documents Tab & Subtabs -->
-        <div class="flex flex-col">
-            <a href="{{ route('documents.' . $role, ['tab' => $defaultTabForRole]) }}" class="group flex items-center justify-between px-6 py-[14px] border-l-[4px] text-sm font-semibold transition-all {{ request()->routeIs('documents.' . $role) ? 'bg-white/10 text-white border-l-[#F47920]' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
+        <!-- Documents Tab & Subtabs (Collapsible) -->
+        <div class="flex flex-col" x-data="{ docsOpen: {{ request()->routeIs('documents.' . $role) ? 'true' : 'false' }} }">
+            <!-- Documents toggle button (does NOT navigate, just toggles submenu) -->
+            <button type="button"
+                @click="docsOpen = !docsOpen"
+                class="group flex items-center justify-between px-6 py-[14px] border-l-[4px] text-sm font-semibold transition-all cursor-pointer {{ request()->routeIs('documents.' . $role) ? 'bg-white/10 text-white border-l-[#F47920]' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}">
                 <div class="flex items-center gap-[14px]">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
                     </svg>
                     <span>Documents</span>
                 </div>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-200 {{ request()->routeIs('documents.' . $role) ? 'rotate-180 text-white' : 'text-white/40 group-hover:text-white/70' }}">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                     class="transition-transform duration-200"
+                     :class="docsOpen ? 'rotate-180 text-white' : 'text-white/40 group-hover:text-white/70'">
                     <polyline points="6 9 12 15 18 9"></polyline>
                 </svg>
-            </a>
+            </button>
 
-            @if (request()->routeIs('documents.' . $role))
-            <!-- Documents Subtabs -->
-            <div class="flex flex-col gap-1 pl-9 pr-4 py-2.5 bg-black/15">
-                @if ($canSeeCommonDocs)
-                <a href="{{ route('documents.' . $role, ['tab' => 'common-documents']) }}" class="flex items-center px-4 py-3 rounded-lg text-xs transition-all {{ $currentDocTab === 'common-documents' ? 'bg-white/15 text-white font-bold' : 'text-white/60 hover:text-white hover:bg-white/5 font-medium' }}" wire:navigate>
-                    <span>Common Documents</span>
-                </a>
-                @endif
-                <a href="{{ route('documents.' . $role, ['tab' => 'program-accreditation']) }}" class="flex items-center px-4 py-3 rounded-lg text-xs transition-all {{ $currentDocTab === 'program-accreditation' ? 'bg-white/15 text-white font-bold' : 'text-white/60 hover:text-white hover:bg-white/5 font-medium' }}" wire:navigate>
-                    <span>Program Accreditation</span>
-                </a>
-                @if ($canSeeInstitutionalDocs)
-                <a href="{{ route('documents.' . $role, ['tab' => 'institutional-accreditation']) }}" class="flex items-center px-4 py-3 rounded-lg text-xs transition-all {{ $currentDocTab === 'institutional-accreditation' ? 'bg-white/15 text-white font-bold' : 'text-white/60 hover:text-white hover:bg-white/5 font-medium' }}" wire:navigate>
-                    <span>Institutional Accreditation</span>
-                </a>
-                @endif
+            <!-- Documents Subtabs (collapsible) -->
+            <div x-show="docsOpen"
+                 x-transition:enter="transition ease-out duration-200"
+                 x-transition:enter-start="opacity-0 -translate-y-1"
+                 x-transition:enter-end="opacity-100 translate-y-0"
+                 x-transition:leave="transition ease-in duration-150"
+                 x-transition:leave-start="opacity-100 translate-y-0"
+                 x-transition:leave-end="opacity-0 -translate-y-1"
+                 x-cloak
+                 class="flex flex-col py-3 bg-black/15">
+
+                <!-- Vertical connecting line container -->
+                <div class="relative pl-[42px] pr-4 flex flex-col gap-0">
+                    <!-- The vertical line -->
+                    <div class="absolute left-[30px] top-[22px] bottom-[22px] w-[1.5px] bg-white/15"></div>
+
+                    @if ($canSeeCommonDocs)
+                    <!-- Common Documents -->
+                    <a href="{{ route('documents.' . $role, ['tab' => 'common-documents']) }}"
+                       class="relative flex items-center gap-3 px-4 py-3 rounded-lg text-[13px] transition-all {{ ($currentDocTab === 'common-documents' && request()->routeIs('documents.' . $role)) ? 'bg-white/12 text-emerald-400 font-bold' : 'text-white/60 hover:text-white hover:bg-white/5 font-medium' }}"
+                       wire:navigate>
+                        <!-- Dot on the line -->
+                        <span class="absolute left-[-16px] top-1/2 -translate-y-1/2 w-[7px] h-[7px] rounded-full border-[1.5px] {{ ($currentDocTab === 'common-documents' && request()->routeIs('documents.' . $role)) ? 'bg-emerald-400 border-emerald-400' : 'bg-white/20 border-white/30' }}"></span>
+                        <!-- Icon -->
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 {{ ($currentDocTab === 'common-documents' && request()->routeIs('documents.' . $role)) ? 'text-emerald-400' : 'text-white/40' }}">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                        </svg>
+                        <span>Common Documents</span>
+                    </a>
+                    @endif
+
+                    <!-- Program Accreditation -->
+                    <a href="{{ route('documents.' . $role, ['tab' => 'program-accreditation']) }}"
+                       class="relative flex items-center gap-3 px-4 py-3 rounded-lg text-[13px] transition-all {{ ($currentDocTab === 'program-accreditation' && request()->routeIs('documents.' . $role)) ? 'bg-white/12 text-emerald-400 font-bold' : 'text-white/60 hover:text-white hover:bg-white/5 font-medium' }}"
+                       wire:navigate>
+                        <span class="absolute left-[-16px] top-1/2 -translate-y-1/2 w-[7px] h-[7px] rounded-full border-[1.5px] {{ ($currentDocTab === 'program-accreditation' && request()->routeIs('documents.' . $role)) ? 'bg-emerald-400 border-emerald-400' : 'bg-white/20 border-white/30' }}"></span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 {{ ($currentDocTab === 'program-accreditation' && request()->routeIs('documents.' . $role)) ? 'text-emerald-400' : 'text-white/40' }}">
+                            <path d="M3 21h18"></path>
+                            <path d="M5 21V7l7-4 7 4v14"></path>
+                            <path d="M9 21v-4h6v4"></path>
+                            <path d="M10 10h4"></path>
+                        </svg>
+                        <span>Program Accreditation</span>
+                    </a>
+
+                    @if ($canSeeInstitutionalDocs)
+                    <!-- Institutional Accreditation -->
+                    <a href="{{ route('documents.' . $role, ['tab' => 'institutional-accreditation']) }}"
+                       class="relative flex items-center gap-3 px-4 py-3 rounded-lg text-[13px] transition-all {{ ($currentDocTab === 'institutional-accreditation' && request()->routeIs('documents.' . $role)) ? 'bg-white/12 text-emerald-400 font-bold' : 'text-white/60 hover:text-white hover:bg-white/5 font-medium' }}"
+                       wire:navigate>
+                        <span class="absolute left-[-16px] top-1/2 -translate-y-1/2 w-[7px] h-[7px] rounded-full border-[1.5px] {{ ($currentDocTab === 'institutional-accreditation' && request()->routeIs('documents.' . $role)) ? 'bg-emerald-400 border-emerald-400' : 'bg-white/20 border-white/30' }}"></span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 {{ ($currentDocTab === 'institutional-accreditation' && request()->routeIs('documents.' . $role)) ? 'text-emerald-400' : 'text-white/40' }}">
+                            <rect x="4" y="10" width="16" height="11" rx="1"></rect>
+                            <path d="M8 10V6a4 4 0 0 1 8 0v4"></path>
+                            <path d="M8 14h2"></path>
+                            <path d="M14 14h2"></path>
+                            <path d="M8 18h2"></path>
+                            <path d="M14 18h2"></path>
+                        </svg>
+                        <span>Institutional Accreditation</span>
+                    </a>
+                    @endif
+                </div>
             </div>
-            @endif
         </div>
         @endif
 
