@@ -38,8 +38,10 @@ class DocumentCategoryController extends Controller
         }
 
         $userRole = $user->role;
-        $isDisallowed = in_array($userRole, ['system-administrator', 'college-head', 'program-chair', 'university-administrator', 'accreditor'])
+        $isDisallowed = in_array($userRole, ['system-administrator', 'task-force', 'task-force-member', 'college-head', 'program-chair', 'university-administrator', 'accreditor'])
             || $user->hasRole('system-administrator')
+            || $user->hasRole('task-force')
+            || $user->hasRole('task-force-member')
             || $user->hasRole('college-head')
             || $user->hasRole('university-administrator')
             || $user->hasRole('accreditor');
@@ -145,8 +147,10 @@ class DocumentCategoryController extends Controller
         }
 
         $userRole = $user->role;
-        $isDisallowed = in_array($userRole, ['system-administrator', 'college-head', 'program-chair', 'university-administrator', 'accreditor'])
+        $isDisallowed = in_array($userRole, ['system-administrator', 'task-force', 'task-force-member', 'college-head', 'program-chair', 'university-administrator', 'accreditor'])
             || $user->hasRole('system-administrator')
+            || $user->hasRole('task-force')
+            || $user->hasRole('task-force-member')
             || $user->hasRole('college-head')
             || $user->hasRole('university-administrator')
             || $user->hasRole('accreditor');
@@ -209,8 +213,10 @@ class DocumentCategoryController extends Controller
         }
 
         $userRole = $user->role;
-        $isDisallowed = in_array($userRole, ['system-administrator', 'college-head', 'program-chair', 'university-administrator', 'accreditor'])
+        $isDisallowed = in_array($userRole, ['system-administrator', 'task-force', 'task-force-member', 'college-head', 'program-chair', 'university-administrator', 'accreditor'])
             || $user->hasRole('system-administrator')
+            || $user->hasRole('task-force')
+            || $user->hasRole('task-force-member')
             || $user->hasRole('college-head')
             || $user->hasRole('university-administrator')
             || $user->hasRole('accreditor');

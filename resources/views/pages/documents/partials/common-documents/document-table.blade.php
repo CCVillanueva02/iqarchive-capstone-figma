@@ -116,8 +116,8 @@
                 </div>
                 @endif
 
-                <!-- Upload Button (For IQA Admin, IQA Member, Task Force) -->
-                @if(in_array(auth()->user()->role, ['iqa-admin', 'iqa-member', 'task-force', 'task-force-member']) || auth()->user()->hasRole('iqa-admin') || auth()->user()->hasRole('iqa-member') || auth()->user()->hasRole('task-force'))
+                <!-- Upload Button (For IQA Admin, IQA Member) -->
+                @if(in_array(auth()->user()->role, ['iqa-admin', 'iqa-member']) || auth()->user()->hasRole('iqa-admin') || auth()->user()->hasRole('iqa-member'))
                 <button type="button" @click="openUploadModal()" class="bg-[#f27224] hover:bg-[#d65f1a] text-white text-xs font-bold px-4 py-2 rounded-lg flex items-center gap-1.5 shrink-0 shadow-2xs transition cursor-pointer">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />

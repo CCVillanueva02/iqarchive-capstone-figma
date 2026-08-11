@@ -1,10 +1,14 @@
 <x-layouts::app :title="__('Documents')">
     @php
         $userRole = auth()->user()->role;
-        $canSeeCommonDocs = in_array($userRole, ['iqa-admin', 'iqa-member', 'task-force', 'task-force-member']) || auth()->user()->hasRole('iqa-admin') || auth()->user()->hasRole('iqa-member') || auth()->user()->hasRole('task-force');
+        $canSeeCommonDocs = in_array($userRole, ['iqa-admin', 'iqa-member', 'task-force', 'task-force-member', 'program-chair', 'college-head']) || auth()->user()->hasAnyRole(['iqa-admin', 'iqa-member', 'task-force', 'task-force-member', 'program-chair', 'college-head']);
+        $canSeeInstitutionalDocs = in_array($userRole, ['iqa-admin', 'iqa-member']) || auth()->user()->hasRole('iqa-admin') || auth()->user()->hasRole('iqa-member');
         $defaultTab = $canSeeCommonDocs ? 'common-documents' : 'program-accreditation';
         $activeTab = request()->query('tab', $defaultTab);
         if (!$canSeeCommonDocs && $activeTab === 'common-documents') {
+            $activeTab = 'program-accreditation';
+        }
+        if (!$canSeeInstitutionalDocs && $activeTab === 'institutional-accreditation') {
             $activeTab = 'program-accreditation';
         }
     @endphp
@@ -21,7 +25,9 @@
 
         @include('pages.documents.partials.program-accreditation')
 
+        @if ($canSeeInstitutionalDocs)
         @include('pages.documents.partials.institutional-accreditation')
+        @endif
 
         @include('pages.documents.partials.detail-drawer')
     </div>

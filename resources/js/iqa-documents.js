@@ -1,8 +1,12 @@
 window.documentWorkspace = function(initialState = {}) {
     const userRole = initialState.userRole || '';
-    const canSeeCommonDocs = ['iqa-admin', 'iqa-member', 'task-force', 'task-force-member'].includes(userRole);
+    const canSeeCommonDocs = ['iqa-admin', 'iqa-member'].includes(userRole);
+    const canSeeInstitutionalDocs = ['iqa-admin', 'iqa-member'].includes(userRole);
     let defaultTab = initialState.activeTab || (canSeeCommonDocs ? 'common-documents' : 'program-accreditation');
     if (!canSeeCommonDocs && defaultTab === 'common-documents') {
+        defaultTab = 'program-accreditation';
+    }
+    if (!canSeeInstitutionalDocs && defaultTab === 'institutional-accreditation') {
         defaultTab = 'program-accreditation';
     }
     let initialAccredLevel = initialState.accredLevel || null;
