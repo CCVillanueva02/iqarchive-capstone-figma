@@ -47,24 +47,27 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // University Administrator explicit route mapping (analytics as landing page)
     Route::get("roles/university-administrator/analytics", function () {
-        if (auth()->user()->role !== 'university-administrator') {
+        if (!auth()->user()->hasRole(['university-administrator', 'system-administrator', 'iqa-admin'])) {
             abort(403, 'Unauthorized action.');
         }
         return view("pages.roles.university-administrator.analytics");
     })->name("analytics.university-administrator");
 
     Route::get("roles/university-administrator/dashboard", function () {
-        if (auth()->user()->role !== 'university-administrator') {
+        if (!auth()->user()->hasRole(['university-administrator', 'system-administrator', 'iqa-admin'])) {
             abort(403, 'Unauthorized action.');
         }
         return redirect()->route('analytics.university-administrator');
     })->name("dashboard.university-administrator");
 
     Route::get("roles/university-administrator/reports", function () {
-        if (auth()->user()->role !== 'university-administrator') {
+        if (!auth()->user()->hasRole(['university-administrator', 'system-administrator', 'iqa-admin'])) {
             abort(403, 'Unauthorized action.');
         }
-        return view("pages.roles.university-administrator.reports");
+        return view('pages.workspace.placeholder', [
+            'title' => 'Reports',
+            'roleName' => 'BU Executive Admin',
+        ]);
     })->name("reports.university-administrator");
 
     // Active role switcher route for multi-role users

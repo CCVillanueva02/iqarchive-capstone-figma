@@ -94,7 +94,11 @@
 
         <!-- Audit Trail -->
         @if ($role === 'system-administrator' || $role === 'iqa-admin')
-        <a href="{{ route('reports.system-administrator') }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-sm font-semibold transition-all {{ request()->routeIs('reports.system-administrator') ? 'bg-white/10 text-white border-l-[#F47920]' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
+        @php
+            $auditTrailRoute = ($role === 'iqa-admin') ? route('audit-trail.iqa-admin') : route('reports.system-administrator');
+            $isAuditTrailActive = request()->routeIs('audit-trail.*') || request()->routeIs('reports.system-administrator');
+        @endphp
+        <a href="{{ $auditTrailRoute }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-sm font-semibold transition-all {{ $isAuditTrailActive ? 'bg-white/10 text-white border-l-[#F47920]' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
                 <polyline points="12 6 12 12 16 14"></polyline>

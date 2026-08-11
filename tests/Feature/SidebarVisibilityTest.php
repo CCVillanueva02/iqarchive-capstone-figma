@@ -106,3 +106,31 @@ test('program chair CAN see Task Forces sidebar link', function () {
     $response->assertOk();
     $response->assertSee(route('task-forces.index'));
 });
+
+test('iqa admin can access Audit Trail without 403', function () {
+    $user = createUserWithRole('iqa-admin');
+
+    $response = $this->actingAs($user)
+        ->get(route('audit-trail.iqa-admin'));
+
+    $response->assertOk();
+});
+
+test('system administrator can access Audit Trail without 403', function () {
+    $user = createUserWithRole('system-administrator');
+
+    $response = $this->actingAs($user)
+        ->get(route('reports.system-administrator'));
+
+    $response->assertOk();
+});
+
+test('iqa admin and system administrator can access university analytics and reports without 403', function (string $roleName) {
+    $user = createUserWithRole($roleName);
+
+    $responseAnalytics = $this->actingAs($user)->get(route('analytics.university-administrator'));
+    $responseAnalytics->assertOk();
+
+    $responseReports = $this->actingAs($user)->get(route('reports.university-administrator'));
+    $responseReports->assertOk();
+})->with(['iqa-admin', 'system-administrator', 'university-administrator']);
