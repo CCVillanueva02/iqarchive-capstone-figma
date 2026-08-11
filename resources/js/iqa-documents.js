@@ -1,5 +1,10 @@
 window.documentWorkspace = function(initialState = {}) {
-    const defaultTab = initialState.activeTab || 'common-documents';
+    const userRole = initialState.userRole || '';
+    const canSeeCommonDocs = ['iqa-admin', 'iqa-member', 'task-force', 'task-force-member'].includes(userRole);
+    let defaultTab = initialState.activeTab || (canSeeCommonDocs ? 'common-documents' : 'program-accreditation');
+    if (!canSeeCommonDocs && defaultTab === 'common-documents') {
+        defaultTab = 'program-accreditation';
+    }
     let initialAccredLevel = initialState.accredLevel || null;
     if (defaultTab === 'program-accreditation') {
         initialAccredLevel = 'program';

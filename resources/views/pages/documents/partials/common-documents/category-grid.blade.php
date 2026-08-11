@@ -1,5 +1,24 @@
 <!-- ================= STATE 1: CATEGORY SHOWCASE ================= -->
 <div x-show="selectedCategory === null" x-transition class="flex flex-col gap-6">
+    @if(auth()->user()->role === 'iqa-admin' || auth()->user()->hasRole('iqa-admin'))
+    <!-- IQA Admin Verification Alert Notice Banner -->
+    <div x-show="documents.filter(d => d.status === 'Pending').length > 0" class="bg-amber-50/90 border border-amber-200 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-amber-900 shadow-3xs">
+        <div class="flex items-center gap-3">
+            <div class="p-2 bg-amber-500/10 text-amber-700 rounded-lg shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+                </svg>
+            </div>
+            <div>
+                <h4 class="text-xs font-bold uppercase tracking-wider text-amber-800">Verification Pending Notice</h4>
+                <p class="text-xs text-amber-700 mt-0.5 font-medium">
+                    Note: There <span x-text="documents.filter(d => d.status === 'Pending').length === 1 ? 'is' : 'are'"></span> <strong class="font-extrabold text-amber-900" x-text="documents.filter(d => d.status === 'Pending').length"></strong> common document<span x-text="documents.filter(d => d.status === 'Pending').length === 1 ? '' : 's'"></span> awaiting verification.
+                </p>
+            </div>
+        </div>
+    </div>
+    @endif
+
     <!-- Search bar for categories & Action Buttons -->
     <div class="bg-white border border-slate-200/60 rounded-xl p-4 shadow-3xs">
         <div class="flex flex-col sm:flex-row gap-3 items-center justify-between">
@@ -19,8 +38,8 @@
             
             <!-- Toolbar Action Buttons -->
             <div class="flex items-center gap-2 shrink-0">
-                <!-- Create Category Button (Strictly for IQA Admin and System Admin) -->
-                @if(in_array(auth()->user()->role, ['iqa-admin', 'system-administrator']) || auth()->user()->hasRole('iqa-admin') || auth()->user()->hasRole('system-administrator'))
+                <!-- Create Category Button (Strictly for IQA Admin) -->
+                @if(auth()->user()->role === 'iqa-admin' || auth()->user()->hasRole('iqa-admin'))
                 <button type="button" @click="openCreateCategoryModal()" class="bg-[#1b355a] hover:bg-[#112239] text-white text-xs font-bold px-4 py-3 rounded-lg flex items-center gap-1.5 transition cursor-pointer shadow-3xs">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -29,8 +48,8 @@
                 </button>
                 @endif
 
-                <!-- Upload Document Button (For IQA Admin, IQA Member, Task Force, College Head, Program Chair) -->
-                @if(in_array(auth()->user()->role, ['iqa-admin', 'iqa-member', 'task-force', 'task-force-member', 'college-head', 'program-chair']) || auth()->user()->hasRole('iqa-admin') || auth()->user()->hasRole('iqa-member') || auth()->user()->hasRole('task-force'))
+                <!-- Upload Document Button (For IQA Admin, IQA Member, Task Force) -->
+                @if(in_array(auth()->user()->role, ['iqa-admin', 'iqa-member', 'task-force', 'task-force-member']) || auth()->user()->hasRole('iqa-admin') || auth()->user()->hasRole('iqa-member') || auth()->user()->hasRole('task-force'))
                 <button type="button" @click="openUploadModal()" class="bg-[#f27224] hover:bg-[#d65f1a] text-white text-xs font-bold px-4.5 py-3 rounded-lg flex items-center gap-1.5 transition cursor-pointer shadow-2xs">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />

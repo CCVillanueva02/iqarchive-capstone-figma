@@ -33,14 +33,27 @@ class DocumentCategoryController extends Controller
         }
 
         $user = auth()->user();
-        $userRole = $user ? $user->role : '';
-        $isIqaAdmin = $user && ($userRole === 'iqa-admin' || $user->hasRole('iqa-admin'));
-        $isSysAdmin = $user && ($userRole === 'system-administrator' || $user->hasRole('system-administrator'));
+        if (!$user) {
+            return response()->json(['error' => 'Unauthenticated.'], 401);
+        }
 
-        if ($isIqaAdmin || $isSysAdmin) {
+        $userRole = $user->role;
+        $isDisallowed = in_array($userRole, ['system-administrator', 'college-head', 'program-chair', 'university-administrator', 'accreditor'])
+            || $user->hasRole('system-administrator')
+            || $user->hasRole('college-head')
+            || $user->hasRole('university-administrator')
+            || $user->hasRole('accreditor');
+
+        if ($isDisallowed) {
+            return response()->json(['error' => 'Unauthorized. Restricted role cannot access common documents.'], 403);
+        }
+
+        $isIqaAdmin = $userRole === 'iqa-admin' || $user->hasRole('iqa-admin');
+
+        if ($isIqaAdmin) {
             $categoriesQuery = DocumentCategory::withCount('documents');
         } else {
-            // For IQA MEMBER | TASKFORCE | COLLEGE HEAD | PROGRAM CHAIR: count ONLY verified documents
+            // For IQA MEMBER | TASKFORCE: count ONLY verified documents
             $categoriesQuery = DocumentCategory::withCount(['documents' => function ($q) {
                 $q->where('status', 'Verified');
             }]);
@@ -82,7 +95,7 @@ class DocumentCategoryController extends Controller
     }
 
     /**
-     * Create a new document category (Only for IQA Admin and System Admin).
+     * Create a new document category (Only for IQA Admin).
      */
     public function store(Request $request)
     {
@@ -92,13 +105,11 @@ class DocumentCategoryController extends Controller
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
 
-        // Strictly allow IQA Admin and System Administrator only
-        $isAllowed = $user->hasRole('iqa-admin') || 
-                     $user->hasRole('system-administrator') || 
-                     in_array($user->role, ['iqa-admin', 'system-administrator']);
+        // Strictly allow IQA Admin only
+        $isAllowed = $user->hasRole('iqa-admin') || $user->role === 'iqa-admin';
 
         if (!$isAllowed) {
-            return response()->json(['error' => 'Unauthorized. Only IQA Admin and System Administrator can create new document categories.'], 403);
+            return response()->json(['error' => 'Unauthorized. Only IQA Admin can create new document categories.'], 403);
         }
 
         $validated = $request->validate([
@@ -134,15 +145,17 @@ class DocumentCategoryController extends Controller
         }
 
         $userRole = $user->role;
-        $isUniversityAdmin = $userRole === 'university-administrator' || $user->hasRole('university-administrator');
-        $isAccreditor = $userRole === 'accreditor' || $user->hasRole('accreditor');
+        $isDisallowed = in_array($userRole, ['system-administrator', 'college-head', 'program-chair', 'university-administrator', 'accreditor'])
+            || $user->hasRole('system-administrator')
+            || $user->hasRole('college-head')
+            || $user->hasRole('university-administrator')
+            || $user->hasRole('accreditor');
 
-        if ($isUniversityAdmin || $isAccreditor) {
-            return response()->json(['error' => 'Unauthorized. University Admin and Accreditors cannot view common documents.'], 403);
+        if ($isDisallowed) {
+            return response()->json(['error' => 'Unauthorized. Restricted role cannot view common documents.'], 403);
         }
 
         $isIqaAdmin = $userRole === 'iqa-admin' || $user->hasRole('iqa-admin');
-        $isSysAdmin = $userRole === 'system-administrator' || $user->hasRole('system-administrator');
 
         $query = Document::with(['category', 'uploader'])
             ->where(function ($q) {
@@ -150,7 +163,7 @@ class DocumentCategoryController extends Controller
             });
 
         // Non-admin roles can ONLY see Verified documents OR documents they uploaded themselves
-        if (!$isIqaAdmin && !$isSysAdmin) {
+        if (!$isIqaAdmin) {
             $query->where(function ($q) use ($user) {
                 $q->where('status', 'Verified')
                   ->orWhere('uploaded_by', $user->id);
@@ -196,15 +209,14 @@ class DocumentCategoryController extends Controller
         }
 
         $userRole = $user->role;
-        $isUniversityAdmin = $userRole === 'university-administrator' || $user->hasRole('university-administrator');
-        $isAccreditor = $userRole === 'accreditor' || $user->hasRole('accreditor');
+        $isDisallowed = in_array($userRole, ['system-administrator', 'college-head', 'program-chair', 'university-administrator', 'accreditor'])
+            || $user->hasRole('system-administrator')
+            || $user->hasRole('college-head')
+            || $user->hasRole('university-administrator')
+            || $user->hasRole('accreditor');
 
-        if ($isUniversityAdmin || $isAccreditor) {
-            return response()->json(['error' => 'Unauthorized.'], 403);
-        }
-
-        if ($userRole === 'system-administrator' && !$user->hasRole('iqa-admin')) {
-            return response()->json(['error' => 'Unauthorized. System Administrator can only view logs.'], 403);
+        if ($isDisallowed) {
+            return response()->json(['error' => 'Unauthorized. Restricted role cannot upload common documents.'], 403);
         }
 
         $validated = $request->validate([

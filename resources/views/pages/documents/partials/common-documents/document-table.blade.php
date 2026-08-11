@@ -101,8 +101,8 @@
                     </div>
                 </div>
 
-                <!-- Status Select (Admin Only) -->
-                @if(in_array(auth()->user()->role, ['iqa-admin', 'system-administrator']) || auth()->user()->hasRole('iqa-admin') || auth()->user()->hasRole('system-administrator'))
+                <!-- Status Select (IQA Admin Only) -->
+                @if(auth()->user()->role === 'iqa-admin' || auth()->user()->hasRole('iqa-admin'))
                 <div class="relative">
                     <select x-model="filterStatus" class="text-xs bg-[#f8fafc] border border-slate-200 rounded-lg pl-3 pr-8 py-2 text-zinc-650 appearance-none focus:outline-none focus:border-[#002B61] font-semibold cursor-pointer">
                         <option value="all">Status: All</option>
@@ -116,8 +116,8 @@
                 </div>
                 @endif
 
-                <!-- Upload Button (Forbidden for System Admin, University Admin, Accreditors) -->
-                @if(in_array(auth()->user()->role, ['iqa-admin', 'iqa-member', 'task-force', 'task-force-member', 'college-head', 'program-chair']) || auth()->user()->hasRole('iqa-admin') || auth()->user()->hasRole('iqa-member') || auth()->user()->hasRole('task-force'))
+                <!-- Upload Button (For IQA Admin, IQA Member, Task Force) -->
+                @if(in_array(auth()->user()->role, ['iqa-admin', 'iqa-member', 'task-force', 'task-force-member']) || auth()->user()->hasRole('iqa-admin') || auth()->user()->hasRole('iqa-member') || auth()->user()->hasRole('task-force'))
                 <button type="button" @click="openUploadModal()" class="bg-[#f27224] hover:bg-[#d65f1a] text-white text-xs font-bold px-4 py-2 rounded-lg flex items-center gap-1.5 shrink-0 shadow-2xs transition cursor-pointer">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -128,8 +128,8 @@
             </div>
         </div>
 
-        @if(in_array(auth()->user()->role, ['iqa-admin', 'system-administrator']) || auth()->user()->hasRole('iqa-admin') || auth()->user()->hasRole('system-administrator'))
-        <!-- Quick One-Click Sort & Status Filter Pills (Admin Only) -->
+        @if(auth()->user()->role === 'iqa-admin' || auth()->user()->hasRole('iqa-admin'))
+        <!-- Quick One-Click Sort & Status Filter Pills (IQA Admin Only) -->
         <div class="flex items-center gap-2 pt-3 border-t border-slate-100 flex-wrap">
             <span class="text-[11px] font-bold text-zinc-400 uppercase tracking-wider mr-1">Quick Filter:</span>
             <button type="button" 
@@ -211,8 +211,7 @@
                             </div>
                         </th>
 
-                        @if(in_array(auth()->user()->role, ['iqa-admin', 'system-administrator']) || auth()->user()->hasRole('iqa-admin') || auth()->user()->hasRole('system-administrator'))
-                        <!-- Status Header (Admin Only) -->
+                        <!-- Status Header -->
                         <th class="pl-8 px-4 w-36 whitespace-nowrap shrink-0 cursor-pointer hover:text-[#002B61] transition group/th" @click="toggleSort('status')">
                             <div class="flex items-center gap-1">
                                 <span>STATUS</span>
@@ -228,7 +227,6 @@
                                 </svg>
                             </div>
                         </th>
-                        @endif
 
                         <!-- Actions Header -->
                         <th class="pr-12 pl-4 w-32 text-right whitespace-nowrap shrink-0">ACTIONS</th>
@@ -265,37 +263,43 @@
                             </td>
                             <td class="py-4 px-4 text-slate-700 font-semibold whitespace-nowrap shrink-0" x-text="doc.uploader || 'Sys Admin'"></td>
                             <td class="py-4 px-4 text-slate-700 font-semibold whitespace-nowrap shrink-0" x-text="doc.date"></td>
-                            @if(in_array(auth()->user()->role, ['iqa-admin', 'system-administrator']) || auth()->user()->hasRole('iqa-admin') || auth()->user()->hasRole('system-administrator'))
                             <td class="py-4 px-4 whitespace-nowrap shrink-0">
                                 <div>
-                                    <template x-if="doc.status === 'Verified'">
-                                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#dcfce7] text-[#15803d] border border-[#bbf7d0] shadow-2xs">
-                                            <svg class="w-3.5 h-3.5 shrink-0 text-[#15803d]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                                            </svg>
-                                            <span>Verified</span>
-                                        </span>
+                                    <!-- Only display status if IQA Admin OR if user uploaded this document -->
+                                    <template x-if="currentUserRole === 'iqa-admin' || doc.uploaded_by_id === currentUserId">
+                                        <div>
+                                            <template x-if="doc.status === 'Verified'">
+                                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#dcfce7] text-[#15803d] border border-[#bbf7d0] shadow-2xs">
+                                                    <svg class="w-3.5 h-3.5 shrink-0 text-[#15803d]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                                    </svg>
+                                                    <span>Verified</span>
+                                                </span>
+                                            </template>
+                                            <template x-if="doc.status === 'Pending'">
+                                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#fef3c7] text-[#92400e] border border-[#fde68a] shadow-2xs">
+                                                    <svg class="w-3.5 h-3.5 shrink-0 text-[#92400e]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                                        <circle cx="12" cy="12" r="9" />
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 7v5l3 3" />
+                                                    </svg>
+                                                    <span>Pending</span>
+                                                </span>
+                                            </template>
+                                            <template x-if="doc.status === 'Rejected'">
+                                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-700 border border-rose-200 shadow-2xs">
+                                                    <svg class="w-3.5 h-3.5 shrink-0 text-rose-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                                    </svg>
+                                                    <span>Rejected</span>
+                                                </span>
+                                            </template>
+                                        </div>
                                     </template>
-                                    <template x-if="doc.status === 'Pending'">
-                                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#fef3c7] text-[#92400e] border border-[#fde68a] shadow-2xs">
-                                            <svg class="w-3.5 h-3.5 shrink-0 text-[#92400e]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                                <circle cx="12" cy="12" r="9" />
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 7v5l3 3" />
-                                            </svg>
-                                            <span>Pending</span>
-                                        </span>
-                                    </template>
-                                    <template x-if="doc.status === 'Rejected'">
-                                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-700 border border-rose-200 shadow-2xs">
-                                            <svg class="w-3.5 h-3.5 shrink-0 text-rose-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                                            </svg>
-                                            <span>Rejected</span>
-                                        </span>
+                                    <template x-if="currentUserRole !== 'iqa-admin' && doc.uploaded_by_id !== currentUserId">
+                                        <span class="text-xs text-slate-400 font-medium select-none">&mdash;</span>
                                     </template>
                                 </div>
                             </td>
-                            @endif
                             <td class="py-4 pl-4 pr-6 text-right whitespace-nowrap shrink-0">
                                 <button @click="openDoc(doc)" class="text-xs font-bold text-[#002B61] hover:text-[#F47920] transition cursor-pointer select-none bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg border border-slate-200/80">
                                     View Details

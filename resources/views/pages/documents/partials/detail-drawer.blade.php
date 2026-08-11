@@ -33,30 +33,34 @@
                 <h3 class="font-extrabold text-xl text-[#002B61] leading-tight truncate" x-text="selectedDoc?.name || 'Document Details'"></h3>
                 
                 <!-- Status Pill -->
-                <template x-if="selectedDoc?.status === 'Verified'">
-                    <span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-bold bg-[#dcfce7] text-[#15803d] border border-[#bbf7d0]">
-                        <svg class="w-3.5 h-3.5 shrink-0 text-[#15803d]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                        </svg>
-                        <span>Verified</span>
-                    </span>
-                </template>
-                <template x-if="selectedDoc?.status === 'Pending'">
-                    <span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-bold bg-[#fef3c7] text-[#92400e] border border-[#fde68a]">
-                        <svg class="w-3.5 h-3.5 shrink-0 text-[#92400e]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                            <circle cx="12" cy="12" r="9" />
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 7v5l3 3" />
-                        </svg>
-                        <span>Pending</span>
-                    </span>
-                </template>
-                <template x-if="selectedDoc?.status === 'Rejected'">
-                    <span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-bold bg-rose-100 text-rose-700 border border-rose-200">
-                        <svg class="w-3.5 h-3.5 shrink-0 text-rose-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                        <span>Rejected</span>
-                    </span>
+                <template x-if="currentUserRole === 'iqa-admin' || selectedDoc?.uploaded_by_id === currentUserId">
+                    <div class="inline-flex items-center gap-1">
+                        <template x-if="selectedDoc?.status === 'Verified'">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-bold bg-[#dcfce7] text-[#15803d] border border-[#bbf7d0]">
+                                <svg class="w-3.5 h-3.5 shrink-0 text-[#15803d]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                </svg>
+                                <span>Verified</span>
+                            </span>
+                        </template>
+                        <template x-if="selectedDoc?.status === 'Pending'">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-bold bg-[#fef3c7] text-[#92400e] border border-[#fde68a]">
+                                <svg class="w-3.5 h-3.5 shrink-0 text-[#92400e]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                    <circle cx="12" cy="12" r="9" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 7v5l3 3" />
+                                </svg>
+                                <span>Pending</span>
+                            </span>
+                        </template>
+                        <template x-if="selectedDoc?.status === 'Rejected'">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-bold bg-rose-100 text-rose-700 border border-rose-200">
+                                <svg class="w-3.5 h-3.5 shrink-0 text-rose-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                                <span>Rejected</span>
+                            </span>
+                        </template>
+                    </div>
                 </template>
             </div>
 

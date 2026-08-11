@@ -1,6 +1,7 @@
 <!-- Top Header -->
 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
     <div>
+        @if(in_array(auth()->user()->role, ['iqa-admin', 'iqa-member', 'task-force', 'task-force-member']) || auth()->user()->hasRole('iqa-admin') || auth()->user()->hasRole('iqa-member') || auth()->user()->hasRole('task-force'))
         <!-- Common Documents Tab Header -->
         <div x-show="activeTab === 'common-documents' || activeTab === 'common'">
             <template x-if="selectedCategory === null">
@@ -27,6 +28,7 @@
                 </div>
             </template>
         </div>
+        @endif
 
         <!-- Program Accreditation Tab Header -->
         <div x-show="activeTab === 'program-accreditation'">
