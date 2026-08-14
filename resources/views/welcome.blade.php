@@ -10,7 +10,7 @@
                 </flux:badge>
 
                 <h1 class="text-4xl md:text-6xl font-extrabold text-[#002B61] tracking-tight max-w-4xl leading-tight">
-                    A Document Management & Monitoring System for University Accreditation
+                    A Document Management & Monitoring System for Quality Assurance
                 </h1>
 
                 <p class="text-sm md:text-base text-zinc-500 max-w-2xl leading-relaxed mt-2">
