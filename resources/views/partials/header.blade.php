@@ -16,16 +16,16 @@
 
         <!-- Center Navigation Links -->
         <nav class="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-2">
-            <a href="#home" class="bg-white/10 text-white px-3.5 py-1.5 rounded-lg text-sm font-bold transition hover:bg-white/20 select-none">
+            <a href="#home" class="bg-white/10 text-white px-3.5 py-1.5 rounded-lg text-base font-bold transition hover:bg-white/20 select-none">
                 Home
             </a>
-            <a href="{{ route('home') }}#accreditations" class="text-zinc-200 hover:text-white px-3.5 py-1.5 rounded-lg text-sm font-semibold transition hover:bg-white/5 select-none">
+            <a href="{{ route('home') }}#accreditations" class="text-zinc-200 hover:text-white px-3.5 py-1.5 rounded-lg text-base font-semibold transition hover:bg-white/5 select-none">
                 Accreditations
             </a>
-            <a href="{{ route('home') }}#faq" class="text-zinc-200 hover:text-white px-3.5 py-1.5 rounded-lg text-sm font-semibold transition hover:bg-white/5 select-none">
+            <a href="{{ route('home') }}#faq" class="text-zinc-200 hover:text-white px-3.5 py-1.5 rounded-lg text-base font-semibold transition hover:bg-white/5 select-none">
                 FAQ
             </a>
-            <a href="{{ route('home') }}#help-center" class="text-zinc-200 hover:text-white px-3.5 py-1.5 rounded-lg text-sm font-semibold transition hover:bg-white/5 select-none">
+            <a href="{{ route('home') }}#help-center" class="text-zinc-200 hover:text-white px-3.5 py-1.5 rounded-lg text-base font-semibold transition hover:bg-white/5 select-none">
                 Help Center
             </a>
         </nav>
