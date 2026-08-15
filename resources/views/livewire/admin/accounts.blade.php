@@ -1,13 +1,13 @@
-<div class="w-full px-8 py-8 flex flex-col gap-6 bg-[#f4f6fa] min-h-screen">
+<div class="w-full px-8 py-8 flex flex-col gap-6 bg-surface-subtle min-h-screen">
     <!-- Header -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-            <h1 class="text-2xl font-bold text-[#1b355a]">Accounts Management</h1>
-            <p class="text-xs text-zinc-500 mt-1">Workspace: {{ auth()->user()->role === 'system-administrator' ? 'System Administrator' : 'IQA Administrator' }} &bull; Pre-register institutional identities &amp; roles</p>
+            <h1 class="text-heading-lg font-bold text-primary">Accounts Management</h1>
+            <p class="text-body-sm text-zinc-500 mt-1">Workspace: {{ auth()->user()->role === 'system-administrator' ? 'System Administrator' : 'IQA Administrator' }} &bull; Pre-register institutional identities &amp; roles</p>
         </div>
 
         <div>
-            <flux:button variant="primary" style="--color-accent: #F47920; --color-accent-foreground: #ffffff;" class="text-white font-semibold border-none shadow-xs" icon="plus" wire:click="openCreateModal">
+            <flux:button variant="primary" style="--color-accent: var(--color-brand-orange); --color-accent-foreground: #ffffff;" class="text-white font-semibold border-none shadow-xs" icon="plus" wire:click="openCreateModal">
                 {{ __('Add User') }}
             </flux:button>
         </div>
@@ -18,17 +18,17 @@
         <!-- Top Row: Status Filter Segment -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
             <div class="flex flex-wrap items-center gap-1.5 bg-slate-100 p-1 rounded-xl self-start">
-                <button type="button" wire:click="$set('statusFilter', '')" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all {{ $statusFilter === '' ? 'bg-white text-[#1b355a] shadow-xs' : 'text-slate-500 hover:text-slate-700' }}">
-                    {{ __('All Accounts') }} <span class="ml-1.5 px-1.5 py-0.5 rounded-full bg-slate-200/60 text-slate-700 text-[10px] font-bold">{{ $totalCount }}</span>
+                <button type="button" wire:click="$set('statusFilter', '')" class="px-3.5 py-1.5 rounded-lg text-body-sm font-semibold transition-all {{ $statusFilter === '' ? 'bg-white text-primary shadow-xs' : 'text-slate-500 hover:text-slate-700' }}">
+                    {{ __('All Accounts') }} <span class="ml-1.5 px-1.5 py-0.5 rounded-full bg-slate-200/60 text-slate-700 text-label font-bold">{{ $totalCount }}</span>
                 </button>
-                <button type="button" wire:click="$set('statusFilter', 'active')" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all {{ $statusFilter === 'active' ? 'bg-[#1b355a] text-white shadow-xs' : 'text-slate-500 hover:text-slate-700' }}">
-                    {{ __('Active') }} <span class="ml-1.5 px-1.5 py-0.5 rounded-full bg-white/10 text-white/80 text-[10px] font-bold">{{ $activeCount }}</span>
+                <button type="button" wire:click="$set('statusFilter', 'active')" class="px-3.5 py-1.5 rounded-lg text-body-sm font-semibold transition-all {{ $statusFilter === 'active' ? 'bg-primary text-white shadow-xs' : 'text-slate-500 hover:text-slate-700' }}">
+                    {{ __('Active') }} <span class="ml-1.5 px-1.5 py-0.5 rounded-full bg-white/10 text-white/80 text-label font-bold">{{ $activeCount }}</span>
                 </button>
-                <button type="button" wire:click="$set('statusFilter', 'pending_activation')" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all {{ $statusFilter === 'pending_activation' ? 'bg-amber-500 text-white shadow-xs' : 'text-slate-500 hover:text-slate-700' }}">
-                    {{ __('Pending Activation') }} <span class="ml-1.5 px-1.5 py-0.5 rounded-full bg-white/10 text-white/80 text-[10px] font-bold">{{ $pendingCount }}</span>
+                <button type="button" wire:click="$set('statusFilter', 'pending_activation')" class="px-3.5 py-1.5 rounded-lg text-body-sm font-semibold transition-all {{ $statusFilter === 'pending_activation' ? 'bg-amber-500 text-white shadow-xs' : 'text-slate-500 hover:text-slate-700' }}">
+                    {{ __('Pending Activation') }} <span class="ml-1.5 px-1.5 py-0.5 rounded-full bg-white/10 text-white/80 text-label font-bold">{{ $pendingCount }}</span>
                 </button>
-                <button type="button" wire:click="$set('statusFilter', 'inactive')" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all {{ $statusFilter === 'inactive' ? 'bg-[#F47920] text-white shadow-xs' : 'text-slate-500 hover:text-slate-700' }}">
-                    {{ __('Deactivated') }} <span class="ml-1.5 px-1.5 py-0.5 rounded-full bg-white/10 text-white/80 text-[10px] font-bold">{{ $inactiveCount }}</span>
+                <button type="button" wire:click="$set('statusFilter', 'inactive')" class="px-3.5 py-1.5 rounded-lg text-body-sm font-semibold transition-all {{ $statusFilter === 'inactive' ? 'bg-brand-orange text-white shadow-xs' : 'text-slate-500 hover:text-slate-700' }}">
+                    {{ __('Deactivated') }} <span class="ml-1.5 px-1.5 py-0.5 rounded-full bg-white/10 text-white/80 text-label font-bold">{{ $inactiveCount }}</span>
                 </button>
             </div>
             
@@ -79,14 +79,14 @@
                                 @if($user->avatar)
                                     <img src="{{ Storage::url($user->avatar) }}" alt="{{ $user->name }}" class="w-8 h-8 rounded-full object-cover border border-slate-200 shrink-0 select-none" />
                                 @else
-                                    <div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 text-[#586A85] font-bold flex items-center justify-center text-xs shrink-0 select-none">
+                                    <div class="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 text-primary-muted font-bold flex items-center justify-center text-body-sm shrink-0 select-none">
                                         {{ $user->initials() }}
                                     </div>
                                 @endif
                                 <div class="flex flex-col">
-                                    <span class="text-[#1b355a] font-semibold text-xs">{{ $user->name }}</span>
+                                    <span class="text-primary font-semibold text-body-sm">{{ $user->name }}</span>
                                     @if($user->status === 'pending_activation')
-                                    <span class="text-[10px] text-amber-600 font-medium">Awaiting first sign-in</span>
+                                    <span class="text-label text-amber-600 font-medium">Awaiting first sign-in</span>
                                     @endif
                                 </div>
                             </div>
@@ -182,7 +182,7 @@
         <form wire:submit="createAccount" class="space-y-6">
             <div>
                 <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 rounded-lg bg-blue-50 text-[#1b355a] flex items-center justify-center font-bold">
+                    <div class="w-8 h-8 rounded-lg bg-blue-50 text-primary flex items-center justify-center font-bold">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
                         </svg>
@@ -221,12 +221,12 @@
 
                 <!-- Additional Roles (Multi-Role Support) -->
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1.5">{{ __('Additional Assigned Roles (Optional)') }}</label>
+                    <label class="block text-body-sm font-bold text-slate-700 mb-1.5">{{ __('Additional Assigned Roles (Optional)') }}</label>
                     <div class="grid grid-cols-2 gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200">
                         @foreach($roles as $role)
                             @if((string)$role->id !== (string)$role_id)
-                                <label class="flex items-center gap-2 text-xs font-semibold text-slate-700 cursor-pointer select-none hover:text-[#002B61]">
-                                    <input type="checkbox" wire:model.live="selected_role_ids" value="{{ $role->id }}" class="rounded border-slate-300 text-[#F47920] focus:ring-[#F47920]">
+                                <label class="flex items-center gap-2 text-body-sm font-semibold text-slate-700 cursor-pointer select-none hover:text-primary-dark">
+                                    <input type="checkbox" wire:model.live="selected_role_ids" value="{{ $role->id }}" class="rounded border-slate-300 text-brand-orange focus:ring-brand-orange">
                                     <span>{{ $role->description }}</span>
                                 </label>
                             @endif
@@ -265,7 +265,7 @@
 
             <div class="flex gap-3 justify-end pt-2 border-t border-slate-100">
                 <flux:button variant="outline" wire:click="closeCreateModal">{{ __('Cancel') }}</flux:button>
-                <flux:button type="submit" variant="primary" style="--color-accent: #F47920; --color-accent-foreground: #ffffff;" class="text-white font-semibold border-none shadow-xs">
+                <flux:button type="submit" variant="primary" style="--color-accent: var(--color-brand-orange); --color-accent-foreground: #ffffff;" class="text-white font-semibold border-none shadow-xs">
                     {{ __('Pre-Register User') }}
                 </flux:button>
             </div>
@@ -311,12 +311,12 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1.5">{{ __('Additional Assigned Roles (Optional)') }}</label>
+                    <label class="block text-body-sm font-bold text-slate-700 mb-1.5">{{ __('Additional Assigned Roles (Optional)') }}</label>
                     <div class="grid grid-cols-2 gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200">
                         @foreach($roles as $role)
                             @if((string)$role->id !== (string)$role_id)
-                                <label class="flex items-center gap-2 text-xs font-semibold text-slate-700 cursor-pointer select-none hover:text-[#002B61]">
-                                    <input type="checkbox" wire:model.live="selected_role_ids" value="{{ $role->id }}" class="rounded border-slate-300 text-[#F47920] focus:ring-[#F47920]">
+                                <label class="flex items-center gap-2 text-body-sm font-semibold text-slate-700 cursor-pointer select-none hover:text-primary-dark">
+                                    <input type="checkbox" wire:model.live="selected_role_ids" value="{{ $role->id }}" class="rounded border-slate-300 text-brand-orange focus:ring-brand-orange">
                                     <span>{{ $role->description }}</span>
                                 </label>
                             @endif
@@ -350,7 +350,7 @@
 
             <div class="flex gap-3 justify-end pt-2 border-t border-slate-100">
                 <flux:button variant="outline" wire:click="closeEditModal">{{ __('Cancel') }}</flux:button>
-                <flux:button type="submit" variant="primary" style="--color-accent: #F47920; --color-accent-foreground: #ffffff;" class="text-white font-semibold border-none shadow-xs">{{ __('Save Changes') }}</flux:button>
+                <flux:button type="submit" variant="primary" style="--color-accent: var(--color-brand-orange); --color-accent-foreground: #ffffff;" class="text-white font-semibold border-none shadow-xs">{{ __('Save Changes') }}</flux:button>
             </div>
         </form>
     </flux:modal>
@@ -389,10 +389,10 @@
                     icon: data.icon || 'success',
                     title: data.title || '',
                     text: data.text || '',
-                    confirmButtonColor: '#F47920',
+                    confirmButtonColor: '#f47920',
                     customClass: {
                         popup: 'rounded-2xl border border-slate-200/60 shadow-lg font-sans',
-                        title: 'text-[#1b355a] font-bold text-xl',
+                        title: 'text-primary font-bold text-heading-lg',
                         confirmButton: 'px-6 py-2.5 rounded-xl font-semibold text-white'
                     }
                 });

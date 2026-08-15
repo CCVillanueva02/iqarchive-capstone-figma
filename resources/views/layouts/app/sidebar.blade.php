@@ -1,10 +1,10 @@
-<flux:sidebar sticky collapsible="mobile" class="border-none text-white flex flex-col gap-0 !p-0 min-h-screen h-screen no-scrollbar" style="background: linear-gradient(180deg, #002B61 0%, #003E8A 100%) !important;">
+<flux:sidebar sticky collapsible="mobile" class="border-none text-white flex flex-col gap-0 !p-0 min-h-screen h-screen no-scrollbar" style="background: linear-gradient(180deg, var(--color-primary-dark) 0%, var(--color-primary-hover) 100%) !important;">
     <flux:sidebar.header class="flex flex-col gap-3 px-[20px] py-[24px] border-b border-white/10">
         <div class="flex items-center justify-start gap-3 mr-auto text-left w-full">
             <img src="/bulogo.png" alt="BU Logo" class="w-10 h-10 object-contain shrink-0 select-none" />
             <div class="flex flex-col">
-                <span class="block font-bold text-[20px] tracking-[0.5px] leading-tight text-white">IQArchive</span>
-                <span class="block text-[10px] text-white/70 font-semibold uppercase tracking-wider mt-0.5 select-none">IQA Office &bull; BU</span>
+                <span class="block font-bold text-heading tracking-[0.5px] leading-tight text-white">IQArchive</span>
+                <span class="block text-label text-white/70 font-semibold uppercase tracking-wider mt-0.5 select-none">IQA Office &bull; BU</span>
             </div>
         </div>
     </flux:sidebar.header>
@@ -20,12 +20,12 @@
     <div class="flex flex-col gap-[6px] flex-1 py-6 overflow-y-auto no-scrollbar">
 
         <div class="px-6 pb-1">
-            <span class="text-[9px] font-bold uppercase tracking-[1.5px] text-white/40">Accreditation</span>
+            <span class="text-label-xs font-bold uppercase tracking-[1.5px] text-white/40">Accreditation</span>
         </div>
         @if ($role === 'iqa-admin' || $role === 'iqa-member' || $role === 'system-administrator' || $role === 'task-force' || $role === 'task-force-member' || $role === 'program-chair')
 
         <!-- Dashboard -->
-        <a href="{{ route('dashboard.' . $role) }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-sm font-semibold transition-all {{ request()->routeIs('dashboard.' . $role) ? 'bg-white/10 text-white border-l-[#F47920]' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
+        <a href="{{ route('dashboard.' . $role) }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-body font-semibold transition-all {{ request()->routeIs('dashboard.' . $role) ? 'bg-white/10 text-white border-l-brand-orange' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="3" y="3" width="7" height="9"></rect>
                 <rect x="14" y="3" width="7" height="5"></rect>
@@ -49,7 +49,7 @@
             <!-- Documents toggle button (does NOT navigate, just toggles submenu) -->
             <button type="button"
                 @click="docsOpen = !docsOpen"
-                class="group flex items-center justify-between px-6 py-[14px] border-l-[4px] text-sm font-semibold transition-all cursor-pointer {{ request()->routeIs('documents.' . $role) ? 'bg-white/10 text-white border-l-[#F47920]' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}">
+                class="group flex items-center justify-between px-6 py-[14px] border-l-[4px] text-body font-semibold transition-all cursor-pointer {{ request()->routeIs('documents.' . $role) ? 'bg-white/10 text-white border-l-brand-orange' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}">
                 <div class="flex items-center gap-[14px]">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
@@ -82,7 +82,7 @@
                     @if ($canSeeCommonDocs)
                     <!-- Common Documents -->
                     <a href="{{ route('documents.' . $role, ['tab' => 'common-documents']) }}"
-                       class="relative flex items-center gap-3 px-4 py-3 rounded-lg text-[13px] transition-all {{ ($currentDocTab === 'common-documents' && request()->routeIs('documents.' . $role)) ? 'bg-white/12 text-emerald-400 font-bold' : 'text-white/60 hover:text-white hover:bg-white/5 font-medium' }}"
+                       class="relative flex items-center gap-3 px-4 py-3 rounded-lg text-body-sm transition-all {{ ($currentDocTab === 'common-documents' && request()->routeIs('documents.' . $role)) ? 'bg-white/12 text-emerald-400 font-bold' : 'text-white/60 hover:text-white hover:bg-white/5 font-medium' }}"
                        wire:navigate>
                         <!-- Dot on the line -->
                         <span class="absolute left-[-16px] top-1/2 -translate-y-1/2 w-[7px] h-[7px] rounded-full border-[1.5px] {{ ($currentDocTab === 'common-documents' && request()->routeIs('documents.' . $role)) ? 'bg-emerald-400 border-emerald-400' : 'bg-white/20 border-white/30' }}"></span>
@@ -99,7 +99,7 @@
 
                     <!-- Program Accreditation -->
                     <a href="{{ route('documents.' . $role, ['tab' => 'program-accreditation']) }}"
-                       class="relative flex items-center gap-3 px-4 py-3 rounded-lg text-[13px] transition-all {{ ($currentDocTab === 'program-accreditation' && request()->routeIs('documents.' . $role)) ? 'bg-white/12 text-emerald-400 font-bold' : 'text-white/60 hover:text-white hover:bg-white/5 font-medium' }}"
+                       class="relative flex items-center gap-3 px-4 py-3 rounded-lg text-body-sm transition-all {{ ($currentDocTab === 'program-accreditation' && request()->routeIs('documents.' . $role)) ? 'bg-white/12 text-emerald-400 font-bold' : 'text-white/60 hover:text-white hover:bg-white/5 font-medium' }}"
                        wire:navigate>
                         <span class="absolute left-[-16px] top-1/2 -translate-y-1/2 w-[7px] h-[7px] rounded-full border-[1.5px] {{ ($currentDocTab === 'program-accreditation' && request()->routeIs('documents.' . $role)) ? 'bg-emerald-400 border-emerald-400' : 'bg-white/20 border-white/30' }}"></span>
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 {{ ($currentDocTab === 'program-accreditation' && request()->routeIs('documents.' . $role)) ? 'text-emerald-400' : 'text-white/40' }}">
@@ -114,7 +114,7 @@
                     @if ($canSeeInstitutionalDocs)
                     <!-- Institutional Accreditation -->
                     <a href="{{ route('documents.' . $role, ['tab' => 'institutional-accreditation']) }}"
-                       class="relative flex items-center gap-3 px-4 py-3 rounded-lg text-[13px] transition-all {{ ($currentDocTab === 'institutional-accreditation' && request()->routeIs('documents.' . $role)) ? 'bg-white/12 text-emerald-400 font-bold' : 'text-white/60 hover:text-white hover:bg-white/5 font-medium' }}"
+                       class="relative flex items-center gap-3 px-4 py-3 rounded-lg text-body-sm transition-all {{ ($currentDocTab === 'institutional-accreditation' && request()->routeIs('documents.' . $role)) ? 'bg-white/12 text-emerald-400 font-bold' : 'text-white/60 hover:text-white hover:bg-white/5 font-medium' }}"
                        wire:navigate>
                         <span class="absolute left-[-16px] top-1/2 -translate-y-1/2 w-[7px] h-[7px] rounded-full border-[1.5px] {{ ($currentDocTab === 'institutional-accreditation' && request()->routeIs('documents.' . $role)) ? 'bg-emerald-400 border-emerald-400' : 'bg-white/20 border-white/30' }}"></span>
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 {{ ($currentDocTab === 'institutional-accreditation' && request()->routeIs('documents.' . $role)) ? 'text-emerald-400' : 'text-white/40' }}">
@@ -136,7 +136,7 @@
 
         <!-- Submissions -->
         @if ($role === 'task-force' || $role === 'task-force-member' || $role === 'program-chair' || $role === 'iqa-admin' || $role === 'iqa-member')
-        <a href="{{ route('submissions.' . $role) }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-sm font-semibold transition-all {{ request()->routeIs('submissions.' . $role) ? 'bg-white/10 text-white border-l-[#F47920]' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
+        <a href="{{ route('submissions.' . $role) }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-body font-semibold transition-all {{ request()->routeIs('submissions.' . $role) ? 'bg-white/10 text-white border-l-brand-orange' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                 <polyline points="22 4 12 14.01 9 11.01"></polyline>
@@ -152,7 +152,7 @@
             $auditTrailRoute = ($role === 'iqa-admin') ? route('audit-trail.iqa-admin') : route('reports.system-administrator');
             $isAuditTrailActive = request()->routeIs('audit-trail.*') || request()->routeIs('reports.system-administrator');
         @endphp
-        <a href="{{ $auditTrailRoute }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-sm font-semibold transition-all {{ $isAuditTrailActive ? 'bg-white/10 text-white border-l-[#F47920]' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
+        <a href="{{ $auditTrailRoute }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-body font-semibold transition-all {{ $isAuditTrailActive ? 'bg-white/10 text-white border-l-brand-orange' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
                 <polyline points="12 6 12 12 16 14"></polyline>
@@ -164,7 +164,7 @@
 
         <!-- Accounts -->
         @if ($role === 'iqa-admin' || $role === 'system-administrator')
-        <a href="{{ route('accounts.' . $role) }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-sm font-semibold transition-all {{ request()->routeIs('accounts.' . $role) ? 'bg-white/10 text-white border-l-[#F47920]' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
+        <a href="{{ route('accounts.' . $role) }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-body font-semibold transition-all {{ request()->routeIs('accounts.' . $role) ? 'bg-white/10 text-white border-l-brand-orange' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                 <circle cx="9" cy="7" r="4"></circle>
@@ -178,7 +178,7 @@
 
         <!-- Task Forces -->
         @if (in_array($role, ['iqa-admin', 'university-administrator', 'program-chair']))
-        <a href="{{ route('task-forces.index') }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-sm font-semibold transition-all {{ request()->routeIs('task-forces.*') ? 'bg-white/10 text-white border-l-[#F47920]' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
+        <a href="{{ route('task-forces.index') }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-body font-semibold transition-all {{ request()->routeIs('task-forces.*') ? 'bg-white/10 text-white border-l-brand-orange' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
                 <circle cx="9" cy="7" r="4"></circle>
@@ -193,9 +193,9 @@
         <!-- University Executive: Analytics -->
         @if ($role === 'university-administrator' || $role === 'system-administrator' || $role === 'iqa-admin')
         <div class="px-6 pt-2 pb-1">
-            <span class="text-[9px] font-bold uppercase tracking-[1.5px] text-white/40">Overview</span>
+            <span class="text-label-xs font-bold uppercase tracking-[1.5px] text-white/40">Overview</span>
         </div>
-        <a href="{{ route('analytics.university-administrator') }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-sm font-semibold transition-all {{ request()->routeIs('analytics.university-administrator') ? 'bg-white/10 text-white border-l-[#F47920]' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
+        <a href="{{ route('analytics.university-administrator') }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-body font-semibold transition-all {{ request()->routeIs('analytics.university-administrator') ? 'bg-white/10 text-white border-l-brand-orange' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
                 <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
@@ -204,7 +204,7 @@
         </a>
 
         <!-- University Executive: Reports -->
-        <a href="{{ route('reports.university-administrator') }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-sm font-semibold transition-all {{ request()->routeIs('reports.university-administrator') ? 'bg-white/10 text-white border-l-[#F47920]' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
+        <a href="{{ route('reports.university-administrator') }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-body font-semibold transition-all {{ request()->routeIs('reports.university-administrator') ? 'bg-white/10 text-white border-l-brand-orange' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                 <polyline points="14 2 14 8 20 8"></polyline>
@@ -243,16 +243,16 @@
                 @if($user?->avatar_url)
                 <img src="{{ $user->avatar_url }}" alt="{{ $user->name }}" class="w-[38px] h-[38px] rounded-full object-cover border-2 border-white shrink-0 select-none" />
                 @else
-                <div class="w-[38px] h-[38px] rounded-full bg-[#F47920] border-2 border-white text-white font-bold flex items-center justify-center text-sm shrink-0 select-none">
+                <div class="w-[38px] h-[38px] rounded-full bg-brand-orange border-2 border-white text-white font-bold flex items-center justify-center text-body-sm shrink-0 select-none">
                     {{ $user?->initials() }}
                 </div>
                 @endif
                 <div class="flex-1 min-w-0">
-                    <div class="text-[13px] font-bold text-white truncate">{{ $user?->name }}</div>
-                    <div class="text-[11px] text-white/60 truncate flex items-center gap-1">
+                    <div class="text-body-sm font-bold text-white truncate">{{ $user?->name }}</div>
+                    <div class="text-label text-white/60 truncate flex items-center gap-1">
                         <span>{{ $roleLabel }}</span>
                         @if($userAssignedRoles->count() > 1)
-                        <span class="text-[9px] bg-[#F47920] px-1.5 py-0.2 rounded text-white font-bold">Multi</span>
+                        <span class="text-label-xs bg-brand-orange px-1.5 py-0.2 rounded text-white font-bold">Multi</span>
                         @endif
                     </div>
                 </div>
@@ -261,7 +261,7 @@
             <flux:menu>
                 @if($userAssignedRoles->count() > 1)
                 <div class="px-2 py-1">
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Switch Role View</span>
+                    <span class="text-label font-bold uppercase tracking-wider text-zinc-400">Switch Role View</span>
                 </div>
                 @foreach($userAssignedRoles as $r)
                 @php
@@ -283,10 +283,10 @@
                 <form method="POST" action="{{ route('switch-role') }}" class="w-full">
                     @csrf
                     <input type="hidden" name="role" value="{{ $code }}" />
-                    <button type="submit" class="w-full text-left px-2 py-1.5 rounded-lg flex items-center justify-between text-xs font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors {{ $isActiveRole ? 'text-[#F47920] font-bold bg-orange-50/50' : 'text-zinc-700 dark:text-zinc-300' }}">
+                    <button type="submit" class="w-full text-left px-2 py-1.5 rounded-lg flex items-center justify-between text-body-sm font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors {{ $isActiveRole ? 'text-brand-orange font-bold bg-orange-50/50' : 'text-zinc-700 dark:text-zinc-300' }}">
                         <span>{{ $title }}</span>
                         @if($isActiveRole)
-                        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold bg-[#F47920] text-white">Active</span>
+                        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-label-xs font-bold bg-brand-orange text-white">Active</span>
                         @endif
                     </button>
                 </form>
@@ -318,15 +318,15 @@
 
 
 <!-- Mobile User Menu -->
-<flux:header class="lg:hidden !bg-[#0b2545] text-white border-none">
+<flux:header class="lg:hidden !bg-primary-dark text-white border-none">
     <flux:sidebar.toggle class="lg:hidden text-white" icon="bars-2" inset="left" />
     <flux:spacer />
-    <span class="text-sm font-bold text-white">IQArchive</span>
+    <span class="text-body font-bold text-white">IQArchive</span>
     <flux:spacer />
     <!-- Simple Logout for Mobile -->
     <form method="POST" action="{{ route('logout') }}">
         @csrf
-        <button type="submit" class="text-xs font-semibold text-zinc-300 hover:text-white p-2">Log out</button>
+        <button type="submit" class="text-body-sm font-semibold text-zinc-300 hover:text-white p-2">Log out</button>
     </form>
 </flux:header>
 
