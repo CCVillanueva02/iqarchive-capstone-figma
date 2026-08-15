@@ -22,4 +22,10 @@
     <!-- LEVEL 4C: COMPLIANCE REPORTS VIEW & ADD PROGRAM MODAL -->
     @include('pages.documents.partials.program-accreditation.compliance-reports')
 
+    <!-- LEVEL 4D: NARRATIVE PROFILE VIEW -->
+    @include('pages.documents.partials.program-accreditation.narrative-profile')
+
+    <!-- LEVEL 4E: PROGRAM PERFORMANCE PORTFOLIO (PPP) VIEW -->
+    @include('pages.documents.partials.program-accreditation.ppp')
+
 </div>

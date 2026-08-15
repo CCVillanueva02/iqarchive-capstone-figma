@@ -26,7 +26,7 @@ window.documentWorkspace = function (initialState = {}) {
         collegeSearchQuery: '',
         programSearchQuery: '',
         programCollegeFilter: 'all',
-        accredCategory: null, // 'Self-Survey Documents', 'Compliance Reports', 'Supporting Documents'
+        accredCategory: null, // 'Self-Survey Documents', 'Compliance Reports', 'Supporting Documents', 'Narrative Profile', 'PPP'
         accredActiveAreaId: 'area_i1',
         accredActiveParamId: 'param_i1_a',
         accredActiveSection: 'systems',
@@ -36,6 +36,54 @@ window.documentWorkspace = function (initialState = {}) {
         selfSurveyRatings: {},             // { indicatorKey: 1-5 | null }
         selfSurveyBestPractices: {},       // { paramKey: 'text...' }
         selfSurveySaving: false,           // debounce guard
+
+        // === Narrative Profile State ===
+        npAreas: [
+            { id: 'np_area_1',  code: 'Area I',   title: 'Vision, Mission, Goals, and Objectives' },
+            { id: 'np_area_2',  code: 'Area II',  title: 'Faculty' },
+            { id: 'np_area_3',  code: 'Area III', title: 'Curriculum and Instruction' },
+            { id: 'np_area_4',  code: 'Area IV',  title: 'Support to Students' },
+            { id: 'np_area_5',  code: 'Area V',   title: 'Research' },
+            { id: 'np_area_6',  code: 'Area VI',  title: 'Extension and Community Involvement' },
+            { id: 'np_area_7',  code: 'Area VII', title: 'Library' },
+            { id: 'np_area_8',  code: 'Area VIII','title': 'Physical Plant and Facilities' },
+            { id: 'np_area_9',  code: 'Area IX',  title: 'Laboratories' },
+            { id: 'np_area_10', code: 'Area X',   title: 'Administration' },
+        ],
+        npActiveAreaId: 'np_area_1',
+        npDocContents: {},           // { areaId: { content: '<html>', lastSaved: Date | null } }
+        npDocGoogleUrls: {},         // { areaId: 'https://docs.google.com/...' }
+        npActiveViewMode: 'in-app',  // 'in-app' | 'google-doc'
+        npEditorOpen: false,
+        npEditorAreaId: null,
+        npEditorSaved: false,
+
+        // === PPP (Program Performance Portfolio) State ===
+        pppAreas: [
+            { id: 'ppp_area_1',  code: 'Area I',   title: 'Vision, Mission, Goals, and Objectives' },
+            { id: 'ppp_area_2',  code: 'Area II',  title: 'Faculty' },
+            { id: 'ppp_area_3',  code: 'Area III', title: 'Curriculum and Instruction' },
+            { id: 'ppp_area_4',  code: 'Area IV',  title: 'Support to Students' },
+            { id: 'ppp_area_5',  code: 'Area V',   title: 'Research' },
+            { id: 'ppp_area_6',  code: 'Area VI',  title: 'Extension and Community Involvement' },
+            { id: 'ppp_area_7',  code: 'Area VII', title: 'Library' },
+            { id: 'ppp_area_8',  code: 'Area VIII','title': 'Physical Plant and Facilities' },
+            { id: 'ppp_area_9',  code: 'Area IX',  title: 'Laboratories' },
+            { id: 'ppp_area_10', code: 'Area X',   title: 'Administration' },
+        ],
+        pppActiveAreaId: 'ppp_area_1',
+        pppDocContents: {},          // { areaId: { content: '<html>', lastSaved: Date | null } }
+        pppDocGoogleUrls: {},        // { areaId: 'https://docs.google.com/...' }
+        pppActiveViewMode: 'in-app', // 'in-app' | 'google-doc'
+        pppEditorOpen: false,
+        pppEditorAreaId: null,
+        pppEditorSaved: false,
+
+        // Shared Document Editor UX State
+        editorIsFullscreen: false,
+        autoSaveStatus: 'saved',     // 'saved' | 'saving'
+        lastSavedTime: 'Just now',
+        autoSaveTimer: null,
 
         // List of academic programs for Program Accreditation selection UI
         programsList: [
@@ -2501,6 +2549,416 @@ window.documentWorkspace = function (initialState = {}) {
                     this.uploadLoading = false;
                     this.uploadError = err.message || 'An error occurred while uploading.';
                 });
+        },
+
+        // ================================================================
+        // NARRATIVE PROFILE — Methods
+        // ================================================================
+
+        initNarrativeProfile() {
+            this.npActiveAreaId = this.npAreas[0].id;
+        },
+
+        getDefaultNPTemplate(areaId) {
+            const area = this.npAreas.find(a => a.id === areaId);
+            if (!area) return '';
+            const programName = this.accredProgram ? this.accredProgram.name : '___________________________';
+            return `
+                <p style="font-size:14pt; font-weight:bold; text-align:center; margin-bottom: 20px; color:#1b355a;">B. AACCUP Template for Level 3 Narrative Profile</p>
+                <table style="width:100%; border:none; margin-bottom:24px; font-size:12pt;">
+                    <tbody>
+                        <tr style="border:none;">
+                            <td style="width:180px; padding:6px 0; font-weight:bold; border:none;">Program:</td>
+                            <td style="border-bottom:1px solid #1a1a1a; padding:6px 8px; border-top:none; border-left:none; border-right:none; font-weight:600; color:#1b355a;">${programName}</td>
+                        </tr>
+                        <tr style="border:none;">
+                            <td style="padding:6px 0; font-weight:bold; border:none;">Area (Mandatory):</td>
+                            <td style="border-bottom:1px solid #1a1a1a; padding:6px 8px; border-top:none; border-left:none; border-right:none; font-weight:600; color:#1b355a;">${area.code} &ndash; ${area.title}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <ol style="font-size:12pt; line-height:2.2; padding-left:28px; margin:0;">
+                    <li style="margin-bottom:14px;"><strong>Well-defined Objectives</strong><p style="margin:4px 0 16px 0; color:#555; font-style:italic;">[Enter narrative description of well-defined objectives and strategic intent here...]</p></li>
+                    <li style="margin-bottom:14px;"><strong>Adequate and Relevant Projects/Activities to Achieve Objectives</strong><p style="margin:4px 0 16px 0; color:#555; font-style:italic;">[Enter relevant projects, academic activities, and implementation strategies here...]</p></li>
+                    <li style="margin-bottom:14px;"><strong>Systematic and Effective Procedures</strong><p style="margin:4px 0 16px 0; color:#555; font-style:italic;">[Describe operational workflows, monitoring systems, and evaluation procedures here...]</p></li>
+                    <li style="margin-bottom:14px;"><strong>Reasonable Budget</strong><p style="margin:4px 0 16px 0; color:#555; font-style:italic;">[Detail budget allocations, fund utilization, and financial sustainability here...]</p></li>
+                    <li style="margin-bottom:14px;"><strong>Provision of Materials and Other Resources</strong><p style="margin:4px 0 16px 0; color:#555; font-style:italic;">[List learning resources, facilities, equipment, and laboratory provisions here...]</p></li>
+                    <li style="margin-bottom:14px;"><strong>Participation of Significant Number of Faculty/Staff/Students/Community in Major Projects/Activities</strong><p style="margin:4px 0 16px 0; color:#555; font-style:italic;">[Document stakeholder engagement, faculty involvement, and community outreach data here...]</p></li>
+                    <li style="margin-bottom:14px;"><strong>Awards of Distinction and Achievement and Grants of this Program. &ldquo;Best Practices&rdquo; adopted.</strong><p style="margin:4px 0 16px 0; color:#555; font-style:italic;">[Highlight recognitions, accreditations, research grants, and institutional best practices here...]</p></li>
+                </ol>
+            `;
+        },
+
+        openNPEditor(areaId) {
+            this.npEditorAreaId = areaId;
+            this.npEditorSaved = false;
+            this.autoSaveStatus = 'saved';
+            this.npEditorOpen = true;
+
+            const initialContent = this.npDocContents[areaId] && this.npDocContents[areaId].content
+                ? this.npDocContents[areaId].content
+                : this.getDefaultNPTemplate(areaId);
+
+            this.$nextTick(() => {
+                const el = document.getElementById('np-editor-sheet');
+                if (el) {
+                    el.innerHTML = initialContent;
+                    setTimeout(() => {
+                        el.focus();
+                    }, 50);
+                }
+            });
+        },
+
+        saveNPEditor() {
+            if (!this.npEditorAreaId) return;
+            const el = document.getElementById('np-editor-sheet');
+            const content = el ? el.innerHTML : '';
+
+            if (!this.npDocContents[this.npEditorAreaId]) {
+                this.npDocContents[this.npEditorAreaId] = {};
+            }
+            this.npDocContents[this.npEditorAreaId].content = content;
+            this.npDocContents[this.npEditorAreaId].lastSaved = new Date();
+            this.npEditorSaved = true;
+            this.autoSaveStatus = 'saved';
+            const now = new Date();
+            this.lastSavedTime = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            setTimeout(() => { this.npEditorSaved = false; }, 3000);
+        },
+
+        closeNPEditor() {
+            this.saveNPEditor();
+            this.editorIsFullscreen = false;
+            this.npEditorOpen = false;
+            this.npEditorAreaId = null;
+        },
+
+        // ================================================================
+        // PPP — Methods
+        // ================================================================
+
+        initPPP() {
+            this.pppActiveAreaId = this.pppAreas[0].id;
+        },
+
+        getDefaultPPPTemplate(areaId) {
+            const area = this.pppAreas.find(a => a.id === areaId);
+            if (!area) return '';
+            const programName = this.accredProgram ? this.accredProgram.name : '___________________________';
+            return `
+                <p style="font-size:14pt; font-weight:bold; text-align:center; margin-bottom: 20px; color:#0f766e;">Program Performance Portfolio (PPP)</p>
+                <table style="width:100%; border:none; margin-bottom:24px; font-size:12pt;">
+                    <tbody>
+                        <tr style="border:none;">
+                            <td style="width:180px; padding:6px 0; font-weight:bold; border:none;">Program:</td>
+                            <td style="border-bottom:1px solid #1a1a1a; padding:6px 8px; border-top:none; border-left:none; border-right:none; font-weight:600; color:#0f766e;">${programName}</td>
+                        </tr>
+                        <tr style="border:none;">
+                            <td style="padding:6px 0; font-weight:bold; border:none;">Area (Mandatory):</td>
+                            <td style="border-bottom:1px solid #1a1a1a; padding:6px 8px; border-top:none; border-left:none; border-right:none; font-weight:600; color:#0f766e;">${area.code} &ndash; ${area.title}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <ol style="font-size:12pt; line-height:2.2; padding-left:28px; margin:0;">
+                    <li style="margin-bottom:14px;"><strong>Well-defined Objectives</strong><p style="margin:4px 0 16px 0; color:#555; font-style:italic;">[Provide portfolio evidence of program performance metrics and benchmarks...]</p></li>
+                    <li style="margin-bottom:14px;"><strong>Adequate and Relevant Projects/Activities to Achieve Objectives</strong><p style="margin:4px 0 16px 0; color:#555; font-style:italic;">[Document ongoing projects, milestones achieved, and compliance activities...]</p></li>
+                    <li style="margin-bottom:14px;"><strong>Systematic and Effective Procedures</strong><p style="margin:4px 0 16px 0; color:#555; font-style:italic;">[Provide flowcharts, quality procedures, and internal verification mechanisms...]</p></li>
+                    <li style="margin-bottom:14px;"><strong>Reasonable Budget</strong><p style="margin:4px 0 16px 0; color:#555; font-style:italic;">[Provide budgetary allocations, financial statements, and expenditure logs...]</p></li>
+                    <li style="margin-bottom:14px;"><strong>Provision of Materials and Other Resources</strong><p style="margin:4px 0 16px 0; color:#555; font-style:italic;">[List physical, digital, and academic holdings supporting the area...]</p></li>
+                    <li style="margin-bottom:14px;"><strong>Participation of Significant Number of Faculty/Staff/Students/Community in Major Projects/Activities</strong><p style="margin:4px 0 16px 0; color:#555; font-style:italic;">[Include participant rosters, attendance sheets, and survey outputs...]</p></li>
+                    <li style="margin-bottom:14px;"><strong>Awards of Distinction and Achievement and Grants of this Program. &ldquo;Best Practices&rdquo; adopted.</strong><p style="margin:4px 0 16px 0; color:#555; font-style:italic;">[Document awards, grants received, and proven institutional best practices...]</p></li>
+                </ol>
+            `;
+        },
+
+        openPPPEditor(areaId) {
+            this.pppEditorAreaId = areaId;
+            this.pppEditorSaved = false;
+            this.autoSaveStatus = 'saved';
+            this.pppEditorOpen = true;
+
+            const initialContent = this.pppDocContents[areaId] && this.pppDocContents[areaId].content
+                ? this.pppDocContents[areaId].content
+                : this.getDefaultPPPTemplate(areaId);
+
+            this.$nextTick(() => {
+                const el = document.getElementById('ppp-editor-sheet');
+                if (el) {
+                    el.innerHTML = initialContent;
+                    setTimeout(() => {
+                        el.focus();
+                    }, 50);
+                }
+            });
+        },
+
+        savePPPEditor() {
+            if (!this.pppEditorAreaId) return;
+            const el = document.getElementById('ppp-editor-sheet');
+            const content = el ? el.innerHTML : '';
+
+            if (!this.pppDocContents[this.pppEditorAreaId]) {
+                this.pppDocContents[this.pppEditorAreaId] = {};
+            }
+            this.pppDocContents[this.pppEditorAreaId].content = content;
+            this.pppDocContents[this.pppEditorAreaId].lastSaved = new Date();
+            this.pppEditorSaved = true;
+            this.autoSaveStatus = 'saved';
+            const now = new Date();
+            this.lastSavedTime = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            setTimeout(() => { this.pppEditorSaved = false; }, 3000);
+        },
+
+        closePPPEditor() {
+            this.savePPPEditor();
+            this.editorIsFullscreen = false;
+            this.pppEditorOpen = false;
+            this.pppEditorAreaId = null;
+        },
+
+        // ================================================================
+        // AUTO-SAVE ENGINE & FULLSCREEN CONTROLS
+        // ================================================================
+
+        triggerAutoSave(docType = 'np') {
+            this.autoSaveStatus = 'saving';
+            if (this.autoSaveTimer) clearTimeout(this.autoSaveTimer);
+            this.autoSaveTimer = setTimeout(() => {
+                if (docType === 'np') {
+                    this.saveNPEditor();
+                } else {
+                    this.savePPPEditor();
+                }
+            }, 600);
+        },
+
+        toggleEditorFullscreen() {
+            this.editorIsFullscreen = !this.editorIsFullscreen;
+        },
+
+        getGoogleEmbedUrl(url) {
+            if (!url) return '';
+            if (url.includes('docs.google.com/document/d/')) {
+                const match = url.match(/docs\.google\.com\/document\/d\/([a-zA-Z0-9_-]+)/);
+                if (match && match[1]) {
+                    return `https://docs.google.com/document/d/${match[1]}/edit?embedded=true`;
+                }
+            }
+            return url;
+        },
+
+        // ================================================================
+        // ADVANCED TABLE MANAGEMENT METHODS
+        // ================================================================
+
+        getTableTarget(containerId) {
+            const sel = window.getSelection();
+            if (!sel || !sel.rangeCount) return null;
+            let node = sel.anchorNode;
+            while (node && node.id !== containerId) {
+                if (node.tagName === 'TD' || node.tagName === 'TH') {
+                    const tr = node.closest('tr');
+                    const table = node.closest('table');
+                    return { cell: node, row: tr, table: table };
+                }
+                node = node.parentNode;
+            }
+            return null;
+        },
+
+        insertTableRow(containerId, position = 'below') {
+            const target = this.getTableTarget(containerId);
+            if (!target) {
+                this.insertDocumentTable(containerId);
+                return;
+            }
+            const cols = target.row.children.length;
+            const newRow = document.createElement('tr');
+            for (let i = 0; i < cols; i++) {
+                const td = document.createElement('td');
+                td.style.border = '1px solid #cbd5e1';
+                td.style.padding = '8px 12px';
+                td.innerHTML = '&nbsp;';
+                newRow.appendChild(td);
+            }
+            if (position === 'above') {
+                target.row.parentNode.insertBefore(newRow, target.row);
+            } else {
+                target.row.parentNode.insertBefore(newRow, target.row.nextSibling);
+            }
+            const docType = containerId.startsWith('np') ? 'np' : 'ppp';
+            this.triggerAutoSave(docType);
+        },
+
+        deleteTableRow(containerId) {
+            const target = this.getTableTarget(containerId);
+            if (!target) return;
+            if (target.table.rows.length <= 1) {
+                target.table.remove();
+            } else {
+                target.row.remove();
+            }
+            const docType = containerId.startsWith('np') ? 'np' : 'ppp';
+            this.triggerAutoSave(docType);
+        },
+
+        insertTableColumn(containerId, position = 'right') {
+            const target = this.getTableTarget(containerId);
+            if (!target) return;
+            const colIndex = Array.from(target.row.children).indexOf(target.cell);
+            const rows = target.table.rows;
+            for (let r = 0; r < rows.length; r++) {
+                const cellType = rows[r].children[colIndex]?.tagName === 'TH' ? 'th' : 'td';
+                const newCell = document.createElement(cellType);
+                newCell.style.border = '1px solid #cbd5e1';
+                newCell.style.padding = '8px 12px';
+                if (cellType === 'th') {
+                    newCell.style.background = '#f8fafc';
+                    newCell.style.fontWeight = 'bold';
+                    newCell.innerHTML = 'Header';
+                } else {
+                    newCell.innerHTML = '&nbsp;';
+                }
+                if (position === 'left') {
+                    rows[r].insertBefore(newCell, rows[r].children[colIndex]);
+                } else {
+                    rows[r].insertBefore(newCell, rows[r].children[colIndex]?.nextSibling);
+                }
+            }
+            const docType = containerId.startsWith('np') ? 'np' : 'ppp';
+            this.triggerAutoSave(docType);
+        },
+
+        deleteTableColumn(containerId) {
+            const target = this.getTableTarget(containerId);
+            if (!target) return;
+            const colIndex = Array.from(target.row.children).indexOf(target.cell);
+            const rows = target.table.rows;
+            if (target.row.children.length <= 1) {
+                target.table.remove();
+            } else {
+                for (let r = 0; r < rows.length; r++) {
+                    if (rows[r].children[colIndex]) {
+                        rows[r].children[colIndex].remove();
+                    }
+                }
+            }
+            const docType = containerId.startsWith('np') ? 'np' : 'ppp';
+            this.triggerAutoSave(docType);
+        },
+
+        deleteCurrentTable(containerId) {
+            const target = this.getTableTarget(containerId);
+            if (target && target.table) {
+                target.table.remove();
+                const docType = containerId.startsWith('np') ? 'np' : 'ppp';
+                this.triggerAutoSave(docType);
+            }
+        },
+
+        // ================================================================
+        // SHARED DOCUMENT FORMATTING & PRINT UTILITIES
+        // ================================================================
+
+        execDocCmd(command, value = null) {
+            document.execCommand(command, false, value);
+        },
+
+        insertDocumentTable(containerId) {
+            const el = document.getElementById(containerId);
+            if (el) el.focus();
+            const tableHtml = `
+                <table style="width:100%; border-collapse:collapse; margin:16px 0; border:1px solid #cbd5e1;">
+                    <thead>
+                        <tr style="background:#f8fafc;">
+                            <th style="border:1px solid #cbd5e1; padding:8px 12px; text-align:left; font-weight:bold;">Item / Indicator</th>
+                            <th style="border:1px solid #cbd5e1; padding:8px 12px; text-align:left; font-weight:bold;">Status / Details</th>
+                            <th style="border:1px solid #cbd5e1; padding:8px 12px; text-align:left; font-weight:bold;">Remarks / Evidence</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="border:1px solid #cbd5e1; padding:8px 12px;">&nbsp;</td>
+                            <td style="border:1px solid #cbd5e1; padding:8px 12px;">&nbsp;</td>
+                            <td style="border:1px solid #cbd5e1; padding:8px 12px;">&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid #cbd5e1; padding:8px 12px;">&nbsp;</td>
+                            <td style="border:1px solid #cbd5e1; padding:8px 12px;">&nbsp;</td>
+                            <td style="border:1px solid #cbd5e1; padding:8px 12px;">&nbsp;</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p><br></p>
+            `;
+            document.execCommand('insertHTML', false, tableHtml);
+        },
+
+        insertDocumentImage(event, containerId) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const el = document.getElementById(containerId);
+            if (el) el.focus();
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const imgHtml = `<p><img src="${e.target.result}" style="max-width:100%; height:auto; display:block; margin:14px 0; border-radius:6px; box-shadow:0 1px 3px rgba(0,0,0,0.1);" alt="Uploaded Picture"></p><p><br></p>`;
+                document.execCommand('insertHTML', false, imgHtml);
+                const docType = containerId.startsWith('np') ? 'np' : 'ppp';
+                this.triggerAutoSave(docType);
+            };
+            reader.readAsDataURL(file);
+            event.target.value = '';
+        },
+
+        printCurrentEditor(sheetId, docTitle = 'Accreditation Document') {
+            const el = document.getElementById(sheetId);
+            const content = el ? el.innerHTML : '';
+            this.printDocument(content, docTitle);
+        },
+
+        printDocument(htmlContent, docTitle = 'Accreditation Document') {
+            const printWindow = window.open('', '_blank', 'width=900,height=700');
+            if (!printWindow) {
+                alert('Please allow popups to print documents.');
+                return;
+            }
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>${docTitle}</title>
+                    <style>
+                        @page { size: letter; margin: 1in; }
+                        body {
+                            font-family: 'Times New Roman', Times, serif;
+                            font-size: 12pt;
+                            line-height: 1.8;
+                            color: #1a1a1a;
+                            margin: 0;
+                            padding: 0;
+                        }
+                        table { border-collapse: collapse; width: 100%; margin: 16px 0; }
+                        table, th, td { border: 1px solid #000; }
+                        th, td { padding: 8px 12px; }
+                        th { background: #f1f5f9; font-weight: bold; }
+                        img { max-width: 100%; height: auto; display: block; margin: 12px 0; }
+                        ol, ul { padding-left: 28px; }
+                        li { margin-bottom: 8px; }
+                        h1, h2, h3 { color: #002b61; }
+                    </style>
+                </head>
+                <body>
+                    ${htmlContent}
+                </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.focus();
+            setTimeout(() => {
+                printWindow.print();
+                printWindow.close();
+            }, 400);
         }
     };
 };
