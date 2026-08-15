@@ -2,33 +2,12 @@
 <header class="w-full bg-primary-dark text-white shadow-md font-sans relative">
     <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         <!-- Logo / Brand Section -->
-        <a href="{{ route('home') }}#home" class="flex items-center gap-3 cursor-pointer select-none">
-            <img src="/bulogo.png" alt="Bicol University Logo" class="w-9 h-9 object-contain select-none shrink-0" />
-            <div>
-                <span class="font-extrabold text-heading-sm tracking-tight block leading-tight">
-                    <span class="text-brand-orange">IQA</span>rchive
-                </span>
-                <span class="block text-label-xs text-zinc-300 font-semibold uppercase tracking-wider -mt-0.5">
-                    Bicol University
-                </span>
-            </div>
+        <a href="{{ route('home') }}#home" class="group flex items-center gap-3 cursor-pointer select-none">
+            <img src="/bulogo.png" alt="Bicol University Logo" class="w-9 h-9 object-contain select-none shrink-0 transition-transform duration-200 group-hover:scale-105" />
+            <span class="font-extrabold text-heading tracking-tight text-white transition-opacity group-hover:opacity-95">
+                <span class="text-brand-orange">IQA</span>rchive
+            </span>
         </a>
-
-        <!-- Center Navigation Links -->
-        <nav class="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-2">
-            <a href="#home" class="bg-white/10 text-white px-3.5 py-1.5 rounded-lg text-body font-bold transition hover:bg-white/20 select-none">
-                Home
-            </a>
-            <a href="{{ route('home') }}#accreditations" class="text-zinc-200 hover:text-white px-3.5 py-1.5 rounded-lg text-body font-semibold transition hover:bg-white/5 select-none">
-                Accreditations
-            </a>
-            <a href="{{ route('home') }}#faq" class="text-zinc-200 hover:text-white px-3.5 py-1.5 rounded-lg text-body font-semibold transition hover:bg-white/5 select-none">
-                FAQ
-            </a>
-            <a href="{{ route('home') }}#help-center" class="text-zinc-200 hover:text-white px-3.5 py-1.5 rounded-lg text-body font-semibold transition hover:bg-white/5 select-none">
-                Help Center
-            </a>
-        </nav>
 
         <!-- Right Authentication / Controls Section -->
         <div class="flex items-center gap-4">
