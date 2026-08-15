@@ -54,7 +54,7 @@
 --text-body:     1rem;       /* 16px  — was 14px */
 --text-heading-sm: 1.125rem; /* 18px  — was 16px */
 --text-heading:    1.5rem;   /* 24px  — was 20px */
---text-heading-lg: 1.875rem; /* 30px  — was 24px */
+--text-heading-lg: 2rem; /* 30px  — was 24px */
     --text-hero: 3rem;       /* 48px */
 }
 
