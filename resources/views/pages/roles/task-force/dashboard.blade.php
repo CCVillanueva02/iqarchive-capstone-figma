@@ -111,19 +111,19 @@
 @endphp
 
 <x-layouts::app :title="__('Dashboard')">
-    <div class="w-full px-8 py-8 flex flex-col gap-6 bg-surface-subtle min-h-screen font-sans">
+    <div class="w-full px-8 py-8 flex flex-col gap-6 bg-[#f4f6fa] min-h-screen font-sans">
         <!-- Top header bar -->
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-                <h1 class="text-heading-lg font-bold text-primary-dark">QA Task Force Workspace</h1>
+                <h1 class="text-2xl font-bold text-[#002B61]">QA Task Force Workspace</h1>
                 @if($program)
-                    <p class="text-body-sm text-zinc-500 mt-1">Assigned Program: <span class="font-bold text-primary-dark">{{ $program->name }} ({{ $program->code }})</span></p>
+                    <p class="text-xs text-zinc-500 mt-1">Assigned Program: <span class="font-bold text-[#002B61]">{{ $program->name }} ({{ $program->code }})</span></p>
                 @else
-                    <p class="text-body-sm text-zinc-500 mt-1">Assigned Program: <span class="font-bold text-primary-dark">BS Computer Science (BSCS) &bull; BU College of Science</span></p>
+                    <p class="text-xs text-zinc-500 mt-1">Assigned Program: <span class="font-bold text-[#002B61]">BS Computer Science (BSCS) &bull; BU College of Science</span></p>
                 @endif
             </div>
             <div class="flex items-center gap-3">
-                <span class="px-3 py-1.5 rounded-full bg-blue-50 text-primary-dark border border-blue-100 text-label font-bold select-none">
+                <span class="px-3 py-1.5 rounded-full bg-blue-50 text-[#002B61] border border-blue-100 text-[11px] font-bold select-none">
                     Task Force Member &bull; Area I VMGO Lead
                 </span>
             </div>
@@ -134,9 +134,9 @@
             <!-- Program Compliance Completion Rate -->
             <div class="bg-white p-6 rounded-2xl border border-slate-200/60 shadow-3xs hover:shadow-xs transition duration-200 flex items-center justify-between">
                 <div class="flex flex-col">
-                    <span class="text-body-sm font-semibold text-zinc-400 uppercase tracking-wider">Area Compliance Rate</span>
-                    <span class="text-heading-lg font-extrabold text-primary-dark mt-2">{{ $complianceRate }}%</span>
-                    <span class="text-label text-zinc-500 mt-1.5 font-medium">
+                    <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Area Compliance Rate</span>
+                    <span class="text-3xl font-extrabold text-[#002B61] mt-2">{{ $complianceRate }}%</span>
+                    <span class="text-[11px] text-zinc-500 mt-1.5 font-medium">
                         {{ $programCompliedCount }} of {{ $programReqsCount }} indicators complied
                     </span>
                 </div>
@@ -150,9 +150,9 @@
             <!-- Total Uploads by User -->
             <div class="bg-white p-6 rounded-2xl border border-slate-200/60 shadow-3xs hover:shadow-xs transition duration-200 flex items-center justify-between">
                 <div class="flex flex-col">
-                    <span class="text-body-sm font-semibold text-zinc-400 uppercase tracking-wider">Your Submissions</span>
-                    <span class="text-heading-lg font-extrabold text-primary-dark mt-2">{{ $userUploadsCount }}</span>
-                    <span class="text-label text-zinc-500 mt-1.5">
+                    <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Your Submissions</span>
+                    <span class="text-3xl font-extrabold text-[#002B61] mt-2">{{ $userUploadsCount }}</span>
+                    <span class="text-[11px] text-zinc-500 mt-1.5">
                         Archived compliance files
                     </span>
                 </div>
@@ -166,11 +166,11 @@
             <!-- Clean White Quick Action Card -->
             <div class="bg-white p-6 rounded-2xl border border-slate-200/60 shadow-3xs hover:shadow-xs transition duration-200 flex items-center justify-between">
                 <div class="flex flex-col">
-                    <span class="text-body-sm font-semibold text-zinc-400 uppercase tracking-wider">Quick Action</span>
-                    <span class="text-heading-sm font-extrabold text-primary-dark mt-1">Submit Evidence</span>
-                    <span class="text-label text-zinc-500 mt-1">Upload Area I VMGO files</span>
+                    <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Quick Action</span>
+                    <span class="text-base font-extrabold text-[#002B61] mt-1">Submit Evidence</span>
+                    <span class="text-[11px] text-zinc-500 mt-1">Upload Area I VMGO files</span>
                 </div>
-                <a href="{{ route('documents.task-force') }}" class="px-4 py-2.5 bg-brand-orange hover:bg-brand-orange-hover transition-colors rounded-xl text-body-sm font-bold text-white shadow-xs shrink-0 select-none flex items-center gap-1.5" wire:navigate>
+                <a href="{{ route('documents.task-force') }}" class="px-4 py-2.5 bg-[#F47920] hover:bg-[#d86512] transition-colors rounded-xl text-xs font-bold text-white shadow-xs shrink-0 select-none flex items-center gap-1.5" wire:navigate>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
                     <span>Upload</span>
                 </a>
@@ -183,10 +183,10 @@
             <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200/60 p-6 shadow-3xs flex flex-col gap-4">
                 <div class="flex items-center justify-between border-b border-zinc-100 pb-4">
                     <div>
-                        <h2 class="text-heading-sm font-bold text-primary-dark">Your Submitted Documents</h2>
-                        <p class="text-body-sm text-zinc-400 mt-0.5">Track review status & evaluators' feedback</p>
+                        <h2 class="text-lg font-bold text-[#002B61]">Your Submitted Documents</h2>
+                        <p class="text-xs text-zinc-400 mt-0.5">Track review status & evaluators' feedback</p>
                     </div>
-                    <a href="{{ route('submissions.task-force') }}" class="text-body-sm font-semibold text-brand-orange hover:underline" wire:navigate>
+                    <a href="{{ route('submissions.task-force') }}" class="text-xs font-semibold text-[#F47920] hover:underline" wire:navigate>
                         View All Submissions &rarr;
                     </a>
                 </div>

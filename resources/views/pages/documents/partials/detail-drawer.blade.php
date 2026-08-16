@@ -30,22 +30,22 @@
         <div class="flex items-start justify-between gap-3">
             <!-- Title & Status Pill -->
             <div class="flex-1 min-w-0 flex items-center gap-2.5 flex-wrap">
-                <h3 class="font-extrabold text-heading-lg text-primary-dark leading-tight truncate" x-text="selectedDoc?.name || 'Document Details'"></h3>
+                <h3 class="font-extrabold text-xl text-[#002B61] leading-tight truncate" x-text="selectedDoc?.name || 'Document Details'"></h3>
                 
                 <!-- Status Pill -->
                 <template x-if="currentUserRole === 'iqa-admin' || selectedDoc?.uploaded_by_id === currentUserId">
                     <div class="inline-flex items-center gap-1">
                         <template x-if="selectedDoc?.status === 'Verified'">
-                            <span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-body-sm font-bold bg-green-100 text-green-700 border border-green-200">
-                                <svg class="w-3.5 h-3.5 shrink-0 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-bold bg-[#dcfce7] text-[#15803d] border border-[#bbf7d0]">
+                                <svg class="w-3.5 h-3.5 shrink-0 text-[#15803d]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                                 </svg>
                                 <span>Verified</span>
                             </span>
                         </template>
                         <template x-if="selectedDoc?.status === 'Pending'">
-                            <span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-body-sm font-bold bg-amber-100 text-amber-800 border border-amber-200">
-                                <svg class="w-3.5 h-3.5 shrink-0 text-amber-800" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-bold bg-[#fef3c7] text-[#92400e] border border-[#fde68a]">
+                                <svg class="w-3.5 h-3.5 shrink-0 text-[#92400e]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                     <circle cx="12" cy="12" r="9" />
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 7v5l3 3" />
                                 </svg>
@@ -53,7 +53,7 @@
                             </span>
                         </template>
                         <template x-if="selectedDoc?.status === 'Rejected'">
-                            <span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-body-sm font-bold bg-rose-100 text-rose-700 border border-rose-200">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-bold bg-rose-100 text-rose-700 border border-rose-200">
                                 <svg class="w-3.5 h-3.5 shrink-0 text-rose-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                                 </svg>
@@ -102,7 +102,7 @@
         </div>
 
         <!-- Sub-header Metadata Line -->
-        <p class="text-body-sm font-semibold text-slate-500" 
+        <p class="text-xs font-semibold text-slate-500" 
            x-text="(selectedDoc?.size ? selectedDoc.size + ' · ' : '1.5 MB · ') + 'uploaded ' + (selectedDoc?.date || '2026-07-26') + ' · ' + (selectedDoc?.uploader || 'Sys Admin')">
         </p>
     </div>
@@ -113,7 +113,7 @@
         <div class="flex items-center gap-2.5">
             <button type="button" 
                     @click="selectedDoc?.file_url ? window.open(selectedDoc.file_url, '_blank') : alert('No file URL available.')" 
-                    class="flex-1 bg-primary-dark hover:bg-primary-dark-hover text-white text-body font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition shadow-xs cursor-pointer">
+                    class="flex-1 bg-[#002B61] hover:bg-[#001d42] text-white text-sm font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition shadow-xs cursor-pointer">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
                 </svg>
@@ -133,7 +133,7 @@
 
         <!-- Original Document Preview Section -->
         <div class="flex flex-col gap-2">
-            <div class="flex items-center gap-1.5 text-body-sm font-bold text-slate-400 uppercase tracking-wider">
+            <div class="flex items-center gap-1.5 text-xs font-bold text-slate-400 uppercase tracking-wider">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                 </svg>
@@ -143,15 +143,15 @@
             <!-- Preview Viewer Card -->
             <div class="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-2xs flex flex-col">
                 <!-- Dark Viewer Canvas -->
-                <div class="bg-zinc-900 p-6 flex items-center justify-center min-h-[240px]">
+                <div class="bg-[#18181b] p-6 flex items-center justify-center min-h-[240px]">
                     <template x-if="selectedDoc?.file_url">
                         <iframe :src="selectedDoc.file_url + '#toolbar=0&navpanes=0&scrollbar=0&view=FitH'" class="w-full h-[240px] border-0 rounded"></iframe>
                     </template>
                     <template x-if="!selectedDoc?.file_url">
                         <div class="bg-white shadow-xl rounded p-6 max-w-[280px] w-full text-center flex flex-col gap-2 font-sans">
-                            <div class="text-body-sm font-extrabold text-primary-dark" x-text="'Document: ' + (selectedDoc?.name || 'Faculty Profile')"></div>
-                            <p class="text-label text-slate-500 leading-relaxed" x-text="selectedDoc?.ocrText || 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore.'"></p>
-                            <div class="text-label font-bold text-slate-400 mt-2 border-t border-slate-100 pt-2">Bicol University Institutional Quality Assurance Center</div>
+                            <div class="text-xs font-extrabold text-[#002B61]" x-text="'Document: ' + (selectedDoc?.name || 'Faculty Profile')"></div>
+                            <p class="text-[11px] text-slate-500 leading-relaxed" x-text="selectedDoc?.ocrText || 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore.'"></p>
+                            <div class="text-[10px] font-bold text-slate-400 mt-2 border-t border-slate-100 pt-2">Bicol University Institutional Quality Assurance Center</div>
                         </div>
                     </template>
                 </div>

@@ -29,7 +29,7 @@
         <!-- Header Section -->
         <div class="flex flex-col items-center text-center">
             <!-- Neon Warning Badge -->
-            <div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-500 text-body-sm font-semibold uppercase tracking-wider mb-4">
+            <div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-500 text-xs font-semibold uppercase tracking-wider mb-4">
                 <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
@@ -37,17 +37,17 @@
             </div>
 
             <!-- Title -->
-            <h1 class="text-heading-lg font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-300 tracking-tight">IQArchive Dev Switcher</h1>
-            <p class="text-body text-slate-400 mt-2 max-w-xs">Instantly log in as any role without credentials. Exclusively available in local environment.</p>
+            <h1 class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-300 tracking-tight">IQArchive Dev Switcher</h1>
+            <p class="text-sm text-slate-400 mt-2 max-w-xs">Instantly log in as any role without credentials. Exclusively available in local environment.</p>
         </div>
 
         <hr class="border-slate-800" />
 
         <!-- Single Role Accounts Grid -->
         <div class="flex flex-col gap-3">
-            <h2 class="text-body-sm font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
+            <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
                 <span>Single Role Accounts</span>
-                <span class="text-label bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-normal">Standard</span>
+                <span class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-normal">Standard</span>
             </h2>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">

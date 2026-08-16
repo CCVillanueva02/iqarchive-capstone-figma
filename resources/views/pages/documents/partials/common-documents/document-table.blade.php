@@ -62,7 +62,7 @@
                     type="text" 
                     x-model="searchQuery"
                     placeholder="Search documents in this category..." 
-                    class="w-full text-body-sm border border-slate-200 rounded-lg pl-9 pr-3 py-2.5 focus:outline-none focus:border-primary-dark focus:ring-1 focus:ring-primary-dark bg-slate-50/50"
+                    class="w-full text-sm border border-slate-200 rounded-lg pl-9 pr-3 py-2.5 focus:outline-none focus:border-[#002B61] focus:ring-1 focus:ring-[#002B61] bg-slate-50/50"
                 />
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-zinc-400">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
@@ -73,11 +73,11 @@
 
             <!-- Toolbar Actions & Filters -->
             <div class="flex flex-wrap items-center gap-2.5 w-full sm:w-auto justify-end">
-                <span class="text-label font-bold text-zinc-400 uppercase tracking-wider hidden lg:inline">Filter by:</span>
+                <span class="text-[11px] font-bold text-zinc-400 uppercase tracking-wider hidden lg:inline">Filter by:</span>
                 
                 <!-- Doc Type Select -->
                 <div class="relative">
-                    <select x-model="filterType" class="text-body-sm bg-surface-card border border-slate-200 rounded-lg pl-3 pr-8 py-2 text-zinc-650 appearance-none focus:outline-none focus:border-primary-dark font-semibold cursor-pointer">
+                    <select x-model="filterType" class="text-xs bg-[#f8fafc] border border-slate-200 rounded-lg pl-3 pr-8 py-2 text-zinc-650 appearance-none focus:outline-none focus:border-[#002B61] font-semibold cursor-pointer">
                         <option value="all">Type: All</option>
                         <option value="PDF">PDF</option>
                         <option value="Word">Word</option>
@@ -90,7 +90,7 @@
 
                 <!-- Date Select -->
                 <div class="relative">
-                    <select x-model="filterDate" class="text-body-sm bg-surface-card border border-slate-200 rounded-lg pl-3 pr-8 py-2 text-zinc-650 appearance-none focus:outline-none focus:border-primary-dark font-semibold cursor-pointer">
+                    <select x-model="filterDate" class="text-xs bg-[#f8fafc] border border-slate-200 rounded-lg pl-3 pr-8 py-2 text-zinc-650 appearance-none focus:outline-none focus:border-[#002B61] font-semibold cursor-pointer">
                         <option value="all">Date: All</option>
                         <option value="2026">2026</option>
                         <option value="2025">2025</option>
@@ -104,7 +104,7 @@
                 <!-- Status Select (IQA Admin Only) -->
                 @if(auth()->user()->role === 'iqa-admin' || auth()->user()->hasRole('iqa-admin'))
                 <div class="relative">
-                    <select x-model="filterStatus" class="text-body-sm bg-surface-card border border-slate-200 rounded-lg pl-3 pr-8 py-2 text-zinc-650 appearance-none focus:outline-none focus:border-primary-dark font-semibold cursor-pointer">
+                    <select x-model="filterStatus" class="text-xs bg-[#f8fafc] border border-slate-200 rounded-lg pl-3 pr-8 py-2 text-zinc-650 appearance-none focus:outline-none focus:border-[#002B61] font-semibold cursor-pointer">
                         <option value="all">Status: All</option>
                         <option value="Verified">Verified</option>
                         <option value="Pending">Pending</option>
@@ -118,7 +118,7 @@
 
                 <!-- Upload Button (For IQA Admin, IQA Member) -->
                 @if(in_array(auth()->user()->role, ['iqa-admin', 'iqa-member']) || auth()->user()->hasRole('iqa-admin') || auth()->user()->hasRole('iqa-member'))
-                <button type="button" @click="openUploadModal()" class="bg-brand-orange hover:bg-brand-orange-hover text-white text-body-sm font-bold px-4 py-2 rounded-lg flex items-center gap-1.5 shrink-0 shadow-2xs transition cursor-pointer">
+                <button type="button" @click="openUploadModal()" class="bg-[#f27224] hover:bg-[#d65f1a] text-white text-xs font-bold px-4 py-2 rounded-lg flex items-center gap-1.5 shrink-0 shadow-2xs transition cursor-pointer">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                     </svg>
@@ -159,14 +159,14 @@
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse font-sans text-sm">
                 <thead>
-                    <tr class="bg-slate-50/90 border-b border-slate-200/80 text-zinc-500 font-bold uppercase tracking-wider select-none text-label">
+                    <tr class="bg-slate-50/90 border-b border-slate-200/80 text-zinc-500 font-bold uppercase tracking-wider select-none text-[11px]">
                         <!-- Document Title Header -->
-                        <th class="py-3.5 pl-6 pr-4 cursor-pointer hover:text-primary-dark transition group/th" @click="toggleSort('name')">
+                        <th class="py-3.5 pl-6 pr-4 cursor-pointer hover:text-[#002B61] transition group/th" @click="toggleSort('name')">
                             <div class="flex items-center gap-1.5">
                                 <span>DOCUMENT TITLE</span>
                                 <svg class="w-3.5 h-3.5 transition-transform duration-200"
                                      :class="{
-                                         'text-primary-dark opacity-100': sortField === 'name',
+                                         'text-[#002B61] opacity-100': sortField === 'name',
                                          'text-zinc-300 opacity-60 group-hover/th:opacity-100': sortField !== 'name',
                                          'rotate-180': sortField === 'name' && sortAsc,
                                          'rotate-0': sortField !== 'name' || !sortAsc
@@ -178,12 +178,12 @@
                         </th>
 
                         <!-- Uploader Header -->
-                        <th class="py-3.5 px-4 w-44 whitespace-nowrap shrink-0 cursor-pointer hover:text-primary-dark transition group/th" @click="toggleSort('uploader')">
+                        <th class="py-3.5 px-4 w-44 whitespace-nowrap shrink-0 cursor-pointer hover:text-[#002B61] transition group/th" @click="toggleSort('uploader')">
                             <div class="flex items-center gap-1">
                                 <span>UPLOADER</span>
                                 <svg class="w-3.5 h-3.5 transition-transform duration-200"
                                      :class="{
-                                         'text-primary-dark opacity-100': sortField === 'uploader',
+                                         'text-[#002B61] opacity-100': sortField === 'uploader',
                                          'text-zinc-300 opacity-60 group-hover/th:opacity-100': sortField !== 'uploader',
                                          'rotate-180': sortField === 'uploader' && sortAsc,
                                          'rotate-0': sortField !== 'uploader' || !sortAsc
@@ -195,12 +195,12 @@
                         </th>
 
                         <!-- Upload Date Header -->
-                        <th class="py-3.5 px-4 w-36 whitespace-nowrap shrink-0 cursor-pointer hover:text-primary-dark transition group/th" @click="toggleSort('date')">
+                        <th class="py-3.5 px-4 w-36 whitespace-nowrap shrink-0 cursor-pointer hover:text-[#002B61] transition group/th" @click="toggleSort('date')">
                             <div class="flex items-center gap-1">
                                 <span>UPLOAD DATE</span>
                                 <svg class="w-3.5 h-3.5 transition-transform duration-200"
                                      :class="{
-                                         'text-primary-dark opacity-100': sortField === 'date',
+                                         'text-[#002B61] opacity-100': sortField === 'date',
                                          'text-zinc-300 opacity-60 group-hover/th:opacity-100': sortField !== 'date',
                                          'rotate-180': sortField === 'date' && sortAsc,
                                          'rotate-0': sortField !== 'date' || !sortAsc
@@ -212,12 +212,12 @@
                         </th>
 
                         <!-- Status Header -->
-                        <th class="pl-8 px-4 w-36 whitespace-nowrap shrink-0 cursor-pointer hover:text-primary-dark transition group/th" @click="toggleSort('status')">
+                        <th class="pl-8 px-4 w-36 whitespace-nowrap shrink-0 cursor-pointer hover:text-[#002B61] transition group/th" @click="toggleSort('status')">
                             <div class="flex items-center gap-1">
                                 <span>STATUS</span>
                                 <svg class="w-3.5 h-3.5 transition-transform duration-200"
                                      :class="{
-                                         'text-primary-dark opacity-100': sortField === 'status',
+                                         'text-[#002B61] opacity-100': sortField === 'status',
                                          'text-zinc-300 opacity-60 group-hover/th:opacity-100': sortField !== 'status',
                                          'rotate-180': sortField === 'status' && sortAsc,
                                          'rotate-0': sortField !== 'status' || !sortAsc
@@ -258,7 +258,7 @@
                                             <text x="3" y="22" fill="white" font-size="7" font-weight="900" font-family="sans-serif">XLS</text>
                                         </svg>
                                     </template>
-                                     <span class="font-bold text-gray-900 group-hover:text-brand-orange transition leading-snug break-words" x-text="doc.name"></span>
+                                    <span class="font-bold text-[#111827] group-hover:text-[#F47920] transition leading-snug break-words" x-text="doc.name"></span>
                                 </div>
                             </td>
                             <td class="py-4 px-4 text-slate-700 font-semibold whitespace-nowrap shrink-0" x-text="doc.uploader || 'Sys Admin'"></td>
@@ -269,16 +269,16 @@
                                     <template x-if="currentUserRole === 'iqa-admin' || doc.uploaded_by_id === currentUserId">
                                         <div>
                                             <template x-if="doc.status === 'Verified'">
-                                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-body-sm font-bold bg-green-100 text-green-700 border border-green-200 shadow-2xs">
-                                                    <svg class="w-3.5 h-3.5 shrink-0 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#dcfce7] text-[#15803d] border border-[#bbf7d0] shadow-2xs">
+                                                    <svg class="w-3.5 h-3.5 shrink-0 text-[#15803d]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                                                         <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                                                     </svg>
                                                     <span>Verified</span>
                                                 </span>
                                             </template>
                                             <template x-if="doc.status === 'Pending'">
-                                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-body-sm font-bold bg-amber-100 text-amber-800 border border-amber-200 shadow-2xs">
-                                                    <svg class="w-3.5 h-3.5 shrink-0 text-amber-800" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#fef3c7] text-[#92400e] border border-[#fde68a] shadow-2xs">
+                                                    <svg class="w-3.5 h-3.5 shrink-0 text-[#92400e]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                                         <circle cx="12" cy="12" r="9" />
                                                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 7v5l3 3" />
                                                     </svg>
@@ -286,7 +286,7 @@
                                                 </span>
                                             </template>
                                             <template x-if="doc.status === 'Rejected'">
-                                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-body-sm font-bold bg-rose-100 text-rose-700 border border-rose-200 shadow-2xs">
+                                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-700 border border-rose-200 shadow-2xs">
                                                     <svg class="w-3.5 h-3.5 shrink-0 text-rose-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                                                     </svg>
@@ -296,12 +296,12 @@
                                         </div>
                                     </template>
                                     <template x-if="currentUserRole !== 'iqa-admin' && doc.uploaded_by_id !== currentUserId">
-                                        <span class="text-body-sm text-slate-400 font-medium select-none">&mdash;</span>
+                                        <span class="text-xs text-slate-400 font-medium select-none">&mdash;</span>
                                     </template>
                                 </div>
                             </td>
                             <td class="py-4 pl-4 pr-6 text-right whitespace-nowrap shrink-0">
-                                <button @click="openDoc(doc)" class="text-body-sm font-bold text-primary-dark hover:text-brand-orange transition cursor-pointer select-none bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg border border-slate-200/80">
+                                <button @click="openDoc(doc)" class="text-xs font-bold text-[#002B61] hover:text-[#F47920] transition cursor-pointer select-none bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg border border-slate-200/80">
                                     View Details
                                 </button>
                             </td>

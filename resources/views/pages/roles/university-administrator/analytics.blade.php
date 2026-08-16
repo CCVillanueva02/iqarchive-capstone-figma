@@ -34,15 +34,15 @@
 @endphp
 
 <x-layouts::app :title="__('Analytics')">
-    <div class="w-full px-8 py-8 flex flex-col gap-6 bg-surface-subtle min-h-screen font-sans">
+    <div class="w-full px-8 py-8 flex flex-col gap-6 bg-[#f4f6fa] min-h-screen font-sans">
         <!-- Top header bar -->
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-                <h1 class="text-heading-lg font-bold text-primary-dark">Accreditation Analytics</h1>
-                <p class="text-body-sm text-zinc-500 mt-1">Bicol University Institutional Quality Assurance Overview</p>
+                <h1 class="text-2xl font-bold text-[#002B61]">Accreditation Analytics</h1>
+                <p class="text-xs text-zinc-500 mt-1">Bicol University Institutional Quality Assurance Overview</p>
             </div>
             <div class="flex items-center gap-3">
-                <span class="px-3 py-1.5 rounded-full bg-blue-50 text-primary-dark border border-blue-100 text-label font-bold select-none">Academic Year 2025–2026</span>
+                <span class="px-3 py-1.5 rounded-full bg-blue-50 text-[#002B61] border border-blue-100 text-[11px] font-bold select-none">Academic Year 2025–2026</span>
             </div>
         </div>
 
@@ -51,49 +51,49 @@
             <!-- Overall Compliance -->
             <div class="bg-white p-5 rounded-2xl border border-slate-200/60 shadow-3xs hover:shadow-xs transition duration-200">
                 <div class="flex items-center justify-between mb-3">
-                    <span class="text-label font-bold text-zinc-400 uppercase tracking-wider">Institutional Compliance</span>
+                    <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Institutional Compliance</span>
                     <div class="p-2 rounded-lg bg-emerald-50 text-emerald-600">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12Z" /></svg>
                     </div>
                 </div>
-                <div class="text-heading-lg font-extrabold text-primary-dark">{{ $complianceRate }}%</div>
-                <div class="text-label text-emerald-600 font-semibold mt-1">↑ 8% from last quarter</div>
+                <div class="text-3xl font-extrabold text-[#002B61]">{{ $complianceRate }}%</div>
+                <div class="text-[11px] text-emerald-600 font-semibold mt-1">↑ 8% from last quarter</div>
             </div>
 
             <!-- Total Programs -->
             <div class="bg-white p-5 rounded-2xl border border-slate-200/60 shadow-3xs hover:shadow-xs transition duration-200">
                 <div class="flex items-center justify-between mb-3">
-                    <span class="text-label font-bold text-zinc-400 uppercase tracking-wider">Total Programs</span>
+                    <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Total Programs</span>
                     <div class="p-2 rounded-lg bg-blue-50 text-blue-600">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.57 50.57 0 0 0-2.658-.813A5.99 5.99 0 0 1 12 3.453a5.99 5.99 0 0 1 4.543 5.881 50.58 50.58 0 0 0-2.658.813m-9.227 0L12 13.545l3.878-3.4m-7.756 0a48.36 48.36 0 0 1 7.756 0" /></svg>
                     </div>
                 </div>
-                <div class="text-heading-lg font-extrabold text-primary-dark">{{ $totalPrograms }}</div>
-                <div class="text-label text-zinc-500 mt-1">Across {{ count($collegeData) }} colleges</div>
+                <div class="text-3xl font-extrabold text-[#002B61]">{{ $totalPrograms }}</div>
+                <div class="text-[11px] text-zinc-500 mt-1">Across {{ count($collegeData) }} colleges</div>
             </div>
 
             <!-- Accredited Programs -->
             <div class="bg-white p-5 rounded-2xl border border-slate-200/60 shadow-3xs hover:shadow-xs transition duration-200">
                 <div class="flex items-center justify-between mb-3">
-                    <span class="text-label font-bold text-zinc-400 uppercase tracking-wider">Accredited Programs</span>
-                    <div class="p-2 rounded-lg bg-orange-50 text-brand-orange">
+                    <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Accredited Programs</span>
+                    <div class="p-2 rounded-lg bg-orange-50 text-[#F47920]">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 0 1 3 3h-15a3 3 0 0 1 3-3m9 0v-3.375c0-.621-.504-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 0 1-.982-3.172M9.497 14.25a7.454 7.454 0 0 0 .981-3.172M5.25 4.236c-.996.178-1.943.442-2.827.787C3.68 5.692 4.784 6.75 6 6.75h.75m0 0h10.5m-10.5 0V4.5m10.5 2.25c1.216 0 2.32-1.058 3.577-1.727-.884-.345-1.831-.609-2.827-.787M15 4.5V2.25" /></svg>
                     </div>
                 </div>
-                <div class="text-heading-lg font-extrabold text-primary-dark">{{ $accreditedPrograms }}</div>
-                <div class="text-label text-zinc-500 mt-1">{{ round(($accreditedPrograms / $totalPrograms) * 100) }}% of total programs</div>
+                <div class="text-3xl font-extrabold text-[#002B61]">{{ $accreditedPrograms }}</div>
+                <div class="text-[11px] text-zinc-500 mt-1">{{ round(($accreditedPrograms / $totalPrograms) * 100) }}% of total programs</div>
             </div>
 
             <!-- Compliance Documents -->
             <div class="bg-white p-5 rounded-2xl border border-slate-200/60 shadow-3xs hover:shadow-xs transition duration-200">
                 <div class="flex items-center justify-between mb-3">
-                    <span class="text-label font-bold text-zinc-400 uppercase tracking-wider">Compliance Documents</span>
+                    <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">Compliance Documents</span>
                     <div class="p-2 rounded-lg bg-violet-50 text-violet-600">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25" /></svg>
                     </div>
                 </div>
-                <div class="text-heading-lg font-extrabold text-primary-dark">{{ number_format($totalDocs) }}</div>
-                <div class="text-label text-zinc-500 mt-1">Uploaded & archived portfolios</div>
+                <div class="text-3xl font-extrabold text-[#002B61]">{{ number_format($totalDocs) }}</div>
+                <div class="text-[11px] text-zinc-500 mt-1">Uploaded & archived portfolios</div>
             </div>
         </div>
 
@@ -103,10 +103,10 @@
             <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200/60 p-6 shadow-3xs">
                 <div class="flex items-center justify-between mb-6">
                     <div>
-                        <h2 class="text-heading-sm font-bold text-primary-dark">Compliance Rate Trend</h2>
-                        <p class="text-label text-zinc-400 mt-0.5">Quarterly institutional compliance progress</p>
+                        <h2 class="text-base font-bold text-[#002B61]">Compliance Rate Trend</h2>
+                        <p class="text-[11px] text-zinc-400 mt-0.5">Quarterly institutional compliance progress</p>
                     </div>
-                    <span class="text-label font-bold text-emerald-600 bg-emerald-50 border border-emerald-100 px-2.5 py-1 rounded-full select-none">+26% YoY</span>
+                    <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-100 px-2.5 py-1 rounded-full select-none">+26% YoY</span>
                 </div>
                 <div class="h-64">
                     <canvas id="complianceTrendChart"></canvas>
@@ -116,8 +116,8 @@
             <!-- Accreditation Level Distribution Doughnut (1 col) -->
             <div class="bg-white rounded-2xl border border-slate-200/60 p-6 shadow-3xs">
                 <div class="mb-6">
-                    <h2 class="text-heading-sm font-bold text-primary-dark">Accreditation Levels</h2>
-                    <p class="text-label text-zinc-400 mt-0.5">Program distribution by AACCUP level</p>
+                    <h2 class="text-base font-bold text-[#002B61]">Accreditation Levels</h2>
+                    <p class="text-[11px] text-zinc-400 mt-0.5">Program distribution by AACCUP level</p>
                 </div>
                 <div class="h-48 flex items-center justify-center">
                     <canvas id="levelDistChart"></canvas>
@@ -134,7 +134,7 @@
                                 'Candidate' => 'bg-zinc-400',
                             ];
                         @endphp
-                        <div class="flex items-center justify-between text-body-sm font-semibold text-zinc-600">
+                        <div class="flex items-center justify-between text-xs font-semibold text-zinc-600">
                             <span class="flex items-center gap-2">
                                 <span class="h-2.5 w-2.5 rounded-full {{ $colorMap[$level] ?? 'bg-zinc-300' }}"></span>
                                 {{ $level }}
@@ -152,8 +152,8 @@
             <div class="bg-white rounded-2xl border border-slate-200/60 p-6 shadow-3xs">
                 <div class="flex items-center justify-between mb-6">
                     <div>
-                        <h2 class="text-heading-sm font-bold text-primary-dark">Compliance by AACCUP Area</h2>
-                        <p class="text-label text-zinc-400 mt-0.5">Average compliance rate per accreditation area</p>
+                        <h2 class="text-base font-bold text-[#002B61]">Compliance by AACCUP Area</h2>
+                        <p class="text-[11px] text-zinc-400 mt-0.5">Average compliance rate per accreditation area</p>
                     </div>
                 </div>
                 <div class="h-64">
@@ -165,10 +165,10 @@
             <div class="bg-white rounded-2xl border border-slate-200/60 p-6 shadow-3xs">
                 <div class="flex items-center justify-between mb-6">
                     <div>
-                        <h2 class="text-heading-sm font-bold text-primary-dark">Document Uploads Over Time</h2>
-                        <p class="text-label text-zinc-400 mt-0.5">Cumulative compliance portfolio submissions</p>
+                        <h2 class="text-base font-bold text-[#002B61]">Document Uploads Over Time</h2>
+                        <p class="text-[11px] text-zinc-400 mt-0.5">Cumulative compliance portfolio submissions</p>
                     </div>
-                    <span class="text-label font-bold text-violet-600 bg-violet-50 border border-violet-100 px-2.5 py-1 rounded-full select-none">{{ number_format($totalDocs) }} total</span>
+                    <span class="text-[10px] font-bold text-violet-600 bg-violet-50 border border-violet-100 px-2.5 py-1 rounded-full select-none">{{ number_format($totalDocs) }} total</span>
                 </div>
                 <div class="h-64">
                     <canvas id="docUploadChart"></canvas>
@@ -179,14 +179,14 @@
         <!-- College Quality Assurance Performance Table -->
         <div class="bg-white rounded-2xl border border-slate-200/60 p-6 shadow-3xs">
             <div class="border-b border-zinc-100 pb-4 mb-4">
-                <h2 class="text-heading-sm font-bold text-primary-dark">College Quality Assurance Performance</h2>
-                <p class="text-label text-zinc-400 mt-0.5">High-level comparison across Bicol University colleges</p>
+                <h2 class="text-base font-bold text-[#002B61]">College Quality Assurance Performance</h2>
+                <p class="text-[11px] text-zinc-400 mt-0.5">High-level comparison across Bicol University colleges</p>
             </div>
 
             <div class="overflow-x-auto">
-                <table class="w-full text-left text-body text-zinc-600">
+                <table class="w-full text-left text-sm text-zinc-600">
                     <thead>
-                        <tr class="text-label font-bold text-zinc-400 uppercase tracking-wider border-b border-zinc-100">
+                        <tr class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider border-b border-zinc-100">
                             <th class="pb-3">College</th>
                             <th class="pb-3 text-center">Programs</th>
                             <th class="pb-3 text-center">Archived Files</th>
@@ -199,8 +199,8 @@
                         @foreach($collegeData as $college)
                             <tr class="hover:bg-zinc-50/50 transition">
                                 <td class="py-4">
-                                    <span class="block text-body font-bold text-primary-dark">{{ $college['name'] }}</span>
-                                    <span class="block text-label text-zinc-400 font-mono mt-0.5">{{ $college['code'] }}</span>
+                                    <span class="block text-sm font-bold text-[#002B61]">{{ $college['name'] }}</span>
+                                    <span class="block text-[10px] text-zinc-400 font-mono mt-0.5">{{ $college['code'] }}</span>
                                 </td>
                                 <td class="py-4 text-center font-bold text-zinc-700">{{ $college['programs'] }}</td>
                                 <td class="py-4 text-center text-zinc-600">{{ $college['docs'] }}</td>
@@ -214,23 +214,23 @@
                                             default => 'bg-zinc-100 text-zinc-600 border-zinc-200',
                                         };
                                     @endphp
-                                    <span class="px-2.5 py-1 text-label font-bold uppercase rounded-full border {{ $levelColor }}">{{ $college['level'] }}</span>
+                                    <span class="px-2.5 py-1 text-[10px] font-bold uppercase rounded-full border {{ $levelColor }}">{{ $college['level'] }}</span>
                                 </td>
                                 <td class="py-4 text-center">
                                     <div class="flex items-center justify-center gap-2">
                                         <div class="w-20 h-1.5 bg-slate-100 rounded-full overflow-hidden">
                                             <div class="h-full rounded-full transition-all duration-500 {{ $college['compliance'] >= 80 ? 'bg-emerald-500' : ($college['compliance'] >= 60 ? 'bg-amber-500' : 'bg-rose-500') }}" style="width: {{ $college['compliance'] }}%"></div>
                                         </div>
-                                        <span class="text-body-sm font-bold text-primary-dark">{{ $college['compliance'] }}%</span>
+                                        <span class="text-xs font-bold text-[#002B61]">{{ $college['compliance'] }}%</span>
                                     </div>
                                 </td>
                                 <td class="py-4 text-right">
                                     @if($college['compliance'] >= 80)
-                                        <span class="text-label font-bold text-emerald-600">On Track</span>
+                                        <span class="text-[10px] font-bold text-emerald-600">On Track</span>
                                     @elseif($college['compliance'] >= 60)
-                                        <span class="text-label font-bold text-amber-600">Needs Attention</span>
+                                        <span class="text-[10px] font-bold text-amber-600">Needs Attention</span>
                                     @else
-                                        <span class="text-label font-bold text-rose-600">At Risk</span>
+                                        <span class="text-[10px] font-bold text-rose-600">At Risk</span>
                                     @endif
                                 </td>
                             </tr>
