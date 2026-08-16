@@ -24,20 +24,20 @@
 @endphp
 
 <x-layouts::app :title="__('Dashboard')">
-    <div class="w-full px-8 py-8 flex flex-col gap-6 bg-[#f4f6fa] min-h-screen font-sans">
+    <div class="w-full px-8 py-8 flex flex-col gap-6 bg-surface-subtle min-h-screen font-sans">
         <!-- Top header bar -->
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-                <h1 class="text-2xl font-bold text-[#002B61]">IQA Administrator Dashboard</h1>
-                <p class="text-xs text-zinc-500 mt-1">Institutional Quality Assurance Portal Overview</p>
+                <h1 class="text-heading-lg font-bold text-primary-dark">IQA Administrator Dashboard</h1>
+                <p class="text-body-sm text-zinc-500 mt-1">Institutional Quality Assurance Portal Overview</p>
             </div>
             <div class="flex items-center gap-3">
-                <span class="text-xs text-zinc-400 font-medium">System Time: {{ now()->format('Y-m-d H:i') }}</span>
+                <span class="text-body-sm text-zinc-400 font-medium">System Time: {{ now()->format('Y-m-d H:i') }}</span>
             </div>
         </div>
 
         <!-- Pending Common Documents Quick Access Alert Widget -->
-        <div class="bg-gradient-to-r from-[#002B61] to-[#003A82] text-white rounded-2xl p-6 shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-5 border border-blue-900/40">
+        <div class="bg-gradient-to-r from-primary-dark to-primary-hover text-white rounded-2xl p-6 shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-5 border border-blue-900/40">
             <div class="flex items-start gap-4">
                 <div class="p-3 bg-amber-500/20 border border-amber-400/30 rounded-xl text-amber-300 shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-7 h-7">
@@ -46,17 +46,17 @@
                 </div>
                 <div>
                     <div class="flex items-center gap-2">
-                        <h2 class="text-lg font-bold text-white">Pending Common Documents Verification</h2>
-                        <span class="px-2.5 py-0.5 rounded-full text-xs font-black bg-amber-400 text-amber-950 shadow-2xs">
+                        <h2 class="text-heading-sm font-bold text-white">Pending Common Documents Verification</h2>
+                        <span class="px-2.5 py-0.5 rounded-full text-body-sm font-black bg-amber-400 text-amber-950 shadow-2xs">
                             {{ $pendingCommonDocsCount }} Pending
                         </span>
                     </div>
-                    <p class="text-xs text-blue-100/90 mt-1 max-w-2xl leading-relaxed">
+                    <p class="text-body-sm text-blue-100/90 mt-1 max-w-2xl leading-relaxed">
                         There {{ $pendingCommonDocsCount === 1 ? 'is' : 'are' }} {{ $pendingCommonDocsCount }} common document(s) uploaded by staff awaiting verification. Review uploaded files, manage approval status, or flag documents.
                     </p>
                 </div>
             </div>
-            <a href="{{ route('documents.iqa-admin', ['status' => 'Pending']) }}" class="px-5 py-3 bg-[#F47920] hover:bg-[#d86512] text-white font-bold text-xs rounded-xl shadow-md transition shrink-0 flex items-center gap-2 select-none cursor-pointer" wire:navigate>
+            <a href="{{ route('documents.iqa-admin', ['status' => 'Pending']) }}" class="px-5 py-3 bg-brand-orange hover:bg-brand-orange-hover text-white font-bold text-body-sm rounded-xl shadow-md transition shrink-0 flex items-center gap-2 select-none cursor-pointer" wire:navigate>
                 <span>Review Pending Documents</span>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
@@ -69,9 +69,9 @@
             <!-- Accreditation Pending -->
             <div class="bg-white p-6 rounded-2xl border border-slate-200/60 shadow-3xs hover:shadow-xs transition duration-200 flex items-center justify-between">
                 <div class="flex flex-col">
-                    <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Pending</span>
-                    <span class="text-3xl font-extrabold text-[#002B61] mt-2">{{ $pendingReview }}</span>
-                    <span class="text-[11px] text-amber-600 font-medium mt-1.5 flex items-center gap-1">
+                    <span class="text-body-sm font-semibold text-zinc-400 uppercase tracking-wider">Pending</span>
+                    <span class="text-heading-lg font-extrabold text-primary-dark mt-2">{{ $pendingReview }}</span>
+                    <span class="text-label text-amber-600 font-medium mt-1.5 flex items-center gap-1">
                         <span class="inline-block h-2 w-2 rounded-full bg-amber-500 animate-ping"></span> 
                         Awaiting for compliance
                     </span>
@@ -86,13 +86,13 @@
             <!-- Waiting for Compliance -->
             <div class="bg-white p-6 rounded-2xl border border-slate-200/60 shadow-3xs hover:shadow-xs transition duration-200 flex items-center justify-between">
                 <div class="flex flex-col">
-                    <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Upcoming Compliance</span>
-                    <span class="text-3xl font-extrabold text-[#002B61] mt-2">{{ $waitingCompliance }}</span>
-                    <span class="text-[11px] text-zinc-500 mt-1.5 font-medium">
+                    <span class="text-body-sm font-semibold text-zinc-400 uppercase tracking-wider">Upcoming Compliance</span>
+                    <span class="text-heading-lg font-extrabold text-primary-dark mt-2">{{ $waitingCompliance }}</span>
+                    <span class="text-label text-zinc-500 mt-1.5 font-medium">
                         Accreditation is about to expire
                     </span>
                 </div>
-                <div class="p-3.5 rounded-xl bg-orange-50 text-[#F47920]">
+                <div class="p-3.5 rounded-xl bg-orange-50 text-brand-orange">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                     </svg>
@@ -102,15 +102,15 @@
             <!-- Compliance Okay -->
             <div class="bg-white p-6 rounded-2xl border border-slate-200/60 shadow-3xs hover:shadow-xs transition duration-200 flex items-center justify-between">
                 <div class="flex flex-col">
-                    <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Complied</span>
-                    <span class="text-3xl font-extrabold text-[#002B61] mt-2">{{ $compliedRequirements }}</span>
-                    <span class="text-[11px] text-emerald-600 font-medium mt-1.5">
+                    <span class="text-body-sm font-semibold text-zinc-400 uppercase tracking-wider">Complied</span>
+                    <span class="text-heading-lg font-extrabold text-primary-dark mt-2">{{ $compliedRequirements }}</span>
+                    <span class="text-label text-emerald-600 font-medium mt-1.5">
                         Accreditation met
                     </span>
                 </div>
                 <div class="p-3.5 rounded-xl bg-emerald-50 text-emerald-600">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043A3.745 3.745 0 0 1 3 12Z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12Z" />
                     </svg>
                 </div>
             </div>
@@ -118,9 +118,9 @@
             <!-- Overall Compliance Rate -->
             <div class="bg-white p-6 rounded-2xl border border-slate-200/60 shadow-3xs hover:shadow-xs transition duration-200 flex items-center justify-between">
                 <div class="flex flex-col">
-                    <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Overall Compliance</span>
-                    <span class="text-3xl font-extrabold text-[#002B61] mt-2">{{ $complianceRate }}%</span>
-                    <span class="text-[11px] text-zinc-500 mt-1.5 font-medium">
+                    <span class="text-body-sm font-semibold text-zinc-400 uppercase tracking-wider">Overall Compliance</span>
+                    <span class="text-heading-lg font-extrabold text-primary-dark mt-2">{{ $complianceRate }}%</span>
+                    <span class="text-label text-zinc-500 mt-1.5 font-medium">
                         Total university compliance rate
                     </span>
                 </div>
@@ -139,10 +139,10 @@
             <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200/60 p-6 shadow-3xs flex flex-col gap-4">
                 <div class="flex items-center justify-between border-b border-zinc-100 pb-4">
                     <div>
-                        <h2 class="text-lg font-bold text-[#002B61]">Recent Document Submissions</h2>
-                        <p class="text-xs text-zinc-400 mt-0.5">Newly archived program compliance documents</p>
+                        <h2 class="text-heading-sm font-bold text-primary-dark">Recent Document Submissions</h2>
+                        <p class="text-body-sm text-zinc-400 mt-0.5">Newly archived program compliance documents</p>
                     </div>
-                    <a href="{{ route('documents.iqa-admin') }}" class="text-xs font-semibold text-[#F47920] hover:underline" wire:navigate>
+                    <a href="{{ route('documents.iqa-admin') }}" class="text-body-sm font-semibold text-brand-orange hover:underline" wire:navigate>
                         Manage All Files &rarr;
                     </a>
                 </div>
@@ -203,18 +203,18 @@
             <div class="flex flex-col gap-6">
                 <!-- Actions Grid -->
                 <div class="bg-white rounded-2xl border border-slate-200/60 p-6 shadow-3xs flex flex-col gap-4">
-                    <h3 class="text-xs font-bold text-[#002B61] uppercase tracking-wider">Quick Actions</h3>
-                    <div class="flex flex-col gap-3 font-semibold text-xs text-[#002B61]">
+                    <h3 class="text-body-sm font-bold text-primary-dark uppercase tracking-wider">Quick Actions</h3>
+                    <div class="flex flex-col gap-3 font-semibold text-body-sm text-primary-dark">
                         <!-- First action: Monitoring (leads to submissions tab) -->
                         <a href="{{ route('submissions.iqa-admin') }}" class="flex items-center gap-3 p-3.5 bg-zinc-50 hover:bg-zinc-100 border border-zinc-100 rounded-xl transition" wire:navigate>
-                            <div class="p-2 bg-[#002B61] text-white rounded-lg">
+                            <div class="p-2 bg-primary-dark text-white rounded-lg">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192" />
                                 </svg>
                             </div>
                             <div class="flex-1">
                                 <span class="block">Monitoring</span>
-                                <span class="block text-[10px] text-zinc-400 font-normal mt-0.5">Track and evaluate program compliance</span>
+                                <span class="block text-label text-zinc-400 font-normal mt-0.5">Track and evaluate program compliance</span>
                             </div>
                         </a>
                         <a href="{{ route('accounts.iqa-admin') }}" class="flex items-center gap-3 p-3.5 bg-zinc-50 hover:bg-zinc-100 border border-zinc-100 rounded-xl transition" wire:navigate>
@@ -225,7 +225,7 @@
                             </div>
                             <div class="flex-1">
                                 <span class="block">Manage User Accounts</span>
-                                <span class="block text-[10px] text-zinc-400 font-normal mt-0.5">Manage and check staff & deans</span>
+                                <span class="block text-label text-zinc-400 font-normal mt-0.5">Manage and check staff & deans</span>
                             </div>
                         </a>
                         <a href="{{ route('audit-trail.iqa-admin') }}" class="flex items-center gap-3 p-3.5 bg-zinc-50 hover:bg-zinc-100 border border-zinc-100 rounded-xl transition" wire:navigate>
@@ -237,7 +237,7 @@
                             </div>
                             <div class="flex-1">
                                 <span class="block">IQA Audit Trail logs</span>
-                                <span class="block text-[10px] text-zinc-400 font-normal mt-0.5">Track system activity logs</span>
+                                <span class="block text-label text-zinc-400 font-normal mt-0.5">Track system activity logs</span>
                             </div>
                         </a>
                     </div>
@@ -247,18 +247,18 @@
                 <div class="bg-white rounded-2xl border border-slate-200/60 p-6 shadow-3xs flex flex-col gap-4" x-data="{ tab: 'levels' }">
                     <div class="flex flex-col gap-2.5">
                         <div class="flex justify-between items-center">
-                            <h3 class="text-xs font-bold text-[#002B61] uppercase tracking-wider">Program Performance</h3>
+                            <h3 class="text-body-sm font-bold text-primary-dark uppercase tracking-wider">Program Performance</h3>
                         </div>
                         
                         <!-- Tab Selector Buttons -->
                         <div class="flex bg-zinc-100 p-0.5 rounded-lg border border-zinc-200/60 self-start">
-                            <button type="button" @click="tab = 'levels'" :class="tab === 'levels' ? 'bg-[#002B61] text-white shadow-2xs' : 'text-zinc-600 hover:text-[#002B61]'" class="px-2.5 py-1 rounded text-[9px] font-bold uppercase tracking-wider transition cursor-pointer select-none">
+                            <button type="button" @click="tab = 'levels'" :class="tab === 'levels' ? 'bg-primary-dark text-white shadow-2xs' : 'text-zinc-600 hover:text-primary-dark'" class="px-2.5 py-1 rounded text-label-xs font-bold uppercase tracking-wider transition cursor-pointer select-none">
                                 Levels
                             </button>
-                            <button type="button" @click="tab = 'degrees'" :class="tab === 'degrees' ? 'bg-[#002B61] text-white shadow-2xs' : 'text-zinc-600 hover:text-[#002B61]'" class="px-2.5 py-1 rounded text-[9px] font-bold uppercase tracking-wider transition cursor-pointer select-none">
+                            <button type="button" @click="tab = 'degrees'" :class="tab === 'degrees' ? 'bg-primary-dark text-white shadow-2xs' : 'text-zinc-600 hover:text-primary-dark'" class="px-2.5 py-1 rounded text-label-xs font-bold uppercase tracking-wider transition cursor-pointer select-none">
                                 Degrees
                             </button>
-                            <button type="button" @click="tab = 'accredited'" :class="tab === 'accredited' ? 'bg-[#002B61] text-white shadow-2xs' : 'text-zinc-600 hover:text-[#002B61]'" class="px-2.5 py-1 rounded text-[9px] font-bold uppercase tracking-wider transition cursor-pointer select-none">
+                            <button type="button" @click="tab = 'accredited'" :class="tab === 'accredited' ? 'bg-primary-dark text-white shadow-2xs' : 'text-zinc-600 hover:text-primary-dark'" class="px-2.5 py-1 rounded text-label-xs font-bold uppercase tracking-wider transition cursor-pointer select-none">
                                 Status
                             </button>
                         </div>
@@ -267,68 +267,68 @@
                     <!-- Tab 1: Accreditation Levels -->
                     <div x-show="tab === 'levels'" class="grid grid-cols-2 gap-3 transition-all duration-200">
                         <div class="bg-zinc-50 border border-zinc-100 p-3.5 rounded-xl text-center shadow-3xs select-none">
-                            <span class="block text-2xl font-extrabold text-[#F47920] mb-0.5">11</span>
-                            <span class="text-[9px] text-zinc-400 font-semibold uppercase tracking-wider">Level IV</span>
+                            <span class="block text-heading-lg font-extrabold text-brand-orange mb-0.5">11</span>
+                            <span class="text-label-xs text-zinc-400 font-semibold uppercase tracking-wider">Level IV</span>
                         </div>
                         <div class="bg-zinc-50 border border-zinc-100 p-3.5 rounded-xl text-center shadow-3xs select-none">
-                            <span class="block text-2xl font-extrabold text-[#F47920] mb-0.5">32</span>
-                            <span class="text-[9px] text-zinc-400 font-semibold uppercase tracking-wider">Level III</span>
+                            <span class="block text-heading-lg font-extrabold text-brand-orange mb-0.5">32</span>
+                            <span class="text-label-xs text-zinc-400 font-semibold uppercase tracking-wider">Level III</span>
                         </div>
                         <div class="bg-zinc-50 border border-zinc-100 p-3.5 rounded-xl text-center shadow-3xs select-none">
-                            <span class="block text-2xl font-extrabold text-[#002B61] mb-0.5">35</span>
-                            <span class="text-[9px] text-zinc-400 font-semibold uppercase tracking-wider">Level II</span>
+                            <span class="block text-heading-lg font-extrabold text-primary-dark mb-0.5">35</span>
+                            <span class="text-label-xs text-zinc-400 font-semibold uppercase tracking-wider">Level II</span>
                         </div>
                         <div class="bg-zinc-50 border border-zinc-100 p-3.5 rounded-xl text-center shadow-3xs select-none">
-                            <span class="block text-2xl font-extrabold text-[#002B61] mb-0.5">38</span>
-                            <span class="text-[9px] text-zinc-400 font-semibold uppercase tracking-wider">Level I</span>
+                            <span class="block text-heading-lg font-extrabold text-primary-dark mb-0.5">38</span>
+                            <span class="text-label-xs text-zinc-400 font-semibold uppercase tracking-wider">Level I</span>
                         </div>
                         <div class="bg-zinc-50 border border-zinc-100 p-3.5 rounded-xl text-center shadow-3xs select-none">
-                            <span class="block text-2xl font-extrabold text-zinc-500 mb-0.5">4</span>
-                            <span class="text-[9px] text-zinc-400 font-semibold uppercase tracking-wider">Candidate</span>
+                            <span class="block text-heading-lg font-extrabold text-zinc-500 mb-0.5">4</span>
+                            <span class="text-label-xs text-zinc-400 font-semibold uppercase tracking-wider">Candidate</span>
                         </div>
-                        <div class="bg-[#002B61]/5 border border-[#002B61]/10 p-3.5 rounded-xl text-center flex flex-col justify-center select-none">
-                            <span class="block text-2xl font-extrabold text-[#F47920] mb-0.5">116</span>
-                            <span class="text-[9px] text-[#002B61] font-bold uppercase tracking-wider">Total Accredited</span>
+                        <div class="bg-primary-dark/5 border border-primary-dark/10 p-3.5 rounded-xl text-center flex flex-col justify-center select-none">
+                            <span class="block text-heading-lg font-extrabold text-brand-orange mb-0.5">116</span>
+                            <span class="text-label-xs text-primary-dark font-bold uppercase tracking-wider">Total Accredited</span>
                         </div>
                     </div>
 
                     <!-- Tab 2: Programs by Degree -->
                     <div x-show="tab === 'degrees'" class="grid grid-cols-2 gap-3 transition-all duration-200" style="display: none;">
                         <div class="bg-zinc-50 border border-zinc-100 p-3.5 rounded-xl text-center shadow-3xs select-none">
-                            <span class="block text-2xl font-extrabold text-[#F47920] mb-0.5">80</span>
-                            <span class="text-[9px] text-zinc-400 font-semibold uppercase tracking-wider">Baccalaureate</span>
+                            <span class="block text-heading-lg font-extrabold text-brand-orange mb-0.5">80</span>
+                            <span class="text-label-xs text-zinc-400 font-semibold uppercase tracking-wider">Baccalaureate</span>
                         </div>
                         <div class="bg-zinc-50 border border-zinc-100 p-3.5 rounded-xl text-center shadow-3xs select-none">
-                            <span class="block text-2xl font-extrabold text-[#002B61] mb-0.5">39</span>
-                            <span class="text-[9px] text-zinc-400 font-semibold uppercase tracking-wider">Master's</span>
+                            <span class="block text-heading-lg font-extrabold text-primary-dark mb-0.5">39</span>
+                            <span class="text-label-xs text-zinc-400 font-semibold uppercase tracking-wider">Master's</span>
                         </div>
                         <div class="bg-zinc-50 border border-zinc-100 p-3.5 rounded-xl text-center shadow-3xs select-none">
-                            <span class="block text-2xl font-extrabold text-[#002B61] mb-0.5">7</span>
-                            <span class="text-[9px] text-zinc-400 font-semibold uppercase tracking-wider">Doctoral</span>
+                            <span class="block text-heading-lg font-extrabold text-primary-dark mb-0.5">7</span>
+                            <span class="text-label-xs text-zinc-400 font-semibold uppercase tracking-wider">Doctoral</span>
                         </div>
                         <div class="bg-zinc-50 border border-zinc-100 p-3.5 rounded-xl text-center shadow-3xs select-none">
-                            <span class="block text-2xl font-extrabold text-zinc-500 mb-0.5">2</span>
-                            <span class="text-[9px] text-zinc-400 font-semibold uppercase tracking-wider">Post Bacc</span>
+                            <span class="block text-heading-lg font-extrabold text-zinc-500 mb-0.5">2</span>
+                            <span class="text-label-xs text-zinc-400 font-semibold uppercase tracking-wider">Post Bacc</span>
                         </div>
-                        <div class="bg-[#002B61]/5 border border-[#002B61]/10 p-3.5 rounded-xl text-center flex flex-col justify-center col-span-2 select-none">
-                            <span class="block text-2xl font-extrabold text-[#002B61] mb-0.5">126</span>
-                            <span class="text-[9px] text-[#002B61] font-bold uppercase tracking-wider">Total Programs</span>
+                        <div class="bg-primary-dark/5 border border-primary-dark/10 p-3.5 rounded-xl text-center flex flex-col justify-center col-span-2 select-none">
+                            <span class="block text-heading-lg font-extrabold text-primary-dark mb-0.5">126</span>
+                            <span class="text-label-xs text-primary-dark font-bold uppercase tracking-wider">Total Programs</span>
                         </div>
                     </div>
 
                     <!-- Tab 3: Accreditation Status -->
                     <div x-show="tab === 'accredited'" class="grid grid-cols-2 gap-3 transition-all duration-200" style="display: none;">
                         <div class="bg-zinc-50 border border-zinc-100 p-3.5 rounded-xl text-center shadow-3xs select-none">
-                            <span class="block text-2xl font-extrabold text-[#F47920] mb-0.5">74</span>
-                            <span class="text-[9px] text-zinc-400 font-semibold uppercase tracking-wider">Undergraduate</span>
+                            <span class="block text-heading-lg font-extrabold text-brand-orange mb-0.5">74</span>
+                            <span class="text-label-xs text-zinc-400 font-semibold uppercase tracking-wider">Undergraduate</span>
                         </div>
                         <div class="bg-zinc-50 border border-zinc-100 p-3.5 rounded-xl text-center shadow-3xs select-none">
-                            <span class="block text-2xl font-extrabold text-[#002B61] mb-0.5">42</span>
-                            <span class="text-[9px] text-zinc-400 font-semibold uppercase tracking-wider">Graduate</span>
+                            <span class="block text-heading-lg font-extrabold text-primary-dark mb-0.5">42</span>
+                            <span class="text-label-xs text-zinc-400 font-semibold uppercase tracking-wider">Graduate</span>
                         </div>
-                        <div class="bg-[#002B61]/5 border border-[#002B61]/10 p-3.5 rounded-xl text-center flex flex-col justify-center col-span-2 select-none">
-                            <span class="block text-2xl font-extrabold text-[#F47920] mb-0.5">116</span>
-                            <span class="text-[9px] text-[#002B61] font-bold uppercase tracking-wider">Total Accredited</span>
+                        <div class="bg-primary-dark/5 border border-primary-dark/10 p-3.5 rounded-xl text-center flex flex-col justify-center col-span-2 select-none">
+                            <span class="block text-heading-lg font-extrabold text-brand-orange mb-0.5">116</span>
+                            <span class="text-label-xs text-primary-dark font-bold uppercase tracking-wider">Total Accredited</span>
                         </div>
                     </div>
                 </div>
