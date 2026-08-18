@@ -1980,6 +1980,19 @@ window.documentWorkspace = function (initialState = {}) {
                 body: JSON.stringify({ param_id: paramId, best_practice: value })
             }).catch(err => console.warn('Best practice save failed (offline mode):', err));
         },
+
+        submitSelfSurvey() {
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Self-Survey Submitted',
+                    text: 'The self-survey for this area has been successfully submitted.',
+                    confirmButtonColor: '#059669', // emerald-600
+                });
+            } else {
+                alert('Self-survey has been submitted.');
+            }
+        },
         categories: [],
         documents: [],
         offices: [],

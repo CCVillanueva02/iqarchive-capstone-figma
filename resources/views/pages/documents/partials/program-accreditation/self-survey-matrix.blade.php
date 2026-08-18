@@ -300,6 +300,7 @@
             <!-- Right: Submit Button -->
             <div class="flex items-center gap-3 w-full md:w-auto justify-end">
                 <button type="button"
+                    @click="submitSelfSurvey()"
                     :disabled="!isAreaComplete(selfSurveyActiveAreaId) || !selfSurveyPreparedBy?.trim()"
                     :class="(!isAreaComplete(selfSurveyActiveAreaId) || !selfSurveyPreparedBy?.trim()) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-emerald-700 cursor-pointer'"
                     class="px-5 py-2.5 bg-emerald-600 text-white font-bold text-sm rounded-xl transition shadow-3xs flex items-center gap-2">
