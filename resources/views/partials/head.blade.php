@@ -11,4 +11,5 @@
 @fonts
 
 @stack('head_scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.3/tinymce.min.js" referrerpolicy="origin"></script>
 @vite(['resources/css/app.css', 'resources/js/app.js'])
