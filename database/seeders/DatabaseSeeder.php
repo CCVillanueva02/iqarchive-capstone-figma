@@ -41,100 +41,16 @@ class DatabaseSeeder extends Seeder
             );
         }
 
-        // 2. Seed Colleges
-        $collegesData = [
-            'CS' => 'BU College of Science',
-            'CENG' => 'BU College of Engineering',
-            'CAL' => 'BU College of Arts and Letters',
-        ];
+        // 2. Seed Colleges & Programs
+        $this->call(BUProgramsSeeder::class);
 
-        $colleges = [];
-        foreach ($collegesData as $code => $name) {
-            $colleges[$code] = College::firstOrCreate(
-                ['code' => $code],
-                ['name' => $name]
-            );
-        }
+        $colleges = College::all();
+        $programs = Program::all();
+        
+        // Helper to find by code or fallback to random
+        $getCollege = fn($code) => $colleges->firstWhere('code', $code) ?? $colleges->random();
+        $getProgram = fn($code) => $programs->firstWhere('code', $code) ?? $programs->random();
 
-        // 3. Seed Programs
-        $programsData = [
-            'CS' => [
-                'BSCS' => ['name' => 'BS Computer Science', 'level' => 'Level IV Re-accredited'],
-                'BSIT' => ['name' => 'BS Information Technology', 'level' => 'Level III Accredited'],
-                'BSBIO' => ['name' => 'BS Biology', 'level' => 'Level III Accredited'],
-            ],
-            'CENG' => [
-                'BSCE' => ['name' => 'BS Civil Engineering', 'level' => 'Level III Accredited'],
-                'BSME' => ['name' => 'BS Mechanical Engineering', 'level' => 'Level II Accredited'],
-            ],
-        ];
-
-        $programs = [];
-        foreach ($programsData as $collegeCode => $collegePrograms) {
-            $college = $colleges[$collegeCode];
-            foreach ($collegePrograms as $code => $info) {
-                $programs[$code] = Program::firstOrCreate(
-                    ['code' => $code],
-                    [
-                        'college_id' => $college->id,
-                        'name' => $info['name'],
-                        'accreditation_level' => $info['level'],
-                    ]
-                );
-            }
-        }
-
-        // Seed remaining programs programmatically to reach 126 (matches the Welcome Page)
-        // We have 5 programs already seeded (BSCS, BSIT, BSBIO, BSCE, BSME)
-        $colIds = array_values($colleges);
-
-        // 75 more Baccalaureate (to reach 80 total)
-        for ($i = 6; $i <= 80; $i++) {
-            $college = $colIds[$i % count($colIds)];
-            $programs['BSP' . $i] = Program::firstOrCreate(
-                ['code' => "BSP" . $i],
-                [
-                    'college_id' => $college->id,
-                    'name' => "BS Program " . $i,
-                ]
-            );
-        }
-
-        // 39 Master's programs
-        for ($i = 1; $i <= 39; $i++) {
-            $college = $colIds[$i % count($colIds)];
-            $programs['MSP' . $i] = Program::firstOrCreate(
-                ['code' => "MSP" . $i],
-                [
-                    'college_id' => $college->id,
-                    'name' => "MS Program " . $i,
-                ]
-            );
-        }
-
-        // 7 Doctoral programs
-        for ($i = 1; $i <= 7; $i++) {
-            $college = $colIds[$i % count($colIds)];
-            $programs['PHDP' . $i] = Program::firstOrCreate(
-                ['code' => "PHDP" . $i],
-                [
-                    'college_id' => $college->id,
-                    'name' => "PhD Program " . $i,
-                ]
-            );
-        }
-
-        // 2 Post Bacc programs
-        for ($i = 1; $i <= 2; $i++) {
-            $college = $colIds[$i % count($colIds)];
-            $programs['PBP' . $i] = Program::firstOrCreate(
-                ['code' => "PBP" . $i],
-                [
-                    'college_id' => $college->id,
-                    'name' => "Post Bacc Program " . $i,
-                ]
-            );
-        }
 
         // Seed Offices
         $this->call(OfficeSeeder::class);
@@ -344,8 +260,8 @@ class DatabaseSeeder extends Seeder
         $seededUsers = [];
         foreach ($usersToSeed as $userData) {
             $roleId = $roles[$userData['role']]->id;
-            $programId = $userData['program'] ? $programs[$userData['program']]->id : null;
-            $collegeId = $userData['college'] ? $colleges[$userData['college']]->id : null;
+            $programId = $userData['program'] ? $getProgram($userData['program'])->id : null;
+            $collegeId = $userData['college'] ? $getCollege($userData['college'])->id : null;
 
             $user = User::firstOrCreate(
                 ['email' => $userData['email']],
@@ -551,14 +467,14 @@ class DatabaseSeeder extends Seeder
         }
 
         // 9. Seed Task Forces
-        $csCollege = $colleges['CS'] ?? College::first();
-        $cengCollege = $colleges['CENG'] ?? College::skip(1)->first();
+        $csCollege = $getCollege('CS');
+        $cengCollege = $getCollege('CE');
         $adminUser = $users->where('role_id', $roles['iqa-admin']->id)->first() ?? $users->first();
 
         $tf1 = \App\Models\TaskForce::create([
             'name' => 'BSCS AACCUP Level III Accreditation Task Force',
             'college_id' => $csCollege->id,
-            'program_id' => $programs['BSCS']->id ?? null,
+            'program_id' => $getProgram('BSCS')->id ?? null,
             'purpose' => 'Responsible for assembling Area I to Area X compliance evidence folders for BSCS Level III Re-accreditation evaluation.',
             'status' => 'active',
             'created_by' => $adminUser->id,

@@ -86,164 +86,7 @@ window.documentWorkspace = function (initialState = {}) {
         autoSaveTimer: null,
 
         // List of academic programs for Program Accreditation selection UI
-        programsList: [
-            {
-                id: 'bscs',
-                code: 'BSCS',
-                name: 'BS Computer Science',
-                college: 'BU College of Science',
-                collegeCode: 'CS',
-                level: 'Level IV Re-accredited',
-                progress: 88,
-                totalDocs: 612,
-                verifiedDocs: 540,
-                status: 'Compliant',
-                iconBg: 'bg-blue-50 text-[#1b355a]'
-            },
-            {
-                id: 'bsit',
-                code: 'BSIT',
-                name: 'BS Information Technology',
-                college: 'BU College of Science',
-                collegeCode: 'CS',
-                level: 'Level III Accredited',
-                progress: 76,
-                totalDocs: 480,
-                verifiedDocs: 390,
-                status: 'Compliant',
-                iconBg: 'bg-sky-50 text-sky-700'
-            },
-            {
-                id: 'bsbio',
-                code: 'BSBIO',
-                name: 'BS Biology',
-                college: 'BU College of Science',
-                collegeCode: 'CS',
-                level: 'Level III Accredited',
-                progress: 92,
-                totalDocs: 510,
-                verifiedDocs: 470,
-                status: 'Compliant',
-                iconBg: 'bg-emerald-50 text-emerald-700'
-            },
-            {
-                id: 'bschem',
-                code: 'BSCHEM',
-                name: 'BS Chemistry',
-                college: 'BU College of Science',
-                collegeCode: 'CS',
-                level: 'Level II Accredited',
-                progress: 65,
-                totalDocs: 320,
-                verifiedDocs: 240,
-                status: 'Under Review',
-                iconBg: 'bg-indigo-50 text-indigo-700'
-            },
-            {
-                id: 'bsce',
-                code: 'BSCE',
-                name: 'BS Civil Engineering',
-                college: 'BU College of Engineering',
-                collegeCode: 'CENG',
-                level: 'Level III Accredited',
-                progress: 82,
-                totalDocs: 540,
-                verifiedDocs: 460,
-                status: 'Compliant',
-                iconBg: 'bg-amber-50 text-amber-700'
-            },
-            {
-                id: 'bsme',
-                code: 'BSME',
-                name: 'BS Mechanical Engineering',
-                college: 'BU College of Engineering',
-                collegeCode: 'CENG',
-                level: 'Level II Accredited',
-                progress: 70,
-                totalDocs: 410,
-                verifiedDocs: 310,
-                status: 'Under Review',
-                iconBg: 'bg-orange-50 text-orange-700'
-            },
-            {
-                id: 'bsee',
-                code: 'BSEE',
-                name: 'BS Electrical Engineering',
-                college: 'BU College of Engineering',
-                collegeCode: 'CENG',
-                level: 'Level II Accredited',
-                progress: 68,
-                totalDocs: 390,
-                verifiedDocs: 285,
-                status: 'Under Review',
-                iconBg: 'bg-[#1b355a]/10 text-[#1b355a]'
-            },
-            {
-                id: 'bacomm',
-                code: 'BACOMM',
-                name: 'BA Communication',
-                college: 'BU College of Arts & Letters',
-                collegeCode: 'CAL',
-                level: 'Level IV Re-accredited',
-                progress: 94,
-                totalDocs: 590,
-                verifiedDocs: 560,
-                status: 'Compliant',
-                iconBg: 'bg-rose-50 text-rose-700'
-            },
-            {
-                id: 'bsn',
-                code: 'BSN',
-                name: 'BS Nursing',
-                college: 'BU College of Nursing',
-                collegeCode: 'CN',
-                level: 'Level IV Re-accredited',
-                progress: 98,
-                totalDocs: 720,
-                verifiedDocs: 705,
-                status: 'Compliant',
-                iconBg: 'bg-teal-50 text-teal-700'
-            },
-            {
-                id: 'bsed',
-                code: 'BSED',
-                name: 'Bachelor of Secondary Education',
-                college: 'BU College of Education',
-                collegeCode: 'CED',
-                level: 'Level IV Re-accredited',
-                progress: 95,
-                totalDocs: 680,
-                verifiedDocs: 646,
-                status: 'Compliant',
-                iconBg: 'bg-purple-50 text-purple-700'
-            },
-            {
-                id: 'bsba',
-                code: 'BSBA',
-                name: 'BS Business Administration',
-                college: 'BU College of Business, Economics & Management',
-                collegeCode: 'CBEM',
-                level: 'Level III Accredited',
-                progress: 80,
-                totalDocs: 490,
-                verifiedDocs: 415,
-                status: 'Compliant',
-                iconBg: 'bg-yellow-50 text-yellow-700'
-            },
-            {
-                id: 'bsa',
-                code: 'BSA',
-                name: 'BS Accountancy',
-                college: 'BU College of Business, Economics & Management',
-                collegeCode: 'CBEM',
-                level: 'Level III Accredited',
-                progress: 88,
-                totalDocs: 530,
-                verifiedDocs: 480,
-                status: 'Compliant',
-                iconBg: 'bg-emerald-50 text-emerald-700'
-            }
-        ],
+        programsList: [],
 
         // Accreditation mock data
         accredData: {
@@ -2336,16 +2179,135 @@ window.documentWorkspace = function (initialState = {}) {
             }
         },
 
-        showAddProgramModal: false,
-        addProgramLoading: false,
-        addProgramError: '',
-        addProgramSuccess: '',
+        showCollegeModal: false,
+        collegeForm: { id: null, name: '', code: '' },
+
+        showProgramModal: false,
+        programForm: { id: null, name: '', code: '', college_id: '', accreditation_level: 'Candidate' },
         collegesList: [],
-        newProgram: {
-            name: '',
-            code: '',
-            college_id: '',
-            accreditation_level: 'Candidate Status'
+
+        openCreateCollegeModal() {
+            this.collegeForm = { id: null, name: '', code: '' };
+            this.showCollegeModal = true;
+        },
+        openEditCollegeModal(college) {
+            this.collegeForm = { id: college.id, name: college.name, code: college.code };
+            this.showCollegeModal = true;
+        },
+        closeCollegeModal() {
+            this.showCollegeModal = false;
+        },
+        async saveCollege() {
+            if (!this.collegeForm.name || !this.collegeForm.code) {
+                Swal.fire({ icon: 'error', title: 'Error', text: 'Name and Code are required.', confirmButtonColor: '#1b355a' });
+                return;
+            }
+            const isEdit = !!this.collegeForm.id;
+            const url = isEdit ? `/api/colleges/${this.collegeForm.id}` : '/api/colleges';
+            const method = isEdit ? 'PUT' : 'POST';
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+            try {
+                const res = await fetch(url, {
+                    method,
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+                    body: JSON.stringify(this.collegeForm)
+                });
+                if (!res.ok) throw await res.json();
+                Swal.fire({ icon: 'success', title: 'Success', text: 'College saved successfully.', toast: true, position: 'top-end', showConfirmButton: false, timer: 3000 });
+                this.closeCollegeModal();
+                this.initBackendData();
+            } catch (err) {
+                Swal.fire({ icon: 'error', title: 'Error', text: err.message || 'Failed to save college.', confirmButtonColor: '#1b355a' });
+            }
+        },
+        async confirmDeleteCollege(college) {
+            const result = await Swal.fire({
+                title: 'Delete College?',
+                text: `Are you sure you want to delete ${college.name}?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                confirmButtonText: 'Yes, delete it!'
+            });
+            if (result.isConfirmed) {
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+                try {
+                    const res = await fetch(`/api/colleges/${college.id}`, {
+                        method: 'DELETE',
+                        headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken }
+                    });
+                    if (!res.ok) throw await res.json();
+                    Swal.fire({ icon: 'success', title: 'Deleted', text: 'College deleted.', toast: true, position: 'top-end', showConfirmButton: false, timer: 3000 });
+                    this.initBackendData();
+                    if (this.accredCollege && this.accredCollege.id === college.id) {
+                        this.clearCollege();
+                    }
+                } catch (err) {
+                    Swal.fire({ icon: 'error', title: 'Error', text: err.error || 'Failed to delete college.', confirmButtonColor: '#1b355a' });
+                }
+            }
+        },
+
+        openAddProgramModal() {
+            this.programForm = { id: null, name: '', code: '', college_id: this.accredCollege?.id || (this.collegesList[0]?.id || ''), accreditation_level: 'Candidate' };
+            this.showProgramModal = true;
+        },
+        openEditProgramModal(program) {
+            this.programForm = { id: program.id, name: program.name, code: program.code, college_id: program.college_id, accreditation_level: program.level || 'Candidate' };
+            this.showProgramModal = true;
+        },
+        closeProgramModal() {
+            this.showProgramModal = false;
+        },
+        async saveProgram() {
+            if (!this.programForm.name || !this.programForm.code || !this.programForm.college_id) {
+                Swal.fire({ icon: 'error', title: 'Error', text: 'Name, Code, and College are required.', confirmButtonColor: '#1b355a' });
+                return;
+            }
+            const isEdit = !!this.programForm.id;
+            const url = isEdit ? `/api/programs/${this.programForm.id}` : '/api/programs';
+            const method = isEdit ? 'PUT' : 'POST';
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+            try {
+                const res = await fetch(url, {
+                    method,
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+                    body: JSON.stringify(this.programForm)
+                });
+                if (!res.ok) throw await res.json();
+                Swal.fire({ icon: 'success', title: 'Success', text: 'Program saved successfully.', toast: true, position: 'top-end', showConfirmButton: false, timer: 3000 });
+                this.closeProgramModal();
+                this.initBackendData();
+            } catch (err) {
+                Swal.fire({ icon: 'error', title: 'Error', text: err.message || 'Failed to save program.', confirmButtonColor: '#1b355a' });
+            }
+        },
+        async confirmDeleteProgram(program) {
+            const result = await Swal.fire({
+                title: 'Delete Program?',
+                text: `Are you sure you want to delete ${program.name}?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                confirmButtonText: 'Yes, delete it!'
+            });
+            if (result.isConfirmed) {
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+                try {
+                    const res = await fetch(`/api/programs/${program.id}`, {
+                        method: 'DELETE',
+                        headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken }
+                    });
+                    if (!res.ok) throw await res.json();
+                    Swal.fire({ icon: 'success', title: 'Deleted', text: 'Program deleted.', toast: true, position: 'top-end', showConfirmButton: false, timer: 3000 });
+                    this.initBackendData();
+                    if (this.accredProgram && this.accredProgram.id === program.id) {
+                        this.clearProgram();
+                    }
+                } catch (err) {
+                    Swal.fire({ icon: 'error', title: 'Error', text: err.error || 'Failed to delete program.', confirmButtonColor: '#1b355a' });
+                }
+            }
         },
 
         init() {

@@ -96,12 +96,44 @@ class ProgramController extends Controller
         ], 201);
     }
 
-    /**
-     * Get listing of all colleges for selection dropdowns.
-     */
     public function getColleges()
     {
         $colleges = College::orderBy('name')->get(['id', 'name', 'code']);
         return response()->json($colleges);
+    }
+
+    /**
+     * Update an existing program.
+     */
+    public function update(Request $request, $id)
+    {
+        $program = Program::findOrFail($id);
+        
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'code' => 'required|string|max:50|unique:programs,code,' . $program->id,
+            'college_id' => 'required|exists:colleges,id',
+            'accreditation_level' => 'required|string|max:255',
+        ]);
+
+        $program->update($validated);
+        $program->load('college');
+
+        return response()->json($program);
+    }
+
+    /**
+     * Delete a program.
+     */
+    public function destroy($id)
+    {
+        $program = Program::findOrFail($id);
+        
+        if ($program->documents()->exists()) {
+            return response()->json(['error' => 'Cannot delete program with existing documents.'], 400);
+        }
+
+        $program->delete();
+        return response()->json(['success' => true]);
     }
 }
