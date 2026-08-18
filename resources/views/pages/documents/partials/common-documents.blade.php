@@ -1,5 +1,8 @@
 <!-- ================= SUBTAB: COMMON DOCUMENTS ================= -->
 <div x-show="activeTab === 'common-documents' || activeTab === 'common'" class="flex flex-col gap-6">
+    <!-- State 0: Office Showcase Grid -->
+    @include('pages.documents.partials.common-documents.office-grid')
+
     <!-- State 1: Category Showcase Grid -->
     @include('pages.documents.partials.common-documents.category-grid')
 

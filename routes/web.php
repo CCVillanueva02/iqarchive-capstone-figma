@@ -189,6 +189,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('api/colleges', [\App\Http\Controllers\ProgramController::class, 'getColleges'])->name('api.colleges.index');
 
     // Document Categories & Common Documents API routes
+    Route::get('api/offices', [\App\Http\Controllers\DocumentCategoryController::class, 'getOffices'])->name('api.offices.index');
     Route::get('api/categories', [\App\Http\Controllers\DocumentCategoryController::class, 'index'])->name('api.categories.index');
     Route::post('api/categories', [\App\Http\Controllers\DocumentCategoryController::class, 'store'])->name('api.categories.store');
     Route::get('api/common-documents', [\App\Http\Controllers\DocumentCategoryController::class, 'getDocuments'])->name('api.common-documents.index');

@@ -136,6 +136,9 @@ class DatabaseSeeder extends Seeder
             );
         }
 
+        // Seed Offices
+        $this->call(OfficeSeeder::class);
+
         // 4. Seed Document Categories
         $categoriesData = [
             'Uncategorized Documents' => 'General and uncategorized institution documents.',

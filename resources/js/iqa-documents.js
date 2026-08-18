@@ -2120,9 +2120,23 @@ window.documentWorkspace = function (initialState = {}) {
         },
         categories: [],
         documents: [],
+        offices: [],
+        selectedOffice: null,
+
+        get filteredOffices() {
+            let filterOffices = this.offices;
+            if (this.searchQuery) {
+                const query = this.searchQuery.toLowerCase();
+                filterOffices = filterOffices.filter(o =>
+                    o.name.toLowerCase().includes(query) ||
+                    (o.description && o.description.toLowerCase().includes(query))
+                );
+            }
+            return filterOffices;
+        },
 
         get filteredCategories() {
-            if (this.selectedCategory !== null) return [];
+            if (this.selectedOffice === null || this.selectedCategory !== null) return [];
             let cats = this.categories;
             if (this.searchQuery) {
                 const query = this.searchQuery.toLowerCase();
@@ -2168,6 +2182,13 @@ window.documentWorkspace = function (initialState = {}) {
 
                 return true;
             });
+        },
+
+        selectOffice(officeId) {
+            this.selectedOffice = officeId;
+            this.selectedCategory = null;
+            this.searchQuery = '';
+            this.initCategories(officeId);
         },
 
         selectCategory(catName) {
@@ -2222,7 +2243,7 @@ window.documentWorkspace = function (initialState = {}) {
                     timer: 3000
                 });
 
-                this.initCategories();
+                this.initCategories(this.selectedOffice);
             } catch (error) {
                 Swal.fire({
                     title: 'Error',
@@ -2302,7 +2323,7 @@ window.documentWorkspace = function (initialState = {}) {
                         this.closeDrawer();
                     }
 
-                    this.initCategories();
+                    this.initCategories(this.selectedOffice);
 
                 } catch (error) {
                     Swal.fire({
@@ -2365,12 +2386,24 @@ window.documentWorkspace = function (initialState = {}) {
                 })
                 .catch(err => console.error('Error fetching colleges:', err));
 
-            this.initCategories();
+            fetch('/api/offices')
+                .then(res => res.json())
+                .then(data => {
+                    if (Array.isArray(data)) {
+                        this.offices = data;
+                    }
+                })
+                .catch(err => console.error('Error fetching offices:', err));
         },
 
-        initCategories() {
+        initCategories(officeId = null) {
+            if (!officeId) {
+                this.categories = [];
+                this.documents = [];
+                return;
+            }
             // Fetch categories from backend
-            fetch('/api/categories')
+            fetch(`/api/categories?office_id=${officeId}`)
                 .then(res => res.json())
                 .then(data => {
                     if (Array.isArray(data)) {
@@ -2386,7 +2419,7 @@ window.documentWorkspace = function (initialState = {}) {
                 .catch(err => console.error('Error fetching categories from backend:', err));
 
             // Fetch common documents from backend
-            fetch('/api/common-documents')
+            fetch(`/api/common-documents?office_id=${officeId}`)
                 .then(res => res.json())
                 .then(data => {
                     if (Array.isArray(data)) {
@@ -2511,6 +2544,9 @@ window.documentWorkspace = function (initialState = {}) {
             }
             if (this.uploadForm.file) {
                 formData.append('file', this.uploadForm.file);
+            }
+            if (this.selectedOffice) {
+                formData.append('office_id', this.selectedOffice);
             }
 
             fetch('/api/common-documents', {

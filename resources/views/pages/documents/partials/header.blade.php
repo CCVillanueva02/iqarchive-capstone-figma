@@ -4,10 +4,16 @@
         @if(in_array(auth()->user()->role, ['iqa-admin', 'iqa-member', 'task-force', 'task-force-member', 'program-chair', 'college-head']) || auth()->user()->hasAnyRole(['iqa-admin', 'iqa-member', 'task-force', 'task-force-member', 'program-chair', 'college-head']))
         <!-- Common Documents Tab Header -->
         <div x-show="activeTab === 'common-documents' || activeTab === 'common'">
-            <template x-if="selectedCategory === null">
+            <template x-if="selectedOffice === null && selectedCategory === null">
                 <div>
                     <h1 class="text-3xl font-bold text-[#1b355a]">Common Documents</h1>
-                    <p class="text-sm text-zinc-500 mt-1"><span x-text="categories.length">9</span> categories &middot; manage your common university documents</p>
+                    <p class="text-sm text-zinc-500 mt-1"><span x-text="offices.length">6</span> offices &middot; manage your common university documents</p>
+                </div>
+            </template>
+            <template x-if="selectedOffice !== null && selectedCategory === null">
+                <div>
+                    <h1 class="text-3xl font-bold text-[#1b355a]" x-text="(offices.find(o => o.id === selectedOffice)?.name) || 'Office Documents'"></h1>
+                    <p class="text-sm text-zinc-500 mt-1"><span x-text="categories.length">9</span> categories &middot; manage documents for this office</p>
                 </div>
             </template>
             <template x-if="selectedCategory !== null">
@@ -19,7 +25,9 @@
                     </button>
                     <div>
                         <div class="flex items-center gap-1.5 text-xs text-zinc-400 font-medium">
-                            <span class="hover:underline cursor-pointer" @click="selectCategory(null)">Common Documents</span>
+                            <span class="hover:underline cursor-pointer" @click="selectOffice(null)">Common Documents</span>
+                            <span>&gt;</span>
+                            <span class="hover:underline cursor-pointer" @click="selectCategory(null)" x-text="(offices.find(o => o.id === selectedOffice)?.name) || 'Office'"></span>
                             <span>&gt;</span>
                             <span class="text-zinc-600 font-semibold" x-text="selectedCategory"></span>
                         </div>

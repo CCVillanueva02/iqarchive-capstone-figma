@@ -73,6 +73,12 @@
 
             <!-- Toolbar Actions & Filters -->
             <div class="flex flex-wrap items-center gap-2.5 w-full sm:w-auto justify-end">
+                <button type="button" @click="selectedCategory = null; searchQuery = ''" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-body-sm font-bold px-4 py-2 rounded-lg flex items-center gap-1.5 transition cursor-pointer shadow-3xs mr-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                    </svg>
+                    <span>Back to Categories</span>
+                </button>
                 <span class="text-label font-bold text-zinc-400 uppercase tracking-wider hidden lg:inline">Filter by:</span>
                 
                 <!-- Doc Type Select -->
