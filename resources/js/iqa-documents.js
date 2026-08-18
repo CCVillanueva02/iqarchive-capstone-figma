@@ -35,6 +35,7 @@ window.documentWorkspace = function (initialState = {}) {
         selfSurveyActiveAreaId: 'ss_area_i1', // default to Area I; string = viewing that area's table
         selfSurveyRatings: {},             // { indicatorKey: 1-5 | null }
         selfSurveyBestPractices: {},       // { paramKey: 'text...' }
+        selfSurveyPreparedBy: '',          // prepared by name
         selfSurveySaving: false,           // debounce guard
 
         // === Narrative Profile State ===
@@ -1892,12 +1893,19 @@ window.documentWorkspace = function (initialState = {}) {
         /** Compute the mean of IR values for a given array of indicators */
         sectionMean(indicators) {
             if (!indicators.length) return null;
-            const rated = indicators
+            
+            // Filter out NA so they are completely excluded from calculations
+            const validIndicators = indicators.filter(ind => this.selfSurveyRatings[ind.id] !== 'NA');
+            if (!validIndicators.length) return null;
+
+            const rated = validIndicators
                 .map(ind => this.selfSurveyRatings[ind.id])
                 .filter(v => v !== null && v !== undefined && v !== '');
+                
             if (!rated.length) return null;
-            // Divide by total indicators (not just rated) so partial completion shows partial progress
-            return (rated.reduce((s, v) => s + Number(v), 0) / indicators.length).toFixed(2);
+            
+            // Divide by total valid indicators (not just rated) so partial completion shows partial progress
+            return (rated.reduce((s, v) => s + Number(v), 0) / validIndicators.length).toFixed(2);
         },
 
         /** Compute PM: average of non-null section means for a parameter */
@@ -1953,13 +1961,24 @@ window.documentWorkspace = function (initialState = {}) {
 
         /** Save a single IR rating to the server (debounced) */
         saveRating(indicatorId, value) {
-            this.selfSurveyRatings[indicatorId] = value === '' ? null : Number(value);
+            const finalValue = value === '' ? null : (value === 'NA' ? 'NA' : Number(value));
+            this.selfSurveyRatings[indicatorId] = finalValue;
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
             fetch('/api/self-survey/ratings', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken },
-                body: JSON.stringify({ indicator_id: indicatorId, rating: value === '' ? null : Number(value) })
+                body: JSON.stringify({ indicator_id: indicatorId, rating: finalValue })
             }).catch(err => console.warn('Rating save failed (offline mode):', err));
+        },
+
+        saveBestPractice(paramId, value) {
+            this.selfSurveyBestPractices[paramId] = value;
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+            fetch('/api/self-survey/best-practices', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+                body: JSON.stringify({ param_id: paramId, best_practice: value })
+            }).catch(err => console.warn('Best practice save failed (offline mode):', err));
         },
         categories: [],
         documents: [],
