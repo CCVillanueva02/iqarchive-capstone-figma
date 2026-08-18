@@ -14,7 +14,7 @@
                 </h1>
 
                 <p class="text-body-sm md:text-heading-sm text-zinc-500 max-w-2xl leading-relaxed mt-2">
-                    Access accreditation documents, monitor compliance records, and streamline quality assurance evaluations for Bicol University colleges, program chairs, and accreditors.
+                    Centralize accreditation documents, track compliance in real time, and simplify quality assurance workflows across Bicol University's colleges and programs.
                 </p>
 
                 <!-- Orange Divider -->
@@ -23,12 +23,12 @@
 
             <!-- Call to Actions -->
             <div class="flex flex-col sm:flex-row gap-4 mt-4">
-                <a href="#help-center" class="px-6 py-3 bg-primary-light hover:bg-primary-hover text-white font-bold rounded-xl transition shadow-md text-body-sm inline-flex items-center justify-center gap-2 select-none">
+                <!-- <a href="#help-center" class="px-6 py-3 bg-primary-light hover:bg-primary-hover text-white font-bold rounded-xl transition shadow-md text-body-sm inline-flex items-center justify-center gap-2 select-none">
                     <span>Explore Help Center</span>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                     </svg>
-                </a>
+                </a> -->
                 <a href="#faq" class="px-6 py-3 bg-white border border-brand-orange text-brand-orange hover:bg-surface-subtle font-bold rounded-xl transition shadow-xs text-body-sm inline-flex items-center justify-center select-none">
                     Browse FAQ
                 </a>
@@ -41,7 +41,7 @@
                 <!-- Left Text Column -->
                 <div class="lg:w-2/5 flex flex-col gap-4 text-left">
                     <h2 class="text-heading md:text-hero font-extrabold tracking-tight leading-tight">
-                        We are committed to maintaining the highest quality standards.
+                        Committed in maintaining the highest quality standards.
                     </h2>
                     <p class="text-zinc-300 text-label-xs md:text-body-sm leading-relaxed">
                         IQArchive serves as Bicol University's central digital repository, supporting the Internal Quality Assurance Office in managing documentation, tracking compliance, and ensuring successful AACCUP accreditation audits.
