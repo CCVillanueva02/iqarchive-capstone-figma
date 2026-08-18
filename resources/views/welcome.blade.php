@@ -134,11 +134,9 @@
             </div>
         </section>
 
-        <!-- Accreditation News & Announcements Section -->
+        <!-- Accreditation News & Announcements Section
         <section id="accreditations" class="w-full max-w-7xl mx-auto px-6 py-16 scroll-mt-6">
-            <!-- Main Outer Card -->
             <div class="bg-white border border-slate-200/60 rounded-3xl p-8 md:p-12 shadow-3xs flex flex-col lg:flex-row gap-8 lg:gap-12">
-                <!-- Left Text Column -->
                 <div class="lg:w-1/3 flex flex-col gap-3 text-left justify-center">
                     <span class="text-label font-bold text-zinc-400 uppercase tracking-wider">LATEST ANNOUNCEMENTS</span>
                     <h3 class="text-heading-lg font-extrabold text-primary-dark">Accreditation & IQA Updates</h3>
@@ -147,9 +145,7 @@
                     </p>
                 </div>
 
-                <!-- Right Cards Column -->
                 <div class="lg:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Nested Card 1 -->
                     <div class="bg-surface-card border border-slate-200/60 p-6 rounded-2xl flex flex-col justify-between hover:shadow-xs transition duration-200 text-left">
                         <div>
                             <span class="text-label-xs font-bold text-brand-orange uppercase tracking-wider">Program Accreditation</span>
@@ -166,7 +162,6 @@
                         </a>
                     </div>
 
-                    <!-- Nested Card 2 -->
                     <div class="bg-surface-card border border-slate-200/60 p-6 rounded-2xl flex flex-col justify-between hover:shadow-xs transition duration-200 text-left">
                         <div>
                             <span class="text-label-xs font-bold text-primary-light uppercase tracking-wider">Institutional Status</span>
@@ -184,7 +179,7 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </section> -->
 
         <!-- FAQ Section -->
         <section id="faq" class="w-full max-w-7xl mx-auto px-6 py-12 text-left scroll-mt-6">
@@ -276,10 +271,9 @@
             </div>
         </section>
 
-        <!-- Help Center Section -->
+        <!-- Help Center Section
         <section id="help-center" class="w-full max-w-7xl mx-auto px-6 py-12 text-left mb-16 scroll-mt-6">
             <div class="bg-white border border-slate-200/60 rounded-3xl p-8 md:p-12 shadow-3xs flex flex-col gap-8">
-                <!-- Header and Technical Support Button -->
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-slate-100">
                     <div class="flex flex-col gap-2">
                         <span class="text-label font-bold text-zinc-400 uppercase tracking-wider">RESOURCES &amp; SUPPORT</span>
@@ -296,23 +290,10 @@
                     </a>
                 </div>
 
-                <!-- Resources & System Support Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <!-- Guidelines Column -->
                     <div class="flex flex-col gap-4">
                         <span class="text-label font-bold text-primary-light uppercase tracking-wider">Guidelines &amp; Manuals</span>
                         <div class="flex flex-col gap-3">
-                            <!-- Guideline Item 1 -->
-                            <a href="#" class="group bg-surface-card hover:bg-slate-50 border border-slate-200/40 rounded-xl p-4.5 flex items-center justify-between transition cursor-pointer select-none">
-                                <div>
-                                    <span class="block text-label-xs text-zinc-400 font-bold uppercase tracking-wider">Lorem Ipsum</span>
-                                    <span class="text-body-sm font-bold text-slate-800 group-hover:text-brand-orange transition">Lorem Ipsum Dolor</span>
-                                    <span class="block text-label text-zinc-400 font-normal mt-0.5">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
-                                </div>
-                                <svg class="w-5 h-5 text-zinc-400 group-hover:text-brand-orange transition shrink-0 ml-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                                </svg>
-                            </a><!-- Guideline Item 1 -->
                             <a href="#" class="group bg-surface-card hover:bg-slate-50 border border-slate-200/40 rounded-xl p-4.5 flex items-center justify-between transition cursor-pointer select-none">
                                 <div>
                                     <span class="block text-label-xs text-zinc-400 font-bold uppercase tracking-wider">Lorem Ipsum</span>
@@ -323,7 +304,16 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
                                 </svg>
                             </a>
-                            <!-- Guideline Item 1 -->
+                            <a href="#" class="group bg-surface-card hover:bg-slate-50 border border-slate-200/40 rounded-xl p-4.5 flex items-center justify-between transition cursor-pointer select-none">
+                                <div>
+                                    <span class="block text-label-xs text-zinc-400 font-bold uppercase tracking-wider">Lorem Ipsum</span>
+                                    <span class="text-body-sm font-bold text-slate-800 group-hover:text-brand-orange transition">Lorem Ipsum Dolor</span>
+                                    <span class="block text-label text-zinc-400 font-normal mt-0.5">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
+                                </div>
+                                <svg class="w-5 h-5 text-zinc-400 group-hover:text-brand-orange transition shrink-0 ml-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                                </svg>
+                            </a>
                             <a href="#" class="group bg-surface-card hover:bg-slate-50 border border-slate-200/40 rounded-xl p-4.5 flex items-center justify-between transition cursor-pointer select-none">
                                 <div>
                                     <span class="block text-label-xs text-zinc-400 font-bold uppercase tracking-wider">Lorem Ipsum</span>
@@ -337,11 +327,9 @@
                         </div>
                     </div>
 
-                    <!-- System Support Column -->
                     <div class="flex flex-col gap-4">
                         <span class="text-label font-bold text-primary-light uppercase tracking-wider">System Support Contacts</span>
                         <div class="flex flex-col gap-3">
-                            <!-- Support Item 1 -->
                             <div class="bg-surface-card border border-slate-200/40 rounded-xl p-4.5 flex items-center justify-between">
                                 <div>
                                     <span class="block text-label-xs text-zinc-400 font-bold uppercase tracking-wider">ICTO Help Desk &bull; System Issues</span>
@@ -351,7 +339,6 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
                                 </svg>
                             </div>
-                            <!-- Support Item 2 -->
                             <div class="bg-surface-card border border-slate-200/40 rounded-xl p-4.5 flex items-center justify-between">
                                 <div>
                                     <span class="block text-label-xs text-zinc-400 font-bold uppercase tracking-wider">IQA Office &bull; Quality Assurance</span>
@@ -361,7 +348,6 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
                                 </svg>
                             </div>
-                            <!-- Support Item 3 -->
                             <div class="bg-surface-card border border-slate-200/40 rounded-xl p-4.5 flex items-center justify-between">
                                 <div>
                                     <span class="block text-label-xs text-zinc-400 font-bold uppercase tracking-wider">ICTO Help Desk &bull; Globe Contact</span>
@@ -375,8 +361,10 @@
                     </div>
                 </div>
             </div>
-        </section>
+        </section> -->
+    
     </div>
 
     @include('partials.footer')
+
 </x-layouts::html>
