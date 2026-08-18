@@ -63,35 +63,38 @@
         <template x-for="prog in filteredPrograms" :key="prog.id">
             <div class="bg-white border border-slate-200/70 rounded-2xl p-5 shadow-3xs hover:shadow-md transition-all duration-300 flex flex-col justify-between gap-5 group">
                 <div class="flex flex-col gap-4">
-                    <!-- Card Header Badge & Code -->
-                    <div class="flex items-center justify-between gap-2">
-                        <div class="flex items-center gap-2">
-                            <div class="w-10 h-10 rounded-xl flex items-center justify-center font-black text-xs shrink-0" :class="prog.iconBg || 'bg-blue-50 text-[#1b355a]'">
+                <div class="flex flex-col gap-4">
+                    <div class="flex items-start justify-between gap-3">
+                        <!-- Left Side: Profile Icon & Program Name -->
+                        <div class="flex items-center gap-3 overflow-hidden">
+                            <div class="w-11 h-11 rounded-xl flex items-center justify-center font-black text-sm shrink-0" :class="prog.iconBg || 'bg-blue-50 text-primary'">
                                 <span x-text="prog.code"></span>
                             </div>
-                            <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block" x-text="prog.collegeCode || accredCollege?.code"></span>
+                            <div class="flex flex-col overflow-hidden">
+                                <h3 class="text-body font-bold text-primary group-hover:text-primary-hover transition truncate" x-text="prog.name" :title="prog.name"></h3>
+                                <p class="text-xs text-zinc-500 mt-0.5 truncate" x-text="prog.college || accredCollege?.name"></p>
+                            </div>
                         </div>
-                        
-                        @if(auth()->user()->hasRole('iqa-admin') || auth()->user()->hasRole('system-administrator'))
-                        <div class="flex items-center">
-                            <button @click.stop="openEditProgramModal(prog)" class="p-1 text-zinc-400 hover:text-[#1b355a] transition" title="Edit Program">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.89 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.89l3.4-3.4" />
-                                </svg>
-                            </button>
-                            <button @click.stop="confirmDeleteProgram(prog)" class="p-1 text-zinc-400 hover:text-rose-500 transition" title="Delete Program">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                                </svg>
-                            </button>
-                        </div>
-                        @endif
-                    </div>
 
-                    <!-- Program Title and College -->
-                    <div>
-                        <h3 class="text-base font-bold text-[#1b355a] group-hover:text-blue-600 transition" x-text="prog.name"></h3>
-                        <p class="text-xs text-zinc-500 mt-1" x-text="prog.college || accredCollege?.name"></p>
+                        <!-- Right Side: College Code & Actions (Upper Right) -->
+                        <div class="flex items-center gap-2 shrink-0 pt-0.5">
+                            <span class="text-label-xs font-bold text-zinc-400 uppercase tracking-wider block" x-text="prog.collegeCode || accredCollege?.code"></span>
+                            
+                            @if(auth()->user()->hasRole('iqa-admin') || auth()->user()->hasRole('system-administrator'))
+                            <div class="flex items-center">
+                                <button @click.stop="openEditProgramModal(prog)" class="p-1 text-zinc-400 hover:text-primary transition" title="Edit Program">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.89 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.89l3.4-3.4" />
+                                    </svg>
+                                </button>
+                                <button @click.stop="confirmDeleteProgram(prog)" class="p-1 text-zinc-400 hover:text-rose-500 transition" title="Delete Program">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                    </svg>
+                                </button>
+                            </div>
+                            @endif
+                        </div>
                     </div>
 
                     <!-- Accreditation Status / Level Info -->
@@ -131,26 +134,26 @@
     </template>
 
     <!-- Create / Edit Program Modal -->
-    <div x-show="showProgramModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm" style="display: none;">
-        <div @click.away="closeProgramModal()" class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden" x-transition>
+    <div x-show="showProgramModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm" style="display: none;" x-transition.opacity>
+        <div @click.away="closeProgramModal()" class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden" x-transition.scale.origin.bottom>
             <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-                <h3 class="text-lg font-bold text-[#1b355a]" x-text="programForm.id ? 'Edit Program' : 'Add Program'"></h3>
-                <button @click="closeProgramModal()" class="text-slate-400 hover:text-slate-600">
+                <h3 class="text-heading-sm font-bold text-primary" x-text="programForm.id ? 'Edit Program' : 'Add Program'"></h3>
+                <button @click="closeProgramModal()" class="text-slate-400 hover:text-slate-600 transition">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
-            <div class="p-6 flex flex-col gap-4">
+            <div class="p-6 flex flex-col gap-5">
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1.5">Program Name</label>
-                    <input type="text" x-model="programForm.name" class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 focus:outline-none focus:border-[#1b355a] bg-slate-50" placeholder="e.g. BS Computer Science">
+                    <label class="block text-label font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Program Name</label>
+                    <input type="text" x-model="programForm.name" class="w-full text-body-sm border border-slate-200 rounded-lg px-4 py-3 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 bg-slate-50 transition" placeholder="e.g. BS Computer Science">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1.5">Program Code</label>
-                    <input type="text" x-model="programForm.code" class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 focus:outline-none focus:border-[#1b355a] bg-slate-50" placeholder="e.g. BSCS">
+                    <label class="block text-label font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Program Code</label>
+                    <input type="text" x-model="programForm.code" class="w-full text-body-sm border border-slate-200 rounded-lg px-4 py-3 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 bg-slate-50 transition" placeholder="e.g. BSCS">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 mb-1.5">Accreditation Level</label>
-                    <select x-model="programForm.accreditation_level" class="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 focus:outline-none focus:border-[#1b355a] bg-slate-50 cursor-pointer">
+                    <label class="block text-label font-bold text-slate-500 mb-1.5 uppercase tracking-wider">Accreditation Level</label>
+                    <select x-model="programForm.accreditation_level" class="w-full text-body-sm border border-slate-200 rounded-lg px-4 py-3 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 bg-slate-50 transition cursor-pointer">
                         <option value="Candidate">Candidate Status</option>
                         <option value="Level I">Level I Accredited</option>
                         <option value="Level II">Level II Accredited</option>
@@ -159,9 +162,14 @@
                     </select>
                 </div>
             </div>
-            <div class="px-6 py-4 bg-slate-50 flex justify-end gap-3">
-                <button @click="closeProgramModal()" class="px-4 py-2 rounded-lg text-sm font-bold text-slate-600 hover:bg-slate-200 transition cursor-pointer">Cancel</button>
-                <button @click="saveProgram()" class="px-4 py-2 rounded-lg text-sm font-bold text-white bg-[#1b355a] hover:bg-[#112239] transition cursor-pointer">Save</button>
+            <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex justify-end gap-3">
+                <button @click="closeProgramModal()" class="px-4 py-2.5 rounded-xl text-body-sm font-bold text-slate-600 hover:bg-slate-200 transition cursor-pointer">Cancel</button>
+                <button @click="saveProgram()" class="px-5 py-2.5 rounded-xl text-body-sm font-bold text-white bg-primary hover:bg-primary-hover shadow-3xs transition cursor-pointer flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                    </svg>
+                    <span>Save Program</span>
+                </button>
             </div>
         </div>
     </div>

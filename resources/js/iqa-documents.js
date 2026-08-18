@@ -2217,7 +2217,11 @@ window.documentWorkspace = function (initialState = {}) {
                 this.closeCollegeModal();
                 this.initBackendData();
             } catch (err) {
-                Swal.fire({ icon: 'error', title: 'Error', text: err.message || 'Failed to save college.', confirmButtonColor: '#1b355a' });
+                let errorMsg = err.message || 'Failed to save college.';
+                if (err.errors) {
+                    errorMsg = Object.values(err.errors).flat().join('<br>');
+                }
+                Swal.fire({ icon: 'error', title: 'Error', html: errorMsg, confirmButtonColor: '#1b355a' });
             }
         },
         async confirmDeleteCollege(college) {
@@ -2279,7 +2283,11 @@ window.documentWorkspace = function (initialState = {}) {
                 this.closeProgramModal();
                 this.initBackendData();
             } catch (err) {
-                Swal.fire({ icon: 'error', title: 'Error', text: err.message || 'Failed to save program.', confirmButtonColor: '#1b355a' });
+                let errorMsg = err.message || 'Failed to save program.';
+                if (err.errors) {
+                    errorMsg = Object.values(err.errors).flat().join('<br>');
+                }
+                Swal.fire({ icon: 'error', title: 'Error', html: errorMsg, confirmButtonColor: '#1b355a' });
             }
         },
         async confirmDeleteProgram(program) {

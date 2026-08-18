@@ -80,72 +80,72 @@ class DatabaseSeeder extends Seeder
                 'last_name' => 'Admin',
                 'email' => 'sysadmin@example.com',
                 'role' => 'system-administrator',
-                'program' => null,
-                'college' => null,
+                'assign_program' => false,
+                'assign_college' => false,
             ],
             [
                 'first_name' => 'IQA',
                 'last_name' => 'Admin',
                 'email' => 'iqaadmin@example.com',
                 'role' => 'iqa-admin',
-                'program' => null,
-                'college' => null,
+                'assign_program' => false,
+                'assign_college' => false,
             ],
             [
                 'first_name' => 'IQA',
                 'last_name' => 'Member',
                 'email' => 'iqamember@example.com',
                 'role' => 'iqa-member',
-                'program' => null,
-                'college' => null,
+                'assign_program' => false,
+                'assign_college' => false,
             ],
             [
                 'first_name' => 'AACCUP',
                 'last_name' => 'Accreditor',
                 'email' => 'accreditor@example.com',
                 'role' => 'accreditor',
-                'program' => 'BSCS',
-                'college' => 'CS',
+                'assign_program' => true,
+                'assign_college' => true,
             ],
             [
                 'first_name' => 'BU Executive',
                 'last_name' => 'Admin',
                 'email' => 'buadmin@example.com',
                 'role' => 'university-administrator',
-                'program' => null,
-                'college' => null,
+                'assign_program' => false,
+                'assign_college' => false,
             ],
             [
                 'first_name' => 'QA Task Force',
                 'last_name' => 'Lead',
                 'email' => 'taskforce@example.com',
                 'role' => 'task-force',
-                'program' => 'BSCS',
-                'college' => null,
+                'assign_program' => true,
+                'assign_college' => false,
             ],
             [
                 'first_name' => 'QA Task Force',
                 'last_name' => 'Member',
                 'email' => 'taskforcemember@example.com',
                 'role' => 'task-force-member',
-                'program' => 'BSCS',
-                'college' => 'CS',
+                'assign_program' => true,
+                'assign_college' => true,
             ],
             [
-                'first_name' => 'CS Dean',
-                'last_name' => 'Office',
+                'first_name' => 'College',
+                'last_name' => 'Dean',
                 'email' => 'dean@example.com',
                 'role' => 'college-head',
-                'program' => null,
-                'college' => 'CS',
+                'assign_program' => false,
+                'assign_college' => true,
             ],
             [
                 'first_name' => 'BU Program',
                 'last_name' => 'Chair',
                 'email' => 'chair@example.com',
                 'role' => 'program-chair',
-                'program' => 'BSCS',
-                'college' => null,
+                'assign_program' => true,
+                'assign_college' => false,
             ],
             // Multi-Role Accounts
             [
@@ -154,8 +154,8 @@ class DatabaseSeeder extends Seeder
                 'email' => 'iqamember-multirole@example.com',
                 'role' => 'iqa-member',
                 'extra_roles' => ['task-force'],
-                'program' => null,
-                'college' => null,
+                'assign_program' => false,
+                'assign_college' => false,
             ],
             [
                 'first_name' => 'College Head',
@@ -163,8 +163,8 @@ class DatabaseSeeder extends Seeder
                 'email' => 'dean-multirole@example.com',
                 'role' => 'college-head',
                 'extra_roles' => ['task-force'],
-                'program' => null,
-                'college' => 'CS',
+                'assign_program' => false,
+                'assign_college' => true,
             ],
             [
                 'first_name' => 'Program Chair',
@@ -172,96 +172,96 @@ class DatabaseSeeder extends Seeder
                 'email' => 'chair-multirole@example.com',
                 'role' => 'program-chair',
                 'extra_roles' => ['task-force-member'],
-                'program' => 'BSCS',
-                'college' => null,
+                'assign_program' => true,
+                'assign_college' => false,
             ],
             [
                 'first_name' => 'Maria',
                 'last_name' => 'Santos',
                 'email' => 'msantos@example.com',
                 'role' => 'task-force',
-                'program' => 'BSCS',
-                'college' => 'CS',
+                'assign_program' => true,
+                'assign_college' => true,
             ],
             [
                 'first_name' => 'Juan',
                 'last_name' => 'Dela Cruz',
                 'email' => 'jdelacruz@example.com',
                 'role' => 'task-force',
-                'program' => 'BSIT',
-                'college' => 'CS',
+                'assign_program' => true,
+                'assign_college' => true,
             ],
             [
                 'first_name' => 'Dr. Aris',
                 'last_name' => 'Ordoñez',
                 'email' => 'aordonez@example.com',
                 'role' => 'program-chair',
-                'program' => 'BSIT',
-                'college' => 'CS',
+                'assign_program' => true,
+                'assign_college' => true,
             ],
             [
                 'first_name' => 'Prof. Elena',
                 'last_name' => 'Reyes',
                 'email' => 'ereyes@example.com',
                 'role' => 'task-force',
-                'program' => 'BSBIO',
-                'college' => 'CS',
+                'assign_program' => true,
+                'assign_college' => true,
             ],
             [
                 'first_name' => 'Dr. Carlos',
                 'last_name' => 'Mendoza',
                 'email' => 'cmendoza@example.com',
                 'role' => 'college-head',
-                'program' => null,
-                'college' => 'CENG',
+                'assign_program' => false,
+                'assign_college' => true,
             ],
             [
                 'first_name' => 'Engr. Rob',
                 'last_name' => 'Alcantara',
                 'email' => 'ralcantara@example.com',
                 'role' => 'program-chair',
-                'program' => 'BSCE',
-                'college' => 'CENG',
+                'assign_program' => true,
+                'assign_college' => true,
             ],
             [
                 'first_name' => 'Engr. Sarah',
                 'last_name' => 'Gomez',
                 'email' => 'sgomez@example.com',
                 'role' => 'task-force',
-                'program' => 'BSCE',
-                'college' => 'CENG',
+                'assign_program' => true,
+                'assign_college' => true,
             ],
             [
                 'first_name' => 'Engr. Mark',
                 'last_name' => 'Torres',
                 'email' => 'mtorres@example.com',
                 'role' => 'task-force',
-                'program' => 'BSME',
-                'college' => 'CENG',
+                'assign_program' => true,
+                'assign_college' => true,
             ],
             [
                 'first_name' => 'Prof. Grace',
                 'last_name' => 'Villanueva',
                 'email' => 'gvillanueva@example.com',
                 'role' => 'iqa-member',
-                'program' => null,
-                'college' => 'CS',
+                'assign_program' => false,
+                'assign_college' => true,
             ],
             [
                 'first_name' => 'Dr. Ramon',
                 'last_name' => 'Bautista',
                 'email' => 'rbautista@example.com',
                 'role' => 'accreditor',
-                'program' => 'BSCS',
-                'college' => 'CS',
+                'assign_program' => true,
+                'assign_college' => true,
             ],
         ];
 
         $seededUsers = [];
         foreach ($usersToSeed as $userData) {
             $roleId = $roles[$userData['role']]->id;
-            $programId = $userData['program'] ? $getProgram($userData['program'])->id : null;
-            $collegeId = $userData['college'] ? $getCollege($userData['college'])->id : null;
+            $programId = $userData['assign_program'] ? $programs->random()->id : null;
+            $collegeId = $userData['assign_college'] ? $colleges->random()->id : null;
 
             $user = User::firstOrCreate(
                 ['email' => $userData['email']],
@@ -287,242 +287,6 @@ class DatabaseSeeder extends Seeder
             }
             $user->roles()->sync(array_unique($rolesToSync));
             $seededUsers[] = $user;
-        }
-
-        // 6. Seed Instruments & Compliance Requirements (AACCUP statistics)
-        // Level IV: 11 programs
-        // Level III: 32 programs
-        // Level II: 35 programs
-        // Level I: 38 programs
-        // Candidate: 4 programs
-        // Total = 120 accredited/candidate programs
-        $allPrograms = Program::all();
-        $progIndex = 0;
-
-        $seedAccreditation = function ($levelName, $count, &$progIndex, $allPrograms) {
-            for ($i = 1; $i <= $count; $i++) {
-                if ($progIndex >= $allPrograms->count()) break;
-
-                $program = $allPrograms[$progIndex++];
-
-                $inst = \App\Models\Instrument::create([
-                    'name' => "AACCUP {$levelName} Criteria for {$program->name}",
-                    'code' => "INST-{$program->code}-" . strtoupper(str_replace(' ', '', $levelName)),
-                    'level' => $levelName,
-                    'description' => "Accreditation guidelines and evaluation areas for {$program->name} level {$levelName}.",
-                ]);
-
-                // Seed a compliance requirement for this program and instrument
-                $status = 'complied';
-                if ($progIndex % 6 === 0) {
-                    $status = 'in_progress';
-                } elseif ($progIndex % 15 === 0) {
-                    $status = 'overdue';
-                } elseif ($progIndex % 20 === 0) {
-                    $status = 'pending';
-                }
-
-                \App\Models\ComplianceRequirement::create([
-                    'instrument_id' => $inst->id,
-                    'program_id' => $program->id,
-                    'description' => "Complete documentation file compilations for {$levelName} accreditation.",
-                    'due_date' => now()->addDays(rand(-30, 90)),
-                    'status' => $status,
-                ]);
-            }
-        };
-
-        $seedAccreditation('Level IV', 11, $progIndex, $allPrograms);
-        $seedAccreditation('Level III', 32, $progIndex, $allPrograms);
-        $seedAccreditation('Level II', 35, $progIndex, $allPrograms);
-        $seedAccreditation('Level I', 38, $progIndex, $allPrograms);
-        $seedAccreditation('Candidate', 4, $progIndex, $allPrograms);
-
-        // 7. Seed Documents & OCR Validations & Reviews & Requests
-        $users = User::all();
-        $categories = DocumentCategory::all();
-
-        for ($i = 1; $i <= 150; $i++) {
-            $uploader = $users->random();
-            $program = $allPrograms->random();
-            $category = $categories->random();
-
-            $status = 'approved';
-            if ($i <= 8) {
-                $status = 'pending';
-            } elseif ($i <= 14) {
-                $status = 'rejected';
-            }
-
-            $doc = \App\Models\Document::create([
-                'uploaded_by' => $uploader->id,
-                'program_id' => $program->id,
-                'category_id' => $category->id,
-                'title' => "Accreditation Portfolio Item " . $i,
-                'file_path' => "documents/mock_doc_{$i}.pdf",
-                'status' => $status,
-                'visibility' => $i % 4 === 0 ? 'public' : 'restricted',
-            ]);
-
-            // Seed OCR validation record
-            $ocrStatus = 'validated';
-            if ($status === 'pending') {
-                $ocrStatus = $i % 3 === 0 ? 'pending' : 'validated';
-            } elseif ($i % 12 === 0) {
-                $ocrStatus = 'failed';
-            }
-
-            \App\Models\DocumentOCRValidation::create([
-                'document_id' => $doc->id,
-                'validation_status' => $ocrStatus,
-                'validated_at' => $ocrStatus === 'validated' ? now()->subDays(rand(1, 10)) : null,
-                'extracted_data' => "Mock extracted OCR text content for compliance file {$doc->title}.",
-            ]);
-
-            // Seed review record
-            if ($status !== 'pending') {
-                \App\Models\DocumentReview::create([
-                    'document_id' => $doc->id,
-                    'reviewed_by' => $users->where('role_id', $roles['iqa-admin']->id)->first()->id,
-                    'decision' => $status,
-                    'remarks' => $status === 'rejected' ? 'Document requires official signature on the last page.' : 'Documentation compiled successfully.',
-                    'reviewed_at' => now()->subDays(rand(1, 5)),
-                ]);
-            }
-
-            // Seed access requests
-            if ($i % 8 === 0) {
-                $requester = $users->where('role_id', $roles['accreditor']->id)->first();
-                if ($requester) {
-                    \App\Models\DocumentAccessRequest::create([
-                        'document_id' => $doc->id,
-                        'requested_by' => $requester->id,
-                        'status' => $i % 16 === 0 ? 'pending' : 'approved',
-                        'remarks' => 'Access requested for external audit purposes.',
-                        'approved_by' => $i % 16 === 0 ? null : $users->where('role_id', $roles['iqa-admin']->id)->first()->id,
-                        'approved_at' => $i % 16 === 0 ? null : now()->subDays(1),
-                        'expires_at' => $i % 16 === 0 ? null : now()->addDays(30),
-                    ]);
-                }
-            }
-        }
-
-        // 8. Seed Audit Logs
-        $actions = [
-            'login',
-            'logout',
-            'document_upload',
-            'document_approve',
-            'document_reject',
-            'document_delete'
-        ];
-
-        // Seed realistic Access & Session logs (paired Login and Logout timestamps)
-        foreach ($users->take(12) as $index => $uItem) {
-            $loginTime = now()->subHours(fake()->numberBetween(1, 48));
-            \App\Models\AuditLog::create([
-                'user_id' => $uItem->id,
-                'action' => 'login',
-                'target_type' => \App\Models\User::class,
-                'target_id' => $uItem->id,
-                'timestamp' => $loginTime,
-            ]);
-
-            // 75% of logins have paired logout, 25% are Active Session
-            if ($index % 4 !== 0) {
-                \App\Models\AuditLog::create([
-                    'user_id' => $uItem->id,
-                    'action' => 'logout',
-                    'target_type' => \App\Models\User::class,
-                    'target_id' => $uItem->id,
-                    'timestamp' => (clone $loginTime)->addMinutes(fake()->numberBetween(12, 180)),
-                ]);
-            }
-        }
-
-        // Seed Account Creation & Management audit logs
-        $adminUserForAudit = $users->first();
-        foreach ($users->skip(2)->take(6) as $uItem) {
-            \App\Models\AuditLog::create([
-                'user_id' => $adminUserForAudit->id,
-                'action' => 'CREATE_USER',
-                'target_type' => \App\Models\User::class,
-                'target_id' => $uItem->id,
-                'timestamp' => now()->subDays(fake()->numberBetween(1, 14)),
-            ]);
-        }
-
-        // Seed File Modification audit logs
-        foreach (range(1, 15) as $index) {
-            $user = $users->random();
-            $action = fake()->randomElement(['document_upload', 'document_approve', 'document_reject', 'document_update', 'document_delete']);
-
-            \App\Models\AuditLog::create([
-                'user_id' => $user->id,
-                'action' => $action,
-                'target_type' => \App\Models\Document::class,
-                'target_id' => fake()->numberBetween(1, 50),
-                'timestamp' => now()->subMinutes(fake()->numberBetween(10, 5000)),
-            ]);
-        }
-
-        // 9. Seed Task Forces
-        $csCollege = $getCollege('CS');
-        $cengCollege = $getCollege('CE');
-        $adminUser = $users->where('role_id', $roles['iqa-admin']->id)->first() ?? $users->first();
-
-        $tf1 = \App\Models\TaskForce::create([
-            'name' => 'BSCS AACCUP Level III Accreditation Task Force',
-            'college_id' => $csCollege->id,
-            'program_id' => $getProgram('BSCS')->id ?? null,
-            'purpose' => 'Responsible for assembling Area I to Area X compliance evidence folders for BSCS Level III Re-accreditation evaluation.',
-            'status' => 'active',
-            'created_by' => $adminUser->id,
-        ]);
-
-        $tf2 = \App\Models\TaskForce::create([
-            'name' => 'College of Engineering Quality Assurance Committee',
-            'college_id' => $cengCollege->id,
-            'purpose' => 'Conduct quarterly internal quality audits, review syllabus outcomes, and monitor BSCE & BSME instrument compliance.',
-            'status' => 'active',
-            'created_by' => $adminUser->id,
-        ]);
-
-        $tf3 = \App\Models\TaskForce::create([
-            'name' => 'Institutional Vision & Mission Review Committee',
-            'college_id' => $csCollege->id,
-            'purpose' => 'Evaluate stakeholder alignment matrix for BU College of Science strategic goals.',
-            'status' => 'completed',
-            'created_by' => $adminUser->id,
-        ]);
-
-        // Attach members
-        $memberUsers = $users->take(4);
-        foreach ($memberUsers as $mUser) {
-            \App\Models\TaskForceMember::create([
-                'task_force_id' => $tf1->id,
-                'user_id' => $mUser->id,
-                'role_in_team' => 'member',
-                'assigned_at' => now()->subDays(10),
-            ]);
-        }
-
-        foreach ($users->skip(2)->take(3) as $mUser) {
-            \App\Models\TaskForceMember::create([
-                'task_force_id' => $tf2->id,
-                'user_id' => $mUser->id,
-                'role_in_team' => 'member',
-                'assigned_at' => now()->subDays(5),
-            ]);
-        }
-
-        foreach ($users->take(2) as $mUser) {
-            \App\Models\TaskForceMember::create([
-                'task_force_id' => $tf3->id,
-                'user_id' => $mUser->id,
-                'role_in_team' => 'member',
-                'assigned_at' => now()->subDays(20),
-            ]);
         }
 
         // 6. Call TestPdfSeeder to generate 50 test PDF documents (test1.pdf to test50.pdf)
