@@ -18,6 +18,7 @@ class CollegesPrograms extends Component
 
     // Search and filter state
     public $search = '';
+    public $campusFilter = '';
     public $collegeFilter = '';
     public $levelFilter = '';
 
@@ -38,6 +39,7 @@ class CollegesPrograms extends Component
     public $collegeId = null;
     public $college_name = '';
     public $college_code = '';
+    public $college_campus = 'Main Campus (Legazpi)';
     public $targetCollegeName = '';
 
     // Program Form Data
@@ -53,6 +55,7 @@ class CollegesPrograms extends Component
 
     protected $queryString = [
         'search' => ['except' => ''],
+        'campusFilter' => ['except' => ''],
         'collegeFilter' => ['except' => ''],
         'levelFilter' => ['except' => ''],
     ];
@@ -71,6 +74,11 @@ class CollegesPrograms extends Component
     }
 
     public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingCampusFilter()
     {
         $this->resetPage();
     }
@@ -118,16 +126,19 @@ class CollegesPrograms extends Component
         $validated = $this->validate([
             'college_name' => ['required', 'string', 'max:255'],
             'college_code' => ['required', 'string', 'max:50', 'unique:colleges,code'],
+            'college_campus' => ['required', 'string', 'max:255'],
         ], [
             'college_name.required' => 'Please enter the college/academic unit name.',
             'college_code.required' => 'Please enter a unique college code/abbreviation.',
             'college_code.unique' => 'This college code is already registered.',
+            'college_campus.required' => 'Please enter or select the campus.',
         ]);
 
         DB::transaction(function () use ($validated) {
             $college = College::create([
                 'name' => trim($validated['college_name']),
                 'code' => strtoupper(trim($validated['college_code'])),
+                'campus' => trim($validated['college_campus']),
             ]);
 
             AuditLog::create([
@@ -161,6 +172,7 @@ class CollegesPrograms extends Component
         $this->collegeId = $college->id;
         $this->college_name = $college->name;
         $this->college_code = $college->code;
+        $this->college_campus = $college->campus ?: 'Main Campus (Legazpi)';
 
         $this->showEditCollegeModal = true;
     }
@@ -180,16 +192,19 @@ class CollegesPrograms extends Component
         $validated = $this->validate([
             'college_name' => ['required', 'string', 'max:255'],
             'college_code' => ['required', 'string', 'max:50', 'unique:colleges,code,' . $this->collegeId],
+            'college_campus' => ['required', 'string', 'max:255'],
         ], [
             'college_name.required' => 'Please enter the college/academic unit name.',
             'college_code.required' => 'Please enter a unique college code/abbreviation.',
             'college_code.unique' => 'This college code is already in use.',
+            'college_campus.required' => 'Please enter or select the campus.',
         ]);
 
         DB::transaction(function () use ($college, $validated) {
             $college->update([
                 'name' => trim($validated['college_name']),
                 'code' => strtoupper(trim($validated['college_code'])),
+                'campus' => trim($validated['college_campus']),
             ]);
 
             AuditLog::create([
@@ -260,6 +275,7 @@ class CollegesPrograms extends Component
         $this->collegeId = null;
         $this->college_name = '';
         $this->college_code = '';
+        $this->college_campus = 'Main Campus (Legazpi)';
         $this->targetCollegeName = '';
         $this->resetValidation();
     }
@@ -471,6 +487,10 @@ class CollegesPrograms extends Component
         }])
         ->withCount('programs');
 
+        if (!empty($this->campusFilter)) {
+            $collegesQuery->where('campus', $this->campusFilter);
+        }
+
         if (!empty($this->collegeFilter)) {
             $collegesQuery->where('id', $this->collegeFilter);
         }
@@ -479,6 +499,7 @@ class CollegesPrograms extends Component
             $collegesQuery->where(function ($q) {
                 $q->where('name', 'like', '%' . $this->search . '%')
                     ->orWhere('code', 'like', '%' . $this->search . '%')
+                    ->orWhere('campus', 'like', '%' . $this->search . '%')
                     ->orWhereHas('programs', function ($pq) {
                         $pq->where('name', 'like', '%' . $this->search . '%')
                             ->orWhere('code', 'like', '%' . $this->search . '%');
@@ -486,7 +507,7 @@ class CollegesPrograms extends Component
             });
         }
 
-        $colleges = $collegesQuery->orderBy('name', 'asc')->get();
+        $colleges = $collegesQuery->orderBy('campus', 'asc')->orderBy('name', 'asc')->get();
 
         // Overall stats
         $totalColleges = College::count();
@@ -494,7 +515,8 @@ class CollegesPrograms extends Component
         $accreditedPrograms = Program::where('accreditation_level', '!=', 'Candidate Status')->count();
         $candidatePrograms = Program::where('accreditation_level', 'Candidate Status')->count();
 
-        $allCollegesDropdown = College::orderBy('name', 'asc')->get(['id', 'name', 'code']);
+        $allCollegesDropdown = College::orderBy('name', 'asc')->get(['id', 'name', 'code', 'campus']);
+        $campusesList = College::distinct()->pluck('campus')->filter()->values()->toArray();
 
         $accreditationLevels = [
             'Candidate Status',
@@ -507,6 +529,7 @@ class CollegesPrograms extends Component
         return view('livewire.configuration.colleges-programs', [
             'colleges' => $colleges,
             'allCollegesDropdown' => $allCollegesDropdown,
+            'campusesList' => $campusesList,
             'totalColleges' => $totalColleges,
             'totalPrograms' => $totalPrograms,
             'accreditedPrograms' => $accreditedPrograms,

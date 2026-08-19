@@ -8,13 +8,13 @@
                 <span>Institutional Structure</span>
             </div>
             <h1 class="text-heading-lg font-bold text-primary">Colleges &amp; Programs</h1>
-            <p class="text-body-sm text-zinc-500 mt-1">Manage Bicol University colleges, academic units, and degree program accreditation levels.</p>
+            <p class="text-body-sm text-zinc-500 mt-1">Manage Bicol University campuses, colleges, academic units, and degree program accreditation levels.</p>
         </div>
 
         @if($canManage)
         <div class="flex items-center gap-3">
             <flux:button variant="outline" class="font-semibold shadow-xs" icon="plus" wire:click="openCreateCollegeModal">
-                {{ __('Add College') }}
+                {{ __('Add College / Satellite') }}
             </flux:button>
             <flux:button variant="primary" style="--color-accent: var(--color-brand-orange); --color-accent-foreground: #ffffff;" class="text-white font-semibold border-none shadow-xs" icon="plus" wire:click="openCreateProgramModal()">
                 {{ __('Add Program') }}
@@ -33,7 +33,7 @@
                 </svg>
             </div>
             <div class="flex flex-col">
-                <span class="text-label text-slate-500 font-medium uppercase tracking-wider">Colleges &amp; Units</span>
+                <span class="text-label text-slate-500 font-medium uppercase tracking-wider">Colleges &amp; Satellites</span>
                 <span class="text-heading font-bold text-primary mt-0.5">{{ $totalColleges }}</span>
             </div>
         </div>
@@ -80,12 +80,22 @@
     </div>
 
     <!-- Filter & Search Control Panel -->
-    <div class="bg-white border border-slate-200/60 rounded-2xl shadow-3xs p-6 flex flex-col md:flex-row items-center justify-between gap-4">
-        <div class="w-full md:w-80">
-            <flux:input wire:model.live.debounce.300ms="search" placeholder="Search college or program name/code..." icon="magnifying-glass" />
+    <div class="bg-white border border-slate-200/60 rounded-2xl shadow-3xs p-6 flex flex-col lg:flex-row items-center justify-between gap-4">
+        <div class="w-full lg:w-72">
+            <flux:input wire:model.live.debounce.300ms="search" placeholder="Search college, program, or campus..." icon="magnifying-glass" />
         </div>
 
-        <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+        <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+            <div class="flex items-center gap-2 w-full sm:w-auto">
+                <span class="text-xs text-zinc-400 font-semibold whitespace-nowrap">{{ __('Campus:') }}</span>
+                <flux:select wire:model.live="campusFilter" placeholder="All Campuses" class="w-full sm:w-44">
+                    <flux:select.option value="">All Campuses</flux:select.option>
+                    @foreach($campusesList as $camp)
+                    <flux:select.option value="{{ $camp }}">{{ $camp }}</flux:select.option>
+                    @endforeach
+                </flux:select>
+            </div>
+
             <div class="flex items-center gap-2 w-full sm:w-auto">
                 <span class="text-xs text-zinc-400 font-semibold whitespace-nowrap">{{ __('College:') }}</span>
                 <flux:select wire:model.live="collegeFilter" placeholder="All Colleges" class="w-full sm:w-48">
@@ -98,7 +108,7 @@
 
             <div class="flex items-center gap-2 w-full sm:w-auto">
                 <span class="text-xs text-zinc-400 font-semibold whitespace-nowrap">{{ __('Level:') }}</span>
-                <flux:select wire:model.live="levelFilter" placeholder="All Accreditation Levels" class="w-full sm:w-56">
+                <flux:select wire:model.live="levelFilter" placeholder="All Accreditation Levels" class="w-full sm:w-52">
                     <flux:select.option value="">All Accreditation Levels</flux:select.option>
                     @foreach($accreditationLevels as $lvl)
                     <flux:select.option value="{{ $lvl }}">{{ $lvl }}</flux:select.option>
@@ -126,9 +136,6 @@
                     <div class="flex flex-col min-w-0">
                         <div class="flex items-center gap-2 flex-wrap">
                             <span class="text-primary font-bold text-heading-sm truncate">{{ $college->name }}</span>
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-label font-bold bg-blue-50 text-primary border border-blue-100">
-                                {{ $college->code }}
-                            </span>
                         </div>
                         <span class="text-label text-slate-500 font-medium mt-0.5">
                             {{ $college->programs->count() }} {{ Str::plural('degree program', $college->programs->count()) }} registered
@@ -153,7 +160,7 @@
                 <table class="w-full text-left border-collapse text-xs">
                     <thead>
                         <tr class="border-b border-slate-100 bg-white text-slate-400 font-semibold uppercase tracking-wider">
-                            <th class="p-4 pl-6 w-24">Code</th>
+                            <th class="p-4 pl-6 w-32">Code</th>
                             <th class="p-4">Program Title</th>
                             <th class="p-4">Accreditation Level</th>
                             @if($canManage)
@@ -242,20 +249,23 @@
                             <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
                         </svg>
                     </div>
-                    <flux:heading size="lg">{{ __('Add New College / Academic Unit') }}</flux:heading>
+                    <flux:heading size="lg">{{ __('Add New College / Satellite') }}</flux:heading>
                 </div>
                 <flux:subheading class="mt-1 text-xs text-slate-500">
-                    {{ __('Register a new college or administrative unit within Bicol University.') }}
+                    {{ __('Register a new college or satellite campus within Bicol University.') }}
                 </flux:subheading>
             </div>
 
             <div class="space-y-4">
                 <div>
-                    <flux:input wire:model="college_name" :label="__('College / Unit Name')" required placeholder="e.g. College of Science" />
+                    <flux:input wire:model="college_name" :label="__('College / Unit Name')" required placeholder="e.g. BU College of Science or BU Polangui" />
                 </div>
                 <div>
-                    <flux:input wire:model="college_code" :label="__('College Code / Abbreviation')" required placeholder="e.g. CS" />
+                    <flux:input wire:model="college_code" :label="__('College Code / Abbreviation')" required placeholder="e.g. CS or BUP" />
                     <p class="text-[11px] text-slate-400 mt-1">Unique short code or abbreviation for official reports.</p>
+                </div>
+                <div>
+                    <flux:input wire:model="college_campus" :label="__('Campus Designation')" required placeholder="e.g. Main Campus (Legazpi), BU Polangui, BU Gubat" />
                 </div>
             </div>
 
@@ -273,7 +283,7 @@
         <form wire:submit="updateCollege" class="space-y-6">
             <div>
                 <flux:heading size="lg">{{ __('Edit College Details') }}</flux:heading>
-                <flux:subheading class="mt-1 text-xs text-slate-500">{{ __('Modify name and abbreviation code for this college.') }}</flux:subheading>
+                <flux:subheading class="mt-1 text-xs text-slate-500">{{ __('Modify name, abbreviation code, or campus designation.') }}</flux:subheading>
             </div>
 
             <div class="space-y-4">
@@ -282,6 +292,9 @@
                 </div>
                 <div>
                     <flux:input wire:model="college_code" :label="__('College Code / Abbreviation')" required placeholder="e.g. CS" />
+                </div>
+                <div>
+                    <flux:input wire:model="college_campus" :label="__('Campus Designation')" required placeholder="e.g. Main Campus (Legazpi), BU Polangui" />
                 </div>
             </div>
 
@@ -323,16 +336,16 @@
                     <flux:heading size="lg">{{ __('Add Academic Program') }}</flux:heading>
                 </div>
                 <flux:subheading class="mt-1 text-xs text-slate-500">
-                    {{ __('Register a degree program under an institutional college.') }}
+                    {{ __('Register a degree program under an institutional college or satellite campus.') }}
                 </flux:subheading>
             </div>
 
             <div class="space-y-4">
                 <div>
-                    <flux:select wire:model="program_college_id" :label="__('Parent College / Department')" required placeholder="Select College">
-                        <flux:select.option value="">Select College</flux:select.option>
+                    <flux:select wire:model="program_college_id" :label="__('Parent College / Campus')" required placeholder="Select College">
+                        <flux:select.option value="">Select College / Campus</flux:select.option>
                         @foreach($allCollegesDropdown as $c)
-                        <flux:select.option value="{{ $c->id }}">{{ $c->name }} ({{ $c->code }})</flux:select.option>
+                        <flux:select.option value="{{ $c->id }}">{{ $c->name }} ({{ $c->code }}) &bull; {{ $c->campus }}</flux:select.option>
                         @endforeach
                     </flux:select>
                 </div>
@@ -373,9 +386,9 @@
 
             <div class="space-y-4">
                 <div>
-                    <flux:select wire:model="program_college_id" :label="__('Parent College / Department')" required placeholder="Select College">
+                    <flux:select wire:model="program_college_id" :label="__('Parent College / Campus')" required placeholder="Select College">
                         @foreach($allCollegesDropdown as $c)
-                        <flux:select.option value="{{ $c->id }}">{{ $c->name }} ({{ $c->code }})</flux:select.option>
+                        <flux:select.option value="{{ $c->id }}">{{ $c->name }} ({{ $c->code }}) &bull; {{ $c->campus }}</flux:select.option>
                         @endforeach
                     </flux:select>
                 </div>

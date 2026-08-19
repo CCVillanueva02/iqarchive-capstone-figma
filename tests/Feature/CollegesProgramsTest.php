@@ -62,6 +62,7 @@ test('iqa staff can create a college and program via livewire', function () {
         ->test(\App\Livewire\Configuration\CollegesPrograms::class)
         ->set('college_name', 'College of Information Technology')
         ->set('college_code', 'CIT')
+        ->set('college_campus', 'Main Campus (Legazpi)')
         ->call('createCollege')
         ->assertHasNoErrors();
 
