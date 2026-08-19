@@ -1,7 +1,7 @@
 <!-- Top Header -->
 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
     <div>
-        @if(in_array(auth()->user()->role, ['iqa-admin', 'iqa-member', 'task-force', 'task-force-member', 'program-chair', 'college-head']) || auth()->user()->hasAnyRole(['iqa-admin', 'iqa-member', 'task-force', 'task-force-member', 'program-chair', 'college-head']))
+        @if(in_array(auth()->user()->role, ['iqa-staff', 'task-force-member', 'college-head', 'system-administrator']) || auth()->user()->hasAnyRole(['iqa-staff', 'task-force-member', 'college-head', 'system-administrator']))
         <!-- Common Documents Tab Header -->
         <div x-show="activeTab === 'common-documents' || activeTab === 'common'">
             <template x-if="selectedCategory === null">
@@ -36,7 +36,7 @@
             <p class="text-sm text-zinc-500 mt-1">Manage degree program accreditation files, faculty portfolios, and compliance reports</p>
         </div>
 
-        @if(in_array(auth()->user()->role, ['iqa-admin', 'iqa-member']) || auth()->user()->hasRole('iqa-admin') || auth()->user()->hasRole('iqa-member'))
+        @if(in_array(auth()->user()->role, ['iqa-staff', 'system-administrator']) || auth()->user()->hasAnyRole(['iqa-staff', 'system-administrator']))
         <!-- Institutional Accreditation Tab Header -->
         <div x-show="activeTab === 'institutional-accreditation'">
             <h1 class="text-3xl font-bold text-[#1b355a]">Institutional Accreditation Documents</h1>

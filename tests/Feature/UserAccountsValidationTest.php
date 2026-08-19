@@ -14,27 +14,13 @@ beforeEach(function () {
     ]);
 });
 
-test('college is required when pre-registering a user as program chair', function () {
-    $programChairRole = Role::firstOrCreate(['role_name' => 'program-chair'], ['description' => 'Program Chair']);
+test('college is required when pre-registering a user as college head', function () {
+    $collegeHeadRole = Role::firstOrCreate(['role_name' => 'college-head'], ['description' => 'College Head']);
 
     Livewire::actingAs($this->sysAdmin)
         ->test(Accounts::class)
-        ->set('email', 'chairtest@bicol-u.edu.ph')
-        ->set('role_id', $programChairRole->id)
-        ->set('college_id', '')
-        ->call('createAccount')
-        ->assertHasErrors(['college_id' => 'required']);
-});
-
-test('college is required when pre-registering a user with additional IQA Member role', function () {
-    $sysAdminRole = Role::firstOrCreate(['role_name' => 'system-administrator'], ['description' => 'System Admin']);
-    $iqaMemberRole = Role::firstOrCreate(['role_name' => 'iqa-member'], ['description' => 'IQA Member']);
-
-    Livewire::actingAs($this->sysAdmin)
-        ->test(Accounts::class)
-        ->set('email', 'multitest@bicol-u.edu.ph')
-        ->set('role_id', $sysAdminRole->id)
-        ->set('selected_role_ids', [$iqaMemberRole->id])
+        ->set('email', 'deantest@bicol-u.edu.ph')
+        ->set('role_id', $collegeHeadRole->id)
         ->set('college_id', '')
         ->call('createAccount')
         ->assertHasErrors(['college_id' => 'required']);

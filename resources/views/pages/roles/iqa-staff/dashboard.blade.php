@@ -28,7 +28,7 @@
         <!-- Top header bar -->
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-                <h1 class="text-heading-lg font-bold text-primary-dark">IQA Administrator Dashboard</h1>
+                <h1 class="text-heading-lg font-bold text-primary-dark">IQA Staff Dashboard</h1>
                 <p class="text-body-sm text-zinc-500 mt-1">Institutional Quality Assurance Portal Overview</p>
             </div>
             <div class="flex items-center gap-3">
@@ -56,7 +56,7 @@
                     </p>
                 </div>
             </div>
-            <a href="{{ route('documents.iqa-admin', ['status' => 'Pending']) }}" class="px-5 py-3 bg-brand-orange hover:bg-brand-orange-hover text-white font-bold text-body-sm rounded-xl shadow-md transition shrink-0 flex items-center gap-2 select-none cursor-pointer" wire:navigate>
+            <a href="{{ route('documents.iqa-staff', ['status' => 'Pending']) }}" class="px-5 py-3 bg-brand-orange hover:bg-brand-orange-hover text-white font-bold text-body-sm rounded-xl shadow-md transition shrink-0 flex items-center gap-2 select-none cursor-pointer" wire:navigate>
                 <span>Review Pending Documents</span>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
@@ -142,7 +142,7 @@
                         <h2 class="text-heading-sm font-bold text-primary-dark">Recent Document Submissions</h2>
                         <p class="text-body-sm text-zinc-400 mt-0.5">Newly archived program compliance documents</p>
                     </div>
-                    <a href="{{ route('documents.iqa-admin') }}" class="text-body-sm font-semibold text-brand-orange hover:underline" wire:navigate>
+                    <a href="{{ route('documents.iqa-staff') }}" class="text-body-sm font-semibold text-brand-orange hover:underline" wire:navigate>
                         Manage All Files &rarr;
                     </a>
                 </div>
@@ -206,7 +206,7 @@
                     <h3 class="text-body-sm font-bold text-primary-dark uppercase tracking-wider">Quick Actions</h3>
                     <div class="flex flex-col gap-3 font-semibold text-body-sm text-primary-dark">
                         <!-- First action: Monitoring (leads to submissions tab) -->
-                        <a href="{{ route('submissions.iqa-admin') }}" class="flex items-center gap-3 p-3.5 bg-zinc-50 hover:bg-zinc-100 border border-zinc-100 rounded-xl transition" wire:navigate>
+                        <a href="{{ route('submissions.iqa-staff') }}" class="flex items-center gap-3 p-3.5 bg-zinc-50 hover:bg-zinc-100 border border-zinc-100 rounded-xl transition" wire:navigate>
                             <div class="p-2 bg-primary-dark text-white rounded-lg">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192" />
@@ -217,7 +217,7 @@
                                 <span class="block text-label text-zinc-400 font-normal mt-0.5">Track and evaluate program compliance</span>
                             </div>
                         </a>
-                        <a href="{{ route('accounts.iqa-admin') }}" class="flex items-center gap-3 p-3.5 bg-zinc-50 hover:bg-zinc-100 border border-zinc-100 rounded-xl transition" wire:navigate>
+                        <a href="{{ route('accounts.iqa-staff') }}" class="flex items-center gap-3 p-3.5 bg-zinc-50 hover:bg-zinc-100 border border-zinc-100 rounded-xl transition" wire:navigate>
                             <div class="p-2 bg-orange-500 text-white rounded-lg">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.109A11.386 11.386 0 0 1 10.089 20.08l-.014-.002c-.072 0-.143-.001-.215-.002-.136-.002-.27-.006-.404-.012l-.014-.001a11.384 11.384 0 0 1-4.46-1.334 4.123 4.123 0 0 1-1.422-2.58l-.004-.013c-.015-.062-.03-.124-.043-.187L3.48 16a9.09 9.09 0 0 1-.412-2.72c0-1.87.525-3.6 1.437-5.07a4.125 4.125 0 0 1 7.159 2.502M15 9.128a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM2.25 12h19.5" />
@@ -228,7 +228,7 @@
                                 <span class="block text-label text-zinc-400 font-normal mt-0.5">Manage and check staff & deans</span>
                             </div>
                         </a>
-                        <a href="{{ route('audit-trail.iqa-admin') }}" class="flex items-center gap-3 p-3.5 bg-zinc-50 hover:bg-zinc-100 border border-zinc-100 rounded-xl transition" wire:navigate>
+                        <a href="{{ route('audit-trail.iqa-staff') }}" class="flex items-center gap-3 p-3.5 bg-zinc-50 hover:bg-zinc-100 border border-zinc-100 rounded-xl transition" wire:navigate>
                             <div class="p-2 bg-purple-600 text-white rounded-lg">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
@@ -243,7 +243,7 @@
                     </div>
                 </div>
 
-                <!-- Program statistics from welcome page -->
+                <!-- Program performance statistics -->
                 <div class="bg-white rounded-2xl border border-slate-200/60 p-6 shadow-3xs flex flex-col gap-4" x-data="{ tab: 'levels' }">
                     <div class="flex flex-col gap-2.5">
                         <div class="flex justify-between items-center">

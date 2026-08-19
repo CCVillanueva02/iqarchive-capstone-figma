@@ -11,18 +11,17 @@
 
     @php
     $role = auth()->user()->role;
-    if ($role === 'college-head') {
-    $role = 'program-chair';
+    if (in_array($role, ['iqa-admin', 'iqa-member'])) {
+        $role = 'iqa-staff';
     }
     @endphp
-
 
     <div class="flex flex-col gap-[6px] flex-1 py-6 overflow-y-auto no-scrollbar">
 
         <div class="px-6 pb-1">
             <span class="text-label-xs font-bold uppercase tracking-[1.5px] text-white/40">Accreditation</span>
         </div>
-        @if ($role === 'iqa-admin' || $role === 'iqa-member' || $role === 'system-administrator' || $role === 'task-force' || $role === 'task-force-member' || $role === 'program-chair')
+        @if (in_array($role, ['iqa-staff', 'system-administrator', 'task-force-member', 'college-head']))
 
         <!-- Dashboard -->
         <a href="{{ route('dashboard.' . $role) }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-body font-semibold transition-all {{ request()->routeIs('dashboard.' . $role) ? 'bg-white/10 text-white border-l-brand-orange' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
@@ -36,10 +35,10 @@
         </a>
         @endif
 
-        @if (in_array($role, ['task-force', 'task-force-member', 'program-chair', 'iqa-admin', 'iqa-member']))
+        @if (in_array($role, ['task-force-member', 'college-head', 'iqa-staff', 'system-administrator']))
         @php
-        $canSeeCommonDocs = in_array($role, ['iqa-admin', 'iqa-member', 'task-force', 'task-force-member', 'program-chair']);
-        $canSeeInstitutionalDocs = in_array($role, ['iqa-admin', 'iqa-member']);
+        $canSeeCommonDocs = in_array($role, ['iqa-staff', 'task-force-member', 'college-head', 'system-administrator']);
+        $canSeeInstitutionalDocs = in_array($role, ['iqa-staff', 'system-administrator']);
         $defaultTabForRole = 'common-documents';
         $currentDocTab = $currentDocTab ?? request()->query('tab', $defaultTabForRole);
         @endphp
@@ -135,7 +134,7 @@
 
 
         <!-- Submissions -->
-        @if ($role === 'task-force' || $role === 'task-force-member' || $role === 'program-chair' || $role === 'iqa-admin' || $role === 'iqa-member')
+        @if (in_array($role, ['task-force-member', 'college-head', 'iqa-staff']))
         <a href="{{ route('submissions.' . $role) }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-body font-semibold transition-all {{ request()->routeIs('submissions.' . $role) ? 'bg-white/10 text-white border-l-brand-orange' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
@@ -147,9 +146,9 @@
 
 
         <!-- Audit Trail -->
-        @if ($role === 'system-administrator' || $role === 'iqa-admin')
+        @if (in_array($role, ['system-administrator', 'iqa-staff']))
         @php
-            $auditTrailRoute = ($role === 'iqa-admin') ? route('audit-trail.iqa-admin') : route('reports.system-administrator');
+            $auditTrailRoute = ($role === 'iqa-staff') ? route('audit-trail.iqa-staff') : route('reports.system-administrator');
             $isAuditTrailActive = request()->routeIs('audit-trail.*') || request()->routeIs('reports.system-administrator');
         @endphp
         <a href="{{ $auditTrailRoute }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-body font-semibold transition-all {{ $isAuditTrailActive ? 'bg-white/10 text-white border-l-brand-orange' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
@@ -163,7 +162,7 @@
 
 
         <!-- Accounts -->
-        @if ($role === 'iqa-admin' || $role === 'system-administrator')
+        @if (in_array($role, ['iqa-staff', 'system-administrator']))
         <a href="{{ route('accounts.' . $role) }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-body font-semibold transition-all {{ request()->routeIs('accounts.' . $role) ? 'bg-white/10 text-white border-l-brand-orange' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
@@ -177,7 +176,7 @@
 
 
         <!-- Task Forces -->
-        @if (in_array($role, ['iqa-admin', 'university-administrator', 'program-chair']))
+        @if (in_array($role, ['iqa-staff', 'university-administrator', 'college-head', 'system-administrator']))
         <a href="{{ route('task-forces.index') }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-body font-semibold transition-all {{ request()->routeIs('task-forces.*') ? 'bg-white/10 text-white border-l-brand-orange' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
@@ -191,7 +190,7 @@
 
 
         <!-- University Executive: Analytics -->
-        @if ($role === 'university-administrator' || $role === 'system-administrator' || $role === 'iqa-admin')
+        @if (in_array($role, ['university-administrator', 'system-administrator', 'iqa-staff']))
         <div class="px-6 pt-2 pb-1">
             <span class="text-label-xs font-bold uppercase tracking-[1.5px] text-white/40">Overview</span>
         </div>
@@ -223,13 +222,10 @@
     $user = auth()->user();
     $roleLabel = match($user?->role) {
     'system-administrator' => 'System Admin',
-    'iqa-admin' => 'IQA Admin',
-    'iqa-member' => 'IQA Staff',
+    'iqa-staff', 'iqa-admin', 'iqa-member' => 'IQA Member',
     'accreditor' => 'Accreditor',
-    'university-administrator' => 'BU Admin/Exec',
-    'task-force' => 'Task Force Lead',
-    'task-force-member' => 'Task Force Member',
-    'program-chair' => 'Program Chair',
+    'university-administrator' => 'BU Executive',
+    'task-force-member', 'task-force' => 'Task Force Member',
     'college-head' => 'College Head',
     default => 'User'
     };
@@ -267,15 +263,12 @@
                 @php
                 $code = $r->role_name;
                 $title = match($code) {
-                'task-force' => 'QA Task Force Lead',
-                'task-force-member' => 'QA Task Force Member',
                 'system-administrator' => 'System Administrator',
-                'iqa-admin' => 'IQA Admin',
-                'iqa-member' => 'IQA Staff Member',
+                'iqa-staff', 'iqa-admin', 'iqa-member' => 'IQA Member',
                 'accreditor' => 'AACCUP Accreditor',
-                'university-administrator' => 'BU Executive Admin',
+                'university-administrator' => 'BU Executive',
                 'college-head' => 'College Head (Dean)',
-                'program-chair' => 'Program Chair',
+                'task-force-member', 'task-force' => 'Task Force Member',
                 default => ucwords(str_replace('-', ' ', $code))
                 };
                 $isActiveRole = ($code === $user?->role);

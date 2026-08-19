@@ -270,14 +270,14 @@
                 <flux:subheading>{{ __('Assemble a task force for college accreditation tasks and assign eligible faculty members.') }}</flux:subheading>
             </div>
 
-            @if(in_array(auth()->user()->role ?? '', ['college-head', 'program-chair']))
+            @if((auth()->user()->role ?? '') === 'college-head')
             <div class="bg-amber-50 border border-amber-200 rounded-xl p-3.5 flex items-start gap-3 text-xs text-amber-900">
                 <svg class="w-5 h-5 text-amber-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
                 <div>
-                    <span class="font-bold">Submitting as College Head / Program Chair:</span>
-                    <p class="mt-0.5">This task force and member roster will be submitted to the <strong>IQA Admin</strong> for review and official account assignment approval.</p>
+                    <span class="font-bold">Submitting as College Head (Dean):</span>
+                    <p class="mt-0.5">This task force and member roster will be submitted to the <strong>IQA Staff</strong> for review and official account assignment approval.</p>
                 </div>
             </div>
             @endif

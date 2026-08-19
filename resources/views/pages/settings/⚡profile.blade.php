@@ -178,16 +178,13 @@ new #[Title('Profile settings')] class extends Component {
             $avatarType = \Illuminate\Support\Str::startsWith($current_avatar, ['http://', 'https://']) ? 'google' : 'custom';
             }
             $roleTitle = match($user->role) {
-            'system-administrator' => 'System Administrator',
-            'iqa-admin' => 'IQA Administrator',
-            'iqa-member' => 'IQA Staff Member',
-            'accreditor' => 'AACCUP Accreditor',
-            'university-administrator' => 'University Administrator',
-            'college-head' => 'College Head (Dean)',
-            'program-chair' => 'Program Chair',
-            'task-force' => 'Task Force Lead',
-            'task-force-member' => 'Task Force Member',
-            default => ucwords(str_replace('-', ' ', $user->role))
+                'system-administrator' => 'System Administrator',
+                'iqa-staff', 'iqa-admin', 'iqa-member' => 'IQA Member',
+                'accreditor' => 'AACCUP Accreditor',
+                'university-administrator' => 'BU Executive',
+                'college-head' => 'College Head',
+                'task-force-member', 'task-force' => 'Task Force Member',
+                default => ucwords(str_replace('-', ' ', $user->role))
             };
             @endphp
 

@@ -34,15 +34,12 @@
                 @php
                     $roleCode = $r->role_name;
                     $roleTitle = match($roleCode) {
-                        'task-force' => 'QA Task Force Lead',
-                        'task-force-member' => 'QA Task Force Member',
                         'system-administrator' => 'System Administrator',
-                        'iqa-admin' => 'IQA Admin',
-                        'iqa-member' => 'IQA Staff Member',
+                        'iqa-staff', 'iqa-admin', 'iqa-member' => 'IQA Member',
                         'accreditor' => 'AACCUP Accreditor',
-                        'university-administrator' => 'BU Executive Admin',
+                        'university-administrator' => 'BU Executive',
                         'college-head' => 'College Head (Dean)',
-                        'program-chair' => 'Program Chair',
+                        'task-force-member', 'task-force' => 'Task Force Member',
                         default => ucwords(str_replace('-', ' ', $roleCode))
                     };
                     $isActive = ($roleCode === $activeRole);

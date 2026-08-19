@@ -15,11 +15,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Landing gateway: redirects to the appropriate role-specific homepage
     Route::get('dashboard', function () {
         $role = auth()->user()->role;
-        if ($role === 'iqa-admin') {
-            return redirect()->route('dashboard.iqa-admin');
+        if (in_array($role, ['iqa-staff', 'iqa-admin'])) {
+            return redirect()->route('dashboard.iqa-staff');
         }
         if ($role === 'college-head') {
-            return redirect()->route('dashboard.program-chair');
+            return redirect()->route('dashboard.college-head');
         }
         if ($role === 'accreditor') {
             return redirect()->route('submissions.accreditor');
@@ -47,26 +47,26 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // University Administrator explicit route mapping (analytics as landing page)
     Route::get("roles/university-administrator/analytics", function () {
-        if (!auth()->user()->hasRole(['university-administrator', 'system-administrator', 'iqa-admin'])) {
+        if (!auth()->user()->hasRole(['university-administrator', 'system-administrator', 'iqa-staff', 'iqa-admin'])) {
             abort(403, 'Unauthorized action.');
         }
         return view("pages.roles.university-administrator.analytics");
     })->name("analytics.university-administrator");
 
     Route::get("roles/university-administrator/dashboard", function () {
-        if (!auth()->user()->hasRole(['university-administrator', 'system-administrator', 'iqa-admin'])) {
+        if (!auth()->user()->hasRole(['university-administrator', 'system-administrator', 'iqa-staff', 'iqa-admin'])) {
             abort(403, 'Unauthorized action.');
         }
         return redirect()->route('analytics.university-administrator');
     })->name("dashboard.university-administrator");
 
     Route::get("roles/university-administrator/reports", function () {
-        if (!auth()->user()->hasRole(['university-administrator', 'system-administrator', 'iqa-admin'])) {
+        if (!auth()->user()->hasRole(['university-administrator', 'system-administrator', 'iqa-staff', 'iqa-admin'])) {
             abort(403, 'Unauthorized action.');
         }
         return view('pages.workspace.placeholder', [
             'title' => 'Reports',
-            'roleName' => 'BU Executive Admin',
+            'roleName' => 'BU Executive',
         ]);
     })->name("reports.university-administrator");
 
@@ -85,31 +85,29 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     $roles = [
         'system-administrator',
-        'iqa-admin',
-        'iqa-member',
-        'task-force',
+        'iqa-staff',
         'task-force-member',
-        'program-chair',
+        'college-head',
     ];
 
     foreach ($roles as $role) {
         Route::get("roles/{$role}/dashboard", function () use ($role) {
             $user = auth()->user();
-            if (!$user->hasRole($role) && !($role === 'program-chair' && $user->role === 'college-head')) {
+            if (!$user->hasRole($role) && !($user->hasRole(['iqa-staff', 'iqa-admin']) && $role === 'iqa-staff')) {
                 abort(403, 'Unauthorized action.');
             }
             if ($user->hasRole($role)) {
                 session(['active_role' => $role]);
             }
             if (!view()->exists("pages.roles.{$role}.dashboard")) {
-                return view("pages.roles.task-force.dashboard");
+                return view("pages.roles.iqa-staff.dashboard");
             }
             return view("pages.roles.{$role}.dashboard");
         })->name("dashboard.{$role}");
 
         Route::get("roles/{$role}/documents", function () use ($role) {
             $user = auth()->user();
-            if (!$user->hasRole($role) && !($role === 'program-chair' && $user->role === 'college-head')) {
+            if (!$user->hasRole($role) && !($user->hasRole(['iqa-staff', 'iqa-admin']) && $role === 'iqa-staff')) {
                 abort(403, 'Unauthorized action.');
             }
             if ($user->hasRole($role)) {
@@ -120,7 +118,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::get("roles/{$role}/submissions", function () use ($role) {
             $user = auth()->user();
-            if (!$user->hasRole($role) && !($role === 'program-chair' && $user->role === 'college-head')) {
+            if (!$user->hasRole($role) && !($user->hasRole(['iqa-staff', 'iqa-admin']) && $role === 'iqa-staff')) {
                 abort(403, 'Unauthorized action.');
             }
             if ($user->hasRole($role)) {
@@ -134,7 +132,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::get("roles/{$role}/reports", function () use ($role) {
             $user = auth()->user();
-            if (!$user->hasRole($role) && !($role === 'program-chair' && $user->role === 'college-head')) {
+            if (!$user->hasRole($role) && !($user->hasRole(['iqa-staff', 'iqa-admin']) && $role === 'iqa-staff')) {
                 abort(403, 'Unauthorized action.');
             }
             if ($user->hasRole($role)) {
@@ -148,7 +146,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::get("roles/{$role}/settings", function () use ($role) {
             $user = auth()->user();
-            if (!$user->hasRole($role) && !($role === 'program-chair' && $user->role === 'college-head')) {
+            if (!$user->hasRole($role) && !($user->hasRole(['iqa-staff', 'iqa-admin']) && $role === 'iqa-staff')) {
                 abort(403, 'Unauthorized action.');
             }
             if ($user->hasRole($role)) {
@@ -161,15 +159,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
         })->name("settings.{$role}");
     }
 
-    Route::get('roles/iqa-admin/audit-trail', function () {
-        if (auth()->user()->role !== 'iqa-admin') {
+    Route::get('roles/iqa-staff/audit-trail', function () {
+        if (!auth()->user()->hasRole(['iqa-staff', 'iqa-admin', 'system-administrator'])) {
             abort(403, 'Unauthorized action.');
         }
-        return view('pages.roles.iqa-admin.audit-trail');
+        return view('pages.roles.iqa-staff.audit-trail');
+    })->name('audit-trail.iqa-staff');
+
+    Route::get('roles/iqa-admin/audit-trail', function () {
+        return redirect()->route('audit-trail.iqa-staff');
     })->name('audit-trail.iqa-admin');
 
-    Route::get('roles/iqa-admin/accounts', \App\Livewire\IqaAdmin\Accounts::class)
-        ->name('accounts.iqa-admin');
+    Route::get('roles/iqa-staff/accounts', \App\Livewire\IqaAdmin\Accounts::class)
+        ->name('accounts.iqa-staff');
+
+    Route::get('roles/iqa-admin/accounts', function () {
+        return redirect()->route('accounts.iqa-staff');
+    })->name('accounts.iqa-admin');
 
     Route::get('roles/system-administrator/accounts', \App\Livewire\SystemAdministrator\Accounts::class)
         ->name('accounts.system-administrator');
@@ -214,18 +220,14 @@ if (app()->environment('local')) {
     Route::get('/dev/login/{role}', function ($role) {
         $email = match ($role) {
             'system-administrator' => 'sysadmin@example.com',
-            'iqa-admin' => 'iqaadmin@example.com',
-            'iqa-member' => 'iqamember@example.com',
-            'iqa-member-multi' => 'iqamember-multirole@example.com',
+            'iqa-staff', 'iqa-admin', 'iqa-member' => 'iqastaff@example.com',
+            'iqa-staff-multi', 'iqa-member-multi' => 'iqastaff-multi@example.com',
             'accreditor' => 'accreditor@example.com',
-            'university-administrator' => 'buadmin@example.com',
-            'task-force' => 'taskforce@example.com',
-            'task-force-member' => 'taskforcemember@example.com',
-            'dean' => 'dean@example.com',
+            'university-administrator' => 'buexecutive@example.com',
+            'college-head', 'dean' => 'dean@example.com',
             'dean-multi' => 'dean-multirole@example.com',
-            'program-chair' => 'chair@example.com',
-            'program-chair-multi' => 'chair-multirole@example.com',
-            default => abort(404),
+            'task-force-member', 'task-force' => 'tfmember@example.com',
+            default => 'sysadmin@example.com',
         };
 
         $user = \App\Models\User::where('email', $email)->first();

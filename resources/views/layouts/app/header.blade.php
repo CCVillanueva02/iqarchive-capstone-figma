@@ -5,11 +5,11 @@
 
         @php
         $role = auth()->user()?->role;
-        if ($role === 'college-head') {
-        $role = 'program-chair';
+        if (in_array($role, ['iqa-admin', 'iqa-member'])) {
+            $role = 'iqa-staff';
         }
         @endphp
-        @if($role && !in_array($role, ['system-administrator', 'iqa-admin', 'iqa-member']))
+        @if($role && !in_array($role, ['system-administrator', 'iqa-staff', 'iqa-admin', 'iqa-member']))
             <nav class="hidden lg:flex items-center gap-6 ml-8">
                 @if($role === 'university-administrator')
                     <a href="{{ route('analytics.university-administrator') }}" class="text-sm font-semibold transition-all {{ request()->routeIs('analytics.university-administrator') ? 'text-[#002B61] border-b-2 border-[#F47920] pb-1' : 'text-zinc-500 hover:text-[#002B61] pb-1 border-b-2 border-transparent' }}" wire:navigate>Analytics</a>

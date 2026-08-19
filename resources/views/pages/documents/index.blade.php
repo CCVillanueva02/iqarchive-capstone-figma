@@ -1,8 +1,8 @@
 <x-layouts::app :title="__('Documents')">
     @php
         $userRole = auth()->user()->role;
-        $canSeeCommonDocs = in_array($userRole, ['iqa-admin', 'iqa-member', 'task-force', 'task-force-member', 'program-chair', 'college-head']) || auth()->user()->hasAnyRole(['iqa-admin', 'iqa-member', 'task-force', 'task-force-member', 'program-chair', 'college-head']);
-        $canSeeInstitutionalDocs = in_array($userRole, ['iqa-admin', 'iqa-member']) || auth()->user()->hasRole('iqa-admin') || auth()->user()->hasRole('iqa-member');
+        $canSeeCommonDocs = in_array($userRole, ['iqa-staff', 'task-force-member', 'college-head', 'system-administrator']) || auth()->user()->hasAnyRole(['iqa-staff', 'task-force-member', 'college-head', 'system-administrator']);
+        $canSeeInstitutionalDocs = in_array($userRole, ['iqa-staff', 'system-administrator']) || auth()->user()->hasAnyRole(['iqa-staff', 'system-administrator']);
         $defaultTab = $canSeeCommonDocs ? 'common-documents' : 'program-accreditation';
         $activeTab = request()->query('tab', $defaultTab);
         if (!$canSeeCommonDocs && $activeTab === 'common-documents') {

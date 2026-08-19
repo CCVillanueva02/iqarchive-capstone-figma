@@ -7,16 +7,13 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    // Seed roles
+    // Seed 6 target roles
     Role::firstOrCreate(['role_name' => 'system-administrator'], ['role_name' => 'system-administrator']);
-    Role::firstOrCreate(['role_name' => 'iqa-admin'], ['role_name' => 'iqa-admin']);
-    Role::firstOrCreate(['role_name' => 'iqa-member'], ['role_name' => 'iqa-member']);
-    Role::firstOrCreate(['role_name' => 'task-force'], ['role_name' => 'task-force']);
-    Role::firstOrCreate(['role_name' => 'task-force-member'], ['role_name' => 'task-force-member']);
-    Role::firstOrCreate(['role_name' => 'program-chair'], ['role_name' => 'program-chair']);
-    Role::firstOrCreate(['role_name' => 'college-head'], ['role_name' => 'college-head']);
-    Role::firstOrCreate(['role_name' => 'university-administrator'], ['role_name' => 'university-administrator']);
+    Role::firstOrCreate(['role_name' => 'iqa-staff'], ['role_name' => 'iqa-staff']);
     Role::firstOrCreate(['role_name' => 'accreditor'], ['role_name' => 'accreditor']);
+    Role::firstOrCreate(['role_name' => 'university-administrator'], ['role_name' => 'university-administrator']);
+    Role::firstOrCreate(['role_name' => 'college-head'], ['role_name' => 'college-head']);
+    Role::firstOrCreate(['role_name' => 'task-force-member'], ['role_name' => 'task-force-member']);
 });
 
 function createUserWithRole(string $roleName): User
@@ -27,44 +24,14 @@ function createUserWithRole(string $roleName): User
     ]);
 }
 
-test('program chair can see Common Documents subtab link when on documents page', function () {
-    $user = createUserWithRole('program-chair');
+test('college head can see Common Documents subtab link when on documents page', function () {
+    $user = createUserWithRole('college-head');
 
     $response = $this->actingAs($user)
-        ->get(route('documents.program-chair', ['tab' => 'common-documents']));
+        ->get(route('documents.college-head', ['tab' => 'common-documents']));
 
     $response->assertOk();
     $response->assertSee('Common Documents');
-});
-
-test('system administrator cannot see Task Forces sidebar link', function () {
-    $user = createUserWithRole('system-administrator');
-
-    $response = $this->actingAs($user)
-        ->get(route('dashboard.system-administrator'));
-
-    $response->assertOk();
-    $response->assertDontSee(route('task-forces.index'));
-});
-
-test('iqa member cannot see Task Forces sidebar link', function () {
-    $user = createUserWithRole('iqa-member');
-
-    $response = $this->actingAs($user)
-        ->get(route('dashboard.iqa-member'));
-
-    $response->assertOk();
-    $response->assertDontSee(route('task-forces.index'));
-});
-
-test('task force lead cannot see Task Forces sidebar link', function () {
-    $user = createUserWithRole('task-force');
-
-    $response = $this->actingAs($user)
-        ->get(route('dashboard.task-force'));
-
-    $response->assertOk();
-    $response->assertDontSee(route('task-forces.index'));
 });
 
 test('task force member cannot see Task Forces sidebar link', function () {
@@ -77,11 +44,11 @@ test('task force member cannot see Task Forces sidebar link', function () {
     $response->assertDontSee(route('task-forces.index'));
 });
 
-test('iqa admin CAN see Task Forces sidebar link', function () {
-    $user = createUserWithRole('iqa-admin');
+test('iqa staff CAN see Task Forces sidebar link', function () {
+    $user = createUserWithRole('iqa-staff');
 
     $response = $this->actingAs($user)
-        ->get(route('dashboard.iqa-admin'));
+        ->get(route('dashboard.iqa-staff'));
 
     $response->assertOk();
     $response->assertSee(route('task-forces.index'));
@@ -97,21 +64,21 @@ test('university admin CAN see Task Forces sidebar link', function () {
     $response->assertSee(route('task-forces.index'));
 });
 
-test('program chair CAN see Task Forces sidebar link', function () {
-    $user = createUserWithRole('program-chair');
+test('college head CAN see Task Forces sidebar link', function () {
+    $user = createUserWithRole('college-head');
 
     $response = $this->actingAs($user)
-        ->get(route('dashboard.program-chair'));
+        ->get(route('dashboard.college-head'));
 
     $response->assertOk();
     $response->assertSee(route('task-forces.index'));
 });
 
-test('iqa admin can access Audit Trail without 403', function () {
-    $user = createUserWithRole('iqa-admin');
+test('iqa staff can access Audit Trail without 403', function () {
+    $user = createUserWithRole('iqa-staff');
 
     $response = $this->actingAs($user)
-        ->get(route('audit-trail.iqa-admin'));
+        ->get(route('audit-trail.iqa-staff'));
 
     $response->assertOk();
 });
@@ -125,7 +92,7 @@ test('system administrator can access Audit Trail without 403', function () {
     $response->assertOk();
 });
 
-test('iqa admin and system administrator can access university analytics and reports without 403', function (string $roleName) {
+test('iqa staff and system administrator can access university analytics and reports without 403', function (string $roleName) {
     $user = createUserWithRole($roleName);
 
     $responseAnalytics = $this->actingAs($user)->get(route('analytics.university-administrator'));
@@ -133,4 +100,4 @@ test('iqa admin and system administrator can access university analytics and rep
 
     $responseReports = $this->actingAs($user)->get(route('reports.university-administrator'));
     $responseReports->assertOk();
-})->with(['iqa-admin', 'system-administrator', 'university-administrator']);
+})->with(['iqa-staff', 'system-administrator', 'university-administrator']);

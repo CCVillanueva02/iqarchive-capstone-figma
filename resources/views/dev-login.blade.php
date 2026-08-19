@@ -43,11 +43,11 @@
 
         <hr class="border-slate-800" />
 
-        <!-- Single Role Accounts Grid -->
+        <!-- Single Role Accounts Grid (6 Roles Scale) -->
         <div class="flex flex-col gap-3">
             <h2 class="text-body-sm font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2">
                 <span>Single Role Accounts</span>
-                <span class="text-label bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-normal">Standard</span>
+                <span class="text-label bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full font-normal">6 Core Roles</span>
             </h2>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -57,52 +57,34 @@
                     <span class="text-xs text-slate-500 mt-0.5 font-mono">sysadmin@example.com</span>
                 </a>
 
-                <!-- IQA Admin -->
-                <a href="{{ route('dev.login', 'iqa-admin') }}" class="group flex flex-col p-3.5 bg-slate-900 border border-slate-800 rounded-2xl hover:border-orange-500/50 hover:bg-slate-850/50 transition-all duration-200 shadow-sm">
-                    <span class="text-sm font-semibold text-slate-100 group-hover:text-orange-400 transition-colors">IQA Administrator</span>
-                    <span class="text-xs text-slate-500 mt-0.5 font-mono">iqaadmin@example.com</span>
-                </a>
-
-                <!-- IQA Member -->
-                <a href="{{ route('dev.login', 'iqa-member') }}" class="group flex flex-col p-3.5 bg-slate-900 border border-slate-800 rounded-2xl hover:border-orange-500/50 hover:bg-slate-850/50 transition-all duration-200 shadow-sm">
+                <!-- IQA Staff -->
+                <a href="{{ route('dev.login', 'iqa-staff') }}" class="group flex flex-col p-3.5 bg-slate-900 border border-slate-800 rounded-2xl hover:border-orange-500/50 hover:bg-slate-850/50 transition-all duration-200 shadow-sm">
                     <span class="text-sm font-semibold text-slate-100 group-hover:text-orange-400 transition-colors">IQA Member</span>
-                    <span class="text-xs text-slate-500 mt-0.5 font-mono">iqamember@example.com</span>
+                    <span class="text-xs text-slate-500 mt-0.5 font-mono">iqastaff@example.com</span>
                 </a>
 
                 <!-- Accreditor -->
                 <a href="{{ route('dev.login', 'accreditor') }}" class="group flex flex-col p-3.5 bg-slate-900 border border-slate-800 rounded-2xl hover:border-orange-500/50 hover:bg-slate-850/50 transition-all duration-200 shadow-sm">
-                    <span class="text-sm font-semibold text-slate-100 group-hover:text-orange-400 transition-colors">Accreditor</span>
+                    <span class="text-sm font-semibold text-slate-100 group-hover:text-orange-400 transition-colors">AACCUP Accreditor</span>
                     <span class="text-xs text-slate-500 mt-0.5 font-mono">accreditor@example.com</span>
                 </a>
 
-                <!-- University Admin -->
+                <!-- BU Executive -->
                 <a href="{{ route('dev.login', 'university-administrator') }}" class="group flex flex-col p-3.5 bg-slate-900 border border-slate-800 rounded-2xl hover:border-orange-500/50 hover:bg-slate-850/50 transition-all duration-200 shadow-sm">
-                    <span class="text-sm font-semibold text-slate-100 group-hover:text-orange-400 transition-colors">University Administrator</span>
-                    <span class="text-xs text-slate-500 mt-0.5 font-mono">buadmin@example.com</span>
+                    <span class="text-sm font-semibold text-slate-100 group-hover:text-orange-400 transition-colors">BU Executive</span>
+                    <span class="text-xs text-slate-500 mt-0.5 font-mono">buexecutive@example.com</span>
                 </a>
 
-                <!-- Task Force Lead -->
-                <a href="{{ route('dev.login', 'task-force') }}" class="group flex flex-col p-3.5 bg-slate-900 border border-slate-800 rounded-2xl hover:border-orange-500/50 hover:bg-slate-850/50 transition-all duration-200 shadow-sm">
-                    <span class="text-sm font-semibold text-slate-100 group-hover:text-orange-400 transition-colors">Task Force Lead</span>
-                    <span class="text-xs text-slate-500 mt-0.5 font-mono">taskforce@example.com</span>
+                <!-- College Head -->
+                <a href="{{ route('dev.login', 'college-head') }}" class="group flex flex-col p-3.5 bg-slate-900 border border-slate-800 rounded-2xl hover:border-orange-500/50 hover:bg-slate-850/50 transition-all duration-200 shadow-sm">
+                    <span class="text-sm font-semibold text-slate-100 group-hover:text-orange-400 transition-colors">College Head</span>
+                    <span class="text-xs text-slate-500 mt-0.5 font-mono">dean@example.com</span>
                 </a>
 
                 <!-- Task Force Member -->
                 <a href="{{ route('dev.login', 'task-force-member') }}" class="group flex flex-col p-3.5 bg-slate-900 border border-slate-800 rounded-2xl hover:border-orange-500/50 hover:bg-slate-850/50 transition-all duration-200 shadow-sm">
                     <span class="text-sm font-semibold text-slate-100 group-hover:text-orange-400 transition-colors">Task Force Member</span>
-                    <span class="text-xs text-slate-500 mt-0.5 font-mono">taskforcemember@example.com</span>
-                </a>
-
-                <!-- College Head -->
-                <a href="{{ route('dev.login', 'dean') }}" class="group flex flex-col p-3.5 bg-slate-900 border border-slate-800 rounded-2xl hover:border-orange-500/50 hover:bg-slate-850/50 transition-all duration-200 shadow-sm">
-                    <span class="text-sm font-semibold text-slate-100 group-hover:text-orange-400 transition-colors">College Head (Dean)</span>
-                    <span class="text-xs text-slate-500 mt-0.5 font-mono">dean@example.com</span>
-                </a>
-
-                <!-- Program Chair -->
-                <a href="{{ route('dev.login', 'program-chair') }}" class="group flex flex-col p-3.5 bg-slate-900 border border-slate-800 rounded-2xl hover:border-orange-500/50 hover:bg-slate-850/50 transition-all duration-200 shadow-sm">
-                    <span class="text-sm font-semibold text-slate-100 group-hover:text-orange-400 transition-colors">Program Chair</span>
-                    <span class="text-xs text-slate-500 mt-0.5 font-mono">chair@example.com</span>
+                    <span class="text-xs text-slate-500 mt-0.5 font-mono">tfmember@example.com</span>
                 </a>
             </div>
         </div>
@@ -116,38 +98,27 @@
                 <span class="text-[10px] bg-orange-500/20 text-orange-300 px-2 py-0.5 rounded-full font-bold">Multi View</span>
             </h2>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <!-- IQA Member + Task Force Lead -->
-                <a href="{{ route('dev.login', 'iqa-member-multi') }}" class="group flex flex-col p-3.5 bg-slate-900 border border-orange-500/30 rounded-2xl hover:border-orange-500 hover:bg-slate-850 transition-all duration-200 shadow-sm">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <!-- IQA Staff + Task Force Member -->
+                <a href="{{ route('dev.login', 'iqa-staff-multi') }}" class="group flex flex-col p-3.5 bg-slate-900 border border-orange-500/30 rounded-2xl hover:border-orange-500 hover:bg-slate-850 transition-all duration-200 shadow-sm">
                     <div class="flex flex-col gap-1">
                         <span class="text-xs font-bold text-orange-400">IQA Member</span>
-                        <span class="text-xs text-slate-300 font-semibold flex items-center gap-1">
-                            <span>+ Task Force Lead</span>
-                        </span>
-                    </div>
-                    <span class="text-[11px] text-slate-500 mt-2 font-mono truncate">iqamember-multirole@example.com</span>
-                </a>
-
-                <!-- College Head + Task Force Lead -->
-                <a href="{{ route('dev.login', 'dean-multi') }}" class="group flex flex-col p-3.5 bg-slate-900 border border-orange-500/30 rounded-2xl hover:border-orange-500 hover:bg-slate-850 transition-all duration-200 shadow-sm">
-                    <div class="flex flex-col gap-1">
-                        <span class="text-xs font-bold text-orange-400">College Head (Dean)</span>
-                        <span class="text-xs text-slate-300 font-semibold flex items-center gap-1">
-                            <span>+ Task Force Lead</span>
-                        </span>
-                    </div>
-                    <span class="text-[11px] text-slate-500 mt-2 font-mono truncate">dean-multirole@example.com</span>
-                </a>
-
-                <!-- Program Chair + Task Force Member -->
-                <a href="{{ route('dev.login', 'program-chair-multi') }}" class="group flex flex-col p-3.5 bg-slate-900 border border-orange-500/30 rounded-2xl hover:border-orange-500 hover:bg-slate-850 transition-all duration-200 shadow-sm">
-                    <div class="flex flex-col gap-1">
-                        <span class="text-xs font-bold text-orange-400">Program Chair</span>
                         <span class="text-xs text-slate-300 font-semibold flex items-center gap-1">
                             <span>+ Task Force Member</span>
                         </span>
                     </div>
-                    <span class="text-[11px] text-slate-500 mt-2 font-mono truncate">chair-multirole@example.com</span>
+                    <span class="text-[11px] text-slate-500 mt-2 font-mono truncate">iqastaff-multi@example.com</span>
+                </a>
+
+                <!-- College Head + Task Force Member -->
+                <a href="{{ route('dev.login', 'dean-multi') }}" class="group flex flex-col p-3.5 bg-slate-900 border border-orange-500/30 rounded-2xl hover:border-orange-500 hover:bg-slate-850 transition-all duration-200 shadow-sm">
+                    <div class="flex flex-col gap-1">
+                        <span class="text-xs font-bold text-orange-400">College Head</span>
+                        <span class="text-xs text-slate-300 font-semibold flex items-center gap-1">
+                            <span>+ Task Force Member</span>
+                        </span>
+                    </div>
+                    <span class="text-[11px] text-slate-500 mt-2 font-mono truncate">dean-multi@example.com</span>
                 </a>
             </div>
         </div>
