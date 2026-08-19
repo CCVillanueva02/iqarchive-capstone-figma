@@ -198,6 +198,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('task-forces', \App\Livewire\TaskForce\TaskForceOverview::class)
         ->name('task-forces.index');
 
+    // Colleges & Programs Configuration Management
+    Route::get('configuration/colleges-programs', \App\Livewire\Configuration\CollegesPrograms::class)
+        ->name('configuration.colleges-programs');
+
     // Document Submission Store (Program Chair / College Head / Task Force / IQA Member)
     Route::post('submissions/store', [SubmissionController::class, 'store'])->name('submissions.store');
     Route::post('submissions/{id}/review', [SubmissionController::class, 'review'])->name('submissions.review');

@@ -126,6 +126,16 @@ class AppServiceProvider extends ServiceProvider
      */
     protected function configureAuthorization(): void
     {
+        // Only IQA Staff (and System Administrator) can manage (add/edit/soft-delete) Colleges & Programs
+        Gate::define('manageCollegesAndPrograms', function (\App\Models\User $user) {
+            return $user->hasRole(['iqa-staff', 'system-administrator']);
+        });
+
+        // Authorized roles can view Colleges & Programs configuration
+        Gate::define('viewCollegesAndPrograms', function (\App\Models\User $user) {
+            return $user->hasRole(['iqa-staff', 'system-administrator', 'university-administrator', 'college-head', 'task-force-member']);
+        });
+
         // Only IQA Staff (and System Administrator) can manage (add/remove) Task Force members
         Gate::define('manageTaskForceMembers', function (\App\Models\User $user) {
             return $user->hasRole(['iqa-staff', 'system-administrator']);
