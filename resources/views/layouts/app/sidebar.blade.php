@@ -16,24 +16,37 @@
     }
     @endphp
 
-    <div x-data="{
-             restoreScroll() {
-                 const stored = sessionStorage.getItem('sidebar_scroll_top');
-                 if (stored !== null) {
-                     this.$el.scrollTop = parseInt(stored, 10);
+    <!-- Wrapper for Scrollable Nav Area & Low-Opacity Chevron Indicator -->
+    <div class="relative flex-1 min-h-0 flex flex-col">
+        <div x-data="{
+                 hasMoreBelow: false,
+                 checkScroll() {
+                     const el = this.$el;
+                     const isOverflowing = el.scrollHeight > el.clientHeight;
+                     const isAtBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 4;
+                     this.hasMoreBelow = isOverflowing && !isAtBottom;
+                 },
+                 restoreScroll() {
+                     const stored = sessionStorage.getItem('sidebar_scroll_top');
+                     if (stored !== null) {
+                         this.$el.scrollTop = parseInt(stored, 10);
+                     }
+                     this.checkScroll();
+                 },
+                 saveScroll() {
+                     sessionStorage.setItem('sidebar_scroll_top', this.$el.scrollTop);
+                     this.checkScroll();
                  }
-             },
-             saveScroll() {
-                 sessionStorage.setItem('sidebar_scroll_top', this.$el.scrollTop);
-             }
-         }"
-        x-init="
-             restoreScroll();
-             this.$nextTick(() => restoreScroll());
-             document.addEventListener('livewire:navigated', () => restoreScroll());
-         "
-        @scroll.debounce.50ms="saveScroll()"
-        class="flex flex-col gap-[6px] flex-1 py-6 overflow-y-auto no-scrollbar relative">
+             }"
+             x-init="
+                 restoreScroll();
+                 this.$nextTick(() => restoreScroll());
+                 document.addEventListener('livewire:navigated', () => restoreScroll());
+             "
+             x-ref="scrollContainer"
+             @scroll.debounce.50ms="saveScroll()"
+             @resize.window.debounce.100ms="checkScroll()"
+             class="flex flex-col gap-[6px] flex-1 py-6 overflow-y-auto no-scrollbar relative">
 
         <div class="px-6 pb-1">
             <span class="text-label-xs font-bold uppercase tracking-[1.5px] text-white/40">Accreditation</span>
@@ -261,6 +274,26 @@
         </div>
         @endif
 
+    </div>
+
+        <!-- Subtle Low-Opacity Downward Chevron Overflow Indicator -->
+        <button type="button"
+                x-show="hasMoreBelow"
+                x-cloak
+                x-transition:enter="transition-opacity ease-out duration-200"
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100"
+                x-transition:leave="transition-opacity ease-in duration-150"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
+                @click="$refs.scrollContainer.scrollBy({ top: 120, behavior: 'smooth' })"
+                title="Scroll down for more"
+                aria-label="Scroll down for more items"
+                class="absolute bottom-2 left-1/2 -translate-x-1/2 p-1.5 rounded-full bg-white/5 border border-white/10 text-white/40 hover:text-white/80 hover:bg-white/15 transition-all cursor-pointer z-20 pointer-events-auto select-none group">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="transition-transform group-hover:translate-y-0.5">
+                <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+        </button>
     </div>
 
 
