@@ -1718,50 +1718,29 @@ window.documentWorkspace = function (initialState = {}) {
         },
 
         get availableColleges() {
-            const defaultCollegeMeta = {
-                'CS': { code: 'CS', name: 'BU College of Science', iconBg: 'bg-blue-50 text-[#1b355a]', description: 'Computer Science, Information Technology, Biology, Chemistry' },
-                'CENG': { code: 'CENG', name: 'BU College of Engineering', iconBg: 'bg-amber-50 text-amber-700', description: 'Civil, Mechanical, and Electrical Engineering' },
-                'CAL': { code: 'CAL', name: 'BU College of Arts & Letters', iconBg: 'bg-rose-50 text-rose-700', description: 'Communication, Languages, Humanities' },
-                'CED': { code: 'CED', name: 'BU College of Education', iconBg: 'bg-purple-50 text-purple-700', description: 'Elementary and Secondary Teacher Education' },
-                'CN': { code: 'CN', name: 'BU College of Nursing', iconBg: 'bg-teal-50 text-teal-700', description: 'Nursing and Health Sciences' },
-                'CBEM': { code: 'CBEM', name: 'BU College of Business, Economics & Management', iconBg: 'bg-emerald-50 text-emerald-700', description: 'Business Administration, Accountancy, Economics' }
-            };
-
-            let list = [];
-
-            if (this.collegesList && this.collegesList.length > 0) {
-                list = this.collegesList.map(c => {
-                    const code = c.code || (c.name ? c.name.split(' ').pop() : 'COL');
-                    const meta = defaultCollegeMeta[code] || { code, name: c.name, iconBg: 'bg-slate-100 text-[#1b355a]', description: 'Academic College Unit' };
-                    const count = this.programsList.filter(p => p.college_id === c.id || p.collegeCode === code || (p.college && p.college.toLowerCase().includes(c.name.toLowerCase()))).length;
-                    return {
-                        id: c.id || code,
-                        code: code,
-                        name: c.name || meta.name,
-                        description: meta.description,
-                        iconBg: meta.iconBg,
-                        programCount: count
-                    };
-                });
-            } else {
-                const codes = ['CS', 'CENG', 'CAL', 'CED', 'CN', 'CBEM'];
-                list = codes.map(code => {
-                    const meta = defaultCollegeMeta[code];
-                    const count = this.programsList.filter(p => p.collegeCode === code || (p.college && p.college.includes(meta.name))).length;
-                    return {
-                        id: code.toLowerCase(),
-                        code: code,
-                        name: meta.name,
-                        description: meta.description,
-                        iconBg: meta.iconBg,
-                        programCount: count
-                    };
-                });
-            }
+            let list = (this.collegesList || []).map(c => {
+                const count = c.programCount !== undefined 
+                    ? c.programCount 
+                    : (c.programs_count !== undefined 
+                        ? c.programs_count 
+                        : this.programsList.filter(p => p.college_id === c.id || p.collegeCode === c.code || (p.college && p.college.toLowerCase().includes(c.name.toLowerCase()))).length);
+                return {
+                    id: c.id,
+                    code: c.code,
+                    name: c.name,
+                    description: c.campus || c.description || 'Academic Unit',
+                    iconBg: c.iconBg || 'bg-slate-100 text-[#1b355a]',
+                    programCount: count
+                };
+            });
 
             if (this.collegeSearchQuery) {
                 const q = this.collegeSearchQuery.toLowerCase().trim();
-                list = list.filter(c => c.name.toLowerCase().includes(q) || c.code.toLowerCase().includes(q) || (c.description && c.description.toLowerCase().includes(q)));
+                list = list.filter(c => 
+                    (c.name && c.name.toLowerCase().includes(q)) || 
+                    (c.code && c.code.toLowerCase().includes(q)) || 
+                    (c.description && c.description.toLowerCase().includes(q))
+                );
             }
 
             return list;

@@ -22,6 +22,17 @@ class ProgramController extends Controller
                 'CED' => 'bg-purple-50 text-purple-700',
                 'CN' => 'bg-teal-50 text-teal-700',
                 'CBEM' => 'bg-emerald-50 text-emerald-700',
+                'CSSP' => 'bg-indigo-50 text-indigo-700',
+                'IDA' => 'bg-[#002b61]/10 text-[#002b61]',
+                'CIT' => 'bg-orange-50 text-orange-700',
+                'IPESR' => 'bg-cyan-50 text-cyan-700',
+                'JMRIGD' => 'bg-yellow-50 text-yellow-800',
+                'CM' => 'bg-red-50 text-red-700',
+                'CDM' => 'bg-sky-50 text-sky-700',
+                'BUG' => 'bg-lime-50 text-lime-800',
+                'BUP' => 'bg-violet-50 text-violet-700',
+                'BUTC' => 'bg-fuchsia-50 text-fuchsia-700',
+                'BUGC' => 'bg-emerald-50 text-emerald-800',
                 default => 'bg-slate-100 text-slate-700',
             };
 
@@ -97,8 +108,43 @@ class ProgramController extends Controller
 
     public function getColleges()
     {
-        $colleges = College::orderBy('name')->get(['id', 'name', 'code']);
-        return response()->json($colleges);
+        $colleges = College::withCount('programs')->orderBy('campus', 'asc')->orderBy('name', 'asc')->get();
+
+        $data = $colleges->map(function ($c) {
+            $code = $c->code;
+            $iconBg = match ($code) {
+                'CS' => 'bg-blue-50 text-[#1b355a]',
+                'CENG' => 'bg-amber-50 text-amber-700',
+                'CAL' => 'bg-rose-50 text-rose-700',
+                'CED' => 'bg-purple-50 text-purple-700',
+                'CN' => 'bg-teal-50 text-teal-700',
+                'CBEM' => 'bg-emerald-50 text-emerald-700',
+                'CSSP' => 'bg-indigo-50 text-indigo-700',
+                'IDA' => 'bg-[#002b61]/10 text-[#002b61]',
+                'CIT' => 'bg-orange-50 text-orange-700',
+                'IPESR' => 'bg-cyan-50 text-cyan-700',
+                'JMRIGD' => 'bg-yellow-50 text-yellow-800',
+                'CM' => 'bg-red-50 text-red-700',
+                'CDM' => 'bg-sky-50 text-sky-700',
+                'BUG' => 'bg-lime-50 text-lime-800',
+                'BUP' => 'bg-violet-50 text-violet-700',
+                'BUTC' => 'bg-fuchsia-50 text-fuchsia-700',
+                'BUGC' => 'bg-emerald-50 text-emerald-800',
+                default => 'bg-slate-100 text-slate-700',
+            };
+
+            return [
+                'id' => $c->id,
+                'name' => $c->name,
+                'code' => $c->code,
+                'campus' => $c->campus ?: 'BU Campus',
+                'description' => $c->campus ?: 'BU Academic Unit',
+                'iconBg' => $iconBg,
+                'programCount' => $c->programs_count,
+            ];
+        });
+
+        return response()->json($data);
     }
 
     /**
