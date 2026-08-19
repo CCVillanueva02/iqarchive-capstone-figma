@@ -147,16 +147,7 @@
                         <div class="flex items-center gap-2 flex-wrap">
                             <!-- College / Unit Name -->
                             <span class="text-primary font-bold text-heading-sm truncate">{{ $college->name }}</span>
-                            <!-- Code Badge -->
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-label font-bold bg-blue-50 text-primary border border-blue-100">
-                                {{ $college->code }}
-                            </span>
-                            <!-- Campus / Town Badge -->
-                            @if($college->campus)
-                            <span class="inline-flex items-center px-2 py-0.5 rounded-md text-label-xs font-semibold bg-slate-200/70 text-slate-700">
-                                📍 {{ $college->campus }}
-                            </span>
-                            @endif
+                            
                         </div>
                         <!-- Simplified Muted Program Count Label -->
                         <span class="text-label text-slate-500 font-medium mt-0.5">
