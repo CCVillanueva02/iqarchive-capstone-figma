@@ -12,7 +12,7 @@
     @php
     $role = auth()->user()->role;
     if (in_array($role, ['iqa-admin', 'iqa-member'])) {
-        $role = 'iqa-staff';
+    $role = 'iqa-staff';
     }
     @endphp
 
@@ -27,13 +27,13 @@
                  sessionStorage.setItem('sidebar_scroll_top', this.$el.scrollTop);
              }
          }"
-         x-init="
+        x-init="
              restoreScroll();
              this.$nextTick(() => restoreScroll());
              document.addEventListener('livewire:navigated', () => restoreScroll());
          "
-         @scroll.debounce.50ms="saveScroll()"
-         class="flex flex-col gap-[6px] flex-1 py-6 overflow-y-auto no-scrollbar relative">
+        @scroll.debounce.50ms="saveScroll()"
+        class="flex flex-col gap-[6px] flex-1 py-6 overflow-y-auto no-scrollbar relative">
 
         <div class="px-6 pb-1">
             <span class="text-label-xs font-bold uppercase tracking-[1.5px] text-white/40">Accreditation</span>
@@ -73,22 +73,22 @@
                     <span>Documents</span>
                 </div>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
-                     class="transition-transform duration-200"
-                     :class="docsOpen ? 'rotate-180 text-white' : 'text-white/40 group-hover:text-white/70'">
+                    class="transition-transform duration-200"
+                    :class="docsOpen ? 'rotate-180 text-white' : 'text-white/40 group-hover:text-white/70'">
                     <polyline points="6 9 12 15 18 9"></polyline>
                 </svg>
             </button>
 
             <!-- Documents Subtabs (collapsible) -->
             <div x-show="docsOpen"
-                 x-transition:enter="transition ease-out duration-200"
-                 x-transition:enter-start="opacity-0 -translate-y-1"
-                 x-transition:enter-end="opacity-100 translate-y-0"
-                 x-transition:leave="transition ease-in duration-150"
-                 x-transition:leave-start="opacity-100 translate-y-0"
-                 x-transition:leave-end="opacity-0 -translate-y-1"
-                 x-cloak
-                 class="flex flex-col py-3 bg-black/15">
+                x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0 -translate-y-1"
+                x-transition:enter-end="opacity-100 translate-y-0"
+                x-transition:leave="transition ease-in duration-150"
+                x-transition:leave-start="opacity-100 translate-y-0"
+                x-transition:leave-end="opacity-0 -translate-y-1"
+                x-cloak
+                class="flex flex-col py-3 bg-black/15">
 
                 <!-- Vertical connecting line container -->
                 <div class="relative pl-[42px] pr-4 flex flex-col gap-0">
@@ -98,8 +98,8 @@
                     @if ($canSeeCommonDocs)
                     <!-- Common Documents -->
                     <a href="{{ route('documents.' . $role, ['tab' => 'common-documents']) }}"
-                       class="relative flex items-center gap-3 px-4 py-3 rounded-lg text-body-sm transition-all {{ ($currentDocTab === 'common-documents' && request()->routeIs('documents.' . $role)) ? 'bg-white/12 text-emerald-400 font-bold' : 'text-white/60 hover:text-white hover:bg-white/5 font-medium' }}"
-                       wire:navigate>
+                        class="relative flex items-center gap-3 px-4 py-3 rounded-lg text-body-sm transition-all {{ ($currentDocTab === 'common-documents' && request()->routeIs('documents.' . $role)) ? 'bg-white/12 text-emerald-400 font-bold' : 'text-white/60 hover:text-white hover:bg-white/5 font-medium' }}"
+                        wire:navigate>
                         <!-- Dot on the line -->
                         <span class="absolute left-[-16px] top-1/2 -translate-y-1/2 w-[7px] h-[7px] rounded-full border-[1.5px] {{ ($currentDocTab === 'common-documents' && request()->routeIs('documents.' . $role)) ? 'bg-emerald-400 border-emerald-400' : 'bg-white/20 border-white/30' }}"></span>
                         <!-- Icon -->
@@ -115,8 +115,8 @@
 
                     <!-- Program Accreditation -->
                     <a href="{{ route('documents.' . $role, ['tab' => 'program-accreditation']) }}"
-                       class="relative flex items-center gap-3 px-4 py-3 rounded-lg text-body-sm transition-all {{ ($currentDocTab === 'program-accreditation' && request()->routeIs('documents.' . $role)) ? 'bg-white/12 text-emerald-400 font-bold' : 'text-white/60 hover:text-white hover:bg-white/5 font-medium' }}"
-                       wire:navigate>
+                        class="relative flex items-center gap-3 px-4 py-3 rounded-lg text-body-sm transition-all {{ ($currentDocTab === 'program-accreditation' && request()->routeIs('documents.' . $role)) ? 'bg-white/12 text-emerald-400 font-bold' : 'text-white/60 hover:text-white hover:bg-white/5 font-medium' }}"
+                        wire:navigate>
                         <span class="absolute left-[-16px] top-1/2 -translate-y-1/2 w-[7px] h-[7px] rounded-full border-[1.5px] {{ ($currentDocTab === 'program-accreditation' && request()->routeIs('documents.' . $role)) ? 'bg-emerald-400 border-emerald-400' : 'bg-white/20 border-white/30' }}"></span>
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 {{ ($currentDocTab === 'program-accreditation' && request()->routeIs('documents.' . $role)) ? 'text-emerald-400' : 'text-white/40' }}">
                             <path d="M3 21h18"></path>
@@ -130,8 +130,8 @@
                     @if ($canSeeInstitutionalDocs)
                     <!-- Institutional Accreditation -->
                     <a href="{{ route('documents.' . $role, ['tab' => 'institutional-accreditation']) }}"
-                       class="relative flex items-center gap-3 px-4 py-3 rounded-lg text-body-sm transition-all {{ ($currentDocTab === 'institutional-accreditation' && request()->routeIs('documents.' . $role)) ? 'bg-white/12 text-emerald-400 font-bold' : 'text-white/60 hover:text-white hover:bg-white/5 font-medium' }}"
-                       wire:navigate>
+                        class="relative flex items-center gap-3 px-4 py-3 rounded-lg text-body-sm transition-all {{ ($currentDocTab === 'institutional-accreditation' && request()->routeIs('documents.' . $role)) ? 'bg-white/12 text-emerald-400 font-bold' : 'text-white/60 hover:text-white hover:bg-white/5 font-medium' }}"
+                        wire:navigate>
                         <span class="absolute left-[-16px] top-1/2 -translate-y-1/2 w-[7px] h-[7px] rounded-full border-[1.5px] {{ ($currentDocTab === 'institutional-accreditation' && request()->routeIs('documents.' . $role)) ? 'bg-emerald-400 border-emerald-400' : 'bg-white/20 border-white/30' }}"></span>
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 {{ ($currentDocTab === 'institutional-accreditation' && request()->routeIs('documents.' . $role)) ? 'text-emerald-400' : 'text-white/40' }}">
                             <rect x="4" y="10" width="16" height="11" rx="1"></rect>
@@ -165,8 +165,8 @@
         <!-- Audit Trail -->
         @if (in_array($role, ['system-administrator', 'iqa-staff']))
         @php
-            $auditTrailRoute = ($role === 'iqa-staff') ? route('audit-trail.iqa-staff') : route('reports.system-administrator');
-            $isAuditTrailActive = request()->routeIs('audit-trail.*') || request()->routeIs('reports.system-administrator');
+        $auditTrailRoute = ($role === 'iqa-staff') ? route('audit-trail.iqa-staff') : route('reports.system-administrator');
+        $isAuditTrailActive = request()->routeIs('audit-trail.*') || request()->routeIs('reports.system-administrator');
         @endphp
         <a href="{{ $auditTrailRoute }}" class="group flex items-center gap-[14px] px-6 py-[14px] border-l-[4px] text-body font-semibold transition-all {{ $isAuditTrailActive ? 'bg-white/10 text-white border-l-brand-orange' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
