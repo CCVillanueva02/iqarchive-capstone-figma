@@ -35,6 +35,7 @@ window.documentWorkspace = function (initialState = {}) {
         selfSurveyActiveAreaId: 'ss_area_i1', // default to Area I; string = viewing that area's table
         selfSurveyRatings: {},             // { indicatorKey: 1-5 | null }
         selfSurveyBestPractices: {},       // { paramKey: 'text...' }
+        selfSurveyPreparedBy: '',          // prepared by name
         selfSurveySaving: false,           // debounce guard
 
         // === Narrative Profile State ===
@@ -86,164 +87,7 @@ window.documentWorkspace = function (initialState = {}) {
         autoSaveTimer: null,
 
         // List of academic programs for Program Accreditation selection UI
-        programsList: [
-            {
-                id: 'bscs',
-                code: 'BSCS',
-                name: 'BS Computer Science',
-                college: 'BU College of Science',
-                collegeCode: 'CS',
-                level: 'Level IV Re-accredited',
-                progress: 88,
-                totalDocs: 612,
-                verifiedDocs: 540,
-                status: 'Compliant',
-                iconBg: 'bg-blue-50 text-[#1b355a]'
-            },
-            {
-                id: 'bsit',
-                code: 'BSIT',
-                name: 'BS Information Technology',
-                college: 'BU College of Science',
-                collegeCode: 'CS',
-                level: 'Level III Accredited',
-                progress: 76,
-                totalDocs: 480,
-                verifiedDocs: 390,
-                status: 'Compliant',
-                iconBg: 'bg-sky-50 text-sky-700'
-            },
-            {
-                id: 'bsbio',
-                code: 'BSBIO',
-                name: 'BS Biology',
-                college: 'BU College of Science',
-                collegeCode: 'CS',
-                level: 'Level III Accredited',
-                progress: 92,
-                totalDocs: 510,
-                verifiedDocs: 470,
-                status: 'Compliant',
-                iconBg: 'bg-emerald-50 text-emerald-700'
-            },
-            {
-                id: 'bschem',
-                code: 'BSCHEM',
-                name: 'BS Chemistry',
-                college: 'BU College of Science',
-                collegeCode: 'CS',
-                level: 'Level II Accredited',
-                progress: 65,
-                totalDocs: 320,
-                verifiedDocs: 240,
-                status: 'Under Review',
-                iconBg: 'bg-indigo-50 text-indigo-700'
-            },
-            {
-                id: 'bsce',
-                code: 'BSCE',
-                name: 'BS Civil Engineering',
-                college: 'BU College of Engineering',
-                collegeCode: 'CENG',
-                level: 'Level III Accredited',
-                progress: 82,
-                totalDocs: 540,
-                verifiedDocs: 460,
-                status: 'Compliant',
-                iconBg: 'bg-amber-50 text-amber-700'
-            },
-            {
-                id: 'bsme',
-                code: 'BSME',
-                name: 'BS Mechanical Engineering',
-                college: 'BU College of Engineering',
-                collegeCode: 'CENG',
-                level: 'Level II Accredited',
-                progress: 70,
-                totalDocs: 410,
-                verifiedDocs: 310,
-                status: 'Under Review',
-                iconBg: 'bg-orange-50 text-orange-700'
-            },
-            {
-                id: 'bsee',
-                code: 'BSEE',
-                name: 'BS Electrical Engineering',
-                college: 'BU College of Engineering',
-                collegeCode: 'CENG',
-                level: 'Level II Accredited',
-                progress: 68,
-                totalDocs: 390,
-                verifiedDocs: 285,
-                status: 'Under Review',
-                iconBg: 'bg-[#1b355a]/10 text-[#1b355a]'
-            },
-            {
-                id: 'bacomm',
-                code: 'BACOMM',
-                name: 'BA Communication',
-                college: 'BU College of Arts & Letters',
-                collegeCode: 'CAL',
-                level: 'Level IV Re-accredited',
-                progress: 94,
-                totalDocs: 590,
-                verifiedDocs: 560,
-                status: 'Compliant',
-                iconBg: 'bg-rose-50 text-rose-700'
-            },
-            {
-                id: 'bsn',
-                code: 'BSN',
-                name: 'BS Nursing',
-                college: 'BU College of Nursing',
-                collegeCode: 'CN',
-                level: 'Level IV Re-accredited',
-                progress: 98,
-                totalDocs: 720,
-                verifiedDocs: 705,
-                status: 'Compliant',
-                iconBg: 'bg-teal-50 text-teal-700'
-            },
-            {
-                id: 'bsed',
-                code: 'BSED',
-                name: 'Bachelor of Secondary Education',
-                college: 'BU College of Education',
-                collegeCode: 'CED',
-                level: 'Level IV Re-accredited',
-                progress: 95,
-                totalDocs: 680,
-                verifiedDocs: 646,
-                status: 'Compliant',
-                iconBg: 'bg-purple-50 text-purple-700'
-            },
-            {
-                id: 'bsba',
-                code: 'BSBA',
-                name: 'BS Business Administration',
-                college: 'BU College of Business, Economics & Management',
-                collegeCode: 'CBEM',
-                level: 'Level III Accredited',
-                progress: 80,
-                totalDocs: 490,
-                verifiedDocs: 415,
-                status: 'Compliant',
-                iconBg: 'bg-yellow-50 text-yellow-700'
-            },
-            {
-                id: 'bsa',
-                code: 'BSA',
-                name: 'BS Accountancy',
-                college: 'BU College of Business, Economics & Management',
-                collegeCode: 'CBEM',
-                level: 'Level III Accredited',
-                progress: 88,
-                totalDocs: 530,
-                verifiedDocs: 480,
-                status: 'Compliant',
-                iconBg: 'bg-emerald-50 text-emerald-700'
-            }
-        ],
+        programsList: [],
 
         // Accreditation mock data
         accredData: {
@@ -2049,12 +1893,19 @@ window.documentWorkspace = function (initialState = {}) {
         /** Compute the mean of IR values for a given array of indicators */
         sectionMean(indicators) {
             if (!indicators.length) return null;
-            const rated = indicators
+            
+            // Filter out NA so they are completely excluded from calculations
+            const validIndicators = indicators.filter(ind => this.selfSurveyRatings[ind.id] !== 'NA');
+            if (!validIndicators.length) return null;
+
+            const rated = validIndicators
                 .map(ind => this.selfSurveyRatings[ind.id])
                 .filter(v => v !== null && v !== undefined && v !== '');
+                
             if (!rated.length) return null;
-            // Divide by total indicators (not just rated) so partial completion shows partial progress
-            return (rated.reduce((s, v) => s + Number(v), 0) / indicators.length).toFixed(2);
+            
+            // Divide by total valid indicators (not just rated) so partial completion shows partial progress
+            return (rated.reduce((s, v) => s + Number(v), 0) / validIndicators.length).toFixed(2);
         },
 
         /** Compute PM: average of non-null section means for a parameter */
@@ -2110,19 +1961,57 @@ window.documentWorkspace = function (initialState = {}) {
 
         /** Save a single IR rating to the server (debounced) */
         saveRating(indicatorId, value) {
-            this.selfSurveyRatings[indicatorId] = value === '' ? null : Number(value);
+            const finalValue = value === '' ? null : (value === 'NA' ? 'NA' : Number(value));
+            this.selfSurveyRatings[indicatorId] = finalValue;
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
             fetch('/api/self-survey/ratings', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken },
-                body: JSON.stringify({ indicator_id: indicatorId, rating: value === '' ? null : Number(value) })
+                body: JSON.stringify({ indicator_id: indicatorId, rating: finalValue })
             }).catch(err => console.warn('Rating save failed (offline mode):', err));
+        },
+
+        saveBestPractice(paramId, value) {
+            this.selfSurveyBestPractices[paramId] = value;
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+            fetch('/api/self-survey/best-practices', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+                body: JSON.stringify({ param_id: paramId, best_practice: value })
+            }).catch(err => console.warn('Best practice save failed (offline mode):', err));
+        },
+
+        submitSelfSurvey() {
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Self-Survey Submitted',
+                    text: 'The self-survey for this area has been successfully submitted.',
+                    confirmButtonColor: '#059669', // emerald-600
+                });
+            } else {
+                alert('Self-survey has been submitted.');
+            }
         },
         categories: [],
         documents: [],
+        offices: [],
+        selectedOffice: null,
+
+        get filteredOffices() {
+            let filterOffices = this.offices;
+            if (this.searchQuery) {
+                const query = this.searchQuery.toLowerCase();
+                filterOffices = filterOffices.filter(o =>
+                    o.name.toLowerCase().includes(query) ||
+                    (o.description && o.description.toLowerCase().includes(query))
+                );
+            }
+            return filterOffices;
+        },
 
         get filteredCategories() {
-            if (this.selectedCategory !== null) return [];
+            if (this.selectedOffice === null || this.selectedCategory !== null) return [];
             let cats = this.categories;
             if (this.searchQuery) {
                 const query = this.searchQuery.toLowerCase();
@@ -2168,6 +2057,13 @@ window.documentWorkspace = function (initialState = {}) {
 
                 return true;
             });
+        },
+
+        selectOffice(officeId) {
+            this.selectedOffice = officeId;
+            this.selectedCategory = null;
+            this.searchQuery = '';
+            this.initCategories(officeId);
         },
 
         selectCategory(catName) {
@@ -2222,7 +2118,7 @@ window.documentWorkspace = function (initialState = {}) {
                     timer: 3000
                 });
 
-                this.initCategories();
+                this.initCategories(this.selectedOffice);
             } catch (error) {
                 Swal.fire({
                     title: 'Error',
@@ -2302,7 +2198,7 @@ window.documentWorkspace = function (initialState = {}) {
                         this.closeDrawer();
                     }
 
-                    this.initCategories();
+                    this.initCategories(this.selectedOffice);
 
                 } catch (error) {
                     Swal.fire({
@@ -2315,16 +2211,143 @@ window.documentWorkspace = function (initialState = {}) {
             }
         },
 
-        showAddProgramModal: false,
-        addProgramLoading: false,
-        addProgramError: '',
-        addProgramSuccess: '',
+        showCollegeModal: false,
+        collegeForm: { id: null, name: '', code: '' },
+
+        showProgramModal: false,
+        programForm: { id: null, name: '', code: '', college_id: '', accreditation_level: 'Candidate' },
         collegesList: [],
-        newProgram: {
-            name: '',
-            code: '',
-            college_id: '',
-            accreditation_level: 'Candidate Status'
+
+        openCreateCollegeModal() {
+            this.collegeForm = { id: null, name: '', code: '' };
+            this.showCollegeModal = true;
+        },
+        openEditCollegeModal(college) {
+            this.collegeForm = { id: college.id, name: college.name, code: college.code };
+            this.showCollegeModal = true;
+        },
+        closeCollegeModal() {
+            this.showCollegeModal = false;
+        },
+        async saveCollege() {
+            if (!this.collegeForm.name || !this.collegeForm.code) {
+                Swal.fire({ icon: 'error', title: 'Error', text: 'Name and Code are required.', confirmButtonColor: '#1b355a' });
+                return;
+            }
+            const isEdit = !!this.collegeForm.id;
+            const url = isEdit ? `/api/colleges/${this.collegeForm.id}` : '/api/colleges';
+            const method = isEdit ? 'PUT' : 'POST';
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+            try {
+                const res = await fetch(url, {
+                    method,
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+                    body: JSON.stringify(this.collegeForm)
+                });
+                if (!res.ok) throw await res.json();
+                Swal.fire({ icon: 'success', title: 'Success', text: 'College saved successfully.', toast: true, position: 'top-end', showConfirmButton: false, timer: 3000 });
+                this.closeCollegeModal();
+                this.initBackendData();
+            } catch (err) {
+                let errorMsg = err.message || 'Failed to save college.';
+                if (err.errors) {
+                    errorMsg = Object.values(err.errors).flat().join('<br>');
+                }
+                Swal.fire({ icon: 'error', title: 'Error', html: errorMsg, confirmButtonColor: '#1b355a' });
+            }
+        },
+        async confirmDeleteCollege(college) {
+            const result = await Swal.fire({
+                title: 'Delete College?',
+                text: `Are you sure you want to delete ${college.name}?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                confirmButtonText: 'Yes, delete it!'
+            });
+            if (result.isConfirmed) {
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+                try {
+                    const res = await fetch(`/api/colleges/${college.id}`, {
+                        method: 'DELETE',
+                        headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken }
+                    });
+                    if (!res.ok) throw await res.json();
+                    Swal.fire({ icon: 'success', title: 'Deleted', text: 'College deleted.', toast: true, position: 'top-end', showConfirmButton: false, timer: 3000 });
+                    this.initBackendData();
+                    if (this.accredCollege && this.accredCollege.id === college.id) {
+                        this.clearCollege();
+                    }
+                } catch (err) {
+                    Swal.fire({ icon: 'error', title: 'Error', text: err.error || 'Failed to delete college.', confirmButtonColor: '#1b355a' });
+                }
+            }
+        },
+
+        openAddProgramModal() {
+            this.programForm = { id: null, name: '', code: '', college_id: this.accredCollege?.id || (this.collegesList[0]?.id || ''), accreditation_level: 'Candidate' };
+            this.showProgramModal = true;
+        },
+        openEditProgramModal(program) {
+            this.programForm = { id: program.id, name: program.name, code: program.code, college_id: program.college_id, accreditation_level: program.level || 'Candidate' };
+            this.showProgramModal = true;
+        },
+        closeProgramModal() {
+            this.showProgramModal = false;
+        },
+        async saveProgram() {
+            if (!this.programForm.name || !this.programForm.code || !this.programForm.college_id) {
+                Swal.fire({ icon: 'error', title: 'Error', text: 'Name, Code, and College are required.', confirmButtonColor: '#1b355a' });
+                return;
+            }
+            const isEdit = !!this.programForm.id;
+            const url = isEdit ? `/api/programs/${this.programForm.id}` : '/api/programs';
+            const method = isEdit ? 'PUT' : 'POST';
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+            try {
+                const res = await fetch(url, {
+                    method,
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+                    body: JSON.stringify(this.programForm)
+                });
+                if (!res.ok) throw await res.json();
+                Swal.fire({ icon: 'success', title: 'Success', text: 'Program saved successfully.', toast: true, position: 'top-end', showConfirmButton: false, timer: 3000 });
+                this.closeProgramModal();
+                this.initBackendData();
+            } catch (err) {
+                let errorMsg = err.message || 'Failed to save program.';
+                if (err.errors) {
+                    errorMsg = Object.values(err.errors).flat().join('<br>');
+                }
+                Swal.fire({ icon: 'error', title: 'Error', html: errorMsg, confirmButtonColor: '#1b355a' });
+            }
+        },
+        async confirmDeleteProgram(program) {
+            const result = await Swal.fire({
+                title: 'Delete Program?',
+                text: `Are you sure you want to delete ${program.name}?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                confirmButtonText: 'Yes, delete it!'
+            });
+            if (result.isConfirmed) {
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+                try {
+                    const res = await fetch(`/api/programs/${program.id}`, {
+                        method: 'DELETE',
+                        headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': csrfToken }
+                    });
+                    if (!res.ok) throw await res.json();
+                    Swal.fire({ icon: 'success', title: 'Deleted', text: 'Program deleted.', toast: true, position: 'top-end', showConfirmButton: false, timer: 3000 });
+                    this.initBackendData();
+                    if (this.accredProgram && this.accredProgram.id === program.id) {
+                        this.clearProgram();
+                    }
+                } catch (err) {
+                    Swal.fire({ icon: 'error', title: 'Error', text: err.error || 'Failed to delete program.', confirmButtonColor: '#1b355a' });
+                }
+            }
         },
 
         init() {
@@ -2365,12 +2388,24 @@ window.documentWorkspace = function (initialState = {}) {
                 })
                 .catch(err => console.error('Error fetching colleges:', err));
 
-            this.initCategories();
+            fetch('/api/offices')
+                .then(res => res.json())
+                .then(data => {
+                    if (Array.isArray(data)) {
+                        this.offices = data;
+                    }
+                })
+                .catch(err => console.error('Error fetching offices:', err));
         },
 
-        initCategories() {
+        initCategories(officeId = null) {
+            if (!officeId) {
+                this.categories = [];
+                this.documents = [];
+                return;
+            }
             // Fetch categories from backend
-            fetch('/api/categories')
+            fetch(`/api/categories?office_id=${officeId}`)
                 .then(res => res.json())
                 .then(data => {
                     if (Array.isArray(data)) {
@@ -2386,7 +2421,7 @@ window.documentWorkspace = function (initialState = {}) {
                 .catch(err => console.error('Error fetching categories from backend:', err));
 
             // Fetch common documents from backend
-            fetch('/api/common-documents')
+            fetch(`/api/common-documents?office_id=${officeId}`)
                 .then(res => res.json())
                 .then(data => {
                     if (Array.isArray(data)) {
@@ -2511,6 +2546,9 @@ window.documentWorkspace = function (initialState = {}) {
             }
             if (this.uploadForm.file) {
                 formData.append('file', this.uploadForm.file);
+            }
+            if (this.selectedOffice) {
+                formData.append('office_id', this.selectedOffice);
             }
 
             fetch('/api/common-documents', {

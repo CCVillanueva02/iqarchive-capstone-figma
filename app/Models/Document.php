@@ -12,6 +12,7 @@ class Document extends Model
     protected $fillable = [
         'uploaded_by',
         'program_id',
+        'office_id',
         'category_id',
         'confirmed_by',
         'confirmed_at',
@@ -38,6 +39,11 @@ class Document extends Model
     public function category()
     {
         return $this->belongsTo(DocumentCategory::class, 'category_id');
+    }
+
+    public function office()
+    {
+        return $this->belongsTo(Office::class, 'office_id');
     }
 
     public function confirmer()

@@ -1,5 +1,5 @@
 <!-- ================= STATE 1: CATEGORY SHOWCASE ================= -->
-<div x-show="selectedCategory === null" x-transition class="flex flex-col gap-6">
+<div x-show="selectedOffice !== null && selectedCategory === null" x-transition class="flex flex-col gap-6">
     @if(auth()->user()->role === 'iqa-admin' || auth()->user()->hasRole('iqa-admin'))
     <!-- IQA Admin Verification Alert Notice Banner -->
     <div x-show="documents.filter(d => d.status === 'Pending').length > 0" class="bg-amber-50/90 border border-amber-200 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-amber-900 shadow-3xs">
@@ -38,6 +38,14 @@
             
             <!-- Toolbar Action Buttons -->
             <div class="flex items-center gap-2 shrink-0">
+                <!-- Back to Offices Button -->
+                <button type="button" @click="selectedOffice = null; searchQuery = ''" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-body-sm font-bold px-4 py-3 rounded-lg flex items-center gap-1.5 transition cursor-pointer shadow-3xs mr-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                    </svg>
+                    <span>Back to Offices</span>
+                </button>
+
                 <!-- Create Category Button (Strictly for IQA Admin) -->
                 @if(auth()->user()->role === 'iqa-admin' || auth()->user()->hasRole('iqa-admin'))
                 <button type="button" @click="openCreateCategoryModal()" class="bg-primary hover:bg-primary-dark-hover text-white text-body-sm font-bold px-4 py-3 rounded-lg flex items-center gap-1.5 transition cursor-pointer shadow-3xs">

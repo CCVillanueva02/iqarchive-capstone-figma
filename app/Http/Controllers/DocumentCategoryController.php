@@ -4,14 +4,50 @@ namespace App\Http\Controllers;
 
 use App\Models\DocumentCategory;
 use App\Models\Document;
+use App\Models\Office;
 use Illuminate\Http\Request;
 
 class DocumentCategoryController extends Controller
 {
     /**
-     * Get all document categories with doc counts (including Uncategorized Documents).
+     * Get all offices for Common Documents.
      */
-    public function index()
+    public function getOffices()
+    {
+        $user = auth()->user();
+        if (!$user) {
+            return response()->json(['error' => 'Unauthenticated.'], 401);
+        }
+
+        $userRole = $user->role;
+        $isDisallowed = in_array($userRole, ['system-administrator', 'task-force', 'task-force-member', 'college-head', 'program-chair', 'university-administrator', 'accreditor'])
+            || $user->hasRole('system-administrator')
+            || $user->hasRole('task-force')
+            || $user->hasRole('task-force-member')
+            || $user->hasRole('college-head')
+            || $user->hasRole('university-administrator')
+            || $user->hasRole('accreditor');
+
+        if ($isDisallowed) {
+            return response()->json(['error' => 'Unauthorized. Restricted role cannot access common documents.'], 403);
+        }
+
+        $offices = Office::all()->map(function ($office) {
+            return [
+                'id' => $office->id,
+                'name' => $office->name,
+                'description' => $office->description ?: 'Records for ' . $office->name,
+                'docCount' => Document::where('office_id', $office->id)->count(),
+            ];
+        });
+
+        return response()->json($offices);
+    }
+
+    /**
+     * Get all document categories with doc counts (including Uncategorized Documents) for a specific office.
+     */
+    public function index(Request $request)
     {
         $defaultCategories = [
             'Faculty profile' => 'Credentials, CVs, and loads.',
@@ -55,6 +91,9 @@ class DocumentCategoryController extends Controller
             // For other authorized roles: count ONLY verified documents
             $categoriesQuery = DocumentCategory::withCount(['documents' => function ($q) {
                 $q->where('status', 'Verified');
+                if ($officeId) {
+                    $q->where('office_id', $officeId);
+                }
             }]);
         }
 
@@ -133,9 +172,9 @@ class DocumentCategoryController extends Controller
     }
 
     /**
-     * Get all common documents filtered by user role permissions.
+     * Get all common documents filtered by user role permissions and office.
      */
-    public function getDocuments()
+    public function getDocuments(Request $request)
     {
         $user = auth()->user();
 
@@ -158,10 +197,14 @@ class DocumentCategoryController extends Controller
 
         $isIqaAdmin = $userRole === 'iqa-admin' || $user->hasRole('iqa-admin');
 
-        $query = Document::with(['category', 'uploader'])
+        $query = Document::with(['category', 'uploader', 'office'])
             ->where(function ($q) {
                 $q->whereNull('program_id')->orWhere('visibility', 'public');
             });
+            
+        if ($request->has('office_id')) {
+            $query->where('office_id', $request->query('office_id'));
+        }
 
         // Non-admin roles can ONLY see Verified documents OR documents they uploaded themselves
         if (!$isIqaAdmin) {
@@ -225,6 +268,7 @@ class DocumentCategoryController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'category_name' => 'nullable|string|max:255',
+            'office_id' => 'required|exists:offices,id',
             'file' => 'nullable|file|mimes:pdf,doc,docx,xls,xlsx|max:25600',
         ]);
 
@@ -278,6 +322,7 @@ class DocumentCategoryController extends Controller
         $doc = Document::create([
             'title' => $validated['title'],
             'category_id' => $category->id,
+            'office_id' => $validated['office_id'],
             'uploaded_by' => $user->id,
             'confirmed_by' => $isIqaAdmin ? $user->id : null,
             'confirmed_at' => $isIqaAdmin ? now() : null,

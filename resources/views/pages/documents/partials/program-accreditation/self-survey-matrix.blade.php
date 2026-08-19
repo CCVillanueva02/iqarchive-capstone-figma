@@ -121,10 +121,11 @@
                                     </td>
                                     <td class="border-r border-slate-200 text-center p-1 w-[100px] min-w-[100px] max-w-[100px]">
                                         <select
-                                            disabled
+                                            @change="saveRating(ind.id, $event.target.value)"
                                             :value="selfSurveyRatings[ind.id] ?? ''"
-                                            class="w-14 mx-auto text-center text-xs font-bold text-[#1b355a] bg-slate-100 border border-slate-200 rounded-lg py-1 cursor-not-allowed opacity-80 block">
+                                            class="w-14 mx-auto text-center text-xs font-bold text-primary bg-slate-100 border border-slate-200 rounded-lg py-1 hover:bg-white focus:ring-2 focus:ring-primary/50 block cursor-pointer transition">
                                             <option value=""></option>
+                                            <option value="NA">N/A</option>
                                             <option value="0">0</option>
                                             <option value="1">1</option>
                                             <option value="2">2</option>
@@ -159,10 +160,11 @@
                                     </td>
                                     <td class="border-r border-slate-200 text-center p-1 w-[100px] min-w-[100px] max-w-[100px]">
                                         <select
-                                            disabled
+                                            @change="saveRating(ind.id, $event.target.value)"
                                             :value="selfSurveyRatings[ind.id] ?? ''"
-                                            class="w-14 mx-auto text-center text-xs font-bold text-[#1b355a] bg-slate-100 border border-slate-200 rounded-lg py-1 cursor-not-allowed opacity-80 block">
+                                            class="w-14 mx-auto text-center text-xs font-bold text-primary bg-slate-100 border border-slate-200 rounded-lg py-1 hover:bg-white focus:ring-2 focus:ring-primary/50 block cursor-pointer transition">
                                             <option value=""></option>
+                                            <option value="NA">N/A</option>
                                             <option value="0">0</option>
                                             <option value="1">1</option>
                                             <option value="2">2</option>
@@ -197,10 +199,11 @@
                                     </td>
                                     <td class="border-r border-slate-200 text-center p-1 w-[100px] min-w-[100px] max-w-[100px]">
                                         <select
-                                            disabled
+                                            @change="saveRating(ind.id, $event.target.value)"
                                             :value="selfSurveyRatings[ind.id] ?? ''"
-                                            class="w-14 mx-auto text-center text-xs font-bold text-[#1b355a] bg-slate-100 border border-slate-200 rounded-lg py-1 cursor-not-allowed opacity-80 block">
+                                            class="w-14 mx-auto text-center text-xs font-bold text-primary bg-slate-100 border border-slate-200 rounded-lg py-1 hover:bg-white focus:ring-2 focus:ring-primary/50 block cursor-pointer transition">
                                             <option value=""></option>
+                                            <option value="NA">N/A</option>
                                             <option value="0">0</option>
                                             <option value="1">1</option>
                                             <option value="2">2</option>
@@ -237,14 +240,14 @@
                             <tr class="border-b border-slate-200 bg-amber-50/30">
                                 <td colspan="4" class="px-5 py-3">
                                     <div class="flex flex-col gap-1.5">
-                                        <span class="text-xs font-extrabold text-zinc-500 uppercase tracking-wide">Best Practices: <span class="text-zinc-400 font-normal normal-case">(read-only)</span></span>
+                                        <span class="text-xs font-extrabold text-zinc-500 uppercase tracking-wide">Best Practices:</span>
                                         <textarea
-                                            readonly
                                             :id="'bp_' + param.id"
                                             x-model="selfSurveyBestPractices[param.id]"
+                                            @change="saveBestPractice(param.id, $event.target.value)"
                                             rows="3"
                                             placeholder="No best practices recorded for this parameter."
-                                            class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-zinc-700 placeholder-zinc-400 focus:outline-none cursor-not-allowed opacity-90 resize-none transition leading-relaxed">
+                                            class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-zinc-700 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition leading-relaxed">
                                         </textarea>
                                     </div>
                                 </td>
@@ -284,18 +287,26 @@
             </div>
         </div>
 
-        <div class="flex items-center justify-end gap-3 flex-wrap">
-            <div class="flex items-center gap-3">
+        <div class="flex flex-col md:flex-row items-center justify-between gap-4 mt-2">
+            <!-- Left: Prepared By -->
+            <div class="flex items-center gap-3 w-full md:w-auto">
+                <span class="text-sm font-extrabold text-zinc-500 uppercase tracking-wide shrink-0">Prepared By:</span>
+                <input type="text"
+                    x-model="selfSurveyPreparedBy"
+                    placeholder="Enter your name..."
+                    class="w-full md:w-72 px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-bold text-primary placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition shadow-3xs" />
+            </div>
+            
+            <!-- Right: Submit Button -->
+            <div class="flex items-center gap-3 w-full md:w-auto justify-end">
                 <button type="button"
-                    onclick="window.print()"
-                    class="px-5 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 text-[#1b355a] font-bold text-sm rounded-xl transition cursor-pointer shadow-3xs flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z" /></svg>
-                    Print / Export
+                    @click="submitSelfSurvey()"
+                    :disabled="!isAreaComplete(selfSurveyActiveAreaId) || !selfSurveyPreparedBy?.trim()"
+                    :class="(!isAreaComplete(selfSurveyActiveAreaId) || !selfSurveyPreparedBy?.trim()) ? 'opacity-50 cursor-not-allowed' : 'hover:bg-emerald-700 cursor-pointer'"
+                    class="px-5 py-2.5 bg-emerald-600 text-white font-bold text-sm rounded-xl transition shadow-3xs flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M10.125 2.25h-4.5c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125v-9M10.125 2.25h.375a9 9 0 019 9v.375M10.125 2.25A3.375 3.375 0 0113.5 5.625v1.5c0 .621.504 1.125 1.125 1.125h1.5a3.375 3.375 0 013.375 3.375M9 15l2.25 2.25L15 12" /></svg>
+                    Submit Self-Survey
                 </button>
-                <span class="px-4 py-2 bg-slate-100 border border-slate-200 text-zinc-500 font-bold text-xs rounded-xl flex items-center gap-1.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-zinc-400"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.573 16.49 16.638 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                    Read-Only View (IQA Admin)
-                </span>
             </div>
         </div>
     </div>

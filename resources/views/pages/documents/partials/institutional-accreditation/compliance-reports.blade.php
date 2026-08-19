@@ -2,12 +2,12 @@
 <div x-show="accredCategory === 'Compliance Reports'" x-transition class="flex flex-col gap-5"
      x-data="{ expandedDocs: {}, toggleDocs(recId) { this.expandedDocs[recId] = !this.expandedDocs[recId]; } }">
 
-    <!-- ─── Area Selector Horizontal Cards (Image 3 style - thin progress bar) ─── -->
-    <div class="flex overflow-x-auto gap-3 pb-2 w-full select-none no-scrollbar">
+    <!-- ─── Area Selector Horizontal Cards ─── -->
+    <div class="flex overflow-x-auto gap-3 pb-2 w-full select-none">
         <template x-for="area in complianceReports" :key="area.id">
             <button type="button"
-                class="flex-1 shrink-0 min-w-[180px] bg-white rounded-xl border p-4 text-left shadow-3xs transition cursor-pointer flex flex-col justify-between h-24"
-                :class="complianceActiveAreaId === area.id ? 'border-[#1b355a] ring-1 ring-[#1b355a]/30 shadow-xs' : 'border-slate-200/60 hover:border-slate-300'"
+                class="flex-1 shrink-0 min-w-[200px] bg-white rounded-xl border p-4 text-left shadow-3xs transition cursor-pointer flex flex-col justify-between h-24"
+                :class="complianceActiveAreaId === area.id ? 'border-[#1b355a] ring-1 ring-[#1b355a]/30 shadow-xs' : 'border-slate-200/60 hover:border-slate-350'"
                 @click="selectComplianceArea(area.id)">
                 <div>
                     <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block" x-text="area.code"></span>
@@ -15,7 +15,7 @@
                 </div>
                 <div class="w-full mt-2">
                     <div class="w-full h-1 bg-slate-100 rounded-full overflow-hidden">
-                        <div class="h-full rounded-full transition-all duration-500"
+                        <div class="h-full bg-emerald-500 rounded-full transition-all duration-300"
                              :class="area.progress > 0 ? 'bg-emerald-500' : 'bg-slate-200'"
                              :style="'width: ' + area.progress + '%'"></div>
                     </div>

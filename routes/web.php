@@ -210,9 +210,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Program Management & Accreditation API routes
     Route::get('api/programs', [\App\Http\Controllers\ProgramController::class, 'index'])->name('api.programs.index');
     Route::post('api/programs', [\App\Http\Controllers\ProgramController::class, 'store'])->name('api.programs.store');
+    Route::put('api/programs/{id}', [\App\Http\Controllers\ProgramController::class, 'update'])->name('api.programs.update');
+    Route::delete('api/programs/{id}', [\App\Http\Controllers\ProgramController::class, 'destroy'])->name('api.programs.destroy');
+
     Route::get('api/colleges', [\App\Http\Controllers\ProgramController::class, 'getColleges'])->name('api.colleges.index');
+    Route::post('api/colleges', [\App\Http\Controllers\CollegeController::class, 'store'])->name('api.colleges.store');
+    Route::put('api/colleges/{id}', [\App\Http\Controllers\CollegeController::class, 'update'])->name('api.colleges.update');
+    Route::delete('api/colleges/{id}', [\App\Http\Controllers\CollegeController::class, 'destroy'])->name('api.colleges.destroy');
 
     // Document Categories & Common Documents API routes
+    Route::get('api/offices', [\App\Http\Controllers\DocumentCategoryController::class, 'getOffices'])->name('api.offices.index');
     Route::get('api/categories', [\App\Http\Controllers\DocumentCategoryController::class, 'index'])->name('api.categories.index');
     Route::post('api/categories', [\App\Http\Controllers\DocumentCategoryController::class, 'store'])->name('api.categories.store');
     Route::get('api/common-documents', [\App\Http\Controllers\DocumentCategoryController::class, 'getDocuments'])->name('api.common-documents.index');
