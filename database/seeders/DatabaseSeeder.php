@@ -23,14 +23,11 @@ class DatabaseSeeder extends Seeder
         // 1. Seed Roles
         $rolesData = [
             'system-administrator' => 'System Administrator',
-            'iqa-admin' => 'IQA Admin',
-            'iqa-member' => 'IQA Staff Member',
+            'iqa-staff' => 'IQA Staff',
             'accreditor' => 'AACCUP Accreditor',
             'university-administrator' => 'BU Executive Admin',
-            'task-force' => 'QA Task Force Lead',
-            'task-force-member' => 'QA Task Force Member',
             'college-head' => 'College Head (Dean)',
-            'program-chair' => 'BU Program Chair',
+            'task-force-member' => 'QA Task Force Member',
         ];
 
         $roles = [];
@@ -166,17 +163,9 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'first_name' => 'IQA',
-                'last_name' => 'Admin',
-                'email' => 'iqaadmin@example.com',
-                'role' => 'iqa-admin',
-                'program' => null,
-                'college' => null,
-            ],
-            [
-                'first_name' => 'IQA',
-                'last_name' => 'Member',
-                'email' => 'iqamember@example.com',
-                'role' => 'iqa-member',
+                'last_name' => 'Staff',
+                'email' => 'iqastaff@example.com',
+                'role' => 'iqa-staff',
                 'program' => null,
                 'college' => null,
             ],
@@ -198,14 +187,6 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'first_name' => 'QA Task Force',
-                'last_name' => 'Lead',
-                'email' => 'taskforce@example.com',
-                'role' => 'task-force',
-                'program' => 'BSCS',
-                'college' => null,
-            ],
-            [
-                'first_name' => 'QA Task Force',
                 'last_name' => 'Member',
                 'email' => 'taskforcemember@example.com',
                 'role' => 'task-force-member',
@@ -221,74 +202,6 @@ class DatabaseSeeder extends Seeder
                 'college' => 'CS',
             ],
             [
-                'first_name' => 'BU Program',
-                'last_name' => 'Chair',
-                'email' => 'chair@example.com',
-                'role' => 'program-chair',
-                'program' => 'BSCS',
-                'college' => null,
-            ],
-            // Multi-Role Accounts
-            [
-                'first_name' => 'IQA Member',
-                'last_name' => '(Multi-Role)',
-                'email' => 'iqamember-multirole@example.com',
-                'role' => 'iqa-member',
-                'extra_roles' => ['task-force'],
-                'program' => null,
-                'college' => null,
-            ],
-            [
-                'first_name' => 'College Head',
-                'last_name' => '(Multi-Role)',
-                'email' => 'dean-multirole@example.com',
-                'role' => 'college-head',
-                'extra_roles' => ['task-force'],
-                'program' => null,
-                'college' => 'CS',
-            ],
-            [
-                'first_name' => 'Program Chair',
-                'last_name' => '(Multi-Role)',
-                'email' => 'chair-multirole@example.com',
-                'role' => 'program-chair',
-                'extra_roles' => ['task-force-member'],
-                'program' => 'BSCS',
-                'college' => null,
-            ],
-            [
-                'first_name' => 'Maria',
-                'last_name' => 'Santos',
-                'email' => 'msantos@example.com',
-                'role' => 'task-force',
-                'program' => 'BSCS',
-                'college' => 'CS',
-            ],
-            [
-                'first_name' => 'Juan',
-                'last_name' => 'Dela Cruz',
-                'email' => 'jdelacruz@example.com',
-                'role' => 'task-force',
-                'program' => 'BSIT',
-                'college' => 'CS',
-            ],
-            [
-                'first_name' => 'Dr. Aris',
-                'last_name' => 'Ordoñez',
-                'email' => 'aordonez@example.com',
-                'role' => 'program-chair',
-                'program' => 'BSIT',
-                'college' => 'CS',
-            ],
-            [
-                'first_name' => 'Prof. Elena',
-                'last_name' => 'Reyes',
-                'email' => 'ereyes@example.com',
-                'role' => 'task-force',
-                'program' => 'BSBIO',
-                'college' => 'CS',
-            ],
-            [
                 'first_name' => 'Dr. Carlos',
                 'last_name' => 'Mendoza',
                 'email' => 'cmendoza@example.com',
@@ -297,18 +210,42 @@ class DatabaseSeeder extends Seeder
                 'college' => 'CENG',
             ],
             [
-                'first_name' => 'Engr. Rob',
-                'last_name' => 'Alcantara',
-                'email' => 'ralcantara@example.com',
-                'role' => 'program-chair',
-                'program' => 'BSCE',
-                'college' => 'CENG',
+                'first_name' => 'Prof. Grace',
+                'last_name' => 'Villanueva',
+                'email' => 'gvillanueva@example.com',
+                'role' => 'iqa-staff',
+                'program' => null,
+                'college' => 'CS',
+            ],
+            [
+                'first_name' => 'Maria',
+                'last_name' => 'Santos',
+                'email' => 'msantos@example.com',
+                'role' => 'task-force-member',
+                'program' => 'BSCS',
+                'college' => 'CS',
+            ],
+            [
+                'first_name' => 'Juan',
+                'last_name' => 'Dela Cruz',
+                'email' => 'jdelacruz@example.com',
+                'role' => 'task-force-member',
+                'program' => 'BSIT',
+                'college' => 'CS',
+            ],
+            [
+                'first_name' => 'Prof. Elena',
+                'last_name' => 'Reyes',
+                'email' => 'ereyes@example.com',
+                'role' => 'task-force-member',
+                'program' => 'BSBIO',
+                'college' => 'CS',
             ],
             [
                 'first_name' => 'Engr. Sarah',
                 'last_name' => 'Gomez',
                 'email' => 'sgomez@example.com',
-                'role' => 'task-force',
+                'role' => 'task-force-member',
                 'program' => 'BSCE',
                 'college' => 'CENG',
             ],
@@ -316,17 +253,9 @@ class DatabaseSeeder extends Seeder
                 'first_name' => 'Engr. Mark',
                 'last_name' => 'Torres',
                 'email' => 'mtorres@example.com',
-                'role' => 'task-force',
+                'role' => 'task-force-member',
                 'program' => 'BSME',
                 'college' => 'CENG',
-            ],
-            [
-                'first_name' => 'Prof. Grace',
-                'last_name' => 'Villanueva',
-                'email' => 'gvillanueva@example.com',
-                'role' => 'iqa-member',
-                'program' => null,
-                'college' => 'CS',
             ],
             [
                 'first_name' => 'Dr. Ramon',
@@ -464,7 +393,7 @@ class DatabaseSeeder extends Seeder
             if ($status !== 'pending') {
                 \App\Models\DocumentReview::create([
                     'document_id' => $doc->id,
-                    'reviewed_by' => $users->where('role_id', $roles['iqa-admin']->id)->first()->id,
+                    'reviewed_by' => $users->where('role_id', $roles['iqa-staff']->id)->first()->id,
                     'decision' => $status,
                     'remarks' => $status === 'rejected' ? 'Document requires official signature on the last page.' : 'Documentation compiled successfully.',
                     'reviewed_at' => now()->subDays(rand(1, 5)),
@@ -480,7 +409,7 @@ class DatabaseSeeder extends Seeder
                         'requested_by' => $requester->id,
                         'status' => $i % 16 === 0 ? 'pending' : 'approved',
                         'remarks' => 'Access requested for external audit purposes.',
-                        'approved_by' => $i % 16 === 0 ? null : $users->where('role_id', $roles['iqa-admin']->id)->first()->id,
+                        'approved_by' => $i % 16 === 0 ? null : $users->where('role_id', $roles['iqa-staff']->id)->first()->id,
                         'approved_at' => $i % 16 === 0 ? null : now()->subDays(1),
                         'expires_at' => $i % 16 === 0 ? null : now()->addDays(30),
                     ]);
@@ -550,7 +479,9 @@ class DatabaseSeeder extends Seeder
         // 9. Seed Task Forces
         $csCollege = $colleges['CS'] ?? College::first();
         $cengCollege = $colleges['CENG'] ?? College::skip(1)->first();
-        $adminUser = $users->where('role_id', $roles['iqa-admin']->id)->first() ?? $users->first();
+        $adminUser = $users->where('role_id', $roles['iqa-staff']->id)->first() ?? $users->first();
+        $csDean = $users->where('email', 'dean@example.com')->first();
+        $cengDean = $users->where('email', 'cmendoza@example.com')->first();
 
         $tf1 = \App\Models\TaskForce::create([
             'name' => 'BSCS AACCUP Level III Accreditation Task Force',
@@ -577,33 +508,39 @@ class DatabaseSeeder extends Seeder
             'created_by' => $adminUser->id,
         ]);
 
+        // Attach Dean as Lead for each Task Force
+        if ($csDean) {
+            \App\Models\TaskForceMember::firstOrCreate(
+                ['task_force_id' => $tf1->id, 'user_id' => $csDean->id],
+                ['role_in_team' => 'lead', 'assigned_at' => now()->subDays(10)]
+            );
+            \App\Models\TaskForceMember::firstOrCreate(
+                ['task_force_id' => $tf3->id, 'user_id' => $csDean->id],
+                ['role_in_team' => 'lead', 'assigned_at' => now()->subDays(20)]
+            );
+        }
+
+        if ($cengDean) {
+            \App\Models\TaskForceMember::firstOrCreate(
+                ['task_force_id' => $tf2->id, 'user_id' => $cengDean->id],
+                ['role_in_team' => 'lead', 'assigned_at' => now()->subDays(5)]
+            );
+        }
+
         // Attach members
-        $memberUsers = $users->take(4);
+        $memberUsers = $users->where('id', '!=', $csDean?->id)->take(4);
         foreach ($memberUsers as $mUser) {
-            \App\Models\TaskForceMember::create([
-                'task_force_id' => $tf1->id,
-                'user_id' => $mUser->id,
-                'role_in_team' => 'member',
-                'assigned_at' => now()->subDays(10),
-            ]);
+            \App\Models\TaskForceMember::firstOrCreate(
+                ['task_force_id' => $tf1->id, 'user_id' => $mUser->id],
+                ['role_in_team' => 'member', 'assigned_at' => now()->subDays(10)]
+            );
         }
 
-        foreach ($users->skip(2)->take(3) as $mUser) {
-            \App\Models\TaskForceMember::create([
-                'task_force_id' => $tf2->id,
-                'user_id' => $mUser->id,
-                'role_in_team' => 'member',
-                'assigned_at' => now()->subDays(5),
-            ]);
-        }
-
-        foreach ($users->take(2) as $mUser) {
-            \App\Models\TaskForceMember::create([
-                'task_force_id' => $tf3->id,
-                'user_id' => $mUser->id,
-                'role_in_team' => 'member',
-                'assigned_at' => now()->subDays(20),
-            ]);
+        foreach ($users->where('id', '!=', $cengDean?->id)->skip(2)->take(3) as $mUser) {
+            \App\Models\TaskForceMember::firstOrCreate(
+                ['task_force_id' => $tf2->id, 'user_id' => $mUser->id],
+                ['role_in_team' => 'member', 'assigned_at' => now()->subDays(5)]
+            );
         }
 
         // 6. Call TestPdfSeeder to generate 50 test PDF documents (test1.pdf to test50.pdf)
