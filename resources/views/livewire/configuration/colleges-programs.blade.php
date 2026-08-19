@@ -24,8 +24,9 @@
     </div>
 
     <!-- Summary Stats Bar -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="bg-white border border-slate-200/60 rounded-2xl p-5 shadow-3xs flex items-center gap-4">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        <!-- 1. Colleges & Satellites Simple Count Card -->
+        <div class="lg:col-span-3 bg-white border border-slate-200/60 rounded-2xl p-5 shadow-3xs flex items-center gap-4">
             <div class="w-12 h-12 rounded-xl bg-blue-50 text-primary flex items-center justify-center font-bold shrink-0">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
@@ -38,7 +39,8 @@
             </div>
         </div>
 
-        <div class="bg-white border border-slate-200/60 rounded-2xl p-5 shadow-3xs flex items-center gap-4">
+        <!-- 2. Degree Programs Simple Count Card -->
+        <div class="lg:col-span-3 bg-white border border-slate-200/60 rounded-2xl p-5 shadow-3xs flex items-center gap-4">
             <div class="w-12 h-12 rounded-xl bg-orange-50 text-brand-orange flex items-center justify-center font-bold shrink-0">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
@@ -51,30 +53,37 @@
             </div>
         </div>
 
-        <div class="bg-white border border-slate-200/60 rounded-2xl p-5 shadow-3xs flex items-center gap-4">
-            <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold shrink-0">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                </svg>
+        <!-- 3. Accreditation Progress Visualization Card -->
+        <div class="lg:col-span-6 bg-white border border-slate-200/60 rounded-2xl p-5 shadow-3xs flex flex-col justify-between">
+            <div class="flex items-center justify-between gap-2 mb-2">
+                <span class="text-label text-slate-500 font-medium uppercase tracking-wider">Accreditation Progress</span>
+                <span class="text-label font-bold text-slate-600">{{ $totalPrograms }} {{ Str::plural('program', $totalPrograms) }} total</span>
             </div>
-            <div class="flex flex-col">
-                <span class="text-label text-slate-500 font-medium uppercase tracking-wider">Accredited Programs</span>
-                <span class="text-heading font-bold text-emerald-700 mt-0.5">{{ $accreditedPrograms }}</span>
-            </div>
-        </div>
 
-        <div class="bg-white border border-slate-200/60 rounded-2xl p-5 shadow-3xs flex items-center gap-4">
-            <div class="w-12 h-12 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center font-bold shrink-0">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <line x1="12" y1="8" x2="12" y2="12"></line>
-                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                </svg>
+            <!-- Segmented Progress Bar -->
+            <div class="w-full h-3.5 bg-slate-100 rounded-full overflow-hidden flex shadow-inner">
+                @foreach($levelBreakdown as $levelKey => $data)
+                    @php
+                        $pct = $totalPrograms > 0 ? ($data['count'] / $totalPrograms) * 100 : 0;
+                    @endphp
+                    @if($pct > 0)
+                    <div class="{{ $data['barColor'] }} h-full transition-all duration-300" style="width: {{ $pct }}%;" title="{{ $data['label'] }}: {{ $data['count'] }} ({{ round($pct, 1) }}%)"></div>
+                    @endif
+                @endforeach
+                @if($totalPrograms === 0)
+                    <div class="bg-slate-200 h-full w-full" title="No programs"></div>
+                @endif
             </div>
-            <div class="flex flex-col">
-                <span class="text-label text-slate-500 font-medium uppercase tracking-wider">Candidate Status</span>
-                <span class="text-heading font-bold text-slate-700 mt-0.5">{{ $candidatePrograms }}</span>
+
+            <!-- Legend Swatches -->
+            <div class="flex flex-wrap items-center gap-x-4 gap-y-1.5 mt-3 text-label font-medium text-slate-600">
+                @foreach($levelBreakdown as $levelKey => $data)
+                <div class="flex items-center gap-1.5" title="{{ $levelKey }}">
+                    <span class="w-2.5 h-2.5 rounded-full {{ $data['dotColor'] }} shrink-0"></span>
+                    <span>{{ $data['label'] }}</span>
+                    <span class="font-bold text-slate-800">({{ $data['count'] }})</span>
+                </div>
+                @endforeach
             </div>
         </div>
     </div>
@@ -125,9 +134,10 @@
             $isExpanded = in_array($college->id, $expandedCollegeIds);
         @endphp
         <div wire:key="college-card-{{ $college->id }}" class="bg-white border border-slate-200/60 rounded-2xl shadow-3xs overflow-hidden transition-all">
-            <!-- College Card Header Row -->
+            <!-- College Card Header Row (Collapsed State View) -->
             <div class="p-5 bg-slate-50/70 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div class="flex items-center gap-3 cursor-pointer select-none flex-1 min-w-0" wire:click="toggleCollegeExpand({{ $college->id }})">
+                    <!-- Chevron Toggle Icon -->
                     <button type="button" class="w-8 h-8 rounded-lg bg-white border border-slate-200 text-slate-500 flex items-center justify-center shrink-0 transition-transform duration-200" style="{{ $isExpanded ? '' : 'transform: rotate(-90deg);' }}">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                             <polyline points="6 9 12 15 18 9"></polyline>
@@ -135,10 +145,22 @@
                     </button>
                     <div class="flex flex-col min-w-0">
                         <div class="flex items-center gap-2 flex-wrap">
+                            <!-- College / Unit Name -->
                             <span class="text-primary font-bold text-heading-sm truncate">{{ $college->name }}</span>
+                            <!-- Code Badge -->
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-label font-bold bg-blue-50 text-primary border border-blue-100">
+                                {{ $college->code }}
+                            </span>
+                            <!-- Campus / Town Badge -->
+                            @if($college->campus)
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-md text-label-xs font-semibold bg-slate-200/70 text-slate-700">
+                                📍 {{ $college->campus }}
+                            </span>
+                            @endif
                         </div>
+                        <!-- Simplified Muted Program Count Label -->
                         <span class="text-label text-slate-500 font-medium mt-0.5">
-                            {{ $college->programs->count() }} {{ Str::plural('degree program', $college->programs->count()) }} registered
+                            {{ $college->programs->count() }} {{ Str::plural('program', $college->programs->count()) }}
                         </span>
                     </div>
                 </div>
@@ -154,7 +176,7 @@
                 </div>
             </div>
 
-            <!-- Programs Table inside College -->
+            <!-- Full Programs Table inside College (Renders ONLY when expanded) -->
             @if($isExpanded)
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse text-xs">
@@ -265,7 +287,7 @@
                     <p class="text-[11px] text-slate-400 mt-1">Unique short code or abbreviation for official reports.</p>
                 </div>
                 <div>
-                    <flux:input wire:model="college_campus" :label="__('Campus Designation')" required placeholder="e.g. Main Campus (Legazpi), BU Polangui, BU Gubat" />
+                    <flux:input wire:model="college_campus" :label="__('Campus Designation')" required placeholder="e.g. LEGAZPI WEST CAMPUS, BU POLANGUI" />
                 </div>
             </div>
 
@@ -294,7 +316,7 @@
                     <flux:input wire:model="college_code" :label="__('College Code / Abbreviation')" required placeholder="e.g. CS" />
                 </div>
                 <div>
-                    <flux:input wire:model="college_campus" :label="__('Campus Designation')" required placeholder="e.g. Main Campus (Legazpi), BU Polangui" />
+                    <flux:input wire:model="college_campus" :label="__('Campus Designation')" required placeholder="e.g. LEGAZPI WEST CAMPUS, BU POLANGUI" />
                 </div>
             </div>
 

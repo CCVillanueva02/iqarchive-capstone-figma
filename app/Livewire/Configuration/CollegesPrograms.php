@@ -39,7 +39,7 @@ class CollegesPrograms extends Component
     public $collegeId = null;
     public $college_name = '';
     public $college_code = '';
-    public $college_campus = 'Main Campus (Legazpi)';
+    public $college_campus = 'LEGAZPI WEST CAMPUS';
     public $targetCollegeName = '';
 
     // Program Form Data
@@ -172,7 +172,7 @@ class CollegesPrograms extends Component
         $this->collegeId = $college->id;
         $this->college_name = $college->name;
         $this->college_code = $college->code;
-        $this->college_campus = $college->campus ?: 'Main Campus (Legazpi)';
+        $this->college_campus = $college->campus ?: 'LEGAZPI WEST CAMPUS';
 
         $this->showEditCollegeModal = true;
     }
@@ -275,7 +275,7 @@ class CollegesPrograms extends Component
         $this->collegeId = null;
         $this->college_name = '';
         $this->college_code = '';
-        $this->college_campus = 'Main Campus (Legazpi)';
+        $this->college_campus = 'LEGAZPI WEST CAMPUS';
         $this->targetCollegeName = '';
         $this->resetValidation();
     }
@@ -512,8 +512,40 @@ class CollegesPrograms extends Component
         // Overall stats
         $totalColleges = College::count();
         $totalPrograms = Program::count();
-        $accreditedPrograms = Program::where('accreditation_level', '!=', 'Candidate Status')->count();
-        $candidatePrograms = Program::where('accreditation_level', 'Candidate Status')->count();
+
+        // Accreditation level breakdown
+        $levelBreakdown = [
+            'Candidate Status' => [
+                'label' => 'Candidate',
+                'count' => Program::where('accreditation_level', 'Candidate Status')->count(),
+                'barColor' => 'bg-slate-300',
+                'dotColor' => 'bg-slate-400',
+            ],
+            'Level I Accredited' => [
+                'label' => 'Level I',
+                'count' => Program::where('accreditation_level', 'Level I Accredited')->count(),
+                'barColor' => 'bg-amber-400',
+                'dotColor' => 'bg-amber-500',
+            ],
+            'Level II Re-accredited' => [
+                'label' => 'Level II',
+                'count' => Program::where('accreditation_level', 'Level II Re-accredited')->count(),
+                'barColor' => 'bg-blue-500',
+                'dotColor' => 'bg-blue-500',
+            ],
+            'Level III Re-accredited' => [
+                'label' => 'Level III',
+                'count' => Program::where('accreditation_level', 'Level III Re-accredited')->count(),
+                'barColor' => 'bg-emerald-500',
+                'dotColor' => 'bg-emerald-500',
+            ],
+            'Level IV Re-accredited' => [
+                'label' => 'Level IV',
+                'count' => Program::where('accreditation_level', 'Level IV Re-accredited')->count(),
+                'barColor' => 'bg-purple-600',
+                'dotColor' => 'bg-purple-600',
+            ],
+        ];
 
         $allCollegesDropdown = College::orderBy('name', 'asc')->get(['id', 'name', 'code', 'campus']);
         $campusesList = College::distinct()->pluck('campus')->filter()->values()->toArray();
@@ -532,8 +564,7 @@ class CollegesPrograms extends Component
             'campusesList' => $campusesList,
             'totalColleges' => $totalColleges,
             'totalPrograms' => $totalPrograms,
-            'accreditedPrograms' => $accreditedPrograms,
-            'candidatePrograms' => $candidatePrograms,
+            'levelBreakdown' => $levelBreakdown,
             'accreditationLevels' => $accreditationLevels,
         ]);
     }
