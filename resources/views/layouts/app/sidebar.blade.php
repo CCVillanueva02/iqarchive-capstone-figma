@@ -16,7 +16,24 @@
     }
     @endphp
 
-    <div class="flex flex-col gap-[6px] flex-1 py-6 overflow-y-auto no-scrollbar">
+    <div x-data="{
+             restoreScroll() {
+                 const stored = sessionStorage.getItem('sidebar_scroll_top');
+                 if (stored !== null) {
+                     this.$el.scrollTop = parseInt(stored, 10);
+                 }
+             },
+             saveScroll() {
+                 sessionStorage.setItem('sidebar_scroll_top', this.$el.scrollTop);
+             }
+         }"
+         x-init="
+             restoreScroll();
+             this.$nextTick(() => restoreScroll());
+             document.addEventListener('livewire:navigated', () => restoreScroll());
+         "
+         @scroll.debounce.50ms="saveScroll()"
+         class="flex flex-col gap-[6px] flex-1 py-6 overflow-y-auto no-scrollbar relative">
 
         <div class="px-6 pb-1">
             <span class="text-label-xs font-bold uppercase tracking-[1.5px] text-white/40">Accreditation</span>
