@@ -28,12 +28,11 @@ class UserFactory extends Factory
             'role_id' => function () {
                 $predefinedRoles = [
                     'system-administrator',
-                    'iqa-admin',
-                    'iqa-member',
+                    'iqa-staff',
                     'accreditor',
                     'university-administrator',
-                    'task-force',
-                    'program-chair',
+                    'college-head',
+                    'task-force-member',
                 ];
                 $roleName = fake()->randomElement($predefinedRoles);
                 return \App\Models\Role::firstOrCreate(['role_name' => $roleName])->id;
