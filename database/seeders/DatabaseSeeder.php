@@ -23,11 +23,11 @@ class DatabaseSeeder extends Seeder
         // 1. Seed Roles
         $rolesData = [
             'system-administrator' => 'System Administrator',
-            'iqa-staff' => 'IQA Staff',
+            'iqa-staff' => 'IQA Member',
             'accreditor' => 'AACCUP Accreditor',
-            'university-administrator' => 'BU Executive Admin',
-            'college-head' => 'College Head (Dean)',
-            'task-force-member' => 'QA Task Force Member',
+            'university-administrator' => 'BU Executive',
+            'college-head' => 'College Head',
+            'task-force-member' => 'Task Force Member',
         ];
 
         $roles = [];

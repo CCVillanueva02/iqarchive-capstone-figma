@@ -114,6 +114,40 @@ class User extends Authenticatable implements PasskeyUser
             || $this->roles->contains('role_name', $roleName);
     }
 
+    public function hasAnyRole($roleNames): bool
+    {
+        return $this->hasRole($roleNames);
+    }
+
+    /**
+     * Check if user holds task force lead authority for a specific task force (or any task force if null).
+     */
+    public function isTaskForceLead(?int $taskForceId = null): bool
+    {
+        $query = TaskForceMember::where('user_id', $this->id)
+            ->whereIn('role_in_team', ['lead', 'task_force_lead']);
+
+        if ($taskForceId) {
+            $query->where('task_force_id', $taskForceId);
+        }
+
+        return $query->exists();
+    }
+
+    /**
+     * Check if user is a member of a specific task force (or any task force if null).
+     */
+    public function isTaskForceMember(?int $taskForceId = null): bool
+    {
+        $query = TaskForceMember::where('user_id', $this->id);
+
+        if ($taskForceId) {
+            $query->where('task_force_id', $taskForceId);
+        }
+
+        return $query->exists();
+    }
+
     public function syncRoles(array $roleIds): void
     {
         $this->roles()->sync($roleIds);

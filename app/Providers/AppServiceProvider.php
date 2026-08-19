@@ -5,6 +5,7 @@ namespace App\Providers;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 
@@ -25,6 +26,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->configureDefaults();
         $this->configureAuditTrails();
+        $this->configureAuthorization();
     }
 
     /**
@@ -116,6 +118,51 @@ class AppServiceProvider extends ServiceProvider
                 'target_id' => $document->id,
                 'timestamp' => now(),
             ]);
+        });
+    }
+
+    /**
+     * Configure Gates and Policies for role-based authorization.
+     */
+    protected function configureAuthorization(): void
+    {
+        // Only IQA Staff (and System Administrator) can manage (add/remove) Task Force members
+        Gate::define('manageTaskForceMembers', function (\App\Models\User $user) {
+            return $user->hasRole(['iqa-staff', 'system-administrator']);
+        });
+
+        // Deans, IQA Staff, University Admins, System Admins, and assigned members can view Task Force roster
+        Gate::define('viewTaskForceRoster', function (\App\Models\User $user, \App\Models\TaskForce $taskForce) {
+            if ($user->hasRole(['iqa-staff', 'system-administrator', 'university-administrator'])) {
+                return true;
+            }
+            if ($user->hasRole('college-head') && $user->college_id === $taskForce->college_id) {
+                return true;
+            }
+            return $taskForce->members()->where('users.id', $user->id)->exists();
+        });
+
+        // TaskForce Created Observer: Automatically assign college Dean as Task Force Lead
+        \App\Models\TaskForce::created(function (\App\Models\TaskForce $taskForce) {
+            if ($taskForce->college_id) {
+                $collegeHeadRoleId = \App\Models\Role::where('role_name', 'college-head')->value('id');
+                if ($collegeHeadRoleId) {
+                    $deans = \App\Models\User::where('college_id', $taskForce->college_id)
+                        ->where(function ($query) use ($collegeHeadRoleId) {
+                            $query->where('role_id', $collegeHeadRoleId)
+                                ->orWhereHas('roles', function ($q) use ($collegeHeadRoleId) {
+                                    $q->where('roles.id', $collegeHeadRoleId);
+                                });
+                        })->get();
+
+                    foreach ($deans as $dean) {
+                        \App\Models\TaskForceMember::firstOrCreate(
+                            ['task_force_id' => $taskForce->id, 'user_id' => $dean->id],
+                            ['role_in_team' => 'lead', 'assigned_at' => now()]
+                        );
+                    }
+                }
+            }
         });
     }
 
