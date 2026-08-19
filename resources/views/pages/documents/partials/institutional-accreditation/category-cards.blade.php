@@ -39,20 +39,56 @@
         </div>
 
         <!-- Supporting Documents Card -->
-        <div class="bg-white border border-slate-200/70 rounded-2xl p-6 shadow-3xs hover:shadow-md transition-all duration-300 flex flex-col justify-between gap-5">
+        <div class="bg-white border border-slate-200/70 rounded-2xl p-6 shadow-3xs hover:shadow-md transition-all duration-300 flex flex-col justify-between gap-5 h-full">
             <div class="flex flex-col gap-4">
                 <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
                     <x-lucide-files class="w-6 h-6" />
                 </div>
                 <div>
                     <h3 class="text-base font-bold text-[#1b355a]">Supporting Documents</h3>
-                    <p class="text-sm text-zinc-500 mt-2 leading-relaxed">
+                    <p class="text-sm text-zinc-500 mt-2 leading-relaxed min-h-[44px]">
                         Checklist criteria link inputs for inputs (Systems), implementation details, outcomes, and best practices.
                     </p>
                 </div>
             </div>
             <button type="button" @click="accredCategory = 'Supporting Documents'" class="w-full bg-[#1b355a] hover:bg-[#112239] text-white py-3 rounded-lg font-bold text-sm shadow-3xs transition cursor-pointer">
                 Open Supporting Docs
+            </button>
+        </div>
+
+        <!-- Narrative Profile Card -->
+        <div class="bg-white border border-slate-200/70 rounded-2xl p-6 shadow-3xs hover:shadow-md transition-all duration-300 flex flex-col justify-between gap-5 h-full">
+            <div class="flex flex-col gap-4">
+                <div class="w-12 h-12 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center">
+                    <x-lucide-notebook-pen class="w-6 h-6" />
+                </div>
+                <div>
+                    <h3 class="text-base font-bold text-[#1b355a]">Narrative Profile</h3>
+                    <p class="text-sm text-zinc-500 mt-2 leading-relaxed min-h-[44px]">
+                        AACCUP Level 3 narrative profile templates organized by area with direct in-app editing and formatting.
+                    </p>
+                </div>
+            </div>
+            <button type="button" @click="accredCategory = 'Narrative Profile'; initNarrativeProfile()" class="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-lg font-bold text-sm shadow-3xs transition cursor-pointer">
+                Open Narrative Profile
+            </button>
+        </div>
+
+        <!-- Performance Portfolio (PPP) Card -->
+        <div class="bg-white border border-slate-200/70 rounded-2xl p-6 shadow-3xs hover:shadow-md transition-all duration-300 flex flex-col justify-between gap-5 h-full">
+            <div class="flex flex-col gap-4">
+                <div class="w-12 h-12 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center">
+                    <x-lucide-layout-panel-top class="w-6 h-6" />
+                </div>
+                <div>
+                    <h3 class="text-base font-bold text-[#1b355a]">Performance Portfolio (PPP)</h3>
+                    <p class="text-sm text-zinc-500 mt-2 leading-relaxed min-h-[44px]">
+                        Institutional performance evidence portfolios and documentation templates organized by area for in-app compilation.
+                    </p>
+                </div>
+            </div>
+            <button type="button" @click="accredCategory = 'PPP'; initPPP()" class="w-full bg-teal-600 hover:bg-teal-700 text-white py-3 rounded-lg font-bold text-sm shadow-3xs transition cursor-pointer">
+                Open PPP
             </button>
         </div>
     </div>

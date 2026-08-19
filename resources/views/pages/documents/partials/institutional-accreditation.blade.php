@@ -16,4 +16,10 @@
     <!-- LEVEL 2C: COMPLIANCE REPORTS VIEW -->
     @include('pages.documents.partials.institutional-accreditation.compliance-reports')
 
+    <!-- LEVEL 2D: NARRATIVE PROFILE VIEW -->
+    @include('pages.documents.partials.program-accreditation.narrative-profile')
+
+    <!-- LEVEL 2E: PROGRAM PERFORMANCE PORTFOLIO (PPP) VIEW -->
+    @include('pages.documents.partials.program-accreditation.ppp')
+
 </div>
