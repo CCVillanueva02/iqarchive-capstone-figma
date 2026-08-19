@@ -1,7 +1,7 @@
 window.documentWorkspace = function (initialState = {}) {
     const userRole = initialState.userRole || '';
-    const canSeeCommonDocs = ['iqa-admin', 'iqa-member'].includes(userRole);
-    const canSeeInstitutionalDocs = ['iqa-admin', 'iqa-member'].includes(userRole);
+    const canSeeCommonDocs = ['iqa-staff', 'iqa-admin', 'iqa-member', 'task-force-member', 'college-head', 'system-administrator'].includes(userRole);
+    const canSeeInstitutionalDocs = ['iqa-staff', 'iqa-admin', 'iqa-member', 'system-administrator'].includes(userRole);
     let defaultTab = initialState.activeTab || (canSeeCommonDocs ? 'common-documents' : 'program-accreditation');
     if (!canSeeCommonDocs && defaultTab === 'common-documents') {
         defaultTab = 'program-accreditation';
@@ -2352,6 +2352,40 @@ window.documentWorkspace = function (initialState = {}) {
 
         init() {
             this.initBackendData();
+
+            // Sync accredLevel on initial load
+            if (this.activeTab === 'institutional-accreditation') {
+                this.accredLevel = 'institutional';
+                if (!this.accredActiveAreaId || this.accredActiveAreaId.startsWith('area_p')) {
+                    this.accredActiveAreaId = 'area_i1';
+                    this.accredActiveParamId = 'param_i1_a';
+                }
+            } else if (this.activeTab === 'program-accreditation') {
+                this.accredLevel = 'program';
+                if (!this.accredActiveAreaId || this.accredActiveAreaId.startsWith('area_i')) {
+                    this.accredActiveAreaId = 'area_p1';
+                    this.accredActiveParamId = 'param_p1_a';
+                }
+            }
+
+            // Sync accredLevel whenever activeTab changes
+            this.$watch('activeTab', (newTab) => {
+                if (newTab === 'institutional-accreditation') {
+                    this.accredLevel = 'institutional';
+                    this.accredCategory = null;
+                    if (!this.accredActiveAreaId || this.accredActiveAreaId.startsWith('area_p')) {
+                        this.accredActiveAreaId = 'area_i1';
+                        this.accredActiveParamId = 'param_i1_a';
+                    }
+                } else if (newTab === 'program-accreditation') {
+                    this.accredLevel = 'program';
+                    this.accredCategory = null;
+                    if (!this.accredActiveAreaId || this.accredActiveAreaId.startsWith('area_i')) {
+                        this.accredActiveAreaId = 'area_p1';
+                        this.accredActiveParamId = 'param_p1_a';
+                    }
+                }
+            });
 
             // Check URL parameters for status filter or category
             const urlParams = new URLSearchParams(window.location.search);
