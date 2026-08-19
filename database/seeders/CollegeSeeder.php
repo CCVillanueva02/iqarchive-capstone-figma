@@ -13,72 +13,84 @@ class CollegeSeeder extends Seeder
     public function run(): void
     {
         $collegesData = [
-            // Main & Specialized Campuses (Legazpi, Daraga, East Campus)
-            'CS' => [
-                'name' => 'BU College of Science',
-                'campus' => 'Main Campus (Legazpi)',
-            ],
-            'CENG' => [
-                'name' => 'BU College of Engineering',
-                'campus' => 'Main Campus (Legazpi)',
-            ],
-            'CAL' => [
-                'name' => 'BU College of Arts and Letters',
-                'campus' => 'Main Campus (Legazpi)',
-            ],
-            'CED' => [
-                'name' => 'BU College of Education',
-                'campus' => 'Main Campus (Legazpi)',
-            ],
-            'CBEM' => [
-                'name' => 'BU College of Business, Economics and Management',
-                'campus' => 'Daraga Campus',
-            ],
-            'CSSP' => [
-                'name' => 'BU College of Social Sciences and Philosophy',
-                'campus' => 'Daraga Campus',
-            ],
-            'CN' => [
-                'name' => 'BU College of Nursing',
-                'campus' => 'Main Campus (Legazpi)',
+            // LEGAZPI EAST CAMPUS
+            'IDA' => [
+                'name' => 'Institute of Design and Architecture',
+                'campus' => 'LEGAZPI EAST CAMPUS',
             ],
             'CIT' => [
-                'name' => 'BU College of Industrial Technology',
-                'campus' => 'East Campus (Legazpi)',
+                'name' => 'College of Industrial Technology',
+                'campus' => 'LEGAZPI EAST CAMPUS',
             ],
-            'CM' => [
-                'name' => 'BU College of Medicine',
-                'campus' => 'Main Campus (Legazpi)',
-            ],
-            'CL' => [
-                'name' => 'BU College of Law',
-                'campus' => 'Main Campus (Legazpi)',
-            ],
-            'IPES' => [
-                'name' => 'BU Institute of Physical Education and Sports',
-                'campus' => 'Main Campus (Legazpi)',
+            'CENG' => [
+                'name' => 'College of Engineering',
+                'campus' => 'LEGAZPI EAST CAMPUS',
             ],
 
-            // Satellite Campuses (treated directly as Colleges)
+            // LEGAZPI WEST CAMPUS
+            'CED' => [
+                'name' => 'College of Education',
+                'campus' => 'LEGAZPI WEST CAMPUS',
+            ],
+            'CAL' => [
+                'name' => 'College of Arts and Letters',
+                'campus' => 'LEGAZPI WEST CAMPUS',
+            ],
+            'IPESR' => [
+                'name' => 'Institute of Physical Education, Sports and Recreation',
+                'campus' => 'LEGAZPI WEST CAMPUS',
+            ],
+            'CN' => [
+                'name' => 'College of Nursing',
+                'campus' => 'LEGAZPI WEST CAMPUS',
+            ],
+            'CS' => [
+                'name' => 'College of Science',
+                'campus' => 'LEGAZPI WEST CAMPUS',
+            ],
+            'JMRIGD' => [
+                'name' => 'Jesse M. Robredo Institute of Governance and Development',
+                'campus' => 'LEGAZPI WEST CAMPUS',
+            ],
+            'CM' => [
+                'name' => 'College of Medicine',
+                'campus' => 'LEGAZPI WEST CAMPUS',
+            ],
+            'CDM' => [
+                'name' => 'College of Dental Medicine',
+                'campus' => 'LEGAZPI WEST CAMPUS',
+            ],
+
+            // DARAGA CAMPUS
+            'CBEM' => [
+                'name' => 'College of Business, Economics and Management',
+                'campus' => 'DARAGA CAMPUS',
+            ],
+            'CSSP' => [
+                'name' => 'College of Social Sciences, and Philosophy',
+                'campus' => 'DARAGA CAMPUS',
+            ],
+
+            // SATELLITE CAMPUSES
             'BUG' => [
-                'name' => 'BU Guinobatan',
-                'campus' => 'BU Guinobatan',
+                'name' => 'BU GUINOBATAN',
+                'campus' => 'BU GUINOBATAN',
             ],
             'BUP' => [
-                'name' => 'BU Polangui',
-                'campus' => 'BU Polangui',
+                'name' => 'BU POLANGUI',
+                'campus' => 'BU POLANGUI',
             ],
             'BUTC' => [
-                'name' => 'BU Tabaco',
-                'campus' => 'BU Tabaco',
+                'name' => 'BU TABACO',
+                'campus' => 'BU TABACO',
             ],
             'BUGC' => [
-                'name' => 'BU Gubat',
-                'campus' => 'BU Gubat',
+                'name' => 'BU GUBAT',
+                'campus' => 'BU GUBAT',
             ],
         ];
 
-        // Clean up old or obsolete college records not in the official list
+        // Force delete any obsolete colleges not in the official user list
         College::whereNotIn('code', array_keys($collegesData))->forceDelete();
 
         foreach ($collegesData as $code => $data) {

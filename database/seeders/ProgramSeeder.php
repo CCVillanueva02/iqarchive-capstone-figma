@@ -9,145 +9,211 @@ use Illuminate\Database\Seeder;
 class ProgramSeeder extends Seeder
 {
     /**
-     * Run the database seeds for Bicol University Degree Programs per College & Campus.
-     * All programs set to 'Candidate Status' as requested.
+     * Run the database seeds for Bicol University Degree Programs.
+     * All programs match the official user campus/college structure and default to 'Candidate Status'.
      */
     public function run(): void
     {
         $colleges = College::all()->keyBy('code');
 
         $programsData = [
-            // College of Science (CS)
-            'CS' => [
-                'BSCS' => ['name' => 'BS Computer Science', 'level' => 'Candidate Status'],
-                'BSIT' => ['name' => 'BS Information Technology', 'level' => 'Candidate Status'],
-                'BSBIO' => ['name' => 'BS Biology', 'level' => 'Candidate Status'],
-                'BSCHEM' => ['name' => 'BS Chemistry', 'level' => 'Candidate Status'],
-                'BSMET' => ['name' => 'BS Meteorology', 'level' => 'Candidate Status'],
+            // LEGAZPI EAST CAMPUS: Institute of Design and Architecture
+            'IDA' => [
+                'MSARCH' => 'Master of Science in Architecture',
+                'BSARCH' => 'Bachelor of Science in Architecture',
             ],
 
-            // College of Engineering (CENG)
-            'CENG' => [
-                'BSCE' => ['name' => 'BS Civil Engineering', 'level' => 'Candidate Status'],
-                'BSME' => ['name' => 'BS Mechanical Engineering', 'level' => 'Candidate Status'],
-                'BSEE' => ['name' => 'BS Electrical Engineering', 'level' => 'Candidate Status'],
-                'BSCHE' => ['name' => 'BS Chemical Engineering', 'level' => 'Candidate Status'],
-                'BSGE' => ['name' => 'BS Geodetic Engineering', 'level' => 'Candidate Status'],
-                'BSCOE' => ['name' => 'BS Computer Engineering', 'level' => 'Candidate Status'],
-                'BSMINE' => ['name' => 'BS Mining Engineering', 'level' => 'Candidate Status'],
-            ],
-
-            // College of Arts and Letters (CAL)
-            'CAL' => [
-                'ABCOMM' => ['name' => 'AB Communication', 'level' => 'Candidate Status'],
-                'ABJOURN' => ['name' => 'AB Journalism', 'level' => 'Candidate Status'],
-                'ABEL' => ['name' => 'AB English Language', 'level' => 'Candidate Status'],
-                'BPA' => ['name' => 'Bachelor of Performing Arts', 'level' => 'Candidate Status'],
-                'ABHUM' => ['name' => 'AB Humanities', 'level' => 'Candidate Status'],
-            ],
-
-            // College of Education (CED)
-            'CED' => [
-                'BEED' => ['name' => 'Bachelor of Elementary Education', 'level' => 'Candidate Status'],
-                'BSED' => ['name' => 'Bachelor of Secondary Education', 'level' => 'Candidate Status'],
-                'BECED' => ['name' => 'Bachelor of Early Childhood Education', 'level' => 'Candidate Status'],
-                'BSNED' => ['name' => 'Bachelor of Special Needs Education', 'level' => 'Candidate Status'],
-                'BCAED' => ['name' => 'Bachelor of Culture and Arts Education', 'level' => 'Candidate Status'],
-                'MAED' => ['name' => 'Master of Arts in Education', 'level' => 'Candidate Status'],
-                'PHDED' => ['name' => 'Doctor of Philosophy in Education', 'level' => 'Candidate Status'],
-            ],
-
-            // College of Business, Economics and Management (CBEM)
-            'CBEM' => [
-                'BSA' => ['name' => 'BS Accountancy', 'level' => 'Candidate Status'],
-                'BSBA' => ['name' => 'BS Business Administration', 'level' => 'Candidate Status'],
-                'BSMA' => ['name' => 'BS Management Accounting', 'level' => 'Candidate Status'],
-                'BSENT' => ['name' => 'BS Entrepreneurship', 'level' => 'Candidate Status'],
-                'BSECON' => ['name' => 'BS Economics', 'level' => 'Candidate Status'],
-                'MBA' => ['name' => 'Master in Business Administration', 'level' => 'Candidate Status'],
-            ],
-
-            // College of Social Sciences and Philosophy (CSSP)
-            'CSSP' => [
-                'ABPOLSCI' => ['name' => 'AB Political Science', 'level' => 'Candidate Status'],
-                'ABPHIL' => ['name' => 'AB Philosophy', 'level' => 'Candidate Status'],
-                'ABSOC' => ['name' => 'AB Sociology', 'level' => 'Candidate Status'],
-                'BSSW' => ['name' => 'BS Social Work', 'level' => 'Candidate Status'],
-                'BSPSYCH' => ['name' => 'BS Psychology', 'level' => 'Candidate Status'],
-            ],
-
-            // College of Nursing (CN)
-            'CN' => [
-                'BSN' => ['name' => 'BS Nursing', 'level' => 'Candidate Status'],
-                'MAN' => ['name' => 'Master of Arts in Nursing', 'level' => 'Candidate Status'],
-            ],
-
-            // College of Industrial Technology (CIT)
+            // LEGAZPI EAST CAMPUS: College of Industrial Technology
             'CIT' => [
-                'BET' => ['name' => 'Bachelor of Engineering Technology', 'level' => 'Candidate Status'],
-                'BSAT' => ['name' => 'BS Automotive Technology', 'level' => 'Candidate Status'],
-                'BSET' => ['name' => 'BS Electrical Technology', 'level' => 'Candidate Status'],
-                'BSEL' => ['name' => 'BS Electronics Technology', 'level' => 'Candidate Status'],
-                'BSFT' => ['name' => 'BS Food Technology', 'level' => 'Candidate Status'],
+                'MAIE' => 'Master of Arts in Industrial Education',
+                'BSFT' => 'Bachelor of Science in Food Technology',
+                'BTVTED' => 'Bachelor of Technical Vocational Teacher Education',
+                'BSAT' => 'Bachelor of Science in Automotive Technology',
+                'BSET' => 'Bachelor of Science in Electronics Technology',
+                'BSMT' => 'Bachelor of Science in Mechanical Technology',
+                'BSCT' => 'Bachelor of Science in Civil Technology',
+                'BSELT' => 'Bachelor of Science in Electrical Technology',
+                'BID' => 'Bachelor in Industrial Design',
             ],
 
-            // College of Medicine (CM)
+            // LEGAZPI EAST CAMPUS: College of Engineering
+            'CENG' => [
+                'BSME' => 'Bachelor of Science in Mechanical Engineering',
+                'BSCHE' => 'Bachelor of Science in Chemical Engineering',
+                'BSCE' => 'Bachelor of Science in Civil Engineering',
+                'BSEE' => 'Bachelor of Science in Electrical Engineering',
+                'BSMINE' => 'Bachelor of Science in Mining Engineering',
+                'BSGE' => 'Bachelor of Science in Geodetic Engineering',
+            ],
+
+            // LEGAZPI WEST CAMPUS: College of Education
+            'CED' => [
+                'DED-ELM' => 'Doctor of Education in Educational Leadership and Management',
+                'PHD-EF' => 'Doctor of Philosophy in Educational Foundations',
+                'PHD-ME' => 'Doctor of Philosophy in Mathematics Education',
+                'MAED-READ' => 'Master of Arts in Reading Education',
+                'MAED-FIL' => 'Master of Arts in Filipino Education',
+                'MAED-ENG' => 'Master of Arts in English Education',
+                'MAED-MUS' => 'Master of Arts in Music Education',
+                'MAED-MATH' => 'Master of Arts in Mathematics Education',
+                'MAED-SOC' => 'Master of Arts in Social Studies Education',
+                'MAED-PHYS' => 'Master of Arts in Physics Education',
+                'MAED-CHEM' => 'Master of Arts in Chemistry Education',
+                'MAED-BIO' => 'Master of Arts in Biology Education',
+                'MAED-SCI' => 'Master of Arts in Science Education',
+                'MAED-GC' => 'Master of Arts in Guidance and Counseling',
+                'MAED-ELM' => 'Master of Arts in Educational Leadership and Management',
+                'MAED-ECE' => 'Master of Arts in Early Childhood Education',
+                'MAED-CAE' => 'Master of Arts in Culture and Arts Education',
+                'BSED' => 'Bachelor of Secondary Education',
+                'BEED' => 'Bachelor of Elementary Education',
+                'BCAED' => 'Bachelor of Culture and Arts Education',
+                'BECED' => 'Bachelor of Early Childhood Education',
+            ],
+
+            // LEGAZPI WEST CAMPUS: College of Arts and Letters
+            'CAL' => [
+                'PHD-FIL' => 'Doctor of Philosophy in Filipino',
+                'MA-LIT' => 'Master of Arts in Literature',
+                'MA-FIL' => 'Master in Filipino',
+                'ABJOURN' => 'Bachelor of Arts in Journalism',
+                'BPA' => 'Bachelor of Performing Arts',
+                'ABEL' => 'Bachelor of Arts in English Language',
+                'ABBROAD' => 'Bachelor of Arts in Broadcasting',
+                'ABCOMM' => 'Bachelor of Arts in Communication',
+                'ABLIT' => 'Bachelor of Arts in Literature',
+            ],
+
+            // LEGAZPI WEST CAMPUS: Institute of Physical Education, Sports and Recreation
+            'IPESR' => [
+                'MAPEH' => 'Master of Arts in Physical Education',
+                'BPE' => 'Bachelor of Physical Education',
+                'BSESS' => 'Bachelor of Science in Exercise and Sports Sciences',
+            ],
+
+            // LEGAZPI WEST CAMPUS: College of Nursing
+            'CN' => [
+                'MAN' => 'Master of Arts in Nursing',
+                'MNE' => 'Master in Nursing Education',
+                'BSN' => 'Bachelor of Science in Nursing',
+            ],
+
+            // LEGAZPI WEST CAMPUS: College of Science
+            'CS' => [
+                'MSBIO' => 'Master of Science in Biology',
+                'MIS' => 'Master in Information Systems',
+                'BSBIO' => 'Bachelor of Science in Biology',
+                'BSCS' => 'Bachelor of Science in Computer Science',
+                'BSCHEM' => 'Bachelor of Science in Chemistry',
+                'BSIT' => 'Bachelor of Science in Information Technology',
+                'BSMET' => 'Bachelor of Science in Meteorology',
+            ],
+
+            // LEGAZPI WEST CAMPUS: Jesse M. Robredo Institute of Governance and Development
+            'JMRIGD' => [
+                'PHD-PA' => 'Doctor of Philosophy in Public Administration',
+                'PHD-DM' => 'Doctor of Philosophy in Development Management',
+                'BPA-GOV' => 'Bachelor of Public Administration',
+                'MPA' => 'Master of Public Administration',
+                'MPA-HE' => 'Master in Public Administration major in Health Emergency and Disaster Management',
+                'MPA-PP' => 'Master in Public Administration major in Public Procurement',
+                'MLGM' => 'Master in Local Government Management',
+            ],
+
+            // LEGAZPI WEST CAMPUS: College of Medicine
             'CM' => [
-                'MD' => ['name' => 'Doctor of Medicine', 'level' => 'Candidate Status'],
+                'MD' => 'Doctor of Medicine',
             ],
 
-            // College of Law (CL)
-            'CL' => [
-                'JD' => ['name' => 'Juris Doctor', 'level' => 'Candidate Status'],
+            // LEGAZPI WEST CAMPUS: College of Dental Medicine
+            'CDM' => [
+                'DMD' => 'Doctor of Dental Medicine',
             ],
 
-            // Institute of Physical Education and Sports (IPES)
-            'IPES' => [
-                'BPE' => ['name' => 'Bachelor of Physical Education', 'level' => 'Candidate Status'],
-                'BSESS' => ['name' => 'BS Exercise and Sports Sciences', 'level' => 'Candidate Status'],
+            // DARAGA CAMPUS: College of Business, Economics and Management
+            'CBEM' => [
+                'MM' => 'Master in Management',
+                'MM-HRM' => 'Master in Management major in Human Resource Management',
+                'MSECON' => 'Master in Economics',
+                'MCM' => 'Master in Cooperative Management',
+                'MSENT' => 'Master in Entrepreneurship',
+                'BSBA' => 'Bachelor of Science in Business Administration',
+                'BSA' => 'Bachelor of Science in Accountancy',
+                'BSECON' => 'Bachelor of Science in Economics',
+                'BSENT' => 'Bachelor of Science in Entrepreneurship',
             ],
 
-            // SATELLITE CAMPUS: BU GUINOBATAN (BUG)
+            // DARAGA CAMPUS: College of Social Sciences, and Philosophy
+            'CSSP' => [
+                'PHD-PSA' => 'Doctor of Philosophy in Peace and Security Administration',
+                'MAPSS' => 'Master of Arts in Peace and Security Studies',
+                'ABPHIL' => 'Bachelor of Arts in Philosophy',
+                'ABPS' => 'Bachelor of Arts in Peace Studies',
+                'ABPOLSCI' => 'Bachelor of Arts in Political Science',
+                'BSSW' => 'Bachelor of Science in Social Work',
+                'ABSOC' => 'Bachelor of Arts in Sociology',
+                'BSPSYCH' => 'Bachelor of Science in Psychology',
+            ],
+
+            // SATELLITE CAMPUS: BU GUINOBATAN
             'BUG' => [
-                'BUG-BSAGRI' => ['name' => 'BS Agriculture', 'level' => 'Candidate Status'],
-                'BUG-BSABE' => ['name' => 'BS Agricultural and Biosystems Engineering', 'level' => 'Candidate Status'],
-                'BUG-BSF' => ['name' => 'BS Forestry', 'level' => 'Candidate Status'],
-                'BUG-BSAGRIBUS' => ['name' => 'BS Agribusiness', 'level' => 'Candidate Status'],
+                'BUG-MSAGRI' => 'Master of Science in Agriculture',
+                'BUG-MRD' => 'Master in Rural Development',
+                'BUG-MSBEM' => 'Master of Science in Biodiversity & Environmental Management',
+                'BUG-MSSFS' => 'Master of Science in Sustainable Food Systems',
+                'BUG-BSF' => 'Bachelor of Science in Forestry',
+                'BUG-BSABE' => 'Bachelor of Science in Agricultural and Biosystems Engineering',
+                'BUG-BSAGRI' => 'Bachelor of Science in Agriculture',
+                'BUG-BSAGRIBUS' => 'Bachelor of Science in Agribusiness',
+                'BUG-BAT' => 'Bachelor in Agricultural Technology',
+                'BUG-BTVTED' => 'Bachelor of Technical-Vocational Teacher Education',
+                'BUG-DVM' => 'Doctor of Veterinary Medicine',
+                'BUG-BSFT' => 'Bachelor of Science in Food Technology',
+                'BUG-BSDEVCOMM' => 'Bachelor of Science in Development Communication',
             ],
 
-            // SATELLITE CAMPUS: BU POLANGUI (BUP)
+            // SATELLITE CAMPUS: BU POLANGUI
             'BUP' => [
-                'BUP-BSIT' => ['name' => 'BS Information Technology', 'level' => 'Candidate Status'],
-                'BUP-BSCS' => ['name' => 'BS Computer Science', 'level' => 'Candidate Status'],
-                'BUP-BSECE' => ['name' => 'BS Electronics Engineering', 'level' => 'Candidate Status'],
-                'BUP-BSN' => ['name' => 'BS Nursing', 'level' => 'Candidate Status'],
-                'BUP-BEED' => ['name' => 'Bachelor of Elementary Education', 'level' => 'Candidate Status'],
-                'BUP-BSED' => ['name' => 'Bachelor of Secondary Education', 'level' => 'Candidate Status'],
-                'BUP-BSAT' => ['name' => 'BS Automotive Technology', 'level' => 'Candidate Status'],
-                'BUP-BSCOE' => ['name' => 'BS Computer Engineering', 'level' => 'Candidate Status'],
+                'BUP-BSET' => 'Bachelor of Science in Electronics Technology',
+                'BUP-BSCS' => 'Bachelor of Science in Computer Science',
+                'BUP-BSED' => 'Bachelor of Secondary Education',
+                'BUP-BSAT' => 'Bachelor of Science in Automotive Technology',
+                'BUP-BSCOE' => 'Bachelor of Science in Computer Engineering',
+                'BUP-BSECE' => 'Bachelor of Science in Electronics Engineering',
+                'BUP-BSIS' => 'Bachelor of Science in Information System',
+                'BUP-BSENT' => 'Bachelor of Science in Entrepreneurship',
+                'BUP-BSN' => 'Bachelor of Science in Nursing',
+                'BUP-BEED' => 'Bachelor of Elementary Education',
+                'BUP-BSIT' => 'Bachelor of Science in Information Technology',
+                'BUP-BSELT' => 'Bachelor of Science in Electrical Technology',
+                'BUP-BSMT' => 'Bachelor of Science in Mechanical Technology',
+                'BUP-BSIT-ANI' => 'Bachelor of Science in Information Technology major in Animation',
+                'BUP-BTLE' => 'Bachelor of Technology and Livelihood Education',
             ],
 
-            // SATELLITE CAMPUS: BU TABACO (BUTC)
+            // SATELLITE CAMPUS: BU TABACO
             'BUTC' => [
-                'BUTC-BSFISH' => ['name' => 'BS Fisheries', 'level' => 'Candidate Status'],
-                'BUTC-BSFT' => ['name' => 'BS Food Technology', 'level' => 'Candidate Status'],
-                'BUTC-BSN' => ['name' => 'BS Nursing', 'level' => 'Candidate Status'],
-                'BUTC-BSED' => ['name' => 'Bachelor of Secondary Education', 'level' => 'Candidate Status'],
-                'BUTC-BSBA' => ['name' => 'BS Business Administration', 'level' => 'Candidate Status'],
-                'BUTC-BSENT' => ['name' => 'BS Entrepreneurship', 'level' => 'Candidate Status'],
+                'BUTC-MSFISH' => 'Master of Science in Fisheries',
+                'BUTC-MSFT' => 'Master of Science in Fisheries Technology',
+                'BUTC-BSFISH' => 'Bachelor of Science in Fisheries',
+                'BUTC-BSED' => 'Bachelor of Secondary Education',
+                'BUTC-BSENT' => 'Bachelor of Science in Entrepreneurship',
+                'BUTC-BSN' => 'Bachelor of Science in Nursing',
+                'BUTC-BSSW' => 'Bachelor of Science in Social Work',
+                'BUTC-BSFT' => 'Bachelor of Science in Food Technology',
             ],
 
-            // SATELLITE CAMPUS: BU GUBAT (BUGC)
+            // SATELLITE CAMPUS: BU GUBAT
             'BUGC' => [
-                'BUGC-BEED' => ['name' => 'Bachelor of Elementary Education', 'level' => 'Candidate Status'],
-                'BUGC-BSED' => ['name' => 'Bachelor of Secondary Education', 'level' => 'Candidate Status'],
-                'BUGC-BSBA' => ['name' => 'BS Business Administration', 'level' => 'Candidate Status'],
-                'BUGC-BSCS' => ['name' => 'BS Computer Science', 'level' => 'Candidate Status'],
-                'BUGC-BSAE' => ['name' => 'BS Agricultural Entrepreneurship', 'level' => 'Candidate Status'],
+                'BUGC-BEED' => 'Bachelor of Elementary Education',
+                'BUGC-BSED' => 'Bachelor of Secondary Education',
+                'BUGC-BSENT' => 'Bachelor of Science in Entrepreneurship',
+                'BUGC-BSBA' => 'Bachelor of Science in Business Administration major in Microfinance',
+                'BUGC-BAT' => 'Bachelor in Agricultural Technology (Ladderized)',
             ],
         ];
 
-        // Gather all valid official program codes
+        // Gather all valid program codes
         $validProgramCodes = [];
         foreach ($programsData as $collegePrograms) {
             foreach (array_keys($collegePrograms) as $code) {
@@ -155,26 +221,26 @@ class ProgramSeeder extends Seeder
             }
         }
 
-        // Clean up old generated or fake program records (BSP6..80, MSP1..39, PHDP1..7, etc.)
+        // Force delete any obsolete program records not in the official list
         Program::whereNotIn('code', $validProgramCodes)->forceDelete();
 
         foreach ($programsData as $collegeCode => $collegePrograms) {
             $college = $colleges->get($collegeCode);
             if (!$college) continue;
 
-            foreach ($collegePrograms as $code => $info) {
+            foreach ($collegePrograms as $code => $name) {
                 Program::updateOrCreate(
                     ['code' => $code],
                     [
                         'college_id' => $college->id,
-                        'name' => $info['name'],
-                        'accreditation_level' => $info['level'],
+                        'name' => $name,
+                        'accreditation_level' => 'Candidate Status',
                     ]
                 );
             }
         }
 
-        // Also update all existing records in database to Candidate Status
+        // Ensure all existing programs have Candidate Status
         Program::query()->update(['accreditation_level' => 'Candidate Status']);
     }
 }
