@@ -52,7 +52,8 @@ class Accounts extends Component
 
     public function mount()
     {
-        if (auth()->user()->role !== 'iqa-admin') {
+        $user = auth()->user();
+        if (!$user || !$user->hasRole(['iqa-staff', 'iqa-admin', 'system-administrator'])) {
             abort(403, 'Unauthorized action.');
         }
     }
@@ -124,7 +125,7 @@ class Accounts extends Component
         }
 
         $roleNames = Role::whereIn('id', $allRoleIds)->pluck('role_name')->toArray();
-        return !empty(array_intersect($roleNames, ['college-head', 'program-chair', 'iqa-member']));
+        return !empty(array_intersect($roleNames, ['college-head']));
     }
 
     /**

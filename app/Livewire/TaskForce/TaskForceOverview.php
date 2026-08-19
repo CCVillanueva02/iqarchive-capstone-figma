@@ -67,12 +67,14 @@ class TaskForceOverview extends Component
 
     /**
      * Check if current user can create/propose Task Forces
+    /**
+     * Check if current user can create/propose Task Forces
      */
     #[Computed]
     public function canCreate(): bool
     {
-        $role = auth()->user()->role ?? '';
-        return in_array($role, ['iqa-admin', 'university-administrator', 'college-head', 'program-chair', 'system-administrator']);
+        $user = auth()->user();
+        return $user && $user->hasRole(['iqa-staff', 'iqa-admin', 'university-administrator', 'college-head', 'system-administrator']);
     }
 
     /**
@@ -81,8 +83,8 @@ class TaskForceOverview extends Component
     #[Computed]
     public function canManage(): bool
     {
-        $role = auth()->user()->role ?? '';
-        return in_array($role, ['iqa-admin', 'university-administrator', 'system-administrator']);
+        $user = auth()->user();
+        return $user && $user->hasRole(['iqa-staff', 'iqa-admin', 'university-administrator', 'system-administrator']);
     }
 
     public function openCreateModal()
@@ -182,7 +184,7 @@ class TaskForceOverview extends Component
         $this->validate($rules, $messages);
 
         $currentUser = auth()->user();
-        $isCollegeHeadProposal = in_array($currentUser->role, ['college-head', 'program-chair']);
+        $isCollegeHeadProposal = ($currentUser->role === 'college-head');
         $initialStatus = $isCollegeHeadProposal ? 'pending_approval' : 'active';
 
         try {
@@ -217,14 +219,14 @@ class TaskForceOverview extends Component
                     }
                 }
 
-                // 3. If submitted by College Head, send notification to all IQA Admins
+                // 3. If submitted by College Head, send notification to all IQA Staff
                 if ($isCollegeHeadProposal) {
-                    $iqaAdminRoleId = Role::where('role_name', 'iqa-admin')->value('id');
-                    $iqaAdmins = User::where('role_id', $iqaAdminRoleId)->get();
+                    $iqaStaffRoleIds = Role::whereIn('role_name', ['iqa-staff', 'iqa-admin'])->pluck('id');
+                    $iqaStaffUsers = User::whereIn('role_id', $iqaStaffRoleIds)->get();
                     
-                    foreach ($iqaAdmins as $admin) {
+                    foreach ($iqaStaffUsers as $staff) {
                         Notification::create([
-                            'user_id' => $admin->id,
+                            'user_id' => $staff->id,
                             'type' => 'alert',
                             'message' => "New Task Force submission from {$currentUser->name} ({$taskForce->college->code}): {$taskForce->name} (Pending Approval)",
                             'is_read' => false,
@@ -375,7 +377,7 @@ class TaskForceOverview extends Component
     public function render()
     {
         // Allowed role names for Task Force member assignment
-        $allowedRoleNames = ['task-force', 'program-chair', 'college-head', 'iqa-member', 'accreditor'];
+        $allowedRoleNames = ['task-force-member', 'college-head', 'iqa-staff', 'iqa-member', 'accreditor'];
         $allowedRoleIds = Role::whereIn('role_name', $allowedRoleNames)->pluck('id');
 
         // Query active users restricted to task force eligible roles

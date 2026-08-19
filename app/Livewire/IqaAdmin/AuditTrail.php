@@ -23,7 +23,8 @@ class AuditTrail extends Component
 
     public function mount()
     {
-        if (auth()->user()->role !== 'iqa-admin') {
+        $user = auth()->user();
+        if (!$user || !$user->hasRole(['iqa-staff', 'iqa-admin', 'system-administrator'])) {
             abort(403, 'Unauthorized action.');
         }
     }

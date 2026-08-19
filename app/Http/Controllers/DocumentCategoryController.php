@@ -38,11 +38,8 @@ class DocumentCategoryController extends Controller
         }
 
         $userRole = $user->role;
-        $isDisallowed = in_array($userRole, ['system-administrator', 'task-force', 'task-force-member', 'college-head', 'program-chair', 'university-administrator', 'accreditor'])
+        $isDisallowed = in_array($userRole, ['system-administrator', 'university-administrator', 'accreditor'])
             || $user->hasRole('system-administrator')
-            || $user->hasRole('task-force')
-            || $user->hasRole('task-force-member')
-            || $user->hasRole('college-head')
             || $user->hasRole('university-administrator')
             || $user->hasRole('accreditor');
 
@@ -50,12 +47,12 @@ class DocumentCategoryController extends Controller
             return response()->json(['error' => 'Unauthorized. Restricted role cannot access common documents.'], 403);
         }
 
-        $isIqaAdmin = $userRole === 'iqa-admin' || $user->hasRole('iqa-admin');
+        $isIqaStaff = $user->hasRole(['iqa-staff', 'iqa-admin']);
 
-        if ($isIqaAdmin) {
+        if ($isIqaStaff) {
             $categoriesQuery = DocumentCategory::withCount('documents');
         } else {
-            // For IQA MEMBER | TASKFORCE: count ONLY verified documents
+            // For other authorized roles: count ONLY verified documents
             $categoriesQuery = DocumentCategory::withCount(['documents' => function ($q) {
                 $q->where('status', 'Verified');
             }]);
@@ -107,11 +104,11 @@ class DocumentCategoryController extends Controller
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
 
-        // Strictly allow IQA Admin only
-        $isAllowed = $user->hasRole('iqa-admin') || $user->role === 'iqa-admin';
+        // Strictly allow IQA Staff only
+        $isAllowed = $user->hasRole(['iqa-staff', 'iqa-admin']);
 
         if (!$isAllowed) {
-            return response()->json(['error' => 'Unauthorized. Only IQA Admin can create new document categories.'], 403);
+            return response()->json(['error' => 'Unauthorized. Only IQA Staff can create new document categories.'], 403);
         }
 
         $validated = $request->validate([
@@ -323,10 +320,10 @@ class DocumentCategoryController extends Controller
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
 
-        $isIqaAdmin = $user->role === 'iqa-admin' || $user->hasRole('iqa-admin');
+        $isIqaStaff = $user->hasRole(['iqa-staff', 'iqa-admin']);
 
-        if (!$isIqaAdmin) {
-            return response()->json(['error' => 'Unauthorized. Only IQA Admin can verify or flag common documents.'], 403);
+        if (!$isIqaStaff) {
+            return response()->json(['error' => 'Unauthorized. Only IQA Staff can verify or flag common documents.'], 403);
         }
 
         $validated = $request->validate([
@@ -357,10 +354,10 @@ class DocumentCategoryController extends Controller
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
 
-        $isIqaAdmin = $user->role === 'iqa-admin' || $user->hasRole('iqa-admin');
+        $isIqaStaff = $user->hasRole(['iqa-staff', 'iqa-admin']);
 
-        if (!$isIqaAdmin) {
-            return response()->json(['error' => 'Unauthorized. Only IQA Admin can delete common documents.'], 403);
+        if (!$isIqaStaff) {
+            return response()->json(['error' => 'Unauthorized. Only IQA Staff can delete common documents.'], 403);
         }
 
         $doc = Document::findOrFail($id);

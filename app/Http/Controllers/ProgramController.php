@@ -51,13 +51,12 @@ class ProgramController extends Controller
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
 
-        // Allow IQA Admin and System Administrator
-        $isAllowed = $user->hasRole('iqa-admin') || 
-                     $user->hasRole('system-administrator') || 
-                     in_array($user->role, ['iqa-admin', 'system-administrator']);
+        // Allow IQA Staff and System Administrator
+        $isAllowed = $user->hasRole(['iqa-staff', 'iqa-admin', 'system-administrator']) || 
+                     in_array($user->role, ['iqa-staff', 'iqa-admin', 'system-administrator']);
 
         if (!$isAllowed) {
-            return response()->json(['error' => 'Unauthorized. Only IQA Admin and System Administrator can create programs.'], 403);
+            return response()->json(['error' => 'Unauthorized. Only IQA Staff and System Administrator can create programs.'], 403);
         }
 
         $validated = $request->validate([

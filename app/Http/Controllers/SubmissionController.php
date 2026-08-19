@@ -24,21 +24,19 @@ class SubmissionController extends Controller
 
         // Allowed roles for submission
         $allowedRoles = [
-            'program-chair',
-            'college-head',
-            'task-force',
             'task-force-member',
-            'iqa-member',
-            'iqa-admin',
+            'iqa-staff',
+            'college-head',
+            'system-administrator',
         ];
 
         $isAllowed = in_array($user->role, $allowedRoles)
-            || $user->hasRole('program-chair')
             || $user->hasRole('college-head')
-            || $user->hasRole('task-force')
             || $user->hasRole('task-force-member')
-            || $user->hasRole('iqa-member')
-            || $user->hasRole('iqa-admin');
+            || $user->hasRole('iqa-staff')
+            || $user->hasRole('system-administrator')
+            || $user->isTaskForceLead()
+            || $user->isTaskForceMember();
 
         if (!$isAllowed) {
             abort(403, 'Unauthorized. Only authorized roles can submit documents.');
@@ -82,14 +80,10 @@ class SubmissionController extends Controller
         ]);
 
         // Resolve the correct submissions route for the user's role
-        $roleSlug = match($user->role) {
-            'college-head' => 'program-chair',
-            default        => $user->role,
-        };
-
+        $roleSlug  = $user->role;
         $routeName = 'submissions.' . $roleSlug;
         if (! \Illuminate\Support\Facades\Route::has($routeName)) {
-            $routeName = 'submissions.program-chair';
+            $routeName = 'dashboard';
         }
 
         return redirect()
