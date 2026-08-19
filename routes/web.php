@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\SubmissionController;
 
@@ -14,7 +15,8 @@ Route::middleware('guest')->group(function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     // Landing gateway: redirects to the appropriate role-specific homepage
     Route::get('dashboard', function () {
-        $role = auth()->user()->role;
+        $user = Auth::user();
+        $role = $user ? $user->role : null;
         if (in_array($role, ['iqa-staff', 'iqa-admin'])) {
             return redirect()->route('dashboard.iqa-staff');
         }
@@ -32,7 +34,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Accreditor explicit route mapping (no sidebar, no header/footer, loads submission view)
     Route::get("roles/accreditor/submission", function () {
-        if (auth()->user()->role !== 'accreditor') {
+        $user = Auth::user();
+        if (!$user || $user->role !== 'accreditor') {
             abort(403, 'Unauthorized action.');
         }
         if (!view()->exists("pages.roles.accreditor.submission")) {
@@ -45,7 +48,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name("submissions.accreditor");
 
     Route::get("roles/accreditor/dashboard", function () {
-        if (auth()->user()->role !== 'accreditor') {
+        $user = Auth::user();
+        if (!$user || $user->role !== 'accreditor') {
             abort(403, 'Unauthorized action.');
         }
         return redirect()->route('submissions.accreditor');
@@ -53,21 +57,24 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // University Administrator explicit route mapping (analytics as landing page)
     Route::get("roles/university-administrator/analytics", function () {
-        if (!auth()->user()->hasRole(['university-administrator', 'system-administrator', 'iqa-staff', 'iqa-admin'])) {
+        $user = Auth::user();
+        if (!$user || !$user->hasRole(['university-administrator', 'system-administrator', 'iqa-staff'])) {
             abort(403, 'Unauthorized action.');
         }
         return view("pages.roles.university-administrator.analytics");
     })->name("analytics.university-administrator");
 
     Route::get("roles/university-administrator/dashboard", function () {
-        if (!auth()->user()->hasRole(['university-administrator', 'system-administrator', 'iqa-staff', 'iqa-admin'])) {
+        $user = Auth::user();
+        if (!$user || !$user->hasRole(['university-administrator', 'system-administrator', 'iqa-staff'])) {
             abort(403, 'Unauthorized action.');
         }
         return redirect()->route('analytics.university-administrator');
     })->name("dashboard.university-administrator");
 
     Route::get("roles/university-administrator/reports", function () {
-        if (!auth()->user()->hasRole(['university-administrator', 'system-administrator', 'iqa-staff', 'iqa-admin'])) {
+        $user = Auth::user();
+        if (!$user || !$user->hasRole(['university-administrator', 'system-administrator', 'iqa-staff'])) {
             abort(403, 'Unauthorized action.');
         }
         return view('pages.workspace.placeholder', [
@@ -79,7 +86,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Active role switcher route for multi-role users
     Route::post('switch-role', function (\Illuminate\Http\Request $request) {
         $role = $request->input('role');
-        $user = auth()->user();
+        $user = Auth::user();
 
         if ($user && $user->hasRole($role)) {
             session(['active_role' => $role]);
@@ -98,8 +105,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     foreach ($roles as $role) {
         Route::get("roles/{$role}/dashboard", function () use ($role) {
-            $user = auth()->user();
-            if (!$user->hasRole($role) && !($user->hasRole(['iqa-staff', 'iqa-admin']) && $role === 'iqa-staff')) {
+            $user = Auth::user();
+            if (!$user || (!$user->hasRole($role) && !($user->hasRole(['iqa-staff']) && $role === 'iqa-staff'))) {
                 abort(403, 'Unauthorized action.');
             }
             if ($user->hasRole($role)) {
@@ -112,8 +119,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         })->name("dashboard.{$role}");
 
         Route::get("roles/{$role}/documents", function () use ($role) {
-            $user = auth()->user();
-            if (!$user->hasRole($role) && !($user->hasRole(['iqa-staff', 'iqa-admin']) && $role === 'iqa-staff')) {
+            $user = Auth::user();
+            if (!$user || (!$user->hasRole($role) && !($user->hasRole(['iqa-staff']) && $role === 'iqa-staff'))) {
                 abort(403, 'Unauthorized action.');
             }
             if ($user->hasRole($role)) {
@@ -123,8 +130,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         })->name("documents.{$role}");
 
         Route::get("roles/{$role}/submissions", function () use ($role) {
-            $user = auth()->user();
-            if (!$user->hasRole($role) && !($user->hasRole(['iqa-staff', 'iqa-admin']) && $role === 'iqa-staff')) {
+            $user = Auth::user();
+            if (!$user || (!$user->hasRole($role) && !($user->hasRole(['iqa-staff']) && $role === 'iqa-staff'))) {
                 abort(403, 'Unauthorized action.');
             }
             if ($user->hasRole($role)) {
@@ -137,8 +144,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         })->name("submissions.{$role}");
 
         Route::get("roles/{$role}/reports", function () use ($role) {
-            $user = auth()->user();
-            if (!$user->hasRole($role) && !($user->hasRole(['iqa-staff', 'iqa-admin']) && $role === 'iqa-staff')) {
+            $user = Auth::user();
+            if (!$user || (!$user->hasRole($role) && !($user->hasRole(['iqa-staff']) && $role === 'iqa-staff'))) {
                 abort(403, 'Unauthorized action.');
             }
             if ($user->hasRole($role)) {
@@ -151,8 +158,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         })->name("reports.{$role}");
 
         Route::get("roles/{$role}/settings", function () use ($role) {
-            $user = auth()->user();
-            if (!$user->hasRole($role) && !($user->hasRole(['iqa-staff', 'iqa-admin']) && $role === 'iqa-staff')) {
+            $user = Auth::user();
+            if (!$user || (!$user->hasRole($role) && !($user->hasRole(['iqa-staff']) && $role === 'iqa-staff'))) {
                 abort(403, 'Unauthorized action.');
             }
             if ($user->hasRole($role)) {
@@ -166,7 +173,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     }
 
     Route::get('roles/iqa-staff/audit-trail', function () {
-        if (!auth()->user()->hasRole(['iqa-staff', 'iqa-admin', 'system-administrator'])) {
+        $user = Auth::user();
+        if (!$user || !$user->hasRole(['iqa-staff', 'system-administrator'])) {
             abort(403, 'Unauthorized action.');
         }
         return view('pages.roles.iqa-staff.audit-trail');
@@ -266,7 +274,7 @@ if (app()->environment(['local', 'testing'])) {
             $user->roles()->sync([$roleRecord->id]);
         }
 
-        auth()->login($user);
+        Auth::login($user);
 
         return redirect()->route('dashboard');
     })->name('dev.login');

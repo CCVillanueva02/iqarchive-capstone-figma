@@ -160,7 +160,7 @@
             </div>
         </div>
 
-        @include('pages.roles.iqa-member.partials.detail-drawer')
+        @include('pages.documents.partials.detail-drawer')
     </div>
 
     @vite('resources/js/iqa-documents.js')
