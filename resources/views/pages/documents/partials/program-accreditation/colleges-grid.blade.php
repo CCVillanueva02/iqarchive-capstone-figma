@@ -38,7 +38,7 @@
                 </button>
             </template>
         </div>
-        
+
         @if(auth()->user()->hasRole('iqa-admin') || auth()->user()->hasRole('system-administrator'))
         <button @click="openCreateCollegeModal" class="flex items-center gap-2 bg-[#f27224] hover:bg-[#d65f1a] text-white px-4 py-2.5 rounded-xl font-bold text-xs shadow-3xs transition cursor-pointer">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
@@ -69,7 +69,7 @@
                         <!-- Right Side: Program Count & Actions (Upper Right) -->
                         <div class="flex items-center gap-2 shrink-0 pt-0.5">
                             <span class="text-label-xs font-bold px-2.5 py-1 rounded-full bg-slate-100 text-zinc-600 border border-slate-200 whitespace-nowrap" x-text="(col.programCount || 0) + ' Programs'"></span>
-                            
+
                             @if(auth()->user()->hasRole('iqa-admin') || auth()->user()->hasRole('system-administrator'))
                             <div class="flex items-center">
                                 <button @click.stop="openEditCollegeModal(col)" class="p-1 text-zinc-400 hover:text-primary transition" title="Edit College">
@@ -117,7 +117,9 @@
             <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
                 <h3 class="text-heading-sm font-bold text-primary" x-text="collegeForm.id ? 'Edit College' : 'Add College'"></h3>
                 <button @click="closeCollegeModal()" class="text-slate-400 hover:text-slate-600 transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
                 </button>
             </div>
             <div class="p-6 flex flex-col gap-5">

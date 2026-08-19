@@ -2000,6 +2000,16 @@ window.documentWorkspace = function (initialState = {}) {
 
         get filteredOffices() {
             let filterOffices = this.offices;
+            if (!filterOffices || filterOffices.length === 0) {
+                filterOffices = [
+                    { id: 1, name: 'General Administration', description: 'Central administration and general records.' },
+                    { id: 2, name: 'Research Office', description: 'Office of the Vice President for Research, Development, and Extension.' },
+                    { id: 3, name: 'University Library', description: 'Main and college library records and policies.' },
+                    { id: 4, name: 'Human Resource', description: 'HRMO records, faculty and staff files.' },
+                    { id: 5, name: 'Admissions Office', description: 'Student admissions and registrar records.' },
+                    { id: 6, name: 'Quality Assurance Office', description: 'Internal Quality Assurance records and frameworks.' }
+                ];
+            }
             if (this.searchQuery) {
                 const query = this.searchQuery.toLowerCase();
                 filterOffices = filterOffices.filter(o =>

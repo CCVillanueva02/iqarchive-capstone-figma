@@ -63,57 +63,57 @@
         <template x-for="prog in filteredPrograms" :key="prog.id">
             <div class="bg-white border border-slate-200/70 rounded-2xl p-5 shadow-3xs hover:shadow-md transition-all duration-300 flex flex-col justify-between gap-5 group">
                 <div class="flex flex-col gap-4">
-                <div class="flex flex-col gap-4">
-                    <div class="flex items-start justify-between gap-3">
-                        <!-- Left Side: Profile Icon & Program Name -->
-                        <div class="flex items-center gap-3 overflow-hidden">
-                            <div class="w-11 h-11 rounded-xl flex items-center justify-center font-black text-sm shrink-0" :class="prog.iconBg || 'bg-blue-50 text-primary'">
-                                <span x-text="prog.code"></span>
+                    <div class="flex flex-col gap-4">
+                        <div class="flex items-start justify-between gap-3">
+                            <!-- Left Side: Profile Icon & Program Name -->
+                            <div class="flex items-center gap-3 overflow-hidden">
+                                <div class="w-11 h-11 rounded-xl flex items-center justify-center font-black text-sm shrink-0" :class="prog.iconBg || 'bg-blue-50 text-primary'">
+                                    <span x-text="prog.code"></span>
+                                </div>
+                                <div class="flex flex-col overflow-hidden">
+                                    <h3 class="text-body font-bold text-primary group-hover:text-primary-hover transition truncate" x-text="prog.name" :title="prog.name"></h3>
+                                    <p class="text-xs text-zinc-500 mt-0.5 truncate" x-text="prog.college || accredCollege?.name"></p>
+                                </div>
                             </div>
-                            <div class="flex flex-col overflow-hidden">
-                                <h3 class="text-body font-bold text-primary group-hover:text-primary-hover transition truncate" x-text="prog.name" :title="prog.name"></h3>
-                                <p class="text-xs text-zinc-500 mt-0.5 truncate" x-text="prog.college || accredCollege?.name"></p>
+
+                            <!-- Right Side: College Code & Actions (Upper Right) -->
+                            <div class="flex items-center gap-2 shrink-0 pt-0.5">
+                                <span class="text-label-xs font-bold text-zinc-400 uppercase tracking-wider block" x-text="prog.collegeCode || accredCollege?.code"></span>
+
+                                @if(auth()->user()->hasRole('iqa-admin') || auth()->user()->hasRole('system-administrator'))
+                                <div class="flex items-center">
+                                    <button @click.stop="openEditProgramModal(prog)" class="p-1 text-zinc-400 hover:text-primary transition" title="Edit Program">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.89 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.89l3.4-3.4" />
+                                        </svg>
+                                    </button>
+                                    <button @click.stop="confirmDeleteProgram(prog)" class="p-1 text-zinc-400 hover:text-rose-500 transition" title="Delete Program">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                @endif
                             </div>
                         </div>
 
-                        <!-- Right Side: College Code & Actions (Upper Right) -->
-                        <div class="flex items-center gap-2 shrink-0 pt-0.5">
-                            <span class="text-label-xs font-bold text-zinc-400 uppercase tracking-wider block" x-text="prog.collegeCode || accredCollege?.code"></span>
-                            
-                            @if(auth()->user()->hasRole('iqa-admin') || auth()->user()->hasRole('system-administrator'))
-                            <div class="flex items-center">
-                                <button @click.stop="openEditProgramModal(prog)" class="p-1 text-zinc-400 hover:text-primary transition" title="Edit Program">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.89 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.89l3.4-3.4" />
-                                    </svg>
-                                </button>
-                                <button @click.stop="confirmDeleteProgram(prog)" class="p-1 text-zinc-400 hover:text-rose-500 transition" title="Delete Program">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                                    </svg>
-                                </button>
-                            </div>
-                            @endif
+                        <!-- Accreditation Status / Level Info -->
+                        <div class="flex items-center justify-between pt-3 border-t border-slate-100 text-xs">
+                            <span class="text-zinc-400 font-medium">Accreditation Level:</span>
+                            <span class="font-extrabold px-2.5 py-1 rounded-full border text-[11px]"
+                                :class="prog.level.includes('Level IV') ? 'bg-blue-50 text-[#1b355a] border-blue-100' : (prog.level.includes('Level III') ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : (prog.level.includes('Level II') ? 'bg-amber-50 text-amber-700 border-amber-100' : 'bg-slate-100 text-zinc-700 border-slate-200'))"
+                                x-text="prog.level"></span>
                         </div>
                     </div>
 
-                    <!-- Accreditation Status / Level Info -->
-                    <div class="flex items-center justify-between pt-3 border-t border-slate-100 text-xs">
-                        <span class="text-zinc-400 font-medium">Accreditation Level:</span>
-                        <span class="font-extrabold px-2.5 py-1 rounded-full border text-[11px]"
-                            :class="prog.level.includes('Level IV') ? 'bg-blue-50 text-[#1b355a] border-blue-100' : (prog.level.includes('Level III') ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : (prog.level.includes('Level II') ? 'bg-amber-50 text-amber-700 border-amber-100' : 'bg-slate-100 text-zinc-700 border-slate-200'))"
-                            x-text="prog.level"></span>
-                    </div>
+                    <!-- Action Button -->
+                    <button type="button" @click="selectProgram(prog)" class="w-full bg-[#1b355a] hover:bg-[#112239] text-white py-2.5 rounded-xl font-bold text-xs shadow-3xs transition cursor-pointer flex items-center justify-center gap-2">
+                        <span>Select Program</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                        </svg>
+                    </button>
                 </div>
-
-                <!-- Action Button -->
-                <button type="button" @click="selectProgram(prog)" class="w-full bg-[#1b355a] hover:bg-[#112239] text-white py-2.5 rounded-xl font-bold text-xs shadow-3xs transition cursor-pointer flex items-center justify-center gap-2">
-                    <span>Select Program</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                    </svg>
-                </button>
-            </div>
         </template>
     </div>
 
@@ -139,7 +139,9 @@
             <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
                 <h3 class="text-heading-sm font-bold text-primary" x-text="programForm.id ? 'Edit Program' : 'Add Program'"></h3>
                 <button @click="closeProgramModal()" class="text-slate-400 hover:text-slate-600 transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
                 </button>
             </div>
             <div class="p-6 flex flex-col gap-5">

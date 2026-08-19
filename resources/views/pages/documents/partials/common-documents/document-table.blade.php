@@ -1,9 +1,9 @@
 <!-- ================= STATE 2: CATEGORY DETAIL WORKSPACE ================= -->
-<div x-show="selectedCategory !== null" 
-     x-transition:enter="transition ease-out duration-200"
-     x-transition:enter-start="opacity-0 translate-y-2"
-     x-transition:enter-end="opacity-100 translate-y-0"
-     x-data="{ 
+<div x-show="selectedCategory !== null"
+    x-transition:enter="transition ease-out duration-200"
+    x-transition:enter-start="opacity-0 translate-y-2"
+    x-transition:enter-end="opacity-100 translate-y-0"
+    x-data="{ 
          sortField: 'date', 
          sortAsc: false,
          toggleSort(field) {
@@ -28,7 +28,7 @@
              return docs;
          }
      }"
-     class="flex flex-col gap-4 font-sans">
+    class="flex flex-col gap-4 font-sans">
 
     @if(auth()->user()->role === 'iqa-admin' || auth()->user()->hasRole('iqa-admin'))
     <!-- IQA Admin Verification Alert Notice Banner -->
@@ -58,12 +58,11 @@
         <div class="flex flex-col sm:flex-row gap-3 items-center justify-between">
             <!-- Search Input -->
             <div class="relative w-full sm:max-w-md">
-                <input 
-                    type="text" 
+                <input
+                    type="text"
                     x-model="searchQuery"
-                    placeholder="Search documents in this category..." 
-                    class="w-full text-body-sm border border-slate-200 rounded-lg pl-9 pr-3 py-2.5 focus:outline-none focus:border-primary-dark focus:ring-1 focus:ring-primary-dark bg-slate-50/50"
-                />
+                    placeholder="Search documents in this category..."
+                    class="w-full text-body-sm border border-slate-200 rounded-lg pl-9 pr-3 py-2.5 focus:outline-none focus:border-primary-dark focus:ring-1 focus:ring-primary-dark bg-slate-50/50" />
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-zinc-400">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.602 10.602z" />
@@ -73,14 +72,9 @@
 
             <!-- Toolbar Actions & Filters -->
             <div class="flex flex-wrap items-center gap-2.5 w-full sm:w-auto justify-end">
-                <button type="button" @click="selectedCategory = null; searchQuery = ''" class="bg-slate-100 hover:bg-slate-200 text-slate-700 text-body-sm font-bold px-4 py-2 rounded-lg flex items-center gap-1.5 transition cursor-pointer shadow-3xs mr-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
-                    </svg>
-                    <span>Back to Categories</span>
-                </button>
-                <span class="text-label font-bold text-zinc-400 uppercase tracking-wider hidden lg:inline">Filter by:</span>
                 
+                <span class="text-label font-bold text-zinc-400 uppercase tracking-wider hidden lg:inline">Filter by:</span>
+
                 <!-- Doc Type Select -->
                 <div class="relative">
                     <select x-model="filterType" class="text-body-sm bg-surface-card border border-slate-200 rounded-lg pl-3 pr-8 py-2 text-zinc-650 appearance-none focus:outline-none focus:border-primary-dark font-semibold cursor-pointer">
@@ -90,7 +84,9 @@
                         <option value="Excel">Excel</option>
                     </select>
                     <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-zinc-500">
-                        <svg class="fill-current h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                        <svg class="fill-current h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                        </svg>
                     </div>
                 </div>
 
@@ -103,7 +99,9 @@
                         <option value="2024">2024</option>
                     </select>
                     <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-zinc-500">
-                        <svg class="fill-current h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                        <svg class="fill-current h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                        </svg>
                     </div>
                 </div>
 
@@ -117,7 +115,9 @@
                         <option value="Rejected">Rejected</option>
                     </select>
                     <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-zinc-500">
-                        <svg class="fill-current h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                        <svg class="fill-current h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                            <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                        </svg>
                     </div>
                 </div>
                 @endif
@@ -138,22 +138,22 @@
         <!-- Quick One-Click Sort & Status Filter Pills (IQA Admin Only) -->
         <div class="flex items-center gap-2 pt-3 border-t border-slate-100 flex-wrap">
             <span class="text-[11px] font-bold text-zinc-400 uppercase tracking-wider mr-1">Quick Filter:</span>
-            <button type="button" 
-                    @click="filterStatus = 'Verified'" 
-                    class="px-3 py-1 rounded-full text-xs font-bold transition cursor-pointer border"
-                    :class="filterStatus === 'Verified' ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'">
+            <button type="button"
+                @click="filterStatus = 'Verified'"
+                class="px-3 py-1 rounded-full text-xs font-bold transition cursor-pointer border"
+                :class="filterStatus === 'Verified' ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'">
                 Verified <span x-text="'(' + documents.filter(d => (!selectedCategory || d.category === selectedCategory) && d.status === 'Verified').length + ')'"></span>
             </button>
-            <button type="button" 
-                    @click="filterStatus = 'Pending'" 
-                    class="px-3 py-1 rounded-full text-xs font-bold transition cursor-pointer border"
-                    :class="filterStatus === 'Pending' ? 'bg-amber-600 text-white border-amber-600' : 'bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100'">
+            <button type="button"
+                @click="filterStatus = 'Pending'"
+                class="px-3 py-1 rounded-full text-xs font-bold transition cursor-pointer border"
+                :class="filterStatus === 'Pending' ? 'bg-amber-600 text-white border-amber-600' : 'bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100'">
                 Pending Verification <span x-text="'(' + documents.filter(d => (!selectedCategory || d.category === selectedCategory) && d.status === 'Pending').length + ')'"></span>
             </button>
-            <button type="button" 
-                    @click="filterStatus = 'Rejected'" 
-                    class="px-3 py-1 rounded-full text-xs font-bold transition cursor-pointer border"
-                    :class="filterStatus === 'Rejected' ? 'bg-rose-600 text-white border-rose-600' : 'bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100'">
+            <button type="button"
+                @click="filterStatus = 'Rejected'"
+                class="px-3 py-1 rounded-full text-xs font-bold transition cursor-pointer border"
+                :class="filterStatus === 'Rejected' ? 'bg-rose-600 text-white border-rose-600' : 'bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100'">
                 Rejected <span x-text="'(' + documents.filter(d => (!selectedCategory || d.category === selectedCategory) && d.status === 'Rejected').length + ')'"></span>
             </button>
         </div>
@@ -171,13 +171,13 @@
                             <div class="flex items-center gap-1.5">
                                 <span>DOCUMENT TITLE</span>
                                 <svg class="w-3.5 h-3.5 transition-transform duration-200"
-                                     :class="{
+                                    :class="{
                                          'text-primary-dark opacity-100': sortField === 'name',
                                          'text-zinc-300 opacity-60 group-hover/th:opacity-100': sortField !== 'name',
                                          'rotate-180': sortField === 'name' && sortAsc,
                                          'rotate-0': sortField !== 'name' || !sortAsc
                                      }"
-                                     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
                                 </svg>
                             </div>
@@ -188,13 +188,13 @@
                             <div class="flex items-center gap-1">
                                 <span>UPLOADER</span>
                                 <svg class="w-3.5 h-3.5 transition-transform duration-200"
-                                     :class="{
+                                    :class="{
                                          'text-primary-dark opacity-100': sortField === 'uploader',
                                          'text-zinc-300 opacity-60 group-hover/th:opacity-100': sortField !== 'uploader',
                                          'rotate-180': sortField === 'uploader' && sortAsc,
                                          'rotate-0': sortField !== 'uploader' || !sortAsc
                                      }"
-                                     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
                                 </svg>
                             </div>
@@ -205,13 +205,13 @@
                             <div class="flex items-center gap-1">
                                 <span>UPLOAD DATE</span>
                                 <svg class="w-3.5 h-3.5 transition-transform duration-200"
-                                     :class="{
+                                    :class="{
                                          'text-primary-dark opacity-100': sortField === 'date',
                                          'text-zinc-300 opacity-60 group-hover/th:opacity-100': sortField !== 'date',
                                          'rotate-180': sortField === 'date' && sortAsc,
                                          'rotate-0': sortField !== 'date' || !sortAsc
                                      }"
-                                     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
                                 </svg>
                             </div>
@@ -222,13 +222,13 @@
                             <div class="flex items-center gap-1">
                                 <span>STATUS</span>
                                 <svg class="w-3.5 h-3.5 transition-transform duration-200"
-                                     :class="{
+                                    :class="{
                                          'text-primary-dark opacity-100': sortField === 'status',
                                          'text-zinc-300 opacity-60 group-hover/th:opacity-100': sortField !== 'status',
                                          'rotate-180': sortField === 'status' && sortAsc,
                                          'rotate-0': sortField !== 'status' || !sortAsc
                                      }"
-                                     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
                                 </svg>
                             </div>
@@ -245,26 +245,26 @@
                                 <div class="flex items-center gap-2.5 cursor-pointer" @click="openDoc(doc)">
                                     <template x-if="doc.type === 'PDF' || !doc.type">
                                         <svg class="w-5 h-6 shrink-0" viewBox="0 0 24 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M3 2A2 2 0 0 1 5 0H14L21 7V26A2 2 0 0 1 19 28H5A2 2 0 0 1 3 26V2Z" fill="#DC2626"/>
-                                            <path d="M14 0L21 7H14V0Z" fill="#991B1B"/>
+                                            <path d="M3 2A2 2 0 0 1 5 0H14L21 7V26A2 2 0 0 1 19 28H5A2 2 0 0 1 3 26V2Z" fill="#DC2626" />
+                                            <path d="M14 0L21 7H14V0Z" fill="#991B1B" />
                                             <text x="3.5" y="22" fill="white" font-size="7" font-weight="900" font-family="sans-serif">PDF</text>
                                         </svg>
                                     </template>
                                     <template x-if="doc.type === 'Word'">
                                         <svg class="w-5 h-6 shrink-0" viewBox="0 0 24 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M3 2A2 2 0 0 1 5 0H14L21 7V26A2 2 0 0 1 19 28H5A2 2 0 0 1 3 26V2Z" fill="#2563EB"/>
-                                            <path d="M14 0L21 7H14V0Z" fill="#1D4ED8"/>
+                                            <path d="M3 2A2 2 0 0 1 5 0H14L21 7V26A2 2 0 0 1 19 28H5A2 2 0 0 1 3 26V2Z" fill="#2563EB" />
+                                            <path d="M14 0L21 7H14V0Z" fill="#1D4ED8" />
                                             <text x="3" y="22" fill="white" font-size="7" font-weight="900" font-family="sans-serif">DOC</text>
                                         </svg>
                                     </template>
                                     <template x-if="doc.type === 'Excel'">
                                         <svg class="w-5 h-6 shrink-0" viewBox="0 0 24 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M3 2A2 2 0 0 1 5 0H14L21 7V26A2 2 0 0 1 19 28H5A2 2 0 0 1 3 26V2Z" fill="#059669"/>
-                                            <path d="M14 0L21 7H14V0Z" fill="#047857"/>
+                                            <path d="M3 2A2 2 0 0 1 5 0H14L21 7V26A2 2 0 0 1 19 28H5A2 2 0 0 1 3 26V2Z" fill="#059669" />
+                                            <path d="M14 0L21 7H14V0Z" fill="#047857" />
                                             <text x="3" y="22" fill="white" font-size="7" font-weight="900" font-family="sans-serif">XLS</text>
                                         </svg>
                                     </template>
-                                     <span class="font-bold text-gray-900 group-hover:text-brand-orange transition leading-snug break-words" x-text="doc.name"></span>
+                                    <span class="font-bold text-gray-900 group-hover:text-brand-orange transition leading-snug break-words" x-text="doc.name"></span>
                                 </div>
                             </td>
                             <td class="py-4 px-4 text-slate-700 font-semibold whitespace-nowrap shrink-0" x-text="doc.uploader || 'Sys Admin'"></td>

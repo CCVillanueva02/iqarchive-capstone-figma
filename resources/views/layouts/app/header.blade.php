@@ -6,20 +6,20 @@
         @php
         $role = auth()->user()?->role;
         if (in_array($role, ['iqa-admin', 'iqa-member'])) {
-            $role = 'iqa-staff';
+        $role = 'iqa-staff';
         }
         @endphp
         @if($role && !in_array($role, ['system-administrator', 'iqa-staff', 'iqa-admin', 'iqa-member']))
-            <nav class="hidden lg:flex items-center gap-6 ml-8">
-                @if($role === 'university-administrator')
-                    <a href="{{ route('analytics.university-administrator') }}" class="text-sm font-semibold transition-all {{ request()->routeIs('analytics.university-administrator') ? 'text-[#002B61] border-b-2 border-[#F47920] pb-1' : 'text-zinc-500 hover:text-[#002B61] pb-1 border-b-2 border-transparent' }}" wire:navigate>Analytics</a>
-                @else
-                    <a href="{{ route('dashboard.' . $role) }}" class="text-sm font-semibold transition-all {{ request()->routeIs('dashboard.' . $role) ? 'text-[#002B61] border-b-2 border-[#F47920] pb-1' : 'text-zinc-500 hover:text-[#002B61] pb-1 border-b-2 border-transparent' }}" wire:navigate>Dashboard</a>
-                    <a href="{{ route('documents.' . $role) }}" class="text-sm font-semibold transition-all {{ request()->routeIs('documents.' . $role) ? 'text-[#002B61] border-b-2 border-[#F47920] pb-1' : 'text-zinc-500 hover:text-[#002B61] pb-1 border-b-2 border-transparent' }}" wire:navigate>Documents</a>
-                    <a href="{{ route('submissions.' . $role) }}" class="text-sm font-semibold transition-all {{ request()->routeIs('submissions.' . $role) ? 'text-[#002B61] border-b-2 border-[#F47920] pb-1' : 'text-zinc-500 hover:text-[#002B61] pb-1 border-b-2 border-transparent' }}" wire:navigate>Submissions</a>
-                    <a href="{{ route('reports.' . $role) }}" class="text-sm font-semibold transition-all {{ request()->routeIs('reports.' . $role) ? 'text-[#002B61] border-b-2 border-[#F47920] pb-1' : 'text-zinc-500 hover:text-[#002B61] pb-1 border-b-2 border-transparent' }}" wire:navigate>Reports</a>
-                @endif
-            </nav>
+        <nav class="hidden lg:flex items-center gap-6 ml-8">
+            @if($role === 'university-administrator')
+            <a href="{{ route('analytics.university-administrator') }}" class="text-sm font-semibold transition-all {{ request()->routeIs('analytics.university-administrator') ? 'text-[#002B61] border-b-2 border-[#F47920] pb-1' : 'text-zinc-500 hover:text-[#002B61] pb-1 border-b-2 border-transparent' }}" wire:navigate>Analytics</a>
+            @else
+            <a href="{{ route('dashboard.' . $role) }}" class="text-sm font-semibold transition-all {{ request()->routeIs('dashboard.' . $role) ? 'text-[#002B61] border-b-2 border-[#F47920] pb-1' : 'text-zinc-500 hover:text-[#002B61] pb-1 border-b-2 border-transparent' }}" wire:navigate>Dashboard</a>
+            <a href="{{ route('documents.' . $role) }}" class="text-sm font-semibold transition-all {{ request()->routeIs('documents.' . $role) ? 'text-[#002B61] border-b-2 border-[#F47920] pb-1' : 'text-zinc-500 hover:text-[#002B61] pb-1 border-b-2 border-transparent' }}" wire:navigate>Documents</a>
+            <a href="{{ route('submissions.' . $role) }}" class="text-sm font-semibold transition-all {{ request()->routeIs('submissions.' . $role) ? 'text-[#002B61] border-b-2 border-[#F47920] pb-1' : 'text-zinc-500 hover:text-[#002B61] pb-1 border-b-2 border-transparent' }}" wire:navigate>Submissions</a>
+            <a href="{{ route('reports.' . $role) }}" class="text-sm font-semibold transition-all {{ request()->routeIs('reports.' . $role) ? 'text-[#002B61] border-b-2 border-[#F47920] pb-1' : 'text-zinc-500 hover:text-[#002B61] pb-1 border-b-2 border-transparent' }}" wire:navigate>Reports</a>
+            @endif
+        </nav>
         @endif
     </div>
 
@@ -36,29 +36,29 @@
     </flux:sidebar.header>
 
     @if(isset($role) && $role && !in_array($role, ['system-administrator', 'iqa-admin', 'iqa-member']))
-        <div class="flex flex-col gap-1 mt-4 px-2">
-            @if($role === 'university-administrator')
-                <a href="{{ route('analytics.university-administrator') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ request()->routeIs('analytics.university-administrator') ? 'bg-[#002B61]/10 text-[#002B61]' : 'text-zinc-600 hover:bg-zinc-100' }}" wire:navigate>
-                    <span>Analytics</span>
-                </a>
-                <a href="{{ route('reports.university-administrator') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ request()->routeIs('reports.university-administrator') ? 'bg-[#002B61]/10 text-[#002B61]' : 'text-zinc-600 hover:bg-zinc-100' }}" wire:navigate>
-                    <span>Reports</span>
-                </a>
-            @else
-                <a href="{{ route('dashboard.' . $role) }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ request()->routeIs('dashboard.' . $role) ? 'bg-[#002B61]/10 text-[#002B61]' : 'text-zinc-600 hover:bg-zinc-100' }}" wire:navigate>
-                    <span>Dashboard</span>
-                </a>
-                <a href="{{ route('documents.' . $role) }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ request()->routeIs('documents.' . $role) ? 'bg-[#002B61]/10 text-[#002B61]' : 'text-zinc-600 hover:bg-zinc-100' }}" wire:navigate>
-                    <span>Documents</span>
-                </a>
-                <a href="{{ route('submissions.' . $role) }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ request()->routeIs('submissions.' . $role) ? 'bg-[#002B61]/10 text-[#002B61]' : 'text-zinc-600 hover:bg-zinc-100' }}" wire:navigate>
-                    <span>Submissions</span>
-                </a>
-                <a href="{{ route('reports.' . $role) }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ request()->routeIs('reports.' . $role) ? 'bg-[#002B61]/10 text-[#002B61]' : 'text-zinc-600 hover:bg-zinc-100' }}" wire:navigate>
-                    <span>Reports</span>
-                </a>
-            @endif
-        </div>
+    <div class="flex flex-col gap-1 mt-4 px-2">
+        @if($role === 'university-administrator')
+        <a href="{{ route('analytics.university-administrator') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ request()->routeIs('analytics.university-administrator') ? 'bg-[#002B61]/10 text-[#002B61]' : 'text-zinc-600 hover:bg-zinc-100' }}" wire:navigate>
+            <span>Analytics</span>
+        </a>
+        <a href="{{ route('reports.university-administrator') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ request()->routeIs('reports.university-administrator') ? 'bg-[#002B61]/10 text-[#002B61]' : 'text-zinc-600 hover:bg-zinc-100' }}" wire:navigate>
+            <span>Reports</span>
+        </a>
+        @else
+        <a href="{{ route('dashboard.' . $role) }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ request()->routeIs('dashboard.' . $role) ? 'bg-[#002B61]/10 text-[#002B61]' : 'text-zinc-600 hover:bg-zinc-100' }}" wire:navigate>
+            <span>Dashboard</span>
+        </a>
+        <a href="{{ route('documents.' . $role) }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ request()->routeIs('documents.' . $role) ? 'bg-[#002B61]/10 text-[#002B61]' : 'text-zinc-600 hover:bg-zinc-100' }}" wire:navigate>
+            <span>Documents</span>
+        </a>
+        <a href="{{ route('submissions.' . $role) }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ request()->routeIs('submissions.' . $role) ? 'bg-[#002B61]/10 text-[#002B61]' : 'text-zinc-600 hover:bg-zinc-100' }}" wire:navigate>
+            <span>Submissions</span>
+        </a>
+        <a href="{{ route('reports.' . $role) }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ request()->routeIs('reports.' . $role) ? 'bg-[#002B61]/10 text-[#002B61]' : 'text-zinc-600 hover:bg-zinc-100' }}" wire:navigate>
+            <span>Reports</span>
+        </a>
+        @endif
+    </div>
     @endif
 </flux:sidebar>
 
