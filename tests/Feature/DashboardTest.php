@@ -1,25 +1,47 @@
 <?php
 
 use App\Models\User;
+use App\Models\Role;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+uses(RefreshDatabase::class);
+
+beforeEach(function () {
+    Role::firstOrCreate(['role_name' => 'system-administrator'], ['description' => 'System Administrator']);
+    Role::firstOrCreate(['role_name' => 'iqa-staff'], ['description' => 'IQA Member']);
+    Role::firstOrCreate(['role_name' => 'accreditor'], ['description' => 'AACCUP Accreditor']);
+    Role::firstOrCreate(['role_name' => 'university-administrator'], ['description' => 'BU Executive']);
+    Role::firstOrCreate(['role_name' => 'college-head'], ['description' => 'College Head']);
+    Role::firstOrCreate(['role_name' => 'task-force-member'], ['description' => 'Task Force']);
+});
 
 test('guests are redirected to the login page', function () {
     $response = $this->get(route('dashboard'));
     $response->assertRedirect(route('login'));
 });
 
-test('authenticated users can visit the dashboard', function () {
-    $user = User::factory()->create();
-    $this->actingAs($user);
+dataset('system_roles_redirection', [
+    'System Administrator' => ['system-administrator', 'dashboard.system-administrator'],
+    'IQA Staff'            => ['iqa-staff', 'dashboard.iqa-staff'],
+    'Accreditor'           => ['accreditor', 'submissions.accreditor'],
+    'BU Executive'         => ['university-administrator', 'analytics.university-administrator'],
+    'College Head'         => ['college-head', 'dashboard.college-head'],
+    'Task Force Member'    => ['task-force-member', 'dashboard.task-force-member'],
+]);
 
-    $response = $this->get(route('dashboard'));
+test('every role can log in and is redirected to their correct landing page', function (string $roleName, string $expectedRouteName) {
+    $role = Role::where('role_name', $roleName)->first();
 
-    $expectedRoute = match ($user->role) {
-        'iqa-staff', 'iqa-admin' => route('dashboard.iqa-staff'),
-        'accreditor' => route('submissions.accreditor'),
-        'university-administrator' => route('analytics.university-administrator'),
-        'college-head' => route('dashboard.college-head'),
-        default => route('dashboard.' . $user->role),
-    };
+    $user = User::factory()->create([
+        'role_id' => $role->id,
+    ]);
 
-    $response->assertRedirect($expectedRoute);
-});
+    $response = $this->actingAs($user)->get(route('dashboard'));
+
+    // Assert redirect to the role's designated homepage
+    $response->assertRedirect(route($expectedRouteName));
+
+    // Assert that navigating to their designated homepage succeeds with HTTP 200 OK
+    $targetResponse = $this->actingAs($user)->get(route($expectedRouteName));
+    $targetResponse->assertOk();
+})->with('system_roles_redirection');

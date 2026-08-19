@@ -83,7 +83,7 @@
 
                 <!-- Task Force Member -->
                 <a href="{{ route('dev.login', 'task-force-member') }}" class="group flex flex-col p-3.5 bg-slate-900 border border-slate-800 rounded-2xl hover:border-orange-500/50 hover:bg-slate-850/50 transition-all duration-200 shadow-sm">
-                    <span class="text-sm font-semibold text-slate-100 group-hover:text-orange-400 transition-colors">Task Force Member</span>
+                    <span class="text-sm font-semibold text-slate-100 group-hover:text-orange-400 transition-colors">Task Force</span>
                     <span class="text-xs text-slate-500 mt-0.5 font-mono">tfmember@example.com</span>
                 </a>
             </div>

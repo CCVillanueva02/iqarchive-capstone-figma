@@ -35,6 +35,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         if (auth()->user()->role !== 'accreditor') {
             abort(403, 'Unauthorized action.');
         }
+        if (!view()->exists("pages.roles.accreditor.submission")) {
+            return view('pages.workspace.placeholder', [
+                'title' => 'Accreditor Evaluation Submissions',
+                'roleName' => 'AACCUP Accreditor',
+            ]);
+        }
         return view("pages.roles.accreditor.submission");
     })->name("submissions.accreditor");
 
@@ -210,7 +216,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('api/self-survey/best-practices', [\App\Http\Controllers\SelfSurveyController::class, 'saveBestPractices'])->name('api.self-survey.best-practices');
 });
 
-if (app()->environment('local')) {
+if (app()->environment(['local', 'testing'])) {
     // Render the beautiful dev dashboard
     Route::get('/dev', function () {
         return view('dev-login');
@@ -223,22 +229,41 @@ if (app()->environment('local')) {
             'iqa-staff', 'iqa-admin', 'iqa-member' => 'iqastaff@example.com',
             'iqa-staff-multi', 'iqa-member-multi' => 'iqastaff-multi@example.com',
             'accreditor' => 'accreditor@example.com',
-            'university-administrator' => 'buexecutive@example.com',
+            'university-administrator' => 'buadmin@example.com',
             'college-head', 'dean' => 'dean@example.com',
             'dean-multi' => 'dean-multirole@example.com',
-            'task-force-member', 'task-force' => 'tfmember@example.com',
+            'task-force-member', 'task-force' => 'taskforcemember@example.com',
             default => 'sysadmin@example.com',
         };
 
         $user = \App\Models\User::where('email', $email)->first();
 
         if (!$user) {
+            $roleCode = match ($role) {
+                'dean', 'college-head' => 'college-head',
+                'task-force', 'task-force-member' => 'task-force-member',
+                'iqa-admin', 'iqa-member', 'iqa-staff', 'iqa-staff-multi' => 'iqa-staff',
+                default => $role,
+            };
+
+            $roleRecord = \App\Models\Role::firstOrCreate(
+                ['role_name' => $roleCode],
+                ['description' => ucwords(str_replace('-', ' ', $roleCode))]
+            );
+
+            $nameParts = explode(' ', ucwords(str_replace('-', ' ', $role)), 2);
+
             $user = \App\Models\User::create([
-                'name' => ucwords(str_replace('-', ' ', $role)),
+                'first_name' => $nameParts[0],
+                'last_name' => $nameParts[1] ?? 'User',
                 'email' => $email,
-                'role' => $role === 'dean' ? 'college-head' : $role,
+                'role_id' => $roleRecord->id,
                 'password' => bcrypt('password'),
+                'email_verified_at' => now(),
+                'status' => 'active',
             ]);
+
+            $user->roles()->sync([$roleRecord->id]);
         }
 
         auth()->login($user);
