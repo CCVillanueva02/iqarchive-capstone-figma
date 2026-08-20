@@ -22,13 +22,7 @@
             </div>
 
             <!-- Call to Actions -->
-            <div class="flex flex-col sm:flex-row gap-4 mt-4">
-                <!-- <a href="#help-center" class="px-6 py-3 bg-primary-light hover:bg-primary-hover text-white font-bold rounded-xl transition shadow-md text-body-sm inline-flex items-center justify-center gap-2 select-none">
-                    <span>Explore Help Center</span>
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-                    </svg>
-                </a> -->
+            <div class="flex flex-col sm:flex-row gap-4 mt-4 mb-8">
                 <a href="#faq" class="px-6 py-3 bg-white border border-brand-orange text-brand-orange hover:bg-surface-subtle font-bold rounded-xl transition shadow-xs text-body-sm inline-flex items-center justify-center select-none">
                     Browse FAQ
                 </a>
@@ -36,150 +30,67 @@
         </main>
 
         <!-- Accreditation Overview Section -->
-        <section class="w-full bg-primary-dark text-white py-16 px-6 mt-12 rounded-t-[2.5rem] md:rounded-t-[4rem] shadow-md">
-            <div class="max-w-5xl mx-auto flex flex-col lg:flex-row items-center gap-12" x-data="{ tab: 'levels' }">
+        <section class="relative w-full bg-primary-dark text-white min-h-[75vh] mb-18 flex flex-col justify-center py-16 lg:py-24 px-6 md:px-12 mt-12 rounded-[2.5rem] md:rounded-[4rem] shadow-2xl overflow-hidden">
+            <!-- Background Ambient Glow Accents -->
+            <div class="absolute -top-32 -right-32 w-96 h-96 bg-brand-orange/15 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-32 -left-32 w-96 h-96 bg-primary-light/20 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="max-w-7xl mx-auto w-full my-auto grid grid-cols-1 lg:grid-cols-12 items-center gap-12 lg:gap-16 relative z-10">
                 <!-- Left Text Column -->
-                <div class="lg:w-2/5 flex flex-col gap-4 text-left">
-                    <h2 class="text-heading md:text-hero font-extrabold tracking-tight leading-tight">
-                        Committed in maintaining the highest quality standards.
+                <div class="lg:col-span-6 flex flex-col justify-center text-left gap-6">
+                    <!-- Main Headline -->
+                    <h2 class="text-heading-lg sm:text-hero font-extrabold tracking-tight leading-[1.1] text-white">
+                        Every accreditation, <span class="text-brand-orange">one verified record</span> away.
                     </h2>
-                    <p class="text-zinc-300 text-label-xs md:text-body-sm leading-relaxed">
-                        IQArchive serves as Bicol University's central digital repository, supporting the Internal Quality Assurance Office in managing documentation, tracking compliance, and ensuring successful AACCUP accreditation audits.
+
+                    <!-- Body Description -->
+                    <p class="text-body-sm sm:text-body text-zinc-300 leading-relaxed max-w-xl">
+                        IQArchive tracks {{ $totalPrograms }} programs against AACCUP standards — from candidacy to Level IV — so your compliance evidence is never scattered across a hundred folders.
                     </p>
                 </div>
 
-                <!-- Right Tabbed Stats Grid -->
-                <div class="w-full lg:w-3/5 shrink-0 flex flex-col gap-5">
-                    <!-- Tab Switches -->
-                    <div class="flex flex-wrap bg-white/10 p-1 rounded-xl border border-white/10 self-start lg:self-end">
-                        <button type="button" @click="tab = 'levels'" :class="tab === 'levels' ? 'bg-brand-orange text-white' : 'text-zinc-300 hover:text-white'" class="px-3.5 py-1.5 rounded-lg text-label-xs font-bold uppercase tracking-wider transition cursor-pointer select-none">
-                            Accreditation Levels
-                        </button>
-                        <button type="button" @click="tab = 'degrees'" :class="tab === 'degrees' ? 'bg-brand-orange text-white' : 'text-zinc-300 hover:text-white'" class="px-3.5 py-1.5 rounded-lg text-label-xs font-bold uppercase tracking-wider transition cursor-pointer select-none">
-                            Programs by Degree
-                        </button>
-                        <button type="button" @click="tab = 'accredited'" :class="tab === 'accredited' ? 'bg-brand-orange text-white' : 'text-zinc-300 hover:text-white'" class="px-3.5 py-1.5 rounded-lg text-label-xs font-bold uppercase tracking-wider transition cursor-pointer select-none">
-                            Accreditation Status
-                        </button>
-                    </div>
+                <!-- Right Card Column (Bar Chart & Donut Rating) -->
+                <div id="accreditation-card" class="lg:col-span-6 w-full">
+                    <div class="bg-primary/80 border border-white/10 rounded-3xl p-6 sm:p-8 backdrop-blur-md shadow-2xl flex flex-col gap-6">
+                        <!-- Bar Chart Grid -->
+                        <div class="h-64 sm:h-72 flex items-end justify-between gap-3 sm:gap-4 px-1 pt-6 pb-2">
+                            <!-- LEVEL I -->
+                            <div class="flex-1 flex flex-col items-center h-full justify-end group">
+                                <div class="w-full bg-[#7c3a00] border border-brand-orange/20 rounded-xl flex items-center justify-center font-bold text-white transition-all duration-300 group-hover:brightness-110 shadow-md" style="height: 48%;">
+                                    <span class="text-body-sm font-bold text-white">{{ $levelI }}</span>
+                                </div>
+                                <span class="text-label-xs text-zinc-400 font-semibold uppercase tracking-wider mt-3">LEVEL I</span>
+                            </div>
 
-                    <!-- Tab 1: Accreditation Levels -->
-                    <div x-show="tab === 'levels'" class="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-4 transition-all duration-200">
-                        <div class="bg-white/5 border border-white/10 p-4 rounded-xl text-center backdrop-blur-xs select-none">
-                            <span class="block text-heading-lg font-extrabold text-brand-orange mb-1">11</span>
-                            <span class="text-label-xs text-zinc-300 font-semibold uppercase tracking-wider">Level IV</span>
-                        </div>
-                        <div class="bg-white/5 border border-white/10 p-4 rounded-xl text-center backdrop-blur-xs select-none">
-                            <span class="block text-heading-lg font-extrabold text-brand-orange mb-1">32</span>
-                            <span class="text-label-xs text-zinc-300 font-semibold uppercase tracking-wider">Level III</span>
-                        </div>
-                        <div class="bg-white/5 border border-white/10 p-4 rounded-xl text-center backdrop-blur-xs select-none">
-                            <span class="block text-heading-lg font-extrabold text-white mb-1">35</span>
-                            <span class="text-label-xs text-zinc-300 font-semibold uppercase tracking-wider">Level II</span>
-                        </div>
-                        <div class="bg-white/5 border border-white/10 p-4 rounded-xl text-center backdrop-blur-xs select-none">
-                            <span class="block text-heading-lg font-extrabold text-white mb-1">38</span>
-                            <span class="text-label-xs text-zinc-300 font-semibold uppercase tracking-wider">Level I</span>
-                        </div>
-                        <div class="bg-white/5 border border-white/10 p-4 rounded-xl text-center backdrop-blur-xs select-none">
-                            <span class="block text-heading-lg font-extrabold text-zinc-400 mb-1">4</span>
-                            <span class="text-label-xs text-zinc-300 font-semibold uppercase tracking-wider">Candidate</span>
-                        </div>
-                        <div class="bg-brand-orange/10 border border-brand-orange/30 p-4 rounded-xl text-center backdrop-blur-xs select-none flex flex-col justify-center">
-                            <span class="block text-heading-lg font-extrabold text-brand-orange mb-0.5">116</span>
-                            <span class="text-label-xs text-white font-bold uppercase tracking-wider">Accredited Programs</span>
-                        </div>
-                    </div>
+                            <!-- LEVEL II -->
+                            <div class="flex-1 flex flex-col items-center h-full justify-end group">
+                                <div class="w-full bg-[#b84d09] border border-brand-orange/30 rounded-xl flex items-center justify-center font-bold text-white transition-all duration-300 group-hover:brightness-110 shadow-md" style="height: 65%;">
+                                    <span class="text-body-sm font-bold text-white">{{ $levelII }}</span>
+                                </div>
+                                <span class="text-label-xs text-zinc-400 font-semibold uppercase tracking-wider mt-3">LEVEL II</span>
+                            </div>
 
-                    <!-- Tab 2: Programs by Degree -->
-                    <div x-show="tab === 'degrees'" class="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-4 transition-all duration-200" style="display: none;">
-                        <div class="bg-white/5 border border-white/10 p-4 rounded-xl text-center backdrop-blur-xs select-none">
-                            <span class="block text-heading-lg font-extrabold text-brand-orange mb-1">80</span>
-                            <span class="text-label-xs text-zinc-300 font-semibold uppercase tracking-wider">Baccalaureate</span>
-                        </div>
-                        <div class="bg-white/5 border border-white/10 p-4 rounded-xl text-center backdrop-blur-xs select-none">
-                            <span class="block text-heading-lg font-extrabold text-white mb-1">39</span>
-                            <span class="text-label-xs text-zinc-300 font-semibold uppercase tracking-wider">Master's Degree</span>
-                        </div>
-                        <div class="bg-white/5 border border-white/10 p-4 rounded-xl text-center backdrop-blur-xs select-none">
-                            <span class="block text-heading-lg font-extrabold text-white mb-1">7</span>
-                            <span class="text-label-xs text-zinc-300 font-semibold uppercase tracking-wider">Doctoral Degree</span>
-                        </div>
-                        <div class="bg-white/5 border border-white/10 p-4 rounded-xl text-center backdrop-blur-xs select-none">
-                            <span class="block text-heading-lg font-extrabold text-zinc-400 mb-1">2</span>
-                            <span class="text-label-xs text-zinc-300 font-semibold uppercase tracking-wider">Post Bacc</span>
-                        </div>
-                        <div class="bg-brand-orange/10 border border-brand-orange/30 p-4 rounded-xl text-center backdrop-blur-xs select-none flex flex-col justify-center col-span-2">
-                            <span class="block text-heading-lg font-extrabold text-brand-orange mb-0.5">126</span>
-                            <span class="text-label-xs text-white font-bold uppercase tracking-wider">Total Programs</span>
-                        </div>
-                    </div>
+                            <!-- LEVEL III -->
+                            <div class="flex-1 flex flex-col items-center h-full justify-end group">
+                                <div class="w-full bg-brand-orange-hover border border-brand-orange/40 rounded-xl flex items-center justify-center font-bold text-white transition-all duration-300 group-hover:brightness-110 shadow-md" style="height: 82%;">
+                                    <span class="text-body-sm font-bold text-white">{{ $levelIII }}</span>
+                                </div>
+                                <span class="text-label-xs text-zinc-400 font-semibold uppercase tracking-wider mt-3">LEVEL III</span>
+                            </div>
 
-                    <!-- Tab 3: Accreditation Status -->
-                    <div x-show="tab === 'accredited'" class="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-4 transition-all duration-200" style="display: none;">
-                        <div class="bg-white/5 border border-white/10 p-4 rounded-xl text-center backdrop-blur-xs select-none">
-                            <span class="block text-heading-lg font-extrabold text-brand-orange mb-1">74</span>
-                            <span class="text-label-xs text-zinc-300 font-semibold uppercase tracking-wider">Undergraduate</span>
+                            <!-- LEVEL IV -->
+                            <div class="flex-1 flex flex-col items-center h-full justify-end group">
+                                <div class="w-full bg-brand-orange border border-brand-orange rounded-xl flex items-center justify-center font-bold text-white transition-all duration-300 group-hover:brightness-110 shadow-lg shadow-brand-orange/20" style="height: 100%;">
+                                    <span class="text-body-sm font-bold text-white">{{ $levelIV }}</span>
+                                </div>
+                                <span class="text-label-xs text-zinc-400 font-semibold uppercase tracking-wider mt-3">LEVEL IV</span>
+                            </div>
                         </div>
-                        <div class="bg-white/5 border border-white/10 p-4 rounded-xl text-center backdrop-blur-xs select-none">
-                            <span class="block text-heading-lg font-extrabold text-white mb-1">42</span>
-                            <span class="text-label-xs text-zinc-300 font-semibold uppercase tracking-wider">Graduate</span>
-                        </div>
-                        <div class="bg-brand-orange/10 border border-brand-orange/30 p-4 rounded-xl text-center backdrop-blur-xs select-none flex flex-col justify-center col-span-2 sm:col-span-1">
-                            <span class="block text-heading-lg font-extrabold text-brand-orange mb-0.5">116</span>
-                            <span class="text-label-xs text-white font-bold uppercase tracking-wider">Total Accredited</span>
-                        </div>
+
                     </div>
                 </div>
             </div>
         </section>
-
-        <!-- Accreditation News & Announcements Section
-        <section id="accreditations" class="w-full max-w-7xl mx-auto px-6 py-16 scroll-mt-6">
-            <div class="bg-white border border-slate-200/60 rounded-3xl p-8 md:p-12 shadow-3xs flex flex-col lg:flex-row gap-8 lg:gap-12">
-                <div class="lg:w-1/3 flex flex-col gap-3 text-left justify-center">
-                    <span class="text-label font-bold text-zinc-400 uppercase tracking-wider">LATEST ANNOUNCEMENTS</span>
-                    <h3 class="text-heading-lg font-extrabold text-primary-dark">Accreditation & IQA Updates</h3>
-                    <p class="text-body-sm text-zinc-500 leading-relaxed">
-                        Stay updated with the latest program evaluations, accreditation calendar schedules, and official quality standards announcements from the IQA Office.
-                    </p>
-                </div>
-
-                <div class="lg:w-2/3 grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-surface-card border border-slate-200/60 p-6 rounded-2xl flex flex-col justify-between hover:shadow-xs transition duration-200 text-left">
-                        <div>
-                            <span class="text-label-xs font-bold text-brand-orange uppercase tracking-wider">Program Accreditation</span>
-                            <h4 class="font-extrabold text-body text-slate-800 mt-1 mb-2">BS Computer Science Achieves Level IV</h4>
-                            <p class="text-body-sm text-zinc-500 leading-relaxed mb-4">
-                                The BS Computer Science program has officially been awarded Level IV Re-accredited status by AACCUP, recognizing its excellence in instruction, research, and community extension.
-                            </p>
-                        </div>
-                        <a href="mailto:bu-iqao@bicol-u.edu.ph" class="inline-flex items-center gap-1.5 text-label font-bold text-primary-dark hover:text-brand-orange transition uppercase tracking-wider select-none">
-                            <span>Read Announcement</span>
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
-                            </svg>
-                        </a>
-                    </div>
-
-                    <div class="bg-surface-card border border-slate-200/60 p-6 rounded-2xl flex flex-col justify-between hover:shadow-xs transition duration-200 text-left">
-                        <div>
-                            <span class="text-label-xs font-bold text-primary-light uppercase tracking-wider">Institutional Status</span>
-                            <h4 class="font-extrabold text-body text-slate-800 mt-1 mb-2">Bicol University Awarded Institutional Accreditation</h4>
-                            <p class="text-body-sm text-zinc-500 leading-relaxed mb-4">
-                                Bicol University has successfully passed the rigorous AACCUP evaluation, securing full Institutional Accreditation status for its outstanding university operations and quality assurance systems.
-                            </p>
-                        </div>
-                        <a href="mailto:bu-iqao@bicol-u.edu.ph" class="inline-flex items-center gap-1.5 text-label font-bold text-primary-dark hover:text-brand-orange transition uppercase tracking-wider select-none">
-                            <span>Read Announcement</span>
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </section> -->
 
         <!-- FAQ Section -->
         <section id="faq" class="w-full max-w-7xl mx-auto px-6 py-12 text-left scroll-mt-6">
@@ -270,99 +181,6 @@
                 </div>
             </div>
         </section>
-
-        <!-- Help Center Section
-        <section id="help-center" class="w-full max-w-7xl mx-auto px-6 py-12 text-left mb-16 scroll-mt-6">
-            <div class="bg-white border border-slate-200/60 rounded-3xl p-8 md:p-12 shadow-3xs flex flex-col gap-8">
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-slate-100">
-                    <div class="flex flex-col gap-2">
-                        <span class="text-label font-bold text-zinc-400 uppercase tracking-wider">RESOURCES &amp; SUPPORT</span>
-                        <h3 class="text-heading-lg font-extrabold text-primary-dark">Need assistance or guidance? We're here to help!</h3>
-                        <p class="text-body-sm text-zinc-500 max-w-xl leading-relaxed">
-                            Access official user manuals, download AACCUP accreditation guidelines, or get in touch with the system administration team.
-                        </p>
-                    </div>
-                    <a href="mailto:bu-iqao@bicol-u.edu.ph" class="self-start md:self-center inline-flex items-center gap-2 px-6 py-3 bg-primary-light hover:bg-primary-hover text-white font-bold rounded-xl transition shadow-md text-body-sm select-none">
-                        <span>Get Support</span>
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
-                        </svg>
-                    </a>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="flex flex-col gap-4">
-                        <span class="text-label font-bold text-primary-light uppercase tracking-wider">Guidelines &amp; Manuals</span>
-                        <div class="flex flex-col gap-3">
-                            <a href="#" class="group bg-surface-card hover:bg-slate-50 border border-slate-200/40 rounded-xl p-4.5 flex items-center justify-between transition cursor-pointer select-none">
-                                <div>
-                                    <span class="block text-label-xs text-zinc-400 font-bold uppercase tracking-wider">Lorem Ipsum</span>
-                                    <span class="text-body-sm font-bold text-slate-800 group-hover:text-brand-orange transition">Lorem Ipsum Dolor</span>
-                                    <span class="block text-label text-zinc-400 font-normal mt-0.5">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
-                                </div>
-                                <svg class="w-5 h-5 text-zinc-400 group-hover:text-brand-orange transition shrink-0 ml-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                                </svg>
-                            </a>
-                            <a href="#" class="group bg-surface-card hover:bg-slate-50 border border-slate-200/40 rounded-xl p-4.5 flex items-center justify-between transition cursor-pointer select-none">
-                                <div>
-                                    <span class="block text-label-xs text-zinc-400 font-bold uppercase tracking-wider">Lorem Ipsum</span>
-                                    <span class="text-body-sm font-bold text-slate-800 group-hover:text-brand-orange transition">Lorem Ipsum Dolor</span>
-                                    <span class="block text-label text-zinc-400 font-normal mt-0.5">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
-                                </div>
-                                <svg class="w-5 h-5 text-zinc-400 group-hover:text-brand-orange transition shrink-0 ml-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                                </svg>
-                            </a>
-                            <a href="#" class="group bg-surface-card hover:bg-slate-50 border border-slate-200/40 rounded-xl p-4.5 flex items-center justify-between transition cursor-pointer select-none">
-                                <div>
-                                    <span class="block text-label-xs text-zinc-400 font-bold uppercase tracking-wider">Lorem Ipsum</span>
-                                    <span class="text-body-sm font-bold text-slate-800 group-hover:text-brand-orange transition">Lorem Ipsum Dolor</span>
-                                    <span class="block text-label text-zinc-400 font-normal mt-0.5">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
-                                </div>
-                                <svg class="w-5 h-5 text-zinc-400 group-hover:text-brand-orange transition shrink-0 ml-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                                </svg>
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="flex flex-col gap-4">
-                        <span class="text-label font-bold text-primary-light uppercase tracking-wider">System Support Contacts</span>
-                        <div class="flex flex-col gap-3">
-                            <div class="bg-surface-card border border-slate-200/40 rounded-xl p-4.5 flex items-center justify-between">
-                                <div>
-                                    <span class="block text-label-xs text-zinc-400 font-bold uppercase tracking-wider">ICTO Help Desk &bull; System Issues</span>
-                                    <span class="text-body-sm font-bold text-slate-800">ictohelpdesk@bicol-u.edu.ph</span>
-                                </div>
-                                <svg class="w-5 h-5 text-zinc-400 shrink-0 ml-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
-                                </svg>
-                            </div>
-                            <div class="bg-surface-card border border-slate-200/40 rounded-xl p-4.5 flex items-center justify-between">
-                                <div>
-                                    <span class="block text-label-xs text-zinc-400 font-bold uppercase tracking-wider">IQA Office &bull; Quality Assurance</span>
-                                    <span class="text-body-sm font-bold text-slate-800">bu-iqao@bicol-u.edu.ph</span>
-                                </div>
-                                <svg class="w-5 h-5 text-zinc-400 shrink-0 ml-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
-                                </svg>
-                            </div>
-                            <div class="bg-surface-card border border-slate-200/40 rounded-xl p-4.5 flex items-center justify-between">
-                                <div>
-                                    <span class="block text-label-xs text-zinc-400 font-bold uppercase tracking-wider">ICTO Help Desk &bull; Globe Contact</span>
-                                    <span class="text-body-sm font-bold text-slate-800">0956 225 3405</span>
-                                </div>
-                                <svg class="w-5 h-5 text-zinc-400 shrink-0 ml-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-2.824-1.802-5.14-4.117-6.94-6.94l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section> -->
-    
     </div>
 
     @include('partials.footer')
