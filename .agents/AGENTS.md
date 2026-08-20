@@ -61,3 +61,44 @@ Use these utility classes for all font sizing across UI elements:
 Whenever making style, template, or CSS updates:
 1. Build client assets: `cmd /c npm run build`
 2. Run test suite: `cmd /c php artisan test`
+
+
+### 4. Authentication & Authorization Constraints
+
+[!IMPORTANT]
+This system is Google OAuth 2.0/OIDC only — there is no local password flow. Never scaffold password fields, Auth::attempt() with credentials, password reset flows, or local registration forms.
+
+All accounts default to Pending Activation status until first Google sign-in via Socialite.
+Admin pre-registration forms are scoped to institutional email, role, and college only — never add a "Full Name" field to these forms; it's pulled from the Google profile on first login.
+RBAC uses a simple role_id FK on users with Laravel Gates/Policies — do not introduce Spatie Laravel-Permission or any other package-based RBAC.
+High-risk roles/actions require app-owned TOTP step-up MFA — don't bypass this when scaffolding new admin actions.
+Never hardcode role names as strings in Blade/Livewire (if ($user->role === 'Admin')); reference the Role model/enum.
+
+5. Finalized Roles — Do Not Modify
+
+The system has exactly 7 roles: System Administrator, IQA Staff, Accreditor, College/Department Head & Program Chair (Dean), Task Force Member, University Admin/Executive.
+
+[!IMPORTANT]
+Do not invent, merge, or split roles. "Task Force Lead" is not a role — it's the Dean auto-assigned via the task_force_members table on Accreditation creation. Do not add a standalone Task Force Lead role or permission group.
+
+### 6. Component Reuse Policy
+
+[!IMPORTANT]
+Before creating a new Blade/Livewire component, check for an existing pattern to extend: document chips, sidebar shell, area tabs. Do not duplicate markup for a "new" version of an existing UI pattern — extend or parameterize the existing component.
+
+### 7. Security Documentation Requirement
+
+Every implemented feature must include a short comment or accompanying note explaining the security reasoning behind it (e.g., why a field is encrypted, why a route is gated). AI agents must not skip this even for small changes — this is an explicit capstone requirement.
+
+### 8. Database & Migration Conventions
+Preserve the AccreditationDocumentLink bridge entity as-is — it's an intentional M:N relationship (one document can satisfy multiple compliance requirements). Do not "simplify" it to a 1:N FK.
+task_force_members is an explicit table (not a computed/dynamic policy) for audit-trail purposes — do not refactor this into a policy-only check.
+All destructive or state-changing actions must write to AuditLog — don't add new mutations without an audit entry.
+
+### 9. Workflow Rules for AI Agents
+
+[!IMPORTANT]
+For any change touching more than one file or an existing working feature: propose the plan/diff first and wait for approval before applying it. Do not run broad refactors or multi-file edits unprompted.
+
+Match existing code style/structure exactly when adding new sections to a file (migrations, seeders, components).
+Prefer extending existing patterns over introducing new libraries or architectural approaches without discussion.
