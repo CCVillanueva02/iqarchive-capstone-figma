@@ -1,4 +1,4 @@
-<x-layouts::html :title="'Bicol University IQA Office'" html-class="light scroll-smooth" body-class="bg-surface-subtle antialiased text-zinc-800 font-sans min-h-screen flex flex-col justify-between">
+<x-layouts::html :title="'Bicol University IQA Office'" html-class="light scroll-smooth no-scrollbar" body-class="bg-surface-subtle antialiased text-zinc-800 font-sans min-h-screen flex flex-col justify-between no-scrollbar">
     @include('partials.header')
 
     <div id="home" class="flex-1 flex flex-col">
