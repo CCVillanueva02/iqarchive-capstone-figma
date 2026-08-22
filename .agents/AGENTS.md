@@ -102,3 +102,12 @@ For any change touching more than one file or an existing working feature: propo
 
 Match existing code style/structure exactly when adding new sections to a file (migrations, seeders, components).
 Prefer extending existing patterns over introducing new libraries or architectural approaches without discussion.
+
+---
+
+### 10. File Size & Modular Splitting Rule
+
+> [!IMPORTANT]
+> **NEVER** generate or maintain single files that are excessively long (e.g., >150-200 lines for Blade templates/views).
+> 
+> Always proactively splice large views, templates, and components into clean, dedicated partial files (e.g. `partials/stats-bar.blade.php`, `partials/filter-bar.blade.php`, `partials/modals.blade.php`). When creating new features or refactoring existing pages, break them into modular sub-files from the start.
