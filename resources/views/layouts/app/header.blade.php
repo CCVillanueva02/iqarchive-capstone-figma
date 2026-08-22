@@ -25,7 +25,9 @@
 
     <flux:spacer />
 
-    <x-desktop-user-menu />
+    @auth
+        <x-desktop-user-menu />
+    @endauth
 </flux:header>
 
 <!-- Mobile Menu -->

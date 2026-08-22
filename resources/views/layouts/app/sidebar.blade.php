@@ -163,15 +163,75 @@
         @endif
 
 
-        <!-- Submissions -->
+        <!-- Monitoring Tab & Subtabs (Collapsible) -->
         @if (in_array($role, ['task-force-member', 'college-head', 'iqa-staff']))
-        <a href="{{ route('submissions.' . $role) }}" class="group flex items-center gap-3.5 px-6 py-3.5 border-l-4 text-body font-semibold transition-all {{ request()->routeIs('submissions.' . $role) ? 'bg-white/10 text-white border-l-brand-orange' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                <polyline points="22 4 12 14.01 9 11.01"></polyline>
-            </svg>
-            <span>Monitoring</span>
-        </a>
+        <div class="flex flex-col" x-data="{ monOpen: {{ request()->routeIs('mockups.monitoring') ? 'true' : 'false' }} }">
+            <button type="button"
+                @click="monOpen = !monOpen"
+                class="group flex items-center justify-between px-6 py-3.5 border-l-4 text-body font-semibold transition-all cursor-pointer {{ request()->routeIs('mockups.monitoring') ? 'bg-white/10 text-white border-l-brand-orange' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}">
+                <div class="flex items-center gap-3.5">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    <span>Monitoring</span>
+                </div>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                    class="transition-transform duration-200"
+                    :class="monOpen ? 'rotate-180 text-white' : 'text-white/40 group-hover:text-white/70'">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </button>
+
+            <!-- Monitoring Subtabs -->
+            <div x-show="monOpen"
+                x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0 -translate-y-1"
+                x-transition:enter-end="opacity-100 translate-y-0"
+                x-transition:leave="transition ease-in duration-150"
+                x-transition:leave-start="opacity-100 translate-y-0"
+                x-transition:leave-end="opacity-0 -translate-y-1"
+                x-cloak
+                class="flex flex-col py-3 bg-black/15">
+
+                <div class="relative pl-10.5 pr-4 flex flex-col gap-0">
+                    <!-- Vertical connecting line -->
+                    <div class="absolute left-7.5 top-5.5 bottom-5.5 w-[1.5px] bg-white/15"></div>
+
+                    @php
+                        $currentMonTab = request()->query('tab', 'overview');
+                    @endphp
+
+                    <!-- Summary Report -->
+                    <a href="{{ route('mockups.monitoring', ['tab' => 'summary']) }}"
+                        class="relative flex items-center gap-3 px-4 py-3 rounded-lg text-body-sm transition-all {{ ($currentMonTab === 'summary' && request()->routeIs('mockups.monitoring')) ? 'bg-white/12 text-emerald-400 font-bold' : 'text-white/60 hover:text-white hover:bg-white/5 font-medium' }}"
+                        wire:navigate>
+                        <span class="absolute -left-4 top-1/2 -translate-y-1/2 w-1.75 h-1.75 rounded-full border-[1.5px] {{ ($currentMonTab === 'summary' && request()->routeIs('mockups.monitoring')) ? 'bg-emerald-400 border-emerald-400' : 'bg-white/20 border-white/30' }}"></span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 {{ ($currentMonTab === 'summary' && request()->routeIs('mockups.monitoring')) ? 'text-emerald-400' : 'text-white/40' }}">
+                            <path d="M3 3v18h18"></path>
+                            <path d="m19 9-5 5-4-4-3 3"></path>
+                        </svg>
+                        <span>Summary Report</span>
+                    </a>
+
+                    <!-- Program Overview -->
+                    <a href="{{ route('mockups.monitoring', ['tab' => 'overview']) }}"
+                        class="relative flex items-center gap-3 px-4 py-3 rounded-lg text-body-sm transition-all {{ ($currentMonTab === 'overview' && request()->routeIs('mockups.monitoring')) ? 'bg-white/12 text-emerald-400 font-bold' : 'text-white/60 hover:text-white hover:bg-white/5 font-medium' }}"
+                        wire:navigate>
+                        <span class="absolute -left-4 top-1/2 -translate-y-1/2 w-1.75 h-1.75 rounded-full border-[1.5px] {{ ($currentMonTab === 'overview' && request()->routeIs('mockups.monitoring')) ? 'bg-emerald-400 border-emerald-400' : 'bg-white/20 border-white/30' }}"></span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 {{ ($currentMonTab === 'overview' && request()->routeIs('mockups.monitoring')) ? 'text-emerald-400' : 'text-white/40' }}">
+                            <path d="M8 6h13"></path>
+                            <path d="M8 12h13"></path>
+                            <path d="M8 18h13"></path>
+                            <path d="M3 6h.01"></path>
+                            <path d="M3 12h.01"></path>
+                            <path d="M3 18h.01"></path>
+                        </svg>
+                        <span>Program Overview</span>
+                    </a>
+                </div>
+            </div>
+        </div>
         @endif
 
 

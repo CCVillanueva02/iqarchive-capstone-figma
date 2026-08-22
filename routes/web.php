@@ -66,6 +66,11 @@ Route::middleware('guest')->group(function () {
     Route::get('auth/google/callback', [GoogleAuthController::class, 'handleGoogleCallback'])->name('auth.google.callback');
 });
 
+// Public Mockups
+Route::get('/mockups/monitoring', function () {
+    return view('pages.mockups.monitoring');
+})->name('mockups.monitoring');
+
 Route::middleware(['auth', 'verified'])->group(function () {
     // Landing gateway: redirects to the appropriate role-specific homepage
     Route::get('dashboard', function () {
