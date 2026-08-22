@@ -85,11 +85,11 @@
 }
 
 [data-flux-field] [data-flux-error] {
-    @apply !mt-0;
+    @apply mt-0!;
 }
 
 [data-flux-label] {
-    @apply  !mb-0 !leading-tight;
+    @apply mb-0! leading-tight!;
 }
 
 input:focus[data-flux-control],

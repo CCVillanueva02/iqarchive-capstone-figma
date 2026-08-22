@@ -93,13 +93,13 @@
                         </td>
 
                         <!-- Email -->
-                        <td class="p-4 text-zinc-600 font-mono text-[11px]">{{ $user->email }}</td>
+                        <td class="p-4 text-zinc-600 font-mono text-label">{{ $user->email }}</td>
 
                         <!-- Role -->
                         <td class="p-4">
                             <div class="flex flex-wrap gap-1">
                                 @foreach($user->assignedRoles() as $assignedRole)
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-50 text-blue-800 border border-blue-100">
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-label-xs font-semibold bg-blue-50 text-blue-800 border border-blue-100">
                                         {{ $assignedRole->description }}
                                     </span>
                                 @endforeach
@@ -120,22 +120,22 @@
                         <!-- Status -->
                         <td class="p-4">
                             @if($user->status === 'active')
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-label-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
                                 Active
                             </span>
                             @elseif($user->status === 'pending_activation')
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-300">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-label-xs font-bold bg-amber-50 text-amber-700 border border-amber-300">
                                 Pending Activation
                             </span>
                             @else
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600 border border-slate-200">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-label-xs font-bold bg-slate-100 text-slate-600 border border-slate-200">
                                 Deactivated
                             </span>
                             @endif
                         </td>
 
                         <!-- Created At -->
-                        <td class="p-4 text-zinc-500 text-[11px]">
+                        <td class="p-4 text-zinc-500 text-label">
                             {{ $user->created_at ? $user->created_at->format('M d, Y') : '—' }}
                         </td>
 

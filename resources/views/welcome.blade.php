@@ -18,7 +18,7 @@
                 </p>
 
                 <!-- Orange Divider -->
-                <div class="w-16 h-[4px] bg-brand-orange mt-4 rounded-full"></div>
+                <div class="w-16 h-1 bg-brand-orange mt-4 rounded-full"></div>
             </div>
 
             <!-- Call to Actions -->
