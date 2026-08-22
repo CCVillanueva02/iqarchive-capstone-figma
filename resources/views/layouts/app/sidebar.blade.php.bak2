@@ -199,22 +199,8 @@
                     <div class="absolute left-7.5 top-5.5 bottom-5.5 w-[1.5px] bg-white/15"></div>
 
                     @php
-                        $currentMonTab = request()->query('tab', 'dashboard');
+                        $currentMonTab = request()->query('tab', 'overview');
                     @endphp
-
-                    <!-- Dashboard Overview -->
-                    <a href="{{ route('mockups.monitoring', ['tab' => 'dashboard']) }}"
-                        class="relative flex items-center gap-3 px-4 py-3 rounded-lg text-body-sm transition-all {{ ($currentMonTab === 'dashboard' && request()->routeIs('mockups.monitoring')) ? 'bg-white/12 text-emerald-400 font-bold' : 'text-white/60 hover:text-white hover:bg-white/5 font-medium' }}"
-                        wire:navigate>
-                        <span class="absolute -left-4 top-1/2 -translate-y-1/2 w-1.75 h-1.75 rounded-full border-[1.5px] {{ ($currentMonTab === 'dashboard' && request()->routeIs('mockups.monitoring')) ? 'bg-emerald-400 border-emerald-400' : 'bg-white/20 border-white/30' }}"></span>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 {{ ($currentMonTab === 'dashboard' && request()->routeIs('mockups.monitoring')) ? 'text-emerald-400' : 'text-white/40' }}">
-                            <rect x="3" y="3" width="7" height="9"></rect>
-                            <rect x="14" y="3" width="7" height="5"></rect>
-                            <rect x="14" y="12" width="7" height="9"></rect>
-                            <rect x="3" y="16" width="7" height="5"></rect>
-                        </svg>
-                        <span>Dashboard</span>
-                    </a>
 
                     <!-- Summary Report -->
                     <a href="{{ route('mockups.monitoring', ['tab' => 'summary']) }}"
@@ -228,12 +214,12 @@
                         <span>Summary Report</span>
                     </a>
 
-                    <!-- Programs -->
-                    <a href="{{ route('mockups.monitoring', ['tab' => 'programs']) }}"
-                        class="relative flex items-center gap-3 px-4 py-3 rounded-lg text-body-sm transition-all {{ ($currentMonTab === 'programs' && request()->routeIs('mockups.monitoring')) ? 'bg-white/12 text-emerald-400 font-bold' : 'text-white/60 hover:text-white hover:bg-white/5 font-medium' }}"
+                    <!-- Program Overview -->
+                    <a href="{{ route('mockups.monitoring', ['tab' => 'overview']) }}"
+                        class="relative flex items-center gap-3 px-4 py-3 rounded-lg text-body-sm transition-all {{ ($currentMonTab === 'overview' && request()->routeIs('mockups.monitoring')) ? 'bg-white/12 text-emerald-400 font-bold' : 'text-white/60 hover:text-white hover:bg-white/5 font-medium' }}"
                         wire:navigate>
-                        <span class="absolute -left-4 top-1/2 -translate-y-1/2 w-1.75 h-1.75 rounded-full border-[1.5px] {{ ($currentMonTab === 'programs' && request()->routeIs('mockups.monitoring')) ? 'bg-emerald-400 border-emerald-400' : 'bg-white/20 border-white/30' }}"></span>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 {{ ($currentMonTab === 'programs' && request()->routeIs('mockups.monitoring')) ? 'text-emerald-400' : 'text-white/40' }}">
+                        <span class="absolute -left-4 top-1/2 -translate-y-1/2 w-1.75 h-1.75 rounded-full border-[1.5px] {{ ($currentMonTab === 'overview' && request()->routeIs('mockups.monitoring')) ? 'bg-emerald-400 border-emerald-400' : 'bg-white/20 border-white/30' }}"></span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 {{ ($currentMonTab === 'overview' && request()->routeIs('mockups.monitoring')) ? 'text-emerald-400' : 'text-white/40' }}">
                             <path d="M8 6h13"></path>
                             <path d="M8 12h13"></path>
                             <path d="M8 18h13"></path>
@@ -241,7 +227,7 @@
                             <path d="M3 12h.01"></path>
                             <path d="M3 18h.01"></path>
                         </svg>
-                        <span>Programs</span>
+                        <span>Program Overview</span>
                     </a>
                 </div>
             </div>
