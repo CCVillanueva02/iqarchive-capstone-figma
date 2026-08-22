@@ -358,7 +358,7 @@
                     <flux:select wire:model="program_college_id" :label="__('Parent College / Campus')" required placeholder="Select College">
                         <flux:select.option value="">Select College / Campus</flux:select.option>
                         @foreach($allCollegesDropdown as $c)
-                        <flux:select.option value="{{ $c->id }}">{{ $c->name }} ({{ $c->code }}) &bull; {{ $c->campus }}</flux:select.option>
+                        <flux:select.option value="{{ $c->id }}">{{ $c->name }} ({{ $c->code }})</flux:select.option>
                         @endforeach
                     </flux:select>
                 </div>
@@ -401,7 +401,7 @@
                 <div>
                     <flux:select wire:model="program_college_id" :label="__('Parent College / Campus')" required placeholder="Select College">
                         @foreach($allCollegesDropdown as $c)
-                        <flux:select.option value="{{ $c->id }}">{{ $c->name }} ({{ $c->code }}) &bull; {{ $c->campus }}</flux:select.option>
+                        <flux:select.option value="{{ $c->id }}">{{ $c->name }} ({{ $c->code }})</flux:select.option>
                         @endforeach
                     </flux:select>
                 </div>
