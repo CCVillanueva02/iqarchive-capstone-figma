@@ -140,34 +140,19 @@
                     </span>
                 </div>
 
-                <!-- Purpose / Mandate excerpt -->
-                <div class="bg-slate-50 border border-slate-100 rounded-xl p-3 text-xs text-slate-600 italic">
-                    @if($tf->purpose)
-                        &ldquo;{{ Str::limit($tf->purpose, 140) }}&rdquo;
-                    @else
-                        <span class="text-slate-400 not-italic">No specific mandate description set.</span>
-                    @endif
-                </div>
+                <!-- Purpose / Mandate excerpt removed -->
 
                 <!-- Members Avatars Stack & Roster count -->
                 <div>
                     <div class="flex items-center justify-between text-xs mb-2">
-                        <span class="text-slate-500 font-semibold">Assigned Members</span>
-                        <span class="text-[#1b355a] font-bold">{{ $tf->members->count() }} Users</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <div class="flex -space-x-2 overflow-hidden">
-                            @foreach($tf->members->take(5) as $member)
-                            <div class="inline-block h-8 w-8 rounded-full ring-2 ring-white bg-[#1b355a] text-white font-bold text-xs flex items-center justify-center select-none" title="{{ $member->name }}">
-                                {{ $member->initials() }}
-                            </div>
-                            @endforeach
-                            @if($tf->members->count() > 5)
-                            <div class="inline-block h-8 w-8 rounded-full ring-2 ring-white bg-slate-200 text-slate-700 font-bold text-xs flex items-center justify-center select-none">
-                                +{{ $tf->members->count() - 5 }}
-                            </div>
+                        <span class="text-slate-500 font-semibold">Proposed / Assigned</span>
+                        <span class="text-[#1b355a] font-bold">
+                            @if($tf->status === 'pending_approval')
+                                {{ is_array($tf->proposed_members) ? count($tf->proposed_members) : 0 }} Proposed
+                            @else
+                                {{ $tf->members->count() }} Users
                             @endif
-                        </div>
+                        </span>
                     </div>
                 </div>
 
@@ -334,92 +319,60 @@
                     </div>
                 </div>
 
-                <!-- 3. Members Selection (Restricted to Task Force Eligible Roles) -->
+                <!-- 3. Manual Member Entry -->
                 <div>
                     <div class="flex items-center justify-between mb-1.5">
                         <label class="block text-xs font-semibold text-slate-700">
-                            Assign Members <span class="text-red-500">*</span>
+                            Propose Members <span class="text-red-500">*</span>
                         </label>
                     </div>
 
-                    <div class="border border-slate-200 rounded-xl overflow-hidden bg-slate-50/50">
-                        <!-- Search filter for active users list -->
-                        <div class="p-2.5 border-b border-slate-200 bg-white">
-                            <flux:input wire:model.live.debounce.200ms="memberSearch" placeholder="Filter task force members by name or email..." icon="magnifying-glass" size="sm" />
+                    <!-- Add Member Form -->
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 flex flex-col gap-3">
+                        <h4 class="font-bold text-sm text-primary-dark">Add New Member</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <flux:input wire:model="newName" placeholder="Full Name" />
+                            <flux:input wire:model="newEmail" type="email" placeholder="BU Email" />
+                            <flux:input wire:model="newPhone" placeholder="Phone Number" />
                         </div>
-
-                        <!-- Active Users Multi-select Checkbox List -->
-                        <div class="max-h-52 overflow-y-auto divide-y divide-slate-100 p-1">
-                            @forelse($activeUsers as $userItem)
-                            @php
-                                $isSelected = in_array($userItem->id, $selectedMembers);
-                            @endphp
-                            <div 
-                                wire:click="toggleMemberSelection({{ $userItem->id }})" 
-                                class="p-2.5 rounded-lg flex items-center justify-between gap-3 cursor-pointer transition-colors hover:bg-slate-100/80 {{ $isSelected ? 'bg-amber-50/60 border border-amber-200/80' : '' }}"
-                            >
-                                <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-full bg-[#1b355a] text-white font-bold text-xs flex items-center justify-center shrink-0">
-                                        {{ $userItem->initials() }}
-                                    </div>
-                                    <div class="flex flex-col">
-                                        <span class="text-xs font-semibold text-[#1b355a]">{{ $userItem->name }}</span>
-                                        <span class="text-[11px] text-slate-500 font-mono">{{ $userItem->email }}</span>
-                                    </div>
-                                </div>
-                                <div class="flex items-center">
-                                    <input 
-                                        type="checkbox" 
-                                        value="{{ $userItem->id }}" 
-                                        @if($isSelected) checked @endif 
-                                        class="w-4 h-4 text-[#F47920] rounded border-slate-300 focus:ring-[#F47920]" 
-                                        onclick="event.stopPropagation()"
-                                        wire:click="toggleMemberSelection({{ $userItem->id }})"
-                                    >
-                                </div>
-                            </div>
-                            @empty
-                            <div class="p-4 text-center text-xs text-slate-500">
-                                No eligible task force members found matching your search.
-                            </div>
-                            @endforelse
-                        </div>
-
-                        <!-- Counter footer -->
-                        <div class="p-2.5 border-t border-slate-200 bg-white flex items-center justify-between text-xs">
-                            <span class="font-semibold text-slate-600">
-                                Selected: <span class="text-[#F47920] font-bold">{{ count($selectedMembers) }}</span> members
-                            </span>
-                            @if(count($selectedMembers) === 0)
-                            <span class="text-red-500 text-[11px] font-semibold">At least 1 member required</span>
-                            @else
-                            <span class="text-emerald-600 text-[11px] font-semibold flex items-center gap-1">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Valid selection
-                            </span>
-                            @endif
+                        <div class="flex justify-end mt-1">
+                            <flux:button type="button" size="sm" variant="primary" wire:click="addMember">
+                                Add As Member
+                            </flux:button>
                         </div>
                     </div>
 
-                    @error('selectedMembers')
+                    <!-- List of Added Members -->
+                    <div class="mt-4">
+                        <h4 class="font-bold text-sm text-primary-dark mb-2">Proposed Members List</h4>
+                        @if(empty($proposedMembers))
+                            <div class="text-sm text-zinc-500 italic p-3 bg-white border border-slate-100 rounded-lg text-center">
+                                No members added yet.
+                            </div>
+                        @else
+                            <ul class="space-y-2 max-h-64 overflow-y-auto">
+                                @foreach($proposedMembers as $index => $member)
+                                    <li class="flex items-center justify-between p-3 bg-white border border-slate-200 rounded-lg shadow-sm">
+                                        <div class="flex flex-col">
+                                            <span class="text-body-sm font-bold text-zinc-800">{{ $member['name'] }}</span>
+                                            <span class="text-label-xs text-zinc-500">{{ $member['email'] }} • {{ $member['phone'] }}</span>
+                                        </div>
+                                        <button type="button" wire:click="removeMember({{ $index }})" class="text-rose-500 hover:text-rose-700 p-1 rounded-full hover:bg-rose-50 transition">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                                              <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                                            </svg>
+                                        </button>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @endif
+                    </div>
+                    
+                    @error('proposedMembers')
                         <p class="text-xs font-semibold text-red-600 mt-1">{{ $message }}</p>
                     @enderror
                 </div>
 
-                <!-- 4. Purpose / Mandate (Textarea max 500 characters) -->
-                <div>
-                    <flux:textarea 
-                        wire:model="purpose" 
-                        :label="__('Purpose / Mandate')" 
-                        rows="3" 
-                        placeholder="State the core objective, accreditation scope, and responsibilities for this task force..." 
-                    />
-                    <div class="flex items-center justify-between mt-1">
-                        <span class="text-[11px] text-slate-400">Optional. Maximum 500 characters.</span>
-                        <span class="text-[11px] font-mono text-slate-400">{{ strlen($purpose) }}/500</span>
-                    </div>
-
-                </div>
-            </div>
 
             <!-- Submit & Cancel Actions -->
             <div class="flex gap-3 justify-end pt-2 border-t border-slate-100">
@@ -445,14 +398,8 @@
                 <flux:subheading>Task Force Overview &amp; Member Roster</flux:subheading>
             </div>
 
-            <!-- Mandate Box -->
-            <div class="bg-amber-50/60 border border-amber-200/80 rounded-xl p-4 text-xs text-slate-700">
-                <span class="font-bold text-[#1b355a] block mb-1">Purpose / Mandate:</span>
-                <p>{{ $selectedTaskForce->purpose ?: 'No explicit mandate description provided.' }}</p>
-            </div>
-
             <!-- Details metadata grid -->
-            <div class="grid grid-cols-3 gap-3 text-xs bg-slate-50 p-3 rounded-xl border border-slate-200/70">
+            <div class="grid grid-cols-3 gap-3 text-xs bg-slate-50 p-3 rounded-xl border border-slate-200/70 mt-4">
                 <div>
                     <span class="text-slate-400 block text-[10px] font-semibold uppercase">Created By</span>
                     <span class="font-semibold text-[#1b355a]">{{ $selectedTaskForce->creator->name ?? 'System Admin' }}</span>
@@ -469,28 +416,55 @@
 
             <!-- Member Roster List -->
             <div>
-                <h4 class="text-xs font-bold text-[#1b355a] uppercase tracking-wider mb-3">Assigned Member Roster ({{ $selectedTaskForce->members->count() }})</h4>
+                <h4 class="text-xs font-bold text-[#1b355a] uppercase tracking-wider mb-3">
+                    @if($selectedTaskForce->status === 'pending_approval')
+                        Proposed Member Roster ({{ is_array($selectedTaskForce->proposed_members) ? count($selectedTaskForce->proposed_members) : 0 }})
+                    @else
+                        Assigned Member Roster ({{ $selectedTaskForce->members->count() }})
+                    @endif
+                </h4>
                 <div class="divide-y divide-slate-100 border border-slate-200 rounded-xl overflow-hidden">
-                    @foreach($selectedTaskForce->members as $member)
-                    <div class="p-3 bg-white flex items-center justify-between text-xs">
-                        <div class="flex items-center gap-3">
-                            <div class="w-9 h-9 rounded-full bg-[#1b355a] text-white font-bold flex items-center justify-center shrink-0">
-                                {{ $member->initials() }}
+                    @if($selectedTaskForce->status === 'pending_approval' && is_array($selectedTaskForce->proposed_members))
+                        @foreach($selectedTaskForce->proposed_members as $member)
+                        <div class="p-3 bg-white flex items-center justify-between text-xs">
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 rounded-full bg-[#1b355a] text-white font-bold flex items-center justify-center shrink-0">
+                                    {{ substr($member['name'] ?? '?', 0, 1) }}
+                                </div>
+                                <div>
+                                    <h5 class="font-bold text-[#1b355a]">{{ $member['name'] ?? '' }}</h5>
+                                    <p class="text-[11px] text-slate-500 font-mono">{{ $member['email'] ?? '' }} • {{ $member['phone'] ?? '' }}</p>
+                                </div>
                             </div>
-                            <div>
-                                <h5 class="font-bold text-[#1b355a]">{{ $member->name }}</h5>
-                                <p class="text-[11px] text-slate-500 font-mono">{{ $member->email }}</p>
+                            <div class="text-right">
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-50 text-amber-800 border border-amber-100">
+                                    Proposed
+                                </span>
                             </div>
                         </div>
+                        @endforeach
+                    @else
+                        @foreach($selectedTaskForce->members as $member)
+                        <div class="p-3 bg-white flex items-center justify-between text-xs">
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 rounded-full bg-[#1b355a] text-white font-bold flex items-center justify-center shrink-0">
+                                    {{ $member->initials() }}
+                                </div>
+                                <div>
+                                    <h5 class="font-bold text-[#1b355a]">{{ $member->name }}</h5>
+                                    <p class="text-[11px] text-slate-500 font-mono">{{ $member->email }}</p>
+                                </div>
+                            </div>
 
-                        <div class="text-right">
-                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-50 text-blue-800 border border-blue-100">
-                                {{ $member->roleRelation->description ?? $member->role }}
-                            </span>
-                            <span class="block text-[10px] text-slate-400 mt-0.5">Assigned {{ \Carbon\Carbon::parse($member->pivot->assigned_at)->format('M d, Y') }}</span>
+                            <div class="text-right">
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-50 text-blue-800 border border-blue-100">
+                                    {{ $member->roleRelation->description ?? $member->role }}
+                                </span>
+                                <span class="block text-[10px] text-slate-400 mt-0.5">Assigned {{ \Carbon\Carbon::parse($member->pivot->assigned_at)->format('M d, Y') }}</span>
+                            </div>
                         </div>
-                    </div>
-                    @endforeach
+                        @endforeach
+                    @endif
                 </div>
             </div>
 

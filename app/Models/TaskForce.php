@@ -15,7 +15,12 @@ class TaskForce extends Model
         'program_id',
         'purpose',
         'status',
+        'proposed_members',
         'created_by',
+    ];
+
+    protected $casts = [
+        'proposed_members' => 'array',
     ];
 
     public function college()

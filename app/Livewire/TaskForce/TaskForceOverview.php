@@ -31,9 +31,10 @@ class TaskForceOverview extends Component
     public string $name = '';
     public string $college_id = '';
     public string $program_id = '';
-    public string $purpose = '';
-    public array $selectedMembers = [];
-    public string $memberSearch = '';
+    public array $proposedMembers = [];
+    public string $newName = '';
+    public string $newEmail = '';
+    public string $newPhone = '';
 
     // Modal state for Member Roster / Detail view (6.2 Output Screen)
     public bool $showRosterModal = false;
@@ -129,19 +130,33 @@ class TaskForceOverview extends Component
             $this->college_id = '';
             $this->program_id = '';
         }
-        $this->purpose = '';
-        $this->selectedMembers = [];
-        $this->memberSearch = '';
+        $this->proposedMembers = [];
+        $this->reset(['newName', 'newEmail', 'newPhone']);
         $this->resetValidation();
     }
 
-    public function toggleMemberSelection($userId)
+    public function addMember()
     {
-        $userId = (int)$userId;
-        if (in_array($userId, $this->selectedMembers)) {
-            $this->selectedMembers = array_values(array_filter($this->selectedMembers, fn($id) => $id !== $userId));
-        } else {
-            $this->selectedMembers[] = $userId;
+        $this->validate([
+            'newName' => 'required|string|max:255',
+            'newEmail' => 'required|email|max:255',
+            'newPhone' => 'required|string|max:20',
+        ]);
+
+        $this->proposedMembers[] = [
+            'name' => $this->newName,
+            'email' => $this->newEmail,
+            'phone' => $this->newPhone,
+        ];
+
+        $this->reset(['newName', 'newEmail', 'newPhone']);
+    }
+
+    public function removeMember($index)
+    {
+        if (isset($this->proposedMembers[$index])) {
+            unset($this->proposedMembers[$index]);
+            $this->proposedMembers = array_values($this->proposedMembers); // re-index
         }
     }
 
@@ -158,8 +173,7 @@ class TaskForceOverview extends Component
             'name' => 'required|string|min:3|max:150|unique:task_forces,name',
             'college_id' => 'required|exists:colleges,id',
             'program_id' => 'required|exists:programs,id',
-            'purpose' => 'nullable|string|max:500',
-            'selectedMembers' => 'required|array|min:1',
+            'proposedMembers' => 'required|array|min:1',
         ];
 
         $messages = [
@@ -171,13 +185,12 @@ class TaskForceOverview extends Component
             'college_id.exists' => 'Please select a valid college.',
             'program_id.required' => 'Please select the assigned program.',
             'program_id.exists' => 'Please select a valid program.',
-            'purpose.max' => 'Purpose must be 500 characters or fewer.',
-            'selectedMembers.required' => 'Select at least one member.',
-            'selectedMembers.min' => 'Select at least one member.',
+            'proposedMembers.required' => 'Add at least one proposed member.',
+            'proposedMembers.min' => 'Add at least one proposed member.',
         ];
 
-        if (empty($this->selectedMembers)) {
-            $this->addError('selectedMembers', 'Select at least one member.');
+        if (empty($this->proposedMembers)) {
+            $this->addError('proposedMembers', 'Add at least one proposed member.');
             return;
         }
 
@@ -194,30 +207,13 @@ class TaskForceOverview extends Component
                     'name' => trim($this->name),
                     'college_id' => $this->college_id,
                     'program_id' => $this->program_id ? $this->program_id : null,
-                    'purpose' => trim($this->purpose) ?: null,
                     'status' => $initialStatus,
+                    'proposed_members' => $this->proposedMembers,
                     'created_by' => $currentUser->id,
                 ]);
 
-                // 2. Attach selected members atomically
-                $timestamp = now();
-                foreach ($this->selectedMembers as $userId) {
-                    TaskForceMember::create([
-                        'task_force_id' => $taskForce->id,
-                        'user_id' => $userId,
-                        'role_in_team' => 'member',
-                        'assigned_at' => $timestamp,
-                    ]);
-
-                    if (!$isCollegeHeadProposal) {
-                        Notification::create([
-                            'user_id' => $userId,
-                            'type' => 'info',
-                            'message' => "You have been assigned to Task Force: {$taskForce->name}",
-                            'is_read' => false,
-                        ]);
-                    }
-                }
+                // 2. Members are proposed, not directly attached unless it's IQA converting them later.
+                // For now, we skip direct User attachment since they are manually entered.
 
                 // 3. If submitted by College Head, send notification to all IQA Staff
                 if ($isCollegeHeadProposal) {
@@ -406,6 +402,14 @@ class TaskForceOverview extends Component
 
         // Query task forces for Overview dashboard cards
         $taskForcesQuery = TaskForce::with(['college', 'program', 'members', 'creator']);
+        
+        $currentUser = auth()->user();
+        if ($currentUser->role === 'college-head') {
+            $taskForcesQuery->where(function ($q) use ($currentUser) {
+                $q->where('college_id', $currentUser->college_id)
+                  ->orWhere('created_by', $currentUser->id);
+            });
+        }
 
         if (!empty($this->search)) {
             $taskForcesQuery->where(function ($q) {

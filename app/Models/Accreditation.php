@@ -13,12 +13,14 @@ class Accreditation extends Model
         'program_id',
         'task_force_id',
         'status',
+        'proposed_members',
         'target_date',
         'created_by'
     ];
 
     protected $casts = [
         'target_date' => 'date',
+        'proposed_members' => 'array',
     ];
 
     public function program()

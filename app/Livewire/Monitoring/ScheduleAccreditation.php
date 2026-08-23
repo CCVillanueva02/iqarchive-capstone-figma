@@ -6,6 +6,9 @@ use App\Models\Accreditation;
 use App\Models\Program;
 use App\Models\TaskForce;
 use App\Models\AuditLog;
+use App\Models\Notification;
+use App\Models\Role;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
@@ -58,6 +61,23 @@ class ScheduleAccreditation extends Component
             'target_id' => $accreditation->id,
             'timestamp' => now()
         ]);
+
+        // 4. Notify the Dean (College Head)
+        $deanRole = Role::where('role_name', 'college-head')->first();
+        if ($deanRole) {
+            $dean = User::where('college_id', $program->college_id)
+                ->where('role_id', $deanRole->id)
+                ->first();
+
+            if ($dean) {
+                Notification::create([
+                    'user_id' => $dean->id,
+                    'type' => 'accreditation_scheduled',
+                    'message' => 'Accreditation scheduled for ' . $program->name . '. Action Required: Setup Task Force.',
+                    'is_read' => false
+                ]);
+            }
+        }
 
         $this->reset(['program_id', 'target_date', 'showModal']);
         
