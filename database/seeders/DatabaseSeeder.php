@@ -24,7 +24,6 @@ class DatabaseSeeder extends Seeder
             InstrumentSeeder::class,
             DocumentSeeder::class,
             AuditLogSeeder::class,
-            TaskForceSeeder::class,
             TestPdfSeeder::class,
         ]);
     }
