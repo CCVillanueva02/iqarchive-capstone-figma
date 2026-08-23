@@ -12,7 +12,7 @@
                 <span class="text-zinc-500 font-medium" x-text="accredProgram.college"></span>
                 <span class="ml-2 text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-teal-100 text-teal-700">Program Performance Portfolio (PPP)</span>
             </div>
-            <button type="button" @click="clearProgram()" class="text-xs font-bold text-teal-600 hover:underline cursor-pointer">
+            <button x-show="isUnrestricted || filteredPrograms.length > 1" type="button" @click="clearProgram()" class="text-xs font-bold text-teal-600 hover:underline cursor-pointer">
                 Switch Program
             </button>
         </div>

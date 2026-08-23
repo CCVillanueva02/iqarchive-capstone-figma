@@ -43,7 +43,7 @@
         <!-- Modal Body: Scrollable Certificates Content -->
         <div class="p-6 overflow-y-auto flex flex-col gap-5 custom-scrollbar">
             <!-- Program Status Callout Banner -->
-            <div class="bg-gradient-to-r from-primary to-primary-hover rounded-2xl p-5 text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-3xs">
+            <div class="bg-linear-to-r from-primary to-primary-hover rounded-2xl p-5 text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-3xs">
                 <div class="flex items-center gap-3.5">
                     <div class="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center text-white shrink-0">
                         <x-lucide-shield-check class="w-6 h-6" />

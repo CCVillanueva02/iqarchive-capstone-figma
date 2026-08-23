@@ -28,7 +28,8 @@
             </button>
 
             <!-- Switch Program Button -->
-            <button type="button"
+            <button x-show="isUnrestricted || filteredPrograms.length > 1"
+                    type="button"
                     @click="clearProgram()"
                     class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-200/60 text-zinc-700 font-bold text-body-sm rounded-xl transition cursor-pointer flex items-center gap-1.5 shadow-3xs">
                 <x-lucide-arrow-left-right class="w-3.5 h-3.5 text-zinc-500" />

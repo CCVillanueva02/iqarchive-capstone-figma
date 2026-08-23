@@ -5,8 +5,8 @@
 <div class="flex overflow-x-auto gap-3 pb-2 w-full select-none custom-scrollbar">
     <template x-for="area in programComplianceReports" :key="area.id">
         <button type="button"
-                class="flex-1 shrink-0 min-w-[210px] max-w-[240px] bg-white rounded-xl border p-4 text-left shadow-3xs transition cursor-pointer flex flex-col justify-between h-24 relative"
-                :class="programComplianceActiveAreaId === area.id ? 'border-primary ring-2 ring-primary/20 bg-primary/[0.02] shadow-xs' : 'border-slate-200/70 hover:border-slate-350 hover:bg-slate-50/50'"
+                class="flex-1 shrink-0 min-w-52.5 max-w-60 bg-white rounded-xl border p-4 text-left shadow-3xs transition cursor-pointer flex flex-col justify-between h-24 relative"
+                :class="programComplianceActiveAreaId === area.id ? 'border-primary ring-2 ring-primary/20 bg-primary/2 shadow-xs' : 'border-slate-200/70 hover:border-slate-350 hover:bg-slate-50/50'"
                 @click="selectProgramComplianceArea(area.id)">
             <div>
                 <div class="flex items-center justify-between">

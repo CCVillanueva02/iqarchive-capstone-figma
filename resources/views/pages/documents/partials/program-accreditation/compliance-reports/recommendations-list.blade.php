@@ -16,7 +16,7 @@
         <!-- Filter & Search Toolbar -->
         <div class="flex flex-wrap items-center gap-2.5">
             <!-- Search Input -->
-            <div class="relative min-w-[220px] flex-1 md:flex-initial">
+            <div class="relative min-w-55 flex-1 md:flex-initial">
                 <x-lucide-search class="w-4 h-4 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
                 <input type="text"
                        x-model="programComplianceSearch"

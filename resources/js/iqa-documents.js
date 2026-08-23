@@ -2,6 +2,10 @@ window.documentWorkspace = function (initialState = {}) {
     const userRole = initialState.userRole || '';
     const canSeeCommonDocs = ['iqa-staff', 'iqa-admin', 'iqa-member', 'task-force-member', 'college-head', 'system-administrator'].includes(userRole);
     const canSeeInstitutionalDocs = ['iqa-staff', 'iqa-admin', 'iqa-member', 'system-administrator'].includes(userRole);
+    const isUnrestricted = initialState.isUnrestricted !== undefined ? initialState.isUnrestricted : ['iqa-staff', 'iqa-admin', 'system-administrator'].includes(userRole);
+    const userCollege = initialState.userCollege || null;
+    const userProgram = initialState.userProgram || null;
+
     let defaultTab = initialState.activeTab || (canSeeCommonDocs ? 'common-documents' : 'program-accreditation');
     if (!canSeeCommonDocs && defaultTab === 'common-documents') {
         defaultTab = 'program-accreditation';
@@ -16,13 +20,25 @@ window.documentWorkspace = function (initialState = {}) {
         initialAccredLevel = 'institutional';
     }
 
+    let initialCollege = null;
+    if (!isUnrestricted && userCollege) {
+        initialCollege = userCollege;
+    }
+    let initialProgram = null;
+    if (userRole === 'task-force-member' && userProgram) {
+        initialProgram = userProgram;
+    }
+
     return {
         currentUserId: initialState.userId || null,
         currentUserRole: initialState.userRole || '',
+        isUnrestricted: isUnrestricted,
+        userCollege: userCollege,
+        userProgram: userProgram,
         activeTab: defaultTab, // 'common-documents', 'program-accreditation', 'institutional-accreditation'
         accredLevel: initialAccredLevel, // 'program' or 'institutional'
-        accredCollege: null, // selected college object
-        accredProgram: null, // selected program object
+        accredCollege: initialCollege, // selected college object
+        accredProgram: initialProgram, // selected program object
         collegeSearchQuery: '',
         programSearchQuery: '',
         programCollegeFilter: 'all',
@@ -2209,6 +2225,11 @@ window.documentWorkspace = function (initialState = {}) {
         },
 
         clearCollege() {
+            if (!this.isUnrestricted && this.collegesList.length <= 1) {
+                this.accredProgram = null;
+                this.accredCategory = null;
+                return;
+            }
             this.accredCollege = null;
             this.accredProgram = null;
             this.accredCategory = null;
@@ -2245,6 +2266,10 @@ window.documentWorkspace = function (initialState = {}) {
         },
 
         clearProgram() {
+            if (this.currentUserRole === 'task-force-member' && this.programsList.length <= 1) {
+                this.accredCategory = null;
+                return;
+            }
             this.accredProgram = null;
             this.accredCategory = null;
         },
@@ -2904,8 +2929,11 @@ window.documentWorkspace = function (initialState = {}) {
             fetch('/api/programs')
                 .then(res => res.json())
                 .then(data => {
-                    if (Array.isArray(data) && data.length > 0) {
+                    if (Array.isArray(data)) {
                         this.programsList = data;
+                        if (this.currentUserRole === 'task-force-member' && data.length === 1 && !this.accredProgram) {
+                            this.accredProgram = data[0];
+                        }
                     }
                 })
                 .catch(err => console.error('Error fetching programs from backend:', err));
@@ -2915,6 +2943,9 @@ window.documentWorkspace = function (initialState = {}) {
                 .then(data => {
                     if (Array.isArray(data)) {
                         this.collegesList = data;
+                        if (!this.isUnrestricted && data.length === 1 && !this.accredCollege) {
+                            this.accredCollege = data[0];
+                        }
                         if (data.length > 0 && !this.newProgram.college_id) {
                             this.newProgram.college_id = data[0].id;
                         }

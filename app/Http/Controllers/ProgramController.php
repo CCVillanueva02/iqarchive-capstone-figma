@@ -4,16 +4,57 @@ namespace App\Http\Controllers;
 
 use App\Models\Program;
 use App\Models\College;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProgramController extends Controller
 {
     /**
      * Display a listing of all programs.
+     * Scoped by role: IQA staff and SysAdmin see all programs; College heads and Task Force members see only their assigned units.
      */
     public function index()
     {
-        $programs = Program::with('college')->orderBy('name')->get()->map(function ($p) {
+        /** @var User|null $user */
+        $user = Auth::user();
+        $query = Program::with('college')->orderBy('name');
+
+        if ($user) {
+            $isUnrestricted = $user->hasAnyRole(['iqa-staff', 'iqa-admin', 'system-administrator']) || 
+                              in_array($user->role, ['iqa-staff', 'iqa-admin', 'system-administrator']);
+
+            if (!$isUnrestricted) {
+                // College Head: all programs under their assigned college
+                if ($user->hasRole('college-head') || $user->role === 'college-head') {
+                    $collegeId = $user->college_id;
+                    $query->where('college_id', $collegeId);
+                }
+                // Task Force Member: only their specific assigned program(s)
+                elseif ($user->hasRole('task-force-member') || $user->role === 'task-force-member') {
+                    $programIds = array_filter([$user->program_id]);
+                    $tfProgramIds = $user->taskForces()->whereNotNull('program_id')->pluck('program_id')->toArray();
+                    $allProgramIds = array_unique(array_merge($programIds, $tfProgramIds));
+                    if (!empty($allProgramIds)) {
+                        $query->whereIn('id', $allProgramIds);
+                    } elseif ($user->college_id) {
+                        $query->where('college_id', $user->college_id);
+                    } else {
+                        $query->where('id', 0);
+                    }
+                }
+                // Accreditor: specific program or college
+                elseif ($user->hasRole('accreditor') || $user->role === 'accreditor') {
+                    if ($user->program_id) {
+                        $query->where('id', $user->program_id);
+                    } elseif ($user->college_id) {
+                        $query->where('college_id', $user->college_id);
+                    }
+                }
+            }
+        }
+
+        $programs = $query->get()->map(function ($p) {
             $collegeCode = $p->college ? $p->college->code : 'BU';
             $iconBg = match ($collegeCode) {
                 'CS' => 'bg-blue-50 text-[#1b355a]',
@@ -56,7 +97,8 @@ class ProgramController extends Controller
      */
     public function store(Request $request)
     {
-        $user = auth()->user();
+        /** @var User|null $user */
+        $user = Auth::user();
 
         if (!$user) {
             return response()->json(['error' => 'Unauthenticated.'], 401);
@@ -108,7 +150,41 @@ class ProgramController extends Controller
 
     public function getColleges()
     {
-        $colleges = College::withCount('programs')->orderBy('campus', 'asc')->orderBy('name', 'asc')->get();
+        /** @var User|null $user */
+        $user = Auth::user();
+        $query = College::withCount('programs')->orderBy('campus', 'asc')->orderBy('name', 'asc');
+
+        if ($user) {
+            $isUnrestricted = $user->hasAnyRole(['iqa-staff', 'iqa-admin', 'system-administrator']) || 
+                              in_array($user->role, ['iqa-staff', 'iqa-admin', 'system-administrator']);
+
+            if (!$isUnrestricted) {
+                // College Head: only their assigned college
+                if ($user->hasRole('college-head') || $user->role === 'college-head') {
+                    $collegeId = $user->college_id;
+                    $query->where('id', $collegeId);
+                }
+                // Task Force Member: only their assigned college
+                elseif ($user->hasRole('task-force-member') || $user->role === 'task-force-member') {
+                    $collegeIds = array_filter([$user->college_id]);
+                    $tfCollegeIds = $user->taskForces()->whereNotNull('college_id')->pluck('college_id')->toArray();
+                    $allCollegeIds = array_unique(array_merge($collegeIds, $tfCollegeIds));
+                    if (!empty($allCollegeIds)) {
+                        $query->whereIn('id', $allCollegeIds);
+                    } else {
+                        $query->where('id', 0);
+                    }
+                }
+                // Accreditor: assigned college
+                elseif ($user->hasRole('accreditor') || $user->role === 'accreditor') {
+                    if ($user->college_id) {
+                        $query->where('id', $user->college_id);
+                    }
+                }
+            }
+        }
+
+        $colleges = $query->get();
 
         $data = $colleges->map(function ($c) {
             $code = $c->code;

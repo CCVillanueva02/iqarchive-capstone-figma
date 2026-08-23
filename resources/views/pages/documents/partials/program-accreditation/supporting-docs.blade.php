@@ -10,7 +10,7 @@
                 <span class="text-zinc-400 font-normal">•</span>
                 <span class="text-zinc-500 font-medium" x-text="accredProgram.college"></span>
             </div>
-            <button type="button" @click="clearProgram()" class="text-xs font-bold text-blue-650 hover:underline cursor-pointer">
+            <button x-show="isUnrestricted || filteredPrograms.length > 1" type="button" @click="clearProgram()" class="text-xs font-bold text-primary hover:underline cursor-pointer">
                 Switch Program
             </button>
         </div>

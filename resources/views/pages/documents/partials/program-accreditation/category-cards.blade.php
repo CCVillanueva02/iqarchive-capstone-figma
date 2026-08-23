@@ -5,18 +5,18 @@
     <template x-if="accredProgram !== null">
         <div class="bg-blue-50/70 border border-blue-200/70 rounded-xl px-5 py-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-3xs">
             <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-lg bg-[#1b355a] text-white flex items-center justify-center font-extrabold text-xs shrink-0">
+                <div class="w-9 h-9 rounded-lg bg-primary text-white flex items-center justify-center font-extrabold text-xs shrink-0">
                     <span x-text="accredProgram.code"></span>
                 </div>
                 <div>
                     <div class="flex items-center gap-2">
-                        <span class="text-xs font-extrabold text-[#1b355a]" x-text="accredProgram.name"></span>
-                        <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-white border border-blue-200 text-[#1b355a]" x-text="accredProgram.level"></span>
+                        <span class="text-xs font-extrabold text-primary" x-text="accredProgram.name"></span>
+                        <span class="text-label-xs font-bold px-2 py-0.5 rounded bg-white border border-blue-200 text-primary" x-text="accredProgram.level"></span>
                     </div>
-                    <p class="text-[11px] text-zinc-500 mt-0.5" x-text="accredProgram.college"></p>
+                    <p class="text-label-xs text-zinc-500 mt-0.5" x-text="accredProgram.college"></p>
                 </div>
             </div>
-            <button type="button" @click="clearProgram()" class="px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 text-[#1b355a] text-xs font-bold rounded-lg transition cursor-pointer shrink-0 shadow-3xs">
+            <button x-show="isUnrestricted || filteredPrograms.length > 1" type="button" @click="clearProgram()" class="px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 text-primary text-xs font-bold rounded-lg transition cursor-pointer shrink-0 shadow-3xs">
                 Change Program
             </button>
         </div>

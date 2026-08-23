@@ -12,7 +12,7 @@
                 <span class="text-zinc-500 font-medium" x-text="accredProgram.college"></span>
                 <span class="ml-2 text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-violet-100 text-violet-700">AACCUP Level 3 Narrative Profile</span>
             </div>
-            <button type="button" @click="clearProgram()" class="text-xs font-bold text-violet-600 hover:underline cursor-pointer">
+            <button x-show="isUnrestricted || filteredPrograms.length > 1" type="button" @click="clearProgram()" class="text-xs font-bold text-violet-600 hover:underline cursor-pointer">
                 Switch Program
             </button>
         </div>
