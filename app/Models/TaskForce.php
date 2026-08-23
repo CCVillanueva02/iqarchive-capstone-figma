@@ -40,6 +40,11 @@ class TaskForce extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
+    public function accreditation()
+    {
+        return $this->hasOne(Accreditation::class);
+    }
+
     /**
      * Get compliance statistics for this task force based on program or college requirements.
      */
