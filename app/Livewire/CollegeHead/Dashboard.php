@@ -498,6 +498,33 @@ class Dashboard extends Component
 
         $accreditation->proposed_members = $this->proposedMembers;
         $accreditation->status = 'task_force_setup';
+
+        if (! $accreditation->task_force_id) {
+            $taskForceName = "{$accreditation->program->code} Accreditation Task Force";
+            if (TaskForce::where('name', $taskForceName)->exists()) {
+                $taskForceName .= ' (' . now()->year . ')';
+            }
+
+            $taskForce = TaskForce::create([
+                'name' => $taskForceName,
+                'college_id' => $accreditation->program->college_id,
+                'program_id' => $accreditation->program->id,
+                'purpose' => "Accreditation survey preparation and evidence compilation for {$accreditation->program->name}.",
+                'status' => 'pending_approval',
+                'proposed_members' => $this->proposedMembers,
+                'created_by' => $user->id,
+            ]);
+            $accreditation->task_force_id = $taskForce->id;
+        } else {
+            $taskForce = TaskForce::find($accreditation->task_force_id);
+            if ($taskForce) {
+                $taskForce->update([
+                    'proposed_members' => $this->proposedMembers,
+                    'status' => 'pending_approval',
+                ]);
+            }
+        }
+
         $accreditation->save();
 
         // Audit Log

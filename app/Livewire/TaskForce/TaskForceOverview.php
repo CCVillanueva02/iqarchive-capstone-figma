@@ -2,6 +2,7 @@
 
 namespace App\Livewire\TaskForce;
 
+use App\Models\Accreditation;
 use App\Models\AuditLog;
 use App\Models\College;
 use App\Models\Notification;
@@ -11,6 +12,7 @@ use App\Models\TaskForceMember;
 use App\Models\User;
 use App\Models\Role;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -24,7 +26,7 @@ class TaskForceOverview extends Component
     // Search and filter state
     public $search = '';
     public $collegeFilter = '';
-    public $statusFilter = 'active';
+    public $statusFilter = '';
 
     // Modal state for Create Task Force (6.1 Input Screen)
     public bool $showCreateModal = false;
@@ -43,7 +45,7 @@ class TaskForceOverview extends Component
     protected $queryString = [
         'search' => ['except' => ''],
         'collegeFilter' => ['except' => ''],
-        'statusFilter' => ['except' => 'active'],
+        'statusFilter' => ['except' => ''],
     ];
 
     public function updatingSearch()
@@ -265,44 +267,194 @@ class TaskForceOverview extends Component
     }
 
     /**
-     * IQA Admin approves pending task force proposal and member roster
+     * Check current system status of a proposed member email.
+     */
+    public function getProposedMemberStatus(?string $email): array
+    {
+        if (empty($email)) {
+            return [
+                'type' => 'unlisted',
+                'label' => 'Will Pre-Register',
+                'class' => 'bg-slate-100 text-slate-600 border-slate-200',
+            ];
+        }
+
+        $cleanEmail = strtolower(trim($email));
+        $user = User::where('email', $cleanEmail)->first();
+
+        if (! $user) {
+            return [
+                'type' => 'unlisted',
+                'label' => 'Will Pre-Register',
+                'class' => 'bg-slate-100 text-slate-600 border-slate-200',
+            ];
+        }
+
+        if (in_array($user->status, ['inactive', 'deactivated', 'revoked'])) {
+            return [
+                'type' => 'inactive',
+                'label' => 'Will Reactivate',
+                'class' => 'bg-amber-50 text-amber-800 border-amber-200',
+            ];
+        }
+
+        if ($user->status === 'pending_activation') {
+            return [
+                'type' => 'pending',
+                'label' => 'Pending Activation',
+                'class' => 'bg-blue-50 text-blue-800 border-blue-200',
+            ];
+        }
+
+        return [
+            'type' => 'active',
+            'label' => 'Active Account',
+            'class' => 'bg-emerald-50 text-emerald-700 border-emerald-200',
+        ];
+    }
+
+    /**
+     * IQA Admin approves pending task force proposal and member roster.
+     * Pre-registers unlisted accounts as pending_activation, reactivates existing/inactive accounts,
+     * auto-assigns the Dean as Task Force Lead, and advances linked Accreditation to task_force_approved.
+     * 
+     * Security Reasoning: Centralized IQA verification ensures institutional legitimacy of accreditation
+     * task force memberships while enforcing OAuth-only authentication, role-based access control, and complete audit trails.
      */
     public function approveTaskForce($taskForceId)
     {
-        if (!$this->canManage) {
-            abort(403, 'Only IQA Admin can approve task forces.');
+        if (! $this->canManage) {
+            abort(403, 'Only IQA Staff and Administrators can formalize task forces.');
         }
 
-        $taskForce = TaskForce::with(['college', 'members', 'creator'])->findOrFail($taskForceId);
+        $taskForce = TaskForce::with(['college', 'program', 'members', 'creator'])->findOrFail($taskForceId);
+
+        $taskForceRole = Role::firstOrCreate(['role_name' => 'task-force-member'], ['description' => 'Task Force Member']);
+        $deanRole = Role::firstOrCreate(['role_name' => 'college-head'], ['description' => 'College Head / Dean']);
+
+        $prelistedCount = 0;
+        $reactivatedCount = 0;
+        $activeMembers = [];
 
         try {
-            DB::transaction(function () use ($taskForce) {
+            DB::transaction(function () use ($taskForce, $taskForceRole, $deanRole, &$prelistedCount, &$reactivatedCount, &$activeMembers) {
+                // 1. Process proposed members from nomination
+                if (is_array($taskForce->proposed_members) && ! empty($taskForce->proposed_members)) {
+                    foreach ($taskForce->proposed_members as $memberData) {
+                        $email = strtolower(trim($memberData['email'] ?? ''));
+                        if (empty($email)) {
+                            continue;
+                        }
+
+                        $rawName = trim($memberData['name'] ?? '');
+                        $existingUser = User::where('email', $email)->first();
+
+                        if ($existingUser) {
+                            // If user is inactive/deactivated/revoked, reactivate account
+                            if (in_array($existingUser->status, ['inactive', 'deactivated', 'revoked'])) {
+                                $existingUser->status = 'active';
+                                $existingUser->save();
+                                $reactivatedCount++;
+                            }
+
+                            // Ensure task force member role is assigned
+                            $existingUser->roles()->syncWithoutDetaching([$taskForceRole->id]);
+
+                            // Attach to task force
+                            TaskForceMember::updateOrCreate(
+                                ['task_force_id' => $taskForce->id, 'user_id' => $existingUser->id],
+                                ['role_in_team' => 'member', 'assigned_at' => now()]
+                            );
+
+                            $activeMembers[] = $existingUser;
+                        } else {
+                            // Pre-register user in pending_activation status
+                            $nameParts = explode(' ', $rawName, 2);
+                            $firstName = $nameParts[0] ?: 'Pending';
+                            $lastName = $nameParts[1] ?? 'Faculty';
+
+                            $newUser = User::create([
+                                'first_name' => $firstName,
+                                'last_name' => $lastName,
+                                'email' => $email,
+                                'role_id' => $taskForceRole->id,
+                                'college_id' => $taskForce->college_id,
+                                'program_id' => $taskForce->program_id,
+                                'password' => bcrypt(Str::random(32)),
+                                'status' => 'pending_activation',
+                            ]);
+
+                            $newUser->roles()->sync([$taskForceRole->id]);
+
+                            TaskForceMember::create([
+                                'task_force_id' => $taskForce->id,
+                                'user_id' => $newUser->id,
+                                'role_in_team' => 'member',
+                                'assigned_at' => now(),
+                            ]);
+
+                            $prelistedCount++;
+                            $activeMembers[] = $newUser;
+                        }
+                    }
+                }
+
+                // 2. Auto-assign College Dean as Task Force Lead
+                $dean = User::where('college_id', $taskForce->college_id)
+                    ->where(function ($q) use ($deanRole) {
+                        $q->where('role_id', $deanRole->id)
+                            ->orWhereHas('roles', fn ($rq) => $rq->where('role_name', 'college-head'));
+                    })
+                    ->first();
+
+                if ($dean) {
+                    TaskForceMember::updateOrCreate(
+                        ['task_force_id' => $taskForce->id, 'user_id' => $dean->id],
+                        ['role_in_team' => 'lead', 'assigned_at' => now()]
+                    );
+                }
+
+                // 3. Update Task Force status to active
                 $taskForce->update(['status' => 'active']);
 
-                // Notify assigned members
-                foreach ($taskForce->members as $member) {
+                // 4. Advance linked Accreditation status to task_force_approved
+                $accreditation = Accreditation::where('task_force_id', $taskForce->id)
+                    ->orWhere(function ($q) use ($taskForce) {
+                        $q->where('program_id', $taskForce->program_id)
+                            ->whereIn('status', ['scheduled', 'task_force_setup']);
+                    })
+                    ->first();
+
+                if ($accreditation) {
+                    $accreditation->update([
+                        'task_force_id' => $taskForce->id,
+                        'status' => 'task_force_approved',
+                    ]);
+                }
+
+                // 5. Notifications
+                if ($dean) {
                     Notification::create([
-                        'user_id' => $member->id,
+                        'user_id' => $dean->id,
                         'type' => 'info',
-                        'message' => "Your task force assignment to {$taskForce->name} has been approved by the IQA Admin.",
+                        'message' => "Task Force roster for {$taskForce->name} has been officially approved and activated by the IQA Office.",
                         'is_read' => false,
                     ]);
                 }
 
-                // Notify College Head / creator
-                if ($taskForce->created_by) {
+                foreach ($activeMembers as $mem) {
                     Notification::create([
-                        'user_id' => $taskForce->created_by,
+                        'user_id' => $mem->id,
                         'type' => 'info',
-                        'message' => "Your Task Force proposal '{$taskForce->name}' has been approved by the IQA Admin.",
+                        'message' => "You have been assigned to the {$taskForce->name} Task Force roster.",
                         'is_read' => false,
                     ]);
                 }
 
-                // Log audit trail
+                // 6. Audit Trail
                 AuditLog::create([
                     'user_id' => auth()->id(),
-                    'action' => 'Task Force Approved',
+                    'action' => "Approved Task Force roster for {$taskForce->name} ({$prelistedCount} pre-registered, {$reactivatedCount} reactivated)",
                     'target_type' => 'TaskForce',
                     'target_id' => $taskForce->id,
                     'timestamp' => now(),
@@ -310,13 +462,22 @@ class TaskForceOverview extends Component
             });
 
             if ($this->selectedTaskForce && $this->selectedTaskForce->id === $taskForce->id) {
-                $this->selectedTaskForce->status = 'active';
+                $this->selectedTaskForce = TaskForce::with(['college', 'program', 'members.roleRelation', 'creator'])->find($taskForce->id);
             }
+
+            $msgParts = [];
+            if ($prelistedCount > 0) {
+                $msgParts[] = "{$prelistedCount} account(s) pre-registered";
+            }
+            if ($reactivatedCount > 0) {
+                $msgParts[] = "{$reactivatedCount} account(s) reactivated";
+            }
+            $summaryText = ! empty($msgParts) ? ' (' . implode(', ', $msgParts) . ')' : '';
 
             $this->dispatch('swal', [
                 'icon' => 'success',
-                'title' => 'Task Force Approved!',
-                'text' => "Task force '{$taskForce->name}' and its member roster have been officially approved and activated."
+                'title' => 'Task Force Approved & Activated!',
+                'text' => "Task force '{$taskForce->name}' has been formalized{$summaryText}. Dean auto-assigned as Lead."
             ]);
         } catch (\Exception $e) {
             $this->dispatch('swal', [
@@ -436,6 +597,7 @@ class TaskForceOverview extends Component
             : collect();
 
         // Summary Statistics
+        $totalAllCount = TaskForce::count();
         $totalActiveCount = TaskForce::where('status', 'active')->count();
         $totalPendingCount = TaskForce::where('status', 'pending_approval')->count();
         $totalCompletedCount = TaskForce::where('status', 'completed')->count();
@@ -452,6 +614,7 @@ class TaskForceOverview extends Component
             'colleges' => $colleges,
             'definedCollege' => $definedCollege,
             'availablePrograms' => $availablePrograms,
+            'totalAllCount' => $totalAllCount,
             'totalActiveCount' => $totalActiveCount,
             'totalPendingCount' => $totalPendingCount,
             'totalCompletedCount' => $totalCompletedCount,
