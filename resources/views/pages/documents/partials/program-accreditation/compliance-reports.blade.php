@@ -16,13 +16,13 @@
     <!-- 1. Program Context Header & Action Bar -->
     @include('pages.documents.partials.program-accreditation.compliance-reports.context-header')
 
-    <!-- 2. Summary Statistics KPI Cards -->
-    @include('pages.documents.partials.program-accreditation.compliance-reports.stats-overview')
-
-    <!-- 3. AACCUP 10-Area Selector Horizontal Tab Bar -->
+    <!-- 2. AACCUP 10-Area Selector Horizontal Cards (matches Institutional) -->
     @include('pages.documents.partials.program-accreditation.compliance-reports.area-tabs')
 
-    <!-- 4. Area Recommendations & Action Plan Workspace -->
+    <!-- 3. Summary Statistics Bar (matches Institutional) -->
+    @include('pages.documents.partials.program-accreditation.compliance-reports.stats-overview')
+
+    <!-- 4. Area Recommendations & Action Plan Workspace (matches Institutional) -->
     @include('pages.documents.partials.program-accreditation.compliance-reports.recommendations-list')
 
     <!-- 5. AACCUP Certificates & Survey Audit Modal -->

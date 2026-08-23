@@ -20,12 +20,12 @@
 
         <div class="flex flex-wrap items-center gap-2.5 shrink-0">
             <!-- View Official AACCUP Certificates Button -->
-            <button type="button"
+            <!-- <button type="button"
                     @click="programCertificatesModalOpen = true"
                     class="px-4 py-2 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 font-bold text-body-sm rounded-xl transition cursor-pointer flex items-center gap-2 shadow-3xs">
                 <x-lucide-file-badge class="w-4 h-4 text-emerald-600" />
                 <span>AACCUP Certificates & Audits</span>
-            </button>
+            </button> -->
 
             <!-- Switch Program Button -->
             <button x-show="isUnrestricted || filteredPrograms.length > 1"
