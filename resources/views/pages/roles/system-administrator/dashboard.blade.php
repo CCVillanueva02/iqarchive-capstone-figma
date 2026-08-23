@@ -128,8 +128,8 @@
                             @forelse($recentLogs as $log)
                                 <tr>
                                     <td class="py-3 flex items-center gap-2">
-                                        @if($log->user && $log->user->avatar)
-                                            <img src="{{ Storage::url($log->user->avatar) }}" alt="{{ $log->user->name }}" class="w-7 h-7 rounded-full object-cover border border-[#002B61]/10" />
+                                        @if($log->user && $log->user->avatar_url)
+                                            <img src="{{ $log->user->avatar_url }}" alt="{{ $log->user->name }}" class="w-7 h-7 rounded-full object-cover border border-[#002B61]/10" referrerpolicy="no-referrer" />
                                         @else
                                             <div class="w-7 h-7 rounded-full bg-[#002B61]/5 border border-[#002B61]/10 text-[#002B61] text-[10px] font-bold flex items-center justify-center">
                                                 {{ $log->user ? $log->user->initials() : 'SYS' }}
