@@ -164,8 +164,8 @@
         </div>
 
         <!-- Footer Actions -->
-        <div class="flex items-center justify-between pt-4 border-t border-slate-100">
-            @if(in_array(auth()->user()->role ?? '', ['iqa-staff', 'iqa-admin', 'system-administrator']) && $selectedAccreditation->status !== 'cancelled')
+        @if(in_array(auth()->user()->role ?? '', ['iqa-staff', 'iqa-admin', 'system-administrator']) && $selectedAccreditation->status !== 'cancelled')
+        <div class="flex items-center justify-end pt-4 border-t border-slate-100">
             <button 
                 type="button" 
                 wire:click="cancelAccreditation({{ $selectedAccreditation->id }})" 
@@ -176,14 +176,8 @@
                 </svg>
                 <span>Cancel Accreditation</span>
             </button>
-            @else
-            <div></div>
-            @endif
-
-            <flux:button variant="outline" wire:click="closeTimeline">
-                {{ __('Close Timeline') }}
-            </flux:button>
         </div>
+        @endif
     </div>
     @endif
 </flux:modal>
