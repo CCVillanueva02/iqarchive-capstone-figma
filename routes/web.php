@@ -66,10 +66,9 @@ Route::middleware('guest')->group(function () {
     Route::get('auth/google/callback', [GoogleAuthController::class, 'handleGoogleCallback'])->name('auth.google.callback');
 });
 
-// Public Mockups
-Route::get('/mockups/monitoring', function () {
-    return view('pages.mockups.monitoring');
-})->name('mockups.monitoring');
+// Accreditation Monitoring (Overview, Summary Report, Master Programs Directory)
+Route::get('/mockups/monitoring', \App\Livewire\Monitoring\MonitoringOverview::class)->name('mockups.monitoring');
+Route::get('/monitoring', \App\Livewire\Monitoring\MonitoringOverview::class)->name('monitoring.index');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     // Landing gateway: redirects to the appropriate role-specific homepage
