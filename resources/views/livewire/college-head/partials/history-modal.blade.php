@@ -4,15 +4,12 @@
         <!-- Header -->
         <div class="border-b border-slate-200 pb-4">
             <div class="flex items-center gap-2 mb-1.5">
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-lg text-label-xs font-bold bg-primary text-white">
+                <!-- <span class="inline-flex items-center px-2.5 py-0.5 rounded-lg text-label-xs font-bold bg-primary text-white">
                     {{ $selectedProgram->college->code ?? 'N/A' }}
                 </span>
                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-lg text-label-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200">
                     {{ $selectedProgram->accreditation_level ?: 'Candidate Status' }}
-                </span>
-                <span class="text-label-xs font-mono text-primary-muted ml-auto font-bold">
-                    {{ $selectedProgram->code }}
-                </span>
+                </span> -->
             </div>
             
             <h2 class="text-heading font-bold text-primary-dark tracking-tight">
