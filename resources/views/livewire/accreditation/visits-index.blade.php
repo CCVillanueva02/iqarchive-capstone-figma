@@ -54,11 +54,18 @@
     @include('livewire.accreditation.partials.timeline-modal')
 
     <!-- 5. Schedule Accreditation Modal Component -->
-    @livewire('monitoring.schedule-accreditation')
+    @livewire('accreditation.schedule-accreditation')
 
-    <!-- SweetAlert Event Listener -->
+    <!-- SweetAlert & Modal Event Listeners -->
     <script>
         document.addEventListener('livewire:init', () => {
+            Livewire.on('close-flux-modal', (modalName) => {
+                const name = typeof modalName === 'string' ? modalName : (modalName[0] || 'schedule-accreditation');
+                if (typeof $flux !== 'undefined' && $flux.modal) {
+                    $flux.modal(name).close();
+                }
+            });
+
             Livewire.on('swal', (event) => {
                 const data = event[0] || event;
                 if (typeof Swal !== 'undefined') {

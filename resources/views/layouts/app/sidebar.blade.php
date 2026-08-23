@@ -264,7 +264,7 @@
                     <line x1="3" y1="10" x2="21" y2="10"></line>
                     <path d="m9 16 2 2 4-4"></path>
                 </svg>
-                <span>Record a Visit</span>
+                <span> Accreditation</span>
             </a>
             @endif
 
