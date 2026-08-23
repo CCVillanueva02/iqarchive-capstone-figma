@@ -67,7 +67,6 @@ Route::middleware('guest')->group(function () {
 });
 
 // Accreditation Monitoring (Overview, Summary Report, Master Programs Directory)
-Route::get('/mockups/monitoring', \App\Livewire\Monitoring\MonitoringOverview::class)->name('mockups.monitoring');
 Route::get('/monitoring', \App\Livewire\Monitoring\MonitoringOverview::class)->name('monitoring.index');
 
 Route::middleware(['auth', 'verified'])->group(function () {

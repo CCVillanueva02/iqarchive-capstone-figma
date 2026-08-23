@@ -165,10 +165,10 @@
 
             <!-- Monitoring Tab & Subtabs (Collapsible) -->
             @if (in_array($role, ['task-force-member', 'college-head', 'iqa-staff']))
-            <div class="flex flex-col" x-data="{ monOpen: {{ request()->routeIs('mockups.monitoring') ? 'true' : 'false' }} }">
+            <div class="flex flex-col" x-data="{ monOpen: {{ request()->routeIs('monitoring.*') ? 'true' : 'false' }} }">
                 <button type="button"
                     @click="monOpen = !monOpen"
-                    class="group flex items-center justify-between px-6 py-3.5 border-l-4 text-body font-semibold transition-all cursor-pointer {{ request()->routeIs('mockups.monitoring') ? 'bg-white/10 text-white border-l-brand-orange' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}">
+                    class="group flex items-center justify-between px-6 py-3.5 border-l-4 text-body font-semibold transition-all cursor-pointer {{ request()->routeIs('monitoring.*') ? 'bg-white/10 text-white border-l-brand-orange' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}">
                     <div class="flex items-center gap-3.5">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
@@ -203,11 +203,11 @@
                         @endphp
 
                         <!-- Dashboard Overview -->
-                        <a href="{{ route('mockups.monitoring', ['tab' => 'dashboard']) }}"
-                            class="relative flex items-center gap-3 px-4 py-3 rounded-lg text-body-sm transition-all {{ ($currentMonTab === 'dashboard' && request()->routeIs('mockups.monitoring')) ? 'bg-white/12 text-emerald-400 font-bold' : 'text-white/60 hover:text-white hover:bg-white/5 font-medium' }}"
+                        <a href="{{ route('monitoring.index', ['tab' => 'dashboard']) }}"
+                            class="relative flex items-center gap-3 px-4 py-3 rounded-lg text-body-sm transition-all {{ ($currentMonTab === 'dashboard' && request()->routeIs('monitoring.*')) ? 'bg-white/12 text-emerald-400 font-bold' : 'text-white/60 hover:text-white hover:bg-white/5 font-medium' }}"
                             wire:navigate>
-                            <span class="absolute -left-4 top-1/2 -translate-y-1/2 w-1.75 h-1.75 rounded-full border-[1.5px] {{ ($currentMonTab === 'dashboard' && request()->routeIs('mockups.monitoring')) ? 'bg-emerald-400 border-emerald-400' : 'bg-white/20 border-white/30' }}"></span>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 {{ ($currentMonTab === 'dashboard' && request()->routeIs('mockups.monitoring')) ? 'text-emerald-400' : 'text-white/40' }}">
+                            <span class="absolute -left-4 top-1/2 -translate-y-1/2 w-1.75 h-1.75 rounded-full border-[1.5px] {{ ($currentMonTab === 'dashboard' && request()->routeIs('monitoring.*')) ? 'bg-emerald-400 border-emerald-400' : 'bg-white/20 border-white/30' }}"></span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 {{ ($currentMonTab === 'dashboard' && request()->routeIs('monitoring.*')) ? 'text-emerald-400' : 'text-white/40' }}">
                                 <rect x="3" y="3" width="7" height="9"></rect>
                                 <rect x="14" y="3" width="7" height="5"></rect>
                                 <rect x="14" y="12" width="7" height="9"></rect>
@@ -217,11 +217,11 @@
                         </a>
 
                         <!-- Summary Report -->
-                        <a href="{{ route('mockups.monitoring', ['tab' => 'summary']) }}"
-                            class="relative flex items-center gap-3 px-4 py-3 rounded-lg text-body-sm transition-all {{ ($currentMonTab === 'summary' && request()->routeIs('mockups.monitoring')) ? 'bg-white/12 text-emerald-400 font-bold' : 'text-white/60 hover:text-white hover:bg-white/5 font-medium' }}"
+                        <a href="{{ route('monitoring.index', ['tab' => 'summary']) }}"
+                            class="relative flex items-center gap-3 px-4 py-3 rounded-lg text-body-sm transition-all {{ ($currentMonTab === 'summary' && request()->routeIs('monitoring.*')) ? 'bg-white/12 text-emerald-400 font-bold' : 'text-white/60 hover:text-white hover:bg-white/5 font-medium' }}"
                             wire:navigate>
-                            <span class="absolute -left-4 top-1/2 -translate-y-1/2 w-1.75 h-1.75 rounded-full border-[1.5px] {{ ($currentMonTab === 'summary' && request()->routeIs('mockups.monitoring')) ? 'bg-emerald-400 border-emerald-400' : 'bg-white/20 border-white/30' }}"></span>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 {{ ($currentMonTab === 'summary' && request()->routeIs('mockups.monitoring')) ? 'text-emerald-400' : 'text-white/40' }}">
+                            <span class="absolute -left-4 top-1/2 -translate-y-1/2 w-1.75 h-1.75 rounded-full border-[1.5px] {{ ($currentMonTab === 'summary' && request()->routeIs('monitoring.*')) ? 'bg-emerald-400 border-emerald-400' : 'bg-white/20 border-white/30' }}"></span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 {{ ($currentMonTab === 'summary' && request()->routeIs('monitoring.*')) ? 'text-emerald-400' : 'text-white/40' }}">
                                 <path d="M3 3v18h18"></path>
                                 <path d="m19 9-5 5-4-4-3 3"></path>
                             </svg>
@@ -229,11 +229,11 @@
                         </a>
 
                         <!-- Programs -->
-                        <a href="{{ route('mockups.monitoring', ['tab' => 'programs']) }}"
-                            class="relative flex items-center gap-3 px-4 py-3 rounded-lg text-body-sm transition-all {{ ($currentMonTab === 'programs' && request()->routeIs('mockups.monitoring')) ? 'bg-white/12 text-emerald-400 font-bold' : 'text-white/60 hover:text-white hover:bg-white/5 font-medium' }}"
+                        <a href="{{ route('monitoring.index', ['tab' => 'programs']) }}"
+                            class="relative flex items-center gap-3 px-4 py-3 rounded-lg text-body-sm transition-all {{ ($currentMonTab === 'programs' && request()->routeIs('monitoring.*')) ? 'bg-white/12 text-emerald-400 font-bold' : 'text-white/60 hover:text-white hover:bg-white/5 font-medium' }}"
                             wire:navigate>
-                            <span class="absolute -left-4 top-1/2 -translate-y-1/2 w-1.75 h-1.75 rounded-full border-[1.5px] {{ ($currentMonTab === 'programs' && request()->routeIs('mockups.monitoring')) ? 'bg-emerald-400 border-emerald-400' : 'bg-white/20 border-white/30' }}"></span>
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 {{ ($currentMonTab === 'programs' && request()->routeIs('mockups.monitoring')) ? 'text-emerald-400' : 'text-white/40' }}">
+                            <span class="absolute -left-4 top-1/2 -translate-y-1/2 w-1.75 h-1.75 rounded-full border-[1.5px] {{ ($currentMonTab === 'programs' && request()->routeIs('monitoring.*')) ? 'bg-emerald-400 border-emerald-400' : 'bg-white/20 border-white/30' }}"></span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0 {{ ($currentMonTab === 'programs' && request()->routeIs('monitoring.*')) ? 'text-emerald-400' : 'text-white/40' }}">
                                 <path d="M8 6h13"></path>
                                 <path d="M8 12h13"></path>
                                 <path d="M8 18h13"></path>
