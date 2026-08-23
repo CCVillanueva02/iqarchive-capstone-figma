@@ -236,4 +236,154 @@ class InstrumentBuilderTest extends TestCase
             'target_id' => $this->accreditation->id,
         ]);
     }
+
+    public function test_iqa_staff_can_switch_between_program_and_institutional_scopes()
+    {
+        $this->actingAs($this->iqaUser);
+
+        // Seed both Program and Institutional Master Instruments
+        Instrument::create([
+            'name' => 'Program Supporting Documents Instrument (AACCUP)',
+            'code' => 'INST-PROG-SUPPORTING-DOCS',
+            'level' => 'Level III',
+            'accreditation_type' => 'program',
+            'is_template' => true,
+            'status' => 'active',
+        ]);
+
+        Instrument::create([
+            'name' => 'Institutional Supporting Documents Instrument (AACCUP)',
+            'code' => 'INST-INST-SUPPORTING-DOCS',
+            'level' => 'Level IV',
+            'accreditation_type' => 'institutional',
+            'is_template' => true,
+            'status' => 'active',
+        ]);
+
+        Livewire::test(\App\Livewire\Configuration\Instruments::class)
+            ->assertSet('accreditationScope', 'program')
+            ->call('switchScope', 'institutional')
+            ->assertSet('accreditationScope', 'institutional')
+            ->assertSee('Institutional Supporting Docs');
+    }
+
+    public function test_iqa_staff_can_inspect_program_and_clone_master_instrument()
+    {
+        $this->actingAs($this->iqaUser);
+
+        $master = Instrument::create([
+            'name' => 'Program Supporting Documents Instrument (AACCUP)',
+            'code' => 'INST-PROG-SUPPORTING-DOCS',
+            'level' => 'Level III',
+            'accreditation_type' => 'program',
+            'is_template' => true,
+            'status' => 'active',
+        ]);
+        InstrumentArea::create([
+            'instrument_id' => $master->id,
+            'code' => 'Area I',
+            'name' => 'VMGO',
+            'order' => 1,
+        ]);
+
+        // 1. Inspect program without custom instrument -> shows empty state
+        $test = Livewire::test(\App\Livewire\Configuration\Instruments::class)
+            ->call('selectProgram', $this->program->id)
+            ->assertSet('selectedProgramId', $this->program->id)
+            ->assertSee('No Custom Instrument for')
+            ->assertSee('Clone Master Instrument for this Program');
+
+        // 2. Click Clone Master Instrument for this Program
+        $test->call('cloneMasterForProgram')
+            ->assertSet('selectedProgramId', $this->program->id);
+
+        $this->assertDatabaseHas('instruments', [
+            'program_id' => $this->program->id,
+            'is_template' => false,
+        ]);
+    }
+
+    public function test_iqa_staff_can_duplicate_instrument_to_specific_program()
+    {
+        $this->actingAs($this->iqaUser);
+
+        $master = Instrument::create([
+            'name' => 'Program Supporting Documents Instrument (AACCUP)',
+            'code' => 'INST-PROG-SUPPORTING-DOCS',
+            'level' => 'Level III',
+            'accreditation_type' => 'program',
+            'is_template' => true,
+            'status' => 'active',
+        ]);
+
+        Livewire::test(\App\Livewire\Configuration\Instruments::class)
+            ->call('openCloneModal', $master->id)
+            ->set('cloneTargetProgramId', $this->program->id)
+            ->set('templateName', 'BSCS Custom Supporting Docs')
+            ->set('templateCode', 'INST-BSCS-CUSTOM-2026')
+            ->call('cloneTemplate');
+
+        $this->assertDatabaseHas('instruments', [
+            'code' => 'INST-BSCS-CUSTOM-2026',
+            'program_id' => $this->program->id,
+            'is_template' => false,
+        ]);
+    }
+
+    public function test_college_head_can_access_configuration_instruments_and_edit_programs_in_college()
+    {
+        $this->actingAs($this->deanUser);
+
+        // Seed master template
+        $master = Instrument::create([
+            'name' => 'Program Supporting Documents Instrument (AACCUP)',
+            'code' => 'INST-PROG-SUPPORTING-DOCS',
+            'level' => 'Level III',
+            'accreditation_type' => 'program',
+            'is_template' => true,
+            'status' => 'active',
+        ]);
+        $area = InstrumentArea::create([
+            'instrument_id' => $master->id,
+            'code' => 'Area I',
+            'name' => 'VMGO',
+            'order' => 1,
+        ]);
+
+        // Dean accesses configuration.instruments
+        $response = $this->get(route('configuration.instruments'));
+        $response->assertStatus(200);
+
+        // Dean can clone master and add criteria for their college program
+        $test = Livewire::test(\App\Livewire\Configuration\Instruments::class)
+            ->assertSet('selectedProgramId', $this->program->id)
+            ->call('cloneMasterForProgram');
+
+        $cloned = Instrument::where('program_id', $this->program->id)->first();
+        $this->assertNotNull($cloned);
+
+        $clonedArea = $cloned->areas->first();
+        $param = InstrumentParameter::create([
+            'instrument_area_id' => $clonedArea->id,
+            'code' => 'Parameter A',
+            'name' => 'Statement of VMGO',
+            'order' => 1,
+        ]);
+
+        // Dean adds a criterion with tags
+        $test->call('selectInstrument', $cloned->id)
+            ->call('selectArea', $clonedArea->id)
+            ->call('selectParameter', $param->id)
+            ->set('activeSection', 'systems')
+            ->set('criterionCode', 'S.1')
+            ->set('criterionStatement', 'Dean custom VMGO criterion statement.')
+            ->set('criterionTags', ['#DeanCustomTag'])
+            ->call('saveCriterion');
+
+        $this->assertDatabaseHas('instrument_criteria', [
+            'instrument_parameter_id' => $param->id,
+            'code' => 'S.1',
+            'statement' => 'Dean custom VMGO criterion statement.',
+        ]);
+    }
 }

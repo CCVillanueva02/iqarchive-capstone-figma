@@ -28,7 +28,8 @@ class InstrumentCustomization extends Component
     public bool $showAddCriterionModal = false;
     public bool $showFinalizeModal = false;
 
-    // Form: Add Parameter
+    // Form: Add/Edit Parameter
+    public ?int $editingParameterId = null;
     public string $paramCode = '';
     public string $paramName = '';
     public string $paramDescription = '';
@@ -115,21 +116,30 @@ class InstrumentCustomization extends Component
         $this->activeSection = $section;
     }
 
-    // ── Add Parameter ────────────────────────────────────────────────
+    // ── Add / Edit Parameter ─────────────────────────────────────────
 
-    public function openAddParameterModal()
+    public function openAddParameterModal(?int $paramId = null)
     {
-        $area = InstrumentArea::with('parameters')->find($this->activeAreaId);
-        $nextLetter = chr(65 + ($area ? $area->parameters->count() : 0));
-        $this->paramCode = "Parameter {$nextLetter}";
-        $this->paramName = '';
-        $this->paramDescription = '';
+        $this->editingParameterId = $paramId;
+        if ($paramId) {
+            $param = InstrumentParameter::findOrFail($paramId);
+            $this->paramCode = $param->code;
+            $this->paramName = $param->name;
+            $this->paramDescription = $param->description ?? '';
+        } else {
+            $area = InstrumentArea::with('parameters')->find($this->activeAreaId);
+            $nextLetter = chr(65 + ($area ? $area->parameters->count() : 0));
+            $this->paramCode = "Parameter {$nextLetter}";
+            $this->paramName = '';
+            $this->paramDescription = '';
+        }
         $this->showAddParameterModal = true;
     }
 
     public function closeAddParameterModal()
     {
         $this->showAddParameterModal = false;
+        $this->editingParameterId = null;
         $this->reset(['paramCode', 'paramName', 'paramDescription']);
     }
 
@@ -140,19 +150,29 @@ class InstrumentCustomization extends Component
             'paramName' => 'required|string|max:255',
         ]);
 
-        $area = InstrumentArea::with('parameters')->findOrFail($this->activeAreaId);
-
-        $param = InstrumentParameter::create([
-            'instrument_area_id' => $area->id,
-            'code' => trim($this->paramCode),
-            'name' => trim($this->paramName),
-            'description' => trim($this->paramDescription),
-            'order' => $area->parameters->count() + 1,
-        ]);
+        if ($this->editingParameterId) {
+            $param = InstrumentParameter::findOrFail($this->editingParameterId);
+            $param->update([
+                'code' => trim($this->paramCode),
+                'name' => trim($this->paramName),
+                'description' => trim($this->paramDescription),
+            ]);
+            $msg = "Parameter {$param->code} updated.";
+        } else {
+            $area = InstrumentArea::with('parameters')->findOrFail($this->activeAreaId);
+            $param = InstrumentParameter::create([
+                'instrument_area_id' => $area->id,
+                'code' => trim($this->paramCode),
+                'name' => trim($this->paramName),
+                'description' => trim($this->paramDescription),
+                'order' => $area->parameters->count() + 1,
+            ]);
+            $msg = "Custom parameter {$param->code} added.";
+        }
 
         AuditLog::create([
             'user_id' => Auth::id(),
-            'action' => "Dean added custom parameter {$param->code} ({$param->name}) for {$this->accreditation->program->name}",
+            'action' => "Dean configured parameter {$param->code} ({$param->name}) for {$this->accreditation->program->name}",
             'target_type' => 'InstrumentParameter',
             'target_id' => $param->id,
             'timestamp' => now(),
@@ -160,7 +180,46 @@ class InstrumentCustomization extends Component
 
         $this->activeParameterId = $param->id;
         $this->closeAddParameterModal();
-        $this->dispatch('swal', ['icon' => 'success', 'title' => 'Parameter Added', 'text' => "Custom parameter {$param->code} added."]);
+        $this->dispatch('swal', ['icon' => 'success', 'title' => 'Parameter Saved', 'text' => $msg]);
+    }
+
+    public function deleteParameter(int $paramId)
+    {
+        $param = InstrumentParameter::findOrFail($paramId);
+        $code = $param->code;
+        $param->delete();
+
+        AuditLog::create([
+            'user_id' => Auth::id(),
+            'action' => "Dean deleted parameter {$code} from {$this->accreditation->program->name}",
+            'target_type' => 'InstrumentParameter',
+            'target_id' => $paramId,
+            'timestamp' => now(),
+        ]);
+
+        if ($this->activeParameterId === $paramId) {
+            $area = InstrumentArea::with('parameters')->find($this->activeAreaId);
+            $this->activeParameterId = $area?->parameters->first()?->id;
+        }
+
+        $this->dispatch('swal', ['icon' => 'success', 'title' => 'Parameter Deleted', 'text' => "Parameter {$code} has been deleted."]);
+    }
+
+    public function deleteCriterion(int $criterionId)
+    {
+        $crit = InstrumentCriterion::findOrFail($criterionId);
+        $code = $crit->code;
+        $crit->delete();
+
+        AuditLog::create([
+            'user_id' => Auth::id(),
+            'action' => "Dean deleted criterion {$code} from {$this->accreditation->program->name}",
+            'target_type' => 'InstrumentCriterion',
+            'target_id' => $criterionId,
+            'timestamp' => now(),
+        ]);
+
+        $this->dispatch('swal', ['icon' => 'success', 'title' => 'Criterion Deleted', 'text' => "Criterion {$code} has been deleted."]);
     }
 
     // ── Add / Edit Criterion ─────────────────────────────────────────

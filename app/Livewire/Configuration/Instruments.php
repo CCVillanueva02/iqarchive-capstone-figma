@@ -19,6 +19,12 @@ class Instruments extends Component
 {
     use WithPagination;
 
+    // Scope: 'program' or 'institutional'
+    public string $accreditationScope = 'program'; // program, institutional
+
+    // Program Selector: null for Master Template Baseline, or specific Program ID
+    public ?int $selectedProgramId = null;
+
     // Active Instrument Category (Supporting Documents, Self-Survey, Compliance Reports)
     public string $activeCategory = 'supporting-docs'; // supporting-docs, self-survey, compliance-reports
 
@@ -44,6 +50,7 @@ class Instruments extends Component
     public string $templateVersion = '2026.1';
     public string $templateDescription = '';
     public ?int $sourceTemplateId = null;
+    public ?int $cloneTargetProgramId = null;
 
     // Form State: Area
     public ?int $editingAreaId = null;
@@ -75,24 +82,113 @@ class Instruments extends Component
     public string $deleteTargetTitle = '';
 
     protected $queryString = [
+        'accreditationScope' => ['except' => 'program'],
+        'selectedProgramId' => ['except' => null],
         'activeCategory' => ['except' => 'supporting-docs'],
     ];
 
     public function mount()
     {
         $user = Auth::user();
-        if (! $user || ! $user->hasRole(['iqa-staff', 'system-administrator', 'university-administrator'])) {
+        if (! $user || ! $user->hasRole(['iqa-staff', 'system-administrator', 'university-administrator', 'college-head'])) {
             abort(403, 'Unauthorized action.');
         }
 
-        $this->switchCategory($this->activeCategory);
+        if ($user->hasRole('college-head') && $user->college_id) {
+            $this->accreditationScope = 'program';
+            $firstProgram = \App\Models\Program::where('college_id', $user->college_id)->orderBy('name')->first();
+            if ($firstProgram && ! $this->selectedProgramId) {
+                $this->selectedProgramId = $firstProgram->id;
+            }
+        }
+
+        $this->resolveActiveInstrument();
+    }
+
+    public function switchScope(string $scope)
+    {
+        $user = Auth::user();
+        if ($user && $user->hasRole('college-head')) {
+            $this->accreditationScope = 'program';
+        } else {
+            $this->accreditationScope = in_array($scope, ['program', 'institutional']) ? $scope : 'program';
+        }
+
+        if ($this->accreditationScope === 'institutional') {
+            $this->selectedProgramId = null;
+        }
+        $this->resolveActiveInstrument();
+    }
+
+    public function selectProgram(?int $programId)
+    {
+        $this->selectedProgramId = $programId ?: null;
+        $this->resolveActiveInstrument();
+    }
+
+    public function clearProgramFilter()
+    {
+        $this->selectedProgramId = null;
+        $this->resolveActiveInstrument();
     }
 
     public function switchCategory(string $category)
     {
         $this->activeCategory = $category;
+        $this->resolveActiveInstrument();
+    }
 
-        $targetCode = match($category) {
+    public function resolveActiveInstrument()
+    {
+        // 1. If Institutional Scope
+        if ($this->accreditationScope === 'institutional') {
+            $targetCode = match($this->activeCategory) {
+                'supporting-docs' => 'INST-INST-SUPPORTING-DOCS',
+                'self-survey' => 'INST-INST-SELF-SURVEY',
+                'compliance-reports' => 'INST-INST-COMPLIANCE-REPORT',
+                default => 'INST-INST-SUPPORTING-DOCS',
+            };
+
+            $inst = Instrument::where('code', $targetCode)->first()
+                ?? Instrument::where('is_template', true)->where('accreditation_type', 'institutional')->first();
+
+            if ($inst) {
+                $this->selectInstrument($inst->id);
+            }
+            return;
+        }
+
+        // 2. If Program Scope with a Specific Program Selected
+        if ($this->selectedProgramId) {
+            $program = \App\Models\Program::find($this->selectedProgramId);
+            if ($program) {
+                // Check if program has a custom instrument for this category
+                $targetMasterCode = match($this->activeCategory) {
+                    'supporting-docs' => 'INST-PROG-SUPPORTING-DOCS',
+                    'self-survey' => 'INST-PROG-SELF-SURVEY',
+                    'compliance-reports' => 'INST-PROG-COMPLIANCE-REPORT',
+                    default => 'INST-PROG-SUPPORTING-DOCS',
+                };
+
+                $customInst = Instrument::where('program_id', $program->id)
+                    ->where('is_template', false)
+                    ->latest()
+                    ->first();
+
+                if ($customInst) {
+                    $this->selectInstrument($customInst->id);
+                } else {
+                    // Display none / empty state with Clone CTA
+                    $this->selectedInstrumentId = null;
+                    $this->activeAreaId = null;
+                    $this->activeParameterId = null;
+                }
+                return;
+            }
+        }
+
+        // 3. Program Scope Default Master Template
+        $targetCode = match($this->activeCategory) {
             'supporting-docs' => 'INST-PROG-SUPPORTING-DOCS',
             'self-survey' => 'INST-PROG-SELF-SURVEY',
             'compliance-reports' => 'INST-PROG-COMPLIANCE-REPORT',
@@ -100,11 +196,52 @@ class Instruments extends Component
         };
 
         $inst = Instrument::where('code', $targetCode)->first()
-            ?? Instrument::where('is_template', true)->first();
+            ?? Instrument::where('is_template', true)->where('accreditation_type', 'program')->first();
 
         if ($inst) {
             $this->selectInstrument($inst->id);
         }
+    }
+
+    public function cloneMasterForProgram()
+    {
+        if (! $this->selectedProgramId) {
+            return;
+        }
+
+        $program = \App\Models\Program::findOrFail($this->selectedProgramId);
+        $masterCode = match($this->activeCategory) {
+            'supporting-docs' => 'INST-PROG-SUPPORTING-DOCS',
+            'self-survey' => 'INST-PROG-SELF-SURVEY',
+            'compliance-reports' => 'INST-PROG-COMPLIANCE-REPORT',
+            default => 'INST-PROG-SUPPORTING-DOCS',
+        };
+
+        $master = Instrument::where('code', $masterCode)->first()
+            ?? Instrument::where('is_template', true)->where('accreditation_type', 'program')->first();
+
+        if (! $master) {
+            $this->dispatch('swal', ['icon' => 'error', 'title' => 'Error', 'text' => 'Master Template not found.']);
+            return;
+        }
+
+        $cloned = $master->cloneForProgram($program, null, Auth::user());
+
+        AuditLog::create([
+            'user_id' => Auth::id(),
+            'action' => "IQA Staff cloned Master Instrument for program {$program->name} ({$program->code})",
+            'target_type' => 'Instrument',
+            'target_id' => $cloned->id,
+            'timestamp' => now(),
+        ]);
+
+        $this->selectInstrument($cloned->id);
+
+        $this->dispatch('swal', [
+            'icon' => 'success',
+            'title' => 'Instrument Cloned!',
+            'text' => "Master Template successfully cloned for {$program->name}. You can now customize program-specific criteria."
+        ]);
     }
 
     public function selectInstrument(int $id)
@@ -211,8 +348,17 @@ class Instruments extends Component
     {
         $source = Instrument::findOrFail($sourceId);
         $this->sourceTemplateId = $source->id;
-        $this->templateName = "Copy of {$source->name}";
-        $this->templateCode = "{$source->code}-COPY-" . rand(10, 99);
+        $this->cloneTargetProgramId = $this->selectedProgramId;
+
+        if ($this->cloneTargetProgramId) {
+            $prog = \App\Models\Program::find($this->cloneTargetProgramId);
+            $this->templateName = "{$source->name} - " . ($prog ? $prog->name : 'Program');
+            $this->templateCode = ($prog ? "INST-{$prog->code}-" : "{$source->code}-") . strtoupper(str_replace(' ', '', $source->level ?? 'LVL')) . '-' . now()->year;
+        } else {
+            $this->templateName = "Copy of {$source->name}";
+            $this->templateCode = "{$source->code}-COPY-" . rand(10, 99);
+        }
+
         $this->templateLevel = $source->level ?? 'Level III';
         $this->templateType = $source->accreditation_type ?? 'program';
         $this->templateVersion = $source->version ?? '2026.1';
@@ -224,6 +370,7 @@ class Instruments extends Component
     {
         $this->showCloneTemplateModal = false;
         $this->sourceTemplateId = null;
+        $this->cloneTargetProgramId = null;
     }
 
     public function cloneTemplate()
@@ -234,15 +381,17 @@ class Instruments extends Component
         ]);
 
         $source = Instrument::with(['areas.parameters.criteria'])->findOrFail($this->sourceTemplateId);
+        $targetProgram = $this->cloneTargetProgramId ? \App\Models\Program::find($this->cloneTargetProgramId) : null;
 
-        $newInstrument = DB::transaction(function () use ($source) {
+        $newInstrument = DB::transaction(function () use ($source, $targetProgram) {
             $cloned = Instrument::create([
                 'name' => trim($this->templateName),
                 'code' => strtoupper(trim($this->templateCode)),
                 'level' => $this->templateLevel,
-                'accreditation_type' => $this->templateType,
+                'accreditation_type' => $targetProgram ? 'program' : $this->templateType,
+                'program_id' => $targetProgram?->id,
                 'version' => trim($this->templateVersion),
-                'is_template' => true,
+                'is_template' => $targetProgram ? false : true,
                 'status' => 'active',
                 'description' => trim($this->templateDescription),
                 'created_by' => Auth::id(),
@@ -287,19 +436,27 @@ class Instruments extends Component
 
         AuditLog::create([
             'user_id' => Auth::id(),
-            'action' => "Duplicated Master Template from {$source->name} to {$newInstrument->name}",
+            'action' => $targetProgram 
+                ? "Duplicated Instrument from {$source->name} to Program {$targetProgram->name}: {$newInstrument->name}"
+                : "Duplicated Master Template from {$source->name} to {$newInstrument->name}",
             'target_type' => 'Instrument',
             'target_id' => $newInstrument->id,
             'timestamp' => now(),
         ]);
+
+        if ($targetProgram) {
+            $this->selectedProgramId = $targetProgram->id;
+        }
 
         $this->closeCloneModal();
         $this->selectInstrument($newInstrument->id);
 
         $this->dispatch('swal', [
             'icon' => 'success',
-            'title' => 'Template Duplicated!',
-            'text' => "Successfully duplicated template with all areas, parameters, and criteria tags."
+            'title' => 'Instrument Duplicated!',
+            'text' => $targetProgram 
+                ? "Instrument duplicated specifically for {$targetProgram->name}." 
+                : "Template '{$newInstrument->name}' created successfully."
         ]);
     }
 
@@ -652,7 +809,24 @@ class Instruments extends Component
         $selectedParametersCount = $selectedInstrument ? $selectedInstrument->areas->sum(fn ($a) => $a->parameters->count()) : 0;
         $selectedCriteriaCount = $selectedInstrument ? $selectedInstrument->areas->sum(fn ($a) => $a->parameters->sum(fn ($p) => $p->criteria->count())) : 0;
 
+        $user = Auth::user();
+        if ($user && $user->hasRole('college-head') && $user->college_id) {
+            $colleges = \App\Models\College::where('id', $user->college_id)
+                ->with(['programs' => fn ($q) => $q->orderBy('name')])
+                ->get();
+        } else {
+            $colleges = \App\Models\College::with(['programs' => fn ($q) => $q->orderBy('name')])
+                ->orderBy('name')
+                ->get();
+        }
+
+        $selectedProgram = $this->selectedProgramId ? \App\Models\Program::with('college')->find($this->selectedProgramId) : null;
+
         return view('livewire.configuration.instruments', [
+            'accreditationScope' => $this->accreditationScope,
+            'selectedProgramId' => $this->selectedProgramId,
+            'selectedProgram' => $selectedProgram,
+            'colleges' => $colleges,
             'activeCategory' => $this->activeCategory,
             'selectedInstrument' => $selectedInstrument,
             'activeArea' => $activeArea,

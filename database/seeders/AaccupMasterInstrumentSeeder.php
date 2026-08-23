@@ -16,35 +16,24 @@ class AaccupMasterInstrumentSeeder extends Seeder
      */
     public function run(): void
     {
-        // 1. Clean up old mock/dummy instruments that do not have custom linked active accreditations
         $templateCodes = [
             'INST-PROG-SUPPORTING-DOCS',
             'INST-PROG-SELF-SURVEY',
             'INST-PROG-COMPLIANCE-REPORT',
+            'INST-INST-SUPPORTING-DOCS',
+            'INST-INST-SELF-SURVEY',
+            'INST-INST-COMPLIANCE-REPORT',
         ];
 
-        // Delete older dummy mock instruments from earlier development seeders
+        // Clean up older dummy mock instruments from earlier development seeders
         Instrument::where('is_template', true)
             ->whereNotIn('code', $templateCodes)
             ->delete();
 
         // ─────────────────────────────────────────────────────────────
-        // 1. PROGRAM ACCREDITATION: SUPPORTING DOCUMENTS MASTER INSTRUMENT
+        // 1. PROGRAM ACCREDITATION: 10 AREAS MASTER DATA
         // ─────────────────────────────────────────────────────────────
-        $supportingDocsMaster = Instrument::updateOrCreate(
-            ['code' => 'INST-PROG-SUPPORTING-DOCS'],
-            [
-                'name' => 'Program Supporting Documents Instrument (AACCUP)',
-                'level' => 'Level III',
-                'accreditation_type' => 'program',
-                'version' => '2026.1',
-                'status' => 'active',
-                'is_template' => true,
-                'description' => 'AACCUP 10-Area Supporting Documents benchmark criteria, parameter checklists, and evidence tag requirements for academic degree programs.',
-            ]
-        );
-
-        $areasData = [
+        $programAreasData = [
             [
                 'code' => 'Area I',
                 'name' => 'Vision, Mission, Goals, and Objectives',
@@ -277,13 +266,22 @@ class AaccupMasterInstrumentSeeder extends Seeder
             ]
         ];
 
-        // Seed Areas, Parameters, and Criteria for Supporting Documents
-        $this->seedInstrumentStructure($supportingDocsMaster, $areasData);
+        // Seed 3 Program Master Instruments
+        $progSupp = Instrument::updateOrCreate(
+            ['code' => 'INST-PROG-SUPPORTING-DOCS'],
+            [
+                'name' => 'Program Supporting Documents Instrument (AACCUP)',
+                'level' => 'Level III',
+                'accreditation_type' => 'program',
+                'version' => '2026.1',
+                'status' => 'active',
+                'is_template' => true,
+                'description' => 'AACCUP 10-Area Supporting Documents benchmark criteria, parameter checklists, and evidence tag requirements for academic degree programs.',
+            ]
+        );
+        $this->seedInstrumentStructure($progSupp, $programAreasData);
 
-        // ─────────────────────────────────────────────────────────────
-        // 2. PROGRAM ACCREDITATION: SELF-SURVEY MASTER INSTRUMENT
-        // ─────────────────────────────────────────────────────────────
-        $selfSurveyMaster = Instrument::updateOrCreate(
+        $progSurvey = Instrument::updateOrCreate(
             ['code' => 'INST-PROG-SELF-SURVEY'],
             [
                 'name' => 'Program Self-Survey Instrument (AACCUP)',
@@ -295,13 +293,9 @@ class AaccupMasterInstrumentSeeder extends Seeder
                 'description' => 'Internal QA self-evaluation spreadsheets, numerical rating matrix, and diagnostic compliance evaluations across Areas I–X.',
             ]
         );
+        $this->seedInstrumentStructure($progSurvey, $programAreasData);
 
-        $this->seedInstrumentStructure($selfSurveyMaster, $areasData);
-
-        // ─────────────────────────────────────────────────────────────
-        // 3. PROGRAM ACCREDITATION: COMPLIANCE REPORTS MASTER INSTRUMENT
-        // ─────────────────────────────────────────────────────────────
-        $complianceReportMaster = Instrument::updateOrCreate(
+        $progComp = Instrument::updateOrCreate(
             ['code' => 'INST-PROG-COMPLIANCE-REPORT'],
             [
                 'name' => 'Program Compliance Reports Instrument (AACCUP)',
@@ -313,8 +307,210 @@ class AaccupMasterInstrumentSeeder extends Seeder
                 'description' => 'Official compliance monitoring logs, AACCUP team recommendations, corrective action plans, and certificates of accreditation.',
             ]
         );
+        $this->seedInstrumentStructure($progComp, $programAreasData);
 
-        $this->seedInstrumentStructure($complianceReportMaster, $areasData);
+        // ─────────────────────────────────────────────────────────────
+        // 2. INSTITUTIONAL ACCREDITATION: 9 CORE AREAS MASTER DATA
+        // ─────────────────────────────────────────────────────────────
+        $instAreasData = [
+            [
+                'code' => 'Area I',
+                'name' => 'Governance and Management',
+                'order' => 1,
+                'weight' => 15.00,
+                'description' => 'University charter, BOR resolutions, strategic development plan, and executive management.',
+                'parameters' => [
+                    [
+                        'code' => 'Parameter A',
+                        'name' => 'Board of Regents & Strategic Direction',
+                        'order' => 1,
+                        'criteria' => [
+                            ['section' => 'systems', 'code' => 'S.1', 'statement' => 'The University operates under an approved 5-year Strategic Development Plan aligned with SUC levelling norms.', 'tags' => ['#StrategicPlan', '#BOR_Approval']],
+                            ['section' => 'implementation', 'code' => 'I.1', 'statement' => 'Management committees and academic councils convene regularly with verified minutes and action logs.', 'tags' => ['#CouncilMinutes', '#PolicyResolutions']],
+                        ]
+                    ]
+                ]
+            ],
+            [
+                'code' => 'Area II',
+                'name' => 'Teaching, Learning, and Evaluation',
+                'order' => 2,
+                'weight' => 20.00,
+                'description' => 'Institution-wide academic policies, enrollment trends, quality benchmarks, and graduation standards.',
+                'parameters' => [
+                    [
+                        'code' => 'Parameter A',
+                        'name' => 'Institutional Academic Integrity',
+                        'order' => 1,
+                        'criteria' => [
+                            ['section' => 'systems', 'code' => 'S.1', 'statement' => 'University-wide grading systems, retention policies, and graduation guidelines are standardized.', 'tags' => ['#AcademicManual', '#RegistrarPolicy']],
+                        ]
+                    ]
+                ]
+            ],
+            [
+                'code' => 'Area III',
+                'name' => 'Faculty and Staff Support',
+                'order' => 3,
+                'weight' => 15.00,
+                'description' => 'University-wide HR development, ranking promotions, wellness programs, and compensation systems.',
+                'parameters' => [
+                    [
+                        'code' => 'Parameter A',
+                        'name' => 'Institutional Human Resource Management',
+                        'order' => 1,
+                        'criteria' => [
+                            ['section' => 'systems', 'code' => 'S.1', 'statement' => 'The University maintains a comprehensive Human Resource Development Master Plan.', 'tags' => ['#HR_MasterPlan', '#StaffingPattern']],
+                        ]
+                    ]
+                ]
+            ],
+            [
+                'code' => 'Area IV',
+                'name' => 'Research and Development',
+                'order' => 4,
+                'weight' => 15.00,
+                'description' => 'University research institutes, external grants, patent commercialization, and IP protection.',
+                'parameters' => [
+                    [
+                        'code' => 'Parameter A',
+                        'name' => 'University Research Ecosystem',
+                        'order' => 1,
+                        'criteria' => [
+                            ['section' => 'systems', 'code' => 'S.1', 'statement' => 'Central R&D Centers coordinate multidisciplinary projects funded by DOST, CHED, and international partners.', 'tags' => ['#R&D_AnnualReport', '#ExternalGrantsLog']],
+                        ]
+                    ]
+                ]
+            ],
+            [
+                'code' => 'Area V',
+                'name' => 'Extension, Consultancy, and Linkages',
+                'order' => 5,
+                'weight' => 10.00,
+                'description' => 'University-wide community engagements, international university consortia, and LGU partnerships.',
+                'parameters' => [
+                    [
+                        'code' => 'Parameter A',
+                        'name' => 'Institutional Linkages and Global Consortia',
+                        'order' => 1,
+                        'criteria' => [
+                            ['section' => 'systems', 'code' => 'S.1', 'statement' => 'Active bilateral agreements and international consortia memberships expand institutional reach.', 'tags' => ['#International_MOA', '#GlobalConsortiaProof']],
+                        ]
+                    ]
+                ]
+            ],
+            [
+                'code' => 'Area VI',
+                'name' => 'Support to Students',
+                'order' => 6,
+                'weight' => 10.00,
+                'description' => 'University scholarship programs, dormitory services, medical-dental clinic, and campus security.',
+                'parameters' => [
+                    [
+                        'code' => 'Parameter A',
+                        'name' => 'Central Student Affairs & Services',
+                        'order' => 1,
+                        'criteria' => [
+                            ['section' => 'systems', 'code' => 'S.1', 'statement' => 'University-wide health, scholarship, student housing, and psychological welfare services are operational.', 'tags' => ['#OSAS_AnnualReport', '#HealthClinicCertificates']],
+                        ]
+                    ]
+                ]
+            ],
+            [
+                'code' => 'Area VII',
+                'name' => 'Library and Learning Resources',
+                'order' => 7,
+                'weight' => 5.00,
+                'description' => 'University Central Library system, campus digital network, and federated repository access.',
+                'parameters' => [
+                    [
+                        'code' => 'Parameter A',
+                        'name' => 'University Library System Network',
+                        'order' => 1,
+                        'criteria' => [
+                            ['section' => 'systems', 'code' => 'S.1', 'statement' => 'The University Library System centralizes electronic resources and automated inter-library loans.', 'tags' => ['#UniversityLibraryMasterPlan', '#DatabaseSubscriptions']],
+                        ]
+                    ]
+                ]
+            ],
+            [
+                'code' => 'Area VIII',
+                'name' => 'Infrastructure and Physical Facilities',
+                'order' => 8,
+                'weight' => 5.00,
+                'description' => 'Master campus development plan, disaster resilience, environmental sustainability, and green campus.',
+                'parameters' => [
+                    [
+                        'code' => 'Parameter A',
+                        'name' => 'Campus Land Use & Infrastructure Master Plan',
+                        'order' => 1,
+                        'criteria' => [
+                            ['section' => 'systems', 'code' => 'S.1', 'statement' => 'Approved Land Use Development and Infrastructure Plan (LUDIP) guides physical expansion.', 'tags' => ['#LUDIP_Document', '#GreenCampusPolicy']],
+                        ]
+                    ]
+                ]
+            ],
+            [
+                'code' => 'Area IX',
+                'name' => 'Quality Assurance System',
+                'order' => 9,
+                'weight' => 5.00,
+                'description' => 'Institutional Quality Assurance (IQA) governance, ISO 9001 certifications, and SUC level IV maintenance.',
+                'parameters' => [
+                    [
+                        'code' => 'Parameter A',
+                        'name' => 'IQA Office Operations & ISO Certification',
+                        'order' => 1,
+                        'criteria' => [
+                            ['section' => 'systems', 'code' => 'S.1', 'statement' => 'The University maintains active ISO 9001:2015 Quality Management System certification across all campuses.', 'tags' => ['#ISO_Certificate', '#InternalAuditSummary']],
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        // Seed 3 Institutional Master Instruments
+        $instSupp = Instrument::updateOrCreate(
+            ['code' => 'INST-INST-SUPPORTING-DOCS'],
+            [
+                'name' => 'Institutional Supporting Documents Instrument (AACCUP)',
+                'level' => 'Level IV',
+                'accreditation_type' => 'institutional',
+                'version' => '2026.1',
+                'status' => 'active',
+                'is_template' => true,
+                'description' => 'AACCUP 9-Area Institutional Accreditation Supporting Documents criteria, governance benchmarks, and university-wide evidence tags.',
+            ]
+        );
+        $this->seedInstrumentStructure($instSupp, $instAreasData);
+
+        $instSurvey = Instrument::updateOrCreate(
+            ['code' => 'INST-INST-SELF-SURVEY'],
+            [
+                'name' => 'Institutional Self-Survey Instrument (AACCUP)',
+                'level' => 'Level IV',
+                'accreditation_type' => 'institutional',
+                'version' => '2026.1',
+                'status' => 'active',
+                'is_template' => true,
+                'description' => 'Institutional self-evaluation spreadsheets, university diagnostic checklists, and SUC levelling rubrics.',
+            ]
+        );
+        $this->seedInstrumentStructure($instSurvey, $instAreasData);
+
+        $instComp = Instrument::updateOrCreate(
+            ['code' => 'INST-INST-COMPLIANCE-REPORT'],
+            [
+                'name' => 'Institutional Compliance Reports Instrument (AACCUP)',
+                'level' => 'Level IV',
+                'accreditation_type' => 'institutional',
+                'version' => '2026.1',
+                'status' => 'active',
+                'is_template' => true,
+                'description' => 'University-level compliance monitoring, institutional recommendations tracker, and CHED/AACCUP certificates.',
+            ]
+        );
+        $this->seedInstrumentStructure($instComp, $instAreasData);
     }
 
     private function seedInstrumentStructure(Instrument $instrument, array $areasData): void

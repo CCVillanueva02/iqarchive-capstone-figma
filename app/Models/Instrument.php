@@ -62,7 +62,7 @@ class Instrument extends Model
     /**
      * Deep clone this Instrument (Areas, Parameters, and Criteria) for a specific Program & Accreditation cycle.
      */
-    public function cloneForProgram(Program $program, Accreditation $accreditation, ?User $actor = null): self
+    public function cloneForProgram(Program $program, ?Accreditation $accreditation = null, ?User $actor = null): self
     {
         return DB::transaction(function () use ($program, $accreditation, $actor) {
             $clonedInstrument = self::create([
@@ -71,7 +71,7 @@ class Instrument extends Model
                 'level' => $this->level ?? $program->accreditation_level,
                 'accreditation_type' => $this->accreditation_type ?? 'program',
                 'program_id' => $program->id,
-                'accreditation_id' => $accreditation->id,
+                'accreditation_id' => $accreditation?->id,
                 'is_template' => false,
                 'version' => $this->version ?? '2026.1',
                 'status' => 'active',

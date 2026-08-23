@@ -1,6 +1,6 @@
 <div class="w-full lg:w-80 shrink-0 flex flex-col gap-4">
     <!-- Areas Section Header -->
-    <div class="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-3xs flex flex-col gap-3">
+    <div class="bg-white border border-slate-200/80 rounded-xl p-4 shadow-3xs flex flex-col gap-3">
         <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
                 <h2 class="text-body font-bold text-primary">Accreditation Areas</h2>

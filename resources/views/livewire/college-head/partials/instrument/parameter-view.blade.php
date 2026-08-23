@@ -17,15 +17,33 @@
                     $isParamSelected = ($activeParameterId === $param->id);
                     $cCount = $param->criteria->count();
                 @endphp
-                <button type="button"
-                    wire:click="selectParameter({{ $param->id }})"
-                    class="w-full text-left p-3 rounded-xl text-body-sm font-semibold flex flex-col gap-1 transition cursor-pointer relative {{ $isParamSelected ? 'bg-slate-100 text-primary border-l-4 border-primary pl-2.5 shadow-2xs font-bold' : 'text-zinc-600 hover:bg-slate-50 hover:text-primary pl-3.5 border-l-4 border-transparent' }}">
-                    <div class="flex items-center justify-between">
-                        <span class="font-extrabold text-primary text-label-xs uppercase tracking-wide">{{ $param->code }}</span>
-                        <span class="text-label-xs font-bold px-1.5 py-0.2 rounded bg-slate-200/80 text-zinc-600">{{ $cCount }}</span>
+                <div class="flex items-center justify-between p-2.5 rounded-lg border transition {{ $isParamSelected ? 'bg-slate-100 border-primary shadow-2xs' : 'border-slate-200 bg-white hover:border-slate-300' }}">
+                    <button type="button"
+                        wire:click="selectParameter({{ $param->id }})"
+                        class="flex-1 text-left min-w-0 cursor-pointer">
+                        <div class="flex items-center justify-between">
+                            <span class="font-bold text-primary text-label-xs uppercase tracking-wide">{{ $param->code }}</span>
+                            <span class="text-label-xs font-bold px-1.5 py-0.2 rounded bg-slate-200/80 text-zinc-600 mr-2">{{ $cCount }}</span>
+                        </div>
+                        <span class="text-body-sm leading-snug truncate block mt-0.5 text-zinc-800" title="{{ $param->name }}">{{ $param->name }}</span>
+                    </button>
+
+                    <div class="flex items-center gap-0.5 shrink-0">
+                        <button type="button"
+                            wire:click="openAddParameterModal({{ $param->id }})"
+                            class="p-1 rounded text-zinc-400 hover:text-primary hover:bg-slate-200 transition cursor-pointer"
+                            title="Edit Parameter">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                        </button>
+                        <button type="button"
+                            wire:click="deleteParameter({{ $param->id }})"
+                            wire:confirm="Are you sure you want to delete parameter {{ $param->code }}?"
+                            class="p-1 rounded text-zinc-400 hover:text-rose-600 hover:bg-rose-50 transition cursor-pointer"
+                            title="Delete Parameter">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
                     </div>
-                    <span class="text-body-sm leading-snug truncate block" title="{{ $param->name }}">{{ $param->name }}</span>
-                </button>
+                </div>
                 @empty
                 <div class="text-center py-6 text-label-xs text-zinc-400 font-medium">
                     No parameters in this area.
@@ -99,12 +117,21 @@
                         </div>
                     </div>
 
-                    <button type="button"
-                        wire:click="openAddCriterionModal({{ $crit->id }})"
-                        class="p-1.5 rounded-lg text-zinc-400 hover:text-primary hover:bg-white transition cursor-pointer"
-                        title="Edit Tag Requirements">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
-                    </button>
+                    <div class="flex items-center gap-1 shrink-0">
+                        <button type="button"
+                            wire:click="openAddCriterionModal({{ $crit->id }})"
+                            class="p-1.5 rounded-lg text-zinc-400 hover:text-primary hover:bg-white transition cursor-pointer"
+                            title="Edit Criterion">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                        </button>
+                        <button type="button"
+                            wire:click="deleteCriterion({{ $crit->id }})"
+                            wire:confirm="Are you sure you want to delete criterion {{ $crit->code }}?"
+                            class="p-1.5 rounded-lg text-zinc-400 hover:text-rose-600 hover:bg-rose-50 transition cursor-pointer"
+                            title="Delete Criterion">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Tags Badges -->

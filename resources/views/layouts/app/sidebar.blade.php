@@ -338,11 +338,12 @@
             @endif
 
             <!-- Configuration Section -->
-            @if (in_array($role, ['iqa-staff', 'system-administrator', 'university-administrator']))
+            @if (in_array($role, ['iqa-staff', 'system-administrator', 'university-administrator', 'college-head']))
             <div class="px-6 pt-3 pb-1">
                 <span class="text-label-xs font-bold uppercase tracking-[1.5px] text-white/40">Configuration</span>
             </div>
 
+            @if (in_array($role, ['iqa-staff', 'system-administrator', 'university-administrator']))
             <!-- Colleges & Programs -->
             <a href="{{ route('configuration.colleges-programs') }}" class="group flex items-center gap-3.5 px-6 py-3.5 border-l-4 text-body font-semibold transition-all {{ request()->routeIs('configuration.colleges-programs') ? 'bg-white/10 text-white border-l-brand-orange' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -351,8 +352,9 @@
                 </svg>
                 <span>Colleges &amp; Programs</span>
             </a>
+            @endif
 
-            <!-- Active Instruments Builder (Configuration Tab for IQA) -->
+            <!-- Active Instruments Builder (Configuration Tab for IQA & Deans) -->
             <a href="{{ route('configuration.instruments') }}" class="group flex items-center gap-3.5 px-6 py-3.5 border-l-4 text-body font-semibold transition-all {{ request()->routeIs('configuration.instruments*') ? 'bg-white/10 text-white border-l-brand-orange' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
