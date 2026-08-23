@@ -320,7 +320,7 @@
         @endif
 
         <!-- Configuration Section -->
-        @if (in_array($role, ['iqa-staff', 'system-administrator', 'university-administrator', 'college-head', 'task-force-member']))
+        @if (in_array($role, ['iqa-staff', 'system-administrator', 'university-administrator']))
         <div class="px-6 pt-3 pb-1">
             <span class="text-label-xs font-bold uppercase tracking-[1.5px] text-white/40">Configuration</span>
         </div>
