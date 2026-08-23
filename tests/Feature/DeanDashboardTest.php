@@ -112,7 +112,6 @@ test('dean can propose task force members and notify iqa', function () {
         ->call('openProposeModal', $accreditation->id)
         ->set('newName', 'Dr. Maria Santos')
         ->set('newEmail', 'maria.santos@bicol-u.edu.ph')
-        ->set('newRole', 'Area Chair')
         ->set('newPhone', '09123456789')
         ->call('addMember')
         ->assertCount('proposedMembers', 1)

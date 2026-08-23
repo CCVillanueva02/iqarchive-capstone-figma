@@ -90,12 +90,12 @@
                     </td>
                     <td class="py-3.5 px-4 text-right">
                         @if($latestAcc)
-                        <flux:button 
-                            size="xs" 
-                            variant="primary" 
-                            wire:click="openTimeline({{ $latestAcc->id }})">
+                        <button 
+                            type="button" 
+                            wire:click="openTimeline({{ $latestAcc->id }})"
+                            class="px-3 py-1.5 rounded-lg text-label-xs font-bold bg-primary hover:bg-primary-hover text-white transition-colors cursor-pointer shadow-xs">
                             View Timeline
-                        </flux:button>
+                        </button>
                         @endif
                     </td>
                 </tr>

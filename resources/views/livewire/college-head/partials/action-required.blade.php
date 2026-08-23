@@ -28,34 +28,34 @@
             <div class="absolute top-0 left-0 w-1.5 h-full bg-brand-orange"></div>
             
             <div class="space-y-3">
-                <div class="flex items-start justify-between gap-2">
-                    <div>
-                        <span class="text-label-xs font-bold text-brand-orange uppercase tracking-wider block">
-                            Stage 2 · Task Force Nomination
-                        </span>
-                        <h3 class="text-body font-bold text-primary-dark mt-0.5">
-                            {{ $acc->program->name }}
-                        </h3>
-                    </div>
-                    <span class="text-label-xs font-mono font-bold px-2 py-0.5 rounded bg-primary/10 text-primary shrink-0">
-                        {{ $acc->program->code }}
+                <div>
+                    <span class="text-label-xs font-bold text-brand-orange uppercase tracking-wider block">
+                        Stage 2 · Task Force Nomination
                     </span>
-                </div>
-
-                <div class="text-body-sm text-slate-600 bg-surface-subtle p-3 rounded-xl border border-slate-200/60 space-y-1">
-                    <div class="flex justify-between text-label-xs">
-                        <span class="text-slate-500">Target Survey Date:</span>
-                        <span class="font-bold text-primary-dark">{{ $acc->target_date ? $acc->target_date->format('M d, Y') : 'TBD' }}</span>
-                    </div>
-                    <div class="flex justify-between text-label-xs">
-                        <span class="text-slate-500">Initiated By:</span>
-                        <span class="font-medium text-slate-700">{{ $acc->creator?->name ?? 'IQA Office' }}</span>
-                    </div>
+                    <h3 class="text-body font-bold text-primary-dark mt-0.5">
+                        {{ $acc->program->name }}
+                    </h3>
                 </div>
 
                 <p class="text-body-sm text-slate-600 leading-relaxed">
-                    Please propose faculty members and assign area chairs to lead the accreditation self-survey for this degree program.
+                    Please assign task force to this degree program's upcoming accreditation.
                 </p>
+
+                <!-- Clean Metadata Chips -->
+                <div class="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-label-xs text-slate-500 pt-2 border-t border-slate-100">
+                    <div class="flex items-center gap-1.5 font-medium">
+                        <svg class="w-4 h-4 text-brand-orange shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <span>Target: <strong class="text-primary-dark font-bold">{{ $acc->target_date ? $acc->target_date->format('M d, Y') : 'TBD' }}</strong></span>
+                    </div>
+                    <div class="flex items-center gap-1.5 font-medium">
+                        <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        <span>Initiated by <strong class="text-slate-700 font-semibold">{{ $acc->creator?->name ?? 'IQA Office' }}</strong></span>
+                    </div>
+                </div>
             </div>
 
             <div class="mt-4 pt-3 border-t border-slate-200/60 flex items-center justify-between gap-2">
@@ -69,12 +69,12 @@
                     <span>View Lifecycle</span>
                 </button>
 
-                <flux:button 
-                    size="sm" 
-                    variant="primary" 
-                    wire:click="openProposeModal({{ $acc->id }})">
-                    Propose Task Force
-                </flux:button>
+                <button 
+                    type="button" 
+                    wire:click="openProposeModal({{ $acc->id }})"
+                    class="px-3.5 py-2 rounded-xl text-body-sm font-bold bg-brand-orange hover:bg-brand-orange-hover text-white transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs">
+                    <span>Assign Task Force</span>
+                </button>
             </div>
         </div>
         @endforeach
@@ -85,34 +85,34 @@
             <div class="absolute top-0 left-0 w-1.5 h-full bg-indigo-600"></div>
             
             <div class="space-y-3">
-                <div class="flex items-start justify-between gap-2">
-                    <div>
-                        <span class="text-label-xs font-bold text-indigo-700 uppercase tracking-wider block">
-                            Stage 6 · Two-Stage Dean Verification
-                        </span>
-                        <h3 class="text-body font-bold text-primary-dark mt-0.5">
-                            {{ $acc->program->name }}
-                        </h3>
-                    </div>
-                    <span class="text-label-xs font-mono font-bold px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 shrink-0">
-                        {{ $acc->program->code }}
+                <div>
+                    <span class="text-label-xs font-bold text-indigo-700 uppercase tracking-wider block">
+                        Stage 6 · Two-Stage Dean Verification
                     </span>
-                </div>
-
-                <div class="text-body-sm text-slate-600 bg-surface-subtle p-3 rounded-xl border border-slate-200/60 space-y-1">
-                    <div class="flex justify-between text-label-xs">
-                        <span class="text-slate-500">Mobilized Task Force:</span>
-                        <span class="font-bold text-primary-dark">{{ $acc->taskForce?->name ?? 'Program Task Force' }}</span>
-                    </div>
-                    <div class="flex justify-between text-label-xs">
-                        <span class="text-slate-500">Target Survey Date:</span>
-                        <span class="font-bold text-primary-dark">{{ $acc->target_date ? $acc->target_date->format('M d, Y') : 'TBD' }}</span>
-                    </div>
+                    <h3 class="text-body font-bold text-primary-dark mt-0.5">
+                        {{ $acc->program->name }}
+                    </h3>
                 </div>
 
                 <p class="text-body-sm text-slate-600 leading-relaxed">
                     Task Force completed evidence upload. Perform Stage 1 technical check and Stage 2 completeness verification.
                 </p>
+
+                <!-- Clean Metadata Chips -->
+                <div class="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-label-xs text-slate-500 pt-2 border-t border-slate-100">
+                    <div class="flex items-center gap-1.5 font-medium">
+                        <svg class="w-4 h-4 text-indigo-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <span>Team: <strong class="text-primary-dark font-bold">{{ $acc->taskForce?->name ?? 'Program Task Force' }}</strong></span>
+                    </div>
+                    <div class="flex items-center gap-1.5 font-medium">
+                        <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        <span>Target: <strong class="text-slate-700 font-semibold">{{ $acc->target_date ? $acc->target_date->format('M d, Y') : 'TBD' }}</strong></span>
+                    </div>
+                </div>
             </div>
 
             <div class="mt-4 pt-3 border-t border-slate-200/60 flex items-center justify-between gap-2">
@@ -126,12 +126,12 @@
                     <span>View Lifecycle</span>
                 </button>
 
-                <flux:button 
-                    size="sm" 
-                    variant="primary" 
-                    wire:click="openTimeline({{ $acc->id }})">
-                    Start Verification
-                </flux:button>
+                <button 
+                    type="button" 
+                    wire:click="openTimeline({{ $acc->id }})"
+                    class="px-3.5 py-2 rounded-xl text-body-sm font-bold bg-primary hover:bg-primary-hover text-white transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs">
+                    <span>Start Verification</span>
+                </button>
             </div>
         </div>
         @endforeach

@@ -167,3 +167,19 @@ ui-modal * {
     scrollbar-width: none !important;
 }
 
+/* Force Flux primary buttons to match IQArchive design system palette */
+[data-flux-button][data-variant="primary"],
+button[data-flux-button][data-variant="primary"],
+ui-button[data-variant="primary"] {
+    background-color: var(--color-primary) !important;
+    color: #ffffff !important;
+    border-color: var(--color-primary) !important;
+}
+
+[data-flux-button][data-variant="primary"]:hover,
+button[data-flux-button][data-variant="primary"]:hover,
+ui-button[data-variant="primary"]:hover {
+    background-color: var(--color-primary-hover) !important;
+    border-color: var(--color-primary-hover) !important;
+}
+

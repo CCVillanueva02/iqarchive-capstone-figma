@@ -29,7 +29,6 @@ class Dashboard extends Component
     // Task Force Nomination Form State
     public $newName = '';
     public $newEmail = '';
-    public $newRole = 'Area Chair';
     public $newPhone = '';
     public $proposedMembers = [];
 
@@ -438,15 +437,14 @@ class Dashboard extends Component
     {
         $this->selectedAccreditationId = $accreditationId;
         $this->proposedMembers = [];
-        $this->reset(['newName', 'newEmail', 'newPhone', 'newRole']);
-        $this->newRole = 'Area Chair';
+        $this->reset(['newName', 'newEmail', 'newPhone']);
         $this->showProposeModal = true;
     }
 
     public function closeProposeModal()
     {
         $this->showProposeModal = false;
-        $this->reset(['selectedAccreditationId', 'proposedMembers', 'newName', 'newEmail', 'newPhone', 'newRole']);
+        $this->reset(['selectedAccreditationId', 'proposedMembers', 'newName', 'newEmail', 'newPhone']);
     }
 
     public function addMember()
@@ -454,24 +452,20 @@ class Dashboard extends Component
         $this->validate([
             'newName' => 'required|string|max:255',
             'newEmail' => 'required|email|max:255',
-            'newRole' => 'required|string|max:100',
             'newPhone' => 'nullable|string|max:30',
         ], [
             'newName.required' => 'Faculty member full name is required.',
             'newEmail.required' => 'A valid institutional email is required.',
             'newEmail.email' => 'Please provide a valid email format.',
-            'newRole.required' => 'Designation role is required.',
         ]);
 
         $this->proposedMembers[] = [
             'name' => trim($this->newName),
             'email' => trim($this->newEmail),
-            'role' => trim($this->newRole),
             'phone' => trim($this->newPhone),
         ];
 
         $this->reset(['newName', 'newEmail', 'newPhone']);
-        $this->newRole = 'Area Chair';
     }
 
     public function removeMember($index)
