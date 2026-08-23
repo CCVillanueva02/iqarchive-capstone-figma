@@ -8,9 +8,11 @@ use App\Models\Notification;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
 
+#[Title('Accreditation Visits')]
 class VisitsIndex extends Component
 {
     use WithPagination;
@@ -135,8 +137,8 @@ class VisitsIndex extends Component
 
         $currentStatus = $acc->status ?? 'scheduled';
         $isCancelled = $currentStatus === 'cancelled';
-        $hasTaskForce = (bool) $acc->task_force_id;
-        $isTfActive = $hasTaskForce && ($acc->taskForce?->status === 'active');
+        $hasProposedMembers = ! empty($acc->proposed_members);
+        $hasAssignedTaskForce = (bool) $acc->task_force_id && ($acc->taskForce?->status === 'active');
 
         $statusRanks = [
             'scheduled' => 1,
@@ -153,6 +155,109 @@ class VisitsIndex extends Component
         ];
 
         $currentRank = $statusRanks[$currentStatus] ?? 1;
+
+        // STAGE 1: Always completed once visit is initialized
+        $stage1Status = 'completed';
+        $stage1Meta = 'Initiated by ' . ($acc->creator?->name ?? 'IQA Staff');
+
+        // STAGE 2: Task Force Nomination (Dean)
+        // Can ONLY be completed if stage 1 is completed AND ($currentRank >= 2 || $hasProposedMembers)
+        // If stage 1 is completed but stage 2 is NOT completed -> stage 2 is in_progress
+        $stage2Status = 'pending';
+        $stage2Meta = 'Awaiting Dean nomination';
+        if ($isCancelled) {
+            $stage2Status = 'cancelled';
+            $stage2Meta = 'Cancelled';
+        } elseif ($currentRank >= 2 || $hasProposedMembers) {
+            $stage2Status = 'completed';
+            $count = is_array($acc->proposed_members) ? count($acc->proposed_members) : 0;
+            $stage2Meta = $count > 0 ? "Nominated {$count} faculty members" : 'Nomination submitted by Dean';
+        } else {
+            $stage2Status = 'in_progress';
+            $stage2Meta = 'Awaiting Dean nomination';
+        }
+
+        // STAGE 3: Task Force Official Assignment (IQA)
+        // Can ONLY be active or completed IF STAGE 2 IS COMPLETED!
+        $stage3Status = 'pending';
+        $stage3Meta = 'Awaiting Task Force nomination';
+        if ($isCancelled) {
+            $stage3Status = 'cancelled';
+            $stage3Meta = 'Cancelled';
+        } elseif ($stage2Status === 'completed') {
+            if ($currentRank >= 3 || $hasAssignedTaskForce) {
+                $stage3Status = 'completed';
+                $stage3Meta = $acc->taskForce ? ('Roster assigned: ' . $acc->taskForce->name) : 'Roster officially assigned';
+            } elseif ($currentRank === 2 || $hasProposedMembers) {
+                $stage3Status = 'in_progress';
+                $stage3Meta = 'Pending IQA roster review & assignment';
+            }
+        }
+
+        // STAGE 4: Instrument Template Customization (Dean & Task Force)
+        // Can ONLY be active or completed IF STAGE 3 IS COMPLETED!
+        $stage4Status = 'pending';
+        $stage4Meta = 'Pending previous stages';
+        if ($isCancelled) {
+            $stage4Status = 'cancelled';
+            $stage4Meta = 'Cancelled';
+        } elseif ($stage3Status === 'completed') {
+            if ($currentRank > 4) {
+                $stage4Status = 'completed';
+                $stage4Meta = 'Template configured';
+            } elseif ($currentRank === 4 || $currentRank === 3) {
+                $stage4Status = 'in_progress';
+                $stage4Meta = 'Template tailoring active';
+            }
+        }
+
+        // STAGE 5: Document Upload & Evidence Gathering (Task Force Members)
+        // Can ONLY be active or completed IF STAGE 4 IS COMPLETED!
+        $stage5Status = 'pending';
+        $stage5Meta = 'Locked';
+        if ($isCancelled) {
+            $stage5Status = 'cancelled';
+            $stage5Meta = 'Cancelled';
+        } elseif ($stage4Status === 'completed') {
+            if ($currentRank > 5) {
+                $stage5Status = 'completed';
+                $stage5Meta = 'Evidence submitted';
+            } elseif ($currentRank === 5) {
+                $stage5Status = 'in_progress';
+                $stage5Meta = 'Evidence repository open for uploads';
+            }
+        }
+
+        // STAGE 6: Two-Stage Dean Verification (College Dean)
+        // Can ONLY be active or completed IF STAGE 5 IS COMPLETED!
+        $stage6Status = 'pending';
+        $stage6Meta = 'Awaiting evidence submission';
+        if ($isCancelled) {
+            $stage6Status = 'cancelled';
+            $stage6Meta = 'Cancelled';
+        } elseif ($stage5Status === 'completed') {
+            if ($currentRank > 6) {
+                $stage6Status = 'completed';
+                $stage6Meta = 'Verified by College Dean';
+            } elseif ($currentRank === 6) {
+                $stage6Status = 'in_progress';
+                $stage6Meta = 'Dean verification active';
+            }
+        }
+
+        // STAGE 7: Accreditation Submission & Review (IQA & Accreditors)
+        // Can ONLY be active or completed IF STAGE 6 IS COMPLETED!
+        $stage7Status = 'pending';
+        $stage7Meta = 'Awaiting final handover';
+        if ($isCancelled) {
+            $stage7Status = 'cancelled';
+            $stage7Meta = 'Cancelled';
+        } elseif ($stage6Status === 'completed') {
+            if ($currentRank >= 7) {
+                $stage7Status = ($currentStatus === 'completed') ? 'completed' : 'in_progress';
+                $stage7Meta = ($currentStatus === 'completed') ? 'Accreditation cycle completed' : 'Under review by IQA & Board';
+            }
+        }
 
         return [
             [
@@ -171,9 +276,9 @@ class VisitsIndex extends Component
                 'actor' => 'College Dean',
                 'actor_badge' => 'dean',
                 'description' => 'College Dean nominates faculty members for the Program Accreditation Task Force.',
-                'status' => $isCancelled ? 'cancelled' : ($hasTaskForce ? 'completed' : ($currentRank === 1 ? 'in_progress' : 'pending')),
-                'timestamp' => $acc->taskForce?->created_at ? $acc->taskForce->created_at->format('M d, Y · h:i A') : null,
-                'meta' => $hasTaskForce ? ('Task Force: ' . $acc->taskForce->name) : ($isCancelled ? 'Cancelled' : 'Awaiting nomination'),
+                'status' => $stage2Status,
+                'timestamp' => ($stage2Status === 'completed' && $acc->updated_at) ? $acc->updated_at->format('M d, Y · h:i A') : null,
+                'meta' => $stage2Meta,
             ],
             [
                 'step' => 3,
@@ -181,9 +286,9 @@ class VisitsIndex extends Component
                 'actor' => 'IQA Office',
                 'actor_badge' => 'iqa',
                 'description' => 'IQA reviews and formalizes the roster with the Dean assigned as Task Force Lead.',
-                'status' => $isCancelled ? 'cancelled' : ($isTfActive ? 'completed' : ($hasTaskForce && ! $isTfActive ? 'in_progress' : ($currentRank >= 3 ? 'completed' : 'pending'))),
-                'timestamp' => $isTfActive ? $acc->taskForce->updated_at->format('M d, Y · h:i A') : null,
-                'meta' => $isTfActive ? 'Roster officially assigned' : ($isCancelled ? 'Cancelled' : 'Pending IQA verification'),
+                'status' => $stage3Status,
+                'timestamp' => ($stage3Status === 'completed' && $acc->taskForce?->updated_at) ? $acc->taskForce->updated_at->format('M d, Y · h:i A') : null,
+                'meta' => $stage3Meta,
             ],
             [
                 'step' => 4,
@@ -191,9 +296,9 @@ class VisitsIndex extends Component
                 'actor' => 'Dean & Task Force',
                 'actor_badge' => 'dean',
                 'description' => 'AACCUP instrument template is tailored in the UI Builder with program-specific parameters.',
-                'status' => $isCancelled ? 'cancelled' : ($currentRank > 4 ? 'completed' : ($currentRank === 4 ? 'in_progress' : 'pending')),
+                'status' => $stage4Status,
                 'timestamp' => null,
-                'meta' => $currentRank >= 4 ? 'Template configured' : ($isCancelled ? 'Cancelled' : 'Pending previous stages'),
+                'meta' => $stage4Meta,
             ],
             [
                 'step' => 5,
@@ -201,9 +306,9 @@ class VisitsIndex extends Component
                 'actor' => 'Task Force Members',
                 'actor_badge' => 'task_force',
                 'description' => 'Assigned Task Force members upload required artifacts and compliance proofs to the area repository.',
-                'status' => $isCancelled ? 'cancelled' : ($currentRank > 5 ? 'completed' : ($currentRank === 5 ? 'in_progress' : 'pending')),
+                'status' => $stage5Status,
                 'timestamp' => null,
-                'meta' => $currentRank >= 5 ? 'Evidence repository unlocked' : ($isCancelled ? 'Cancelled' : 'Locked'),
+                'meta' => $stage5Meta,
             ],
             [
                 'step' => 6,
@@ -211,9 +316,9 @@ class VisitsIndex extends Component
                 'actor' => 'College Dean',
                 'actor_badge' => 'dean',
                 'description' => 'Two-tier validation: Stage 1 error checking followed by Stage 2 completeness review.',
-                'status' => $isCancelled ? 'cancelled' : ($currentRank > 6 ? 'completed' : ($currentRank === 6 ? 'in_progress' : 'pending')),
+                'status' => $stage6Status,
                 'timestamp' => null,
-                'meta' => $currentRank >= 6 ? 'Verification active' : ($isCancelled ? 'Cancelled' : 'Awaiting evidence submission'),
+                'meta' => $stage6Meta,
             ],
             [
                 'step' => 7,
@@ -221,9 +326,9 @@ class VisitsIndex extends Component
                 'actor' => 'IQA & Accreditors',
                 'actor_badge' => 'iqa',
                 'description' => 'Final accredited package handed over to IQA Office for official technical review and board action.',
-                'status' => $isCancelled ? 'cancelled' : ($currentRank >= 7 ? 'completed' : 'pending'),
+                'status' => $stage7Status,
                 'timestamp' => null,
-                'meta' => $currentRank >= 7 ? 'Submitted to IQA' : ($isCancelled ? 'Cancelled' : 'Awaiting final handover'),
+                'meta' => $stage7Meta,
             ],
         ];
     }
@@ -290,6 +395,6 @@ class VisitsIndex extends Component
             'completedCount' => $completedCount,
             'selectedAccreditation' => $this->selectedAccreditation,
             'timelineStages' => $this->timelineStages,
-        ])->title('Accreditation Visits');
+        ]);
     }
 }

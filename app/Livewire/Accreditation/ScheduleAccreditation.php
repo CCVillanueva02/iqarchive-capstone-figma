@@ -102,26 +102,10 @@ class ScheduleAccreditation extends Component
 
         $program = Program::with('college')->findOrFail($this->program_id);
 
-        // 1. Generate Task Force name and handle potential uniqueness collision
-        $tfName = $program->code . ' Accreditation ' . date('Y');
-        if (TaskForce::where('name', $tfName)->exists()) {
-            $tfName .= ' (' . substr(uniqid(), -4) . ')';
-        }
-
-        // 2. Create Task Force container entity
-        $taskForce = TaskForce::create([
-            'name' => $tfName,
-            'college_id' => $program->college_id,
-            'program_id' => $program->id,
-            'purpose' => "Accreditation Preparation for {$program->name}",
-            'status' => 'active',
-            'created_by' => $user->id,
-        ]);
-
-        // 3. Create Accreditation Visit record
+        // 1. Create Accreditation Visit record in scheduled state
         $accreditation = Accreditation::create([
             'program_id' => $program->id,
-            'task_force_id' => $taskForce->id,
+            'task_force_id' => null,
             'status' => 'scheduled',
             'target_date' => $this->target_date,
             'created_by' => $user->id,

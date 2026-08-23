@@ -15,16 +15,12 @@
             </div>
         </div>
 
-        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-label-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 self-start sm:self-auto shrink-0">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-            Active Degree Program
-        </span>
     </div>
 
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3">
         <!-- Campus Designation -->
         <div class="bg-white p-3 rounded-xl border border-slate-200/70">
-            <span class="text-label-xs font-bold uppercase tracking-wider text-slate-400 block">Campus Designation</span>
+            <span class="text-label-xs font-bold uppercase tracking-wider text-slate-400 block">Campus</span>
             <span class="text-body-sm font-bold text-slate-800 block mt-0.5">
                 {{ $selectedProgram->college->campus ?? 'Main Campus' }}
             </span>
@@ -43,7 +39,6 @@
             <span class="text-label-xs font-bold uppercase tracking-wider text-slate-400 block">College Dean</span>
             @if($selectedCollegeDean)
             <div class="flex items-center gap-1.5 mt-0.5">
-                <span class="w-2 h-2 rounded-full bg-green-500 shrink-0"></span>
                 <span class="text-body-sm font-bold text-primary-dark truncate">
                     {{ $selectedCollegeDean->name }}
                 </span>

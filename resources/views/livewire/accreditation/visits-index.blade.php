@@ -39,7 +39,7 @@
             <span class="text-label-xs font-bold uppercase tracking-wider text-slate-400">Filter Stage:</span>
             <flux:select wire:model.live="statusFilter" size="sm" class="min-w-40">
                 <flux:select.option value="all">All Stages</flux:select.option>
-                <flux:select.option value="scheduled">Scheduled / TF Setup</flux:select.option>
+                <flux:select.option value="scheduled">Scheduled</flux:select.option>
                 <flux:select.option value="in_progress">In Active Preparation</flux:select.option>
                 <flux:select.option value="completed">Completed / Submitted</flux:select.option>
                 <flux:select.option value="cancelled">Cancelled</flux:select.option>

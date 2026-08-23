@@ -1,13 +1,13 @@
 <?php
 
 use App\Livewire\Accreditation\ScheduleAccreditation;
+use App\Livewire\Accreditation\VisitsIndex;
 use App\Models\Accreditation;
 use App\Models\AuditLog;
 use App\Models\College;
 use App\Models\Notification;
 use App\Models\Program;
 use App\Models\Role;
-use App\Models\TaskForce;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
@@ -21,7 +21,7 @@ beforeEach(function () {
     Role::firstOrCreate(['role_name' => 'accreditor'], ['description' => 'Accreditor']);
 });
 
-test('iqa staff can schedule an accreditation visit with program preview and task force setup', function () {
+test('iqa staff can schedule an accreditation visit with program preview and dean notification', function () {
     $iqaRole = Role::where('role_name', 'iqa-staff')->first();
     $iqaUser = User::factory()->create(['role_id' => $iqaRole->id]);
 
@@ -61,13 +61,6 @@ test('iqa staff can schedule an accreditation visit with program preview and tas
         'created_by' => $iqaUser->id,
     ]);
 
-    $this->assertDatabaseHas('task_forces', [
-        'college_id' => $college->id,
-        'program_id' => $program->id,
-        'status' => 'active',
-        'created_by' => $iqaUser->id,
-    ]);
-
     $this->assertDatabaseHas('audit_logs', [
         'user_id' => $iqaUser->id,
         'target_type' => 'Accreditation',
@@ -77,6 +70,30 @@ test('iqa staff can schedule an accreditation visit with program preview and tas
         'user_id' => $dean->id,
         'type' => 'accreditation_scheduled',
     ]);
+
+    // Check Timeline Stages in VisitsIndex
+    $accreditation = Accreditation::first();
+    $visitsComponent = Livewire::actingAs($iqaUser)
+        ->test(VisitsIndex::class)
+        ->call('openTimeline', $accreditation->id);
+
+    $stages = $visitsComponent->get('timelineStages');
+
+    // Step 1 should be completed
+    expect($stages[0]['step'])->toBe(1);
+    expect($stages[0]['status'])->toBe('completed');
+
+    // Step 2 (Task Force Nomination) should be in_progress
+    expect($stages[1]['step'])->toBe(2);
+    expect($stages[1]['status'])->toBe('in_progress');
+
+    // Step 3 (Task Force Official Assignment) should be pending
+    expect($stages[2]['step'])->toBe(3);
+    expect($stages[2]['status'])->toBe('pending');
+
+    // Step 4 (Instrument Customization) should be pending
+    expect($stages[3]['step'])->toBe(4);
+    expect($stages[3]['status'])->toBe('pending');
 });
 
 test('unauthorized user cannot record an accreditation visit', function () {

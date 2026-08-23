@@ -126,11 +126,14 @@ select:focus[data-flux-control] {
     background-color: var(--color-scrollbar-thumb-hover);
 }
 
-/* Hide scrollbars for sidebar & no-scrollbar elements */
+/* Hide scrollbars for sidebar, modals & no-scrollbar elements */
 .no-scrollbar,
 .scrollbar-none,
 [data-flux-sidebar],
-ui-sidebar {
+ui-sidebar,
+[data-flux-modal],
+dialog,
+ui-modal {
     -ms-overflow-style: none !important;
     scrollbar-width: none !important;
 }
@@ -141,7 +144,13 @@ ui-sidebar {
 ui-sidebar::-webkit-scrollbar,
 [data-flux-sidebar] ::-webkit-scrollbar,
 ui-sidebar ::-webkit-scrollbar,
-.no-scrollbar ::-webkit-scrollbar {
+.no-scrollbar ::-webkit-scrollbar,
+[data-flux-modal]::-webkit-scrollbar,
+[data-flux-modal] ::-webkit-scrollbar,
+dialog::-webkit-scrollbar,
+dialog ::-webkit-scrollbar,
+ui-modal::-webkit-scrollbar,
+ui-modal ::-webkit-scrollbar {
     display: none !important;
     width: 0 !important;
     height: 0 !important;
@@ -150,7 +159,10 @@ ui-sidebar ::-webkit-scrollbar,
 .no-scrollbar *,
 .scrollbar-none *,
 [data-flux-sidebar] *,
-ui-sidebar * {
+ui-sidebar *,
+[data-flux-modal] *,
+dialog *,
+ui-modal * {
     -ms-overflow-style: none !important;
     scrollbar-width: none !important;
 }

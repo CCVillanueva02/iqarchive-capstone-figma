@@ -1,4 +1,4 @@
-<flux:modal wire:model="showTimelineModal" class="max-w-3xl md:min-w-3xl" @close="closeTimeline">
+<flux:modal wire:model="showTimelineModal" class="max-w-3xl md:min-w-3xl no-scrollbar scrollbar-none" @close="closeTimeline">
     @if($selectedAccreditation)
     <div class="space-y-6">
         <!-- Header & Program Summary -->
@@ -57,35 +57,36 @@
                 </h4>
             </div>
 
-            <div class="relative pl-6 space-y-6 before:absolute before:left-2.75 before:top-2.5 before:bottom-2.5 before:w-0.5 before:bg-slate-200">
+            <div class="space-y-3">
                 @foreach($timelineStages as $stage)
                 @php
+                $isLast = $loop->last;
                 $isCompleted = $stage['status'] === 'completed';
                 $isInProgress = $stage['status'] === 'in_progress';
                 $isCancelledStage = $stage['status'] === 'cancelled';
                 $isPending = $stage['status'] === 'pending';
                 @endphp
-                <div class="relative flex items-start gap-4">
-                    <!-- Stage Node Indicator -->
-                    <div class="absolute -left-6 mt-0.5">
-                        @if($isCompleted)
-                        <div class="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center ring-4 ring-white shadow-xs">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="flex items-stretch gap-4">
+                    <!-- Track & Node Column (Exact Center Alignment) -->
+                    <div class="flex flex-col items-center shrink-0 w-7">
+                        <!-- Node Circle -->
+                        <div class="flex items-center justify-center w-7 h-7 rounded-full shrink-0 {{ $isCompleted ? 'bg-emerald-600 text-white shadow-xs' : ($isInProgress ? 'bg-brand-orange text-white ring-4 ring-brand-orange/20 shadow-xs animate-pulse' : ($isCancelledStage ? 'bg-rose-100 border-2 border-rose-300 text-rose-500' : 'bg-slate-100 border-2 border-slate-300 text-slate-400')) }}">
+                            @if($isCompleted)
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
                             </svg>
-                        </div>
-                        @elseif($isInProgress)
-                        <div class="w-6 h-6 rounded-full bg-brand-orange text-white flex items-center justify-center ring-4 ring-brand-orange/20 shadow-xs animate-pulse">
-                            <span class="w-2 h-2 rounded-full bg-white"></span>
-                        </div>
-                        @elseif($isCancelledStage)
-                        <div class="w-6 h-6 rounded-full bg-rose-100 border-2 border-rose-300 text-rose-500 flex items-center justify-center ring-4 ring-white">
+                            @elseif($isInProgress)
+                            <span class="w-2.5 h-2.5 rounded-full bg-white"></span>
+                            @elseif($isCancelledStage)
                             <span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span>
-                        </div>
-                        @else
-                        <div class="w-6 h-6 rounded-full bg-slate-100 border-2 border-slate-300 text-slate-400 flex items-center justify-center ring-4 ring-white">
+                            @else
                             <span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                            @endif
                         </div>
+
+                        <!-- Connecting Line between steps -->
+                        @if(! $isLast)
+                        <div class="w-0.5 flex-1 bg-slate-200 my-1"></div>
                         @endif
                     </div>
 

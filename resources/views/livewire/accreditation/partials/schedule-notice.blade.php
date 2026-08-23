@@ -9,7 +9,7 @@
             Automated Stakeholder Mobilization
         </h5>
         <p class="text-label text-slate-600 mt-0.5 leading-relaxed">
-            Upon recording, this visit enters the <strong class="text-amber-800">Scheduled / TF Setup</strong> stage. An automated alert is immediately dispatched to the College Dean to nominate faculty members for the official Program Task Force.
+            Upon recording, this visit enters the <strong class="text-amber-800">Scheduled</strong> stage. An automated alert is immediately dispatched to the College Dean to nominate faculty members for the official Program Task Force.
         </p>
     </div>
 </div>
