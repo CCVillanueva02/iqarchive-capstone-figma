@@ -279,6 +279,20 @@
         @endif
 
 
+        <!-- Accreditation Visits -->
+        @if (in_array($role, ['iqa-staff']))
+        <a href="{{ route('visits.index') }}" class="group flex items-center gap-3.5 px-6 py-3.5 border-l-4 text-body font-semibold transition-all {{ request()->routeIs('visits.*') ? 'bg-white/10 text-white border-l-brand-orange' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+                <path d="m9 16 2 2 4-4"></path>
+            </svg>
+            <span>Record a Visit</span>
+        </a>
+        @endif
+
         <!-- Task Forces -->
         @if (in_array($role, ['iqa-staff', 'university-administrator', 'college-head', 'system-administrator']))
         <a href="{{ route('task-forces.index') }}" class="group flex items-center gap-3.5 px-6 py-3.5 border-l-4 text-body font-semibold transition-all {{ request()->routeIs('task-forces.*') ? 'bg-white/10 text-white border-l-brand-orange' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>

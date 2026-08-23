@@ -253,6 +253,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('roles/system-administrator/accounts', \App\Livewire\SystemAdministrator\Accounts::class)
         ->name('accounts.system-administrator');
 
+    // Accreditation Visits (Record a Visit)
+    Route::get('visits', \App\Livewire\Accreditation\VisitsIndex::class)
+        ->name('visits.index');
+
     // Task Force Management Overview & Create Modal (Accessible to authenticated roles)
     Route::get('task-forces', \App\Livewire\TaskForce\TaskForceOverview::class)
         ->name('task-forces.index');

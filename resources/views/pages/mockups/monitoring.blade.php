@@ -22,10 +22,6 @@
                     <flux:icon.arrow-down-tray class="w-4 h-4 text-slate-500" />
                     Export Excel
                 </button> -->
-                <button x-on:click="$flux.modal('schedule-accreditation').show()" class="bg-brand-orange text-white text-body-sm px-4 py-2 rounded-lg shadow-sm hover:bg-brand-orange-hover flex items-center gap-2 font-medium transition-colors">
-                    <flux:icon.plus class="w-4 h-4" />
-                    Record Visit
-                </button>
             </div>
         </div>
         
@@ -503,6 +499,6 @@
             }
         </style>
         
-        @livewire('monitoring.schedule-accreditation')
+
     </div>
 </x-layouts::app>
