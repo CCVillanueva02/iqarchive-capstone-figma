@@ -352,18 +352,49 @@
                 <span>Colleges &amp; Programs</span>
             </a>
 
-            <!-- Reserved Slot: Instruments (Future Rubrics/Instruments Builder) -->
-            <div class="group flex items-center justify-between px-6 py-3.5 border-l-4 border-l-transparent text-white/30 cursor-not-allowed select-none" title="Accreditation Instrument Builder (Coming Soon)">
+            <!-- Active Instruments Builder (Configuration Tab for IQA) -->
+            <a href="{{ route('configuration.instruments') }}" class="group flex items-center gap-3.5 px-6 py-3.5 border-l-4 text-body font-semibold transition-all {{ request()->routeIs('configuration.instruments*') ? 'bg-white/10 text-white border-l-brand-orange' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <path d="m9 15 2 2 4-4"></path>
+                </svg>
+                <span>Instruments</span>
+            </a>
+            @endif
+
+            <!-- Dean Dynamic Instrument Link (Visible when Accreditation reaches Task Force Approved / Instrument Setup) -->
+            @if ($role === 'college-head')
+            @php
+                $deanUser = auth()->user();
+                $activeDeanAccreditation = $deanUser && $deanUser->college_id
+                    ? \App\Models\Accreditation::whereHas('program', fn($q) => $q->where('college_id', $deanUser->college_id))
+                        ->whereIn('status', ['task_force_approved', 'instrument_building', 'document_preparation'])
+                        ->latest()
+                        ->first()
+                    : null;
+                $deanNeedsInstrumentAction = $activeDeanAccreditation && in_array($activeDeanAccreditation->status, ['task_force_approved', 'instrument_building']);
+            @endphp
+            @if ($activeDeanAccreditation)
+            <div class="px-6 pt-3 pb-1">
+                <span class="text-label-xs font-bold uppercase tracking-[1.5px] text-white/40">Workspace</span>
+            </div>
+            <a href="{{ route('accreditation.instrument', $activeDeanAccreditation->id) }}" 
+                class="group flex items-center justify-between px-6 py-3.5 border-l-4 text-body font-semibold transition-all {{ request()->routeIs('accreditation.instrument') ? 'bg-white/10 text-white border-l-brand-orange' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" 
+                wire:navigate>
                 <div class="flex items-center gap-3.5">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="opacity-50">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                         <polyline points="14 2 14 8 20 8"></polyline>
                         <path d="m9 15 2 2 4-4"></path>
                     </svg>
                     <span>Instruments</span>
                 </div>
-                <span class="text-label-xs px-2 py-0.5 rounded-full bg-white/10 text-white/40 font-bold uppercase tracking-wider">Soon</span>
-            </div>
+                @if ($deanNeedsInstrumentAction)
+                <span class="text-label-xs px-2 py-0.5 rounded-full bg-brand-orange text-white font-bold uppercase tracking-wider animate-pulse">Action</span>
+                @endif
+            </a>
+            @endif
             @endif
 
         </div>

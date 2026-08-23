@@ -37,4 +37,14 @@ class Accreditation extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+
+    public function instrument()
+    {
+        return $this->hasOne(Instrument::class, 'accreditation_id');
+    }
+
+    public function complianceRequirements()
+    {
+        return $this->hasMany(ComplianceRequirement::class);
+    }
 }

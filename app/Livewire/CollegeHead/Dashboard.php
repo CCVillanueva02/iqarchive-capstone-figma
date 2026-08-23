@@ -93,6 +93,10 @@ class Dashboard extends Component
             $q->where('college_id', $college->id);
         })->where('status', 'scheduled')->count();
 
+        $pendingInstruments = Accreditation::whereHas('program', function ($q) use ($college) {
+            $q->where('college_id', $college->id);
+        })->whereIn('status', ['task_force_approved', 'instrument_building'])->count();
+
         $pendingVerifications = Accreditation::whereHas('program', function ($q) use ($college) {
             $q->where('college_id', $college->id);
         })->where('status', 'dean_verification')->count();
@@ -104,8 +108,9 @@ class Dashboard extends Component
             'accreditedPrograms' => $accreditedCount,
             'activeVisits' => $activeVisits,
             'activeTaskForces' => $activeTaskForces,
-            'pendingActions' => $pendingProposals + $pendingVerifications,
+            'pendingActions' => $pendingProposals + $pendingInstruments + $pendingVerifications,
             'pendingProposals' => $pendingProposals,
+            'pendingInstruments' => $pendingInstruments,
             'pendingVerifications' => $pendingVerifications,
             'accreditationRate' => $accreditationRate,
         ];
@@ -126,6 +131,25 @@ class Dashboard extends Component
                 $q->where('college_id', $college->id);
             })
             ->where('status', 'scheduled')
+            ->latest()
+            ->get();
+    }
+
+    /**
+     * Accreditations with approved Task Force waiting for Instrument Customization (Stage 4).
+     */
+    public function getPendingInstrumentAccreditationsProperty()
+    {
+        $college = $this->college;
+        if (! $college) {
+            return collect();
+        }
+
+        return Accreditation::with(['program', 'taskForce.members', 'instrument', 'creator'])
+            ->whereHas('program', function ($q) use ($college) {
+                $q->where('college_id', $college->id);
+            })
+            ->whereIn('status', ['task_force_approved', 'instrument_building'])
             ->latest()
             ->get();
     }
@@ -571,6 +595,7 @@ class Dashboard extends Component
             'college' => $this->college,
             'kpiMetrics' => $this->kpiMetrics,
             'pendingSetupAccreditations' => $this->pendingSetupAccreditations,
+            'pendingInstrumentAccreditations' => $this->pendingInstrumentAccreditations,
             'pendingVerificationAccreditations' => $this->pendingVerificationAccreditations,
             'activeAccreditationPrograms' => $this->activeAccreditationPrograms,
             'allCollegePrograms' => $this->allCollegePrograms,

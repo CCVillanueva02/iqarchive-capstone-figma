@@ -263,6 +263,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('configuration/colleges-programs', \App\Livewire\Configuration\CollegesPrograms::class)
         ->name('configuration.colleges-programs');
 
+    // Accreditation Instruments Configuration Management (Module 4)
+    Route::get('configuration/instruments', \App\Livewire\Configuration\Instruments::class)
+        ->name('configuration.instruments');
+
+    // Program-Specific Accreditation Instrument Customization (Dean Stage 4)
+    Route::get('accreditation/{accreditation}/instrument', \App\Livewire\CollegeHead\InstrumentCustomization::class)
+        ->name('accreditation.instrument');
+
     // Document Submission Store (Program Chair / College Head / Task Force / IQA Member)
     Route::post('submissions/store', [SubmissionController::class, 'store'])->name('submissions.store');
     Route::post('submissions/{id}/review', [SubmissionController::class, 'review'])->name('submissions.review');
