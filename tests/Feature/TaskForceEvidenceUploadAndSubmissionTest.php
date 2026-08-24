@@ -42,7 +42,7 @@ test('task force upload is blocked when instrument is not yet verified by dean',
     ]);
 
     $taskForce = TaskForce::create([
-        'name' => 'BSCS QA Task Force',
+        'name' => 'BSCS Task Force',
         'college_id' => $cs->id,
         'program_id' => $bscs->id,
         'status' => 'active',
@@ -86,7 +86,7 @@ test('task force can upload evidence once instrument is finalized to document_pr
     ]);
 
     $taskForce = TaskForce::create([
-        'name' => 'BSCS QA Task Force',
+        'name' => 'BSCS Task Force',
         'college_id' => $cs->id,
         'program_id' => $bscs->id,
         'status' => 'active',
@@ -196,7 +196,7 @@ test('task force can submit evidence to dean and dean receives notification', fu
     ]);
 
     $taskForce = TaskForce::create([
-        'name' => 'BSCS QA Task Force',
+        'name' => 'BSCS Task Force',
         'college_id' => $cs->id,
         'program_id' => $bscs->id,
         'status' => 'active',

@@ -29,7 +29,7 @@ return new class extends Migration
             $taskForceLead = DB::table('roles')->where('role_name', 'task-force')->first();
             if ($taskForceLead) {
                 DB::table('roles')->where('id', $taskForceLead->id)->update([
-                    'description' => 'QA Task Force Lead',
+                    'description' => 'Task Force Lead',
                 ]);
             }
 
@@ -37,7 +37,7 @@ return new class extends Migration
             if (!$hasMemberRole) {
                 DB::table('roles')->insert([
                     'role_name' => 'task-force-member',
-                    'description' => 'QA Task Force Member',
+                    'description' => 'Task Force Member',
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);

@@ -30,7 +30,7 @@ test('program controller returns instrument_verified false when accreditation is
     ]);
 
     $taskForce = TaskForce::create([
-        'name' => 'BSCS QA Task Force',
+        'name' => 'BSCS Task Force',
         'college_id' => $cs->id,
         'program_id' => $bscs->id,
         'status' => 'active',
@@ -68,7 +68,7 @@ test('program controller returns instrument_verified true once dean finalizes in
     ]);
 
     $taskForce = TaskForce::create([
-        'name' => 'BSCS QA Task Force',
+        'name' => 'BSCS Task Force',
         'college_id' => $cs->id,
         'program_id' => $bscs->id,
         'status' => 'active',
