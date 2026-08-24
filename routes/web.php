@@ -302,6 +302,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('api/self-survey/ratings', [\App\Http\Controllers\SelfSurveyController::class, 'getRatings'])->name('api.self-survey.ratings');
     Route::post('api/self-survey/ratings', [\App\Http\Controllers\SelfSurveyController::class, 'saveRating'])->name('api.self-survey.ratings.save');
     Route::post('api/self-survey/best-practices', [\App\Http\Controllers\SelfSurveyController::class, 'saveBestPractices'])->name('api.self-survey.best-practices');
+
+    // Step 5: Area Workspace Evidence Upload & Submission API routes
+    Route::post('api/accreditation/evidence/upload', [\App\Http\Controllers\AccreditationEvidenceController::class, 'upload'])->name('api.accreditation.evidence.upload');
+    Route::get('api/accreditation/evidence/{programId}', [\App\Http\Controllers\AccreditationEvidenceController::class, 'getProgramEvidence'])->name('api.accreditation.evidence.index');
+    Route::post('api/accreditation/evidence/submit-to-dean', [\App\Http\Controllers\AccreditationEvidenceController::class, 'submitToDean'])->name('api.accreditation.evidence.submit-to-dean');
 });
 
 if (app()->environment(['local', 'testing'])) {

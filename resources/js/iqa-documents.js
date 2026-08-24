@@ -3562,6 +3562,201 @@ window.documentWorkspace = function (initialState = {}) {
                 printWindow.print();
                 printWindow.close();
             }, 400);
+        },
+
+        // ── STEP 5: EVIDENCE UPLOADER & DEAN SUBMISSION HANDLERS ─────
+
+        showUploadModal: false,
+        isUploading: false,
+        uploadForm: {
+            programId: null,
+            accreditationId: null,
+            criterionId: null,
+            criterionCode: '',
+            criterionStatement: '',
+            suggestedTags: [],
+            selectedTags: [],
+            title: '',
+            description: '',
+            file: null
+        },
+
+        showSubmitToDeanModal: false,
+        isSubmittingToDean: false,
+        submitDeanNotes: '',
+
+        openUploadModal(item) {
+            this.uploadForm.programId = this.accredProgram ? this.accredProgram.id : null;
+            this.uploadForm.accreditationId = this.accredProgram ? this.accredProgram.accreditation_id : null;
+            this.uploadForm.criterionId = item.criterion_id || item.dbId || null;
+            this.uploadForm.criterionCode = item.id || item.code || '';
+            this.uploadForm.criterionStatement = item.statement || '';
+            this.uploadForm.suggestedTags = item.required_tags || item.tags || ['#BoardResolution', '#UniversityManual', '#DepartmentPolicy', '#CurriculumMatrix'];
+            this.uploadForm.selectedTags = [];
+            this.uploadForm.title = '';
+            this.uploadForm.description = '';
+            this.uploadForm.file = null;
+            this.showUploadModal = true;
+        },
+
+        closeUploadModal() {
+            this.showUploadModal = false;
+            this.uploadForm.file = null;
+            this.uploadForm.title = '';
+            this.uploadForm.description = '';
+            this.uploadForm.selectedTags = [];
+        },
+
+        toggleUploadTag(tag) {
+            if (this.uploadForm.selectedTags.includes(tag)) {
+                this.uploadForm.selectedTags = this.uploadForm.selectedTags.filter(t => t !== tag);
+            } else {
+                this.uploadForm.selectedTags.push(tag);
+                if (!this.uploadForm.title.includes(tag)) {
+                    this.uploadForm.title = (this.uploadForm.title ? this.uploadForm.title + ' ' : '') + tag;
+                }
+            }
+        },
+
+        handleFileSelect(e) {
+            if (e.target.files && e.target.files[0]) {
+                this.uploadForm.file = e.target.files[0];
+                if (!this.uploadForm.title) {
+                    const rawName = e.target.files[0].name.replace(/\.[^/.]+$/, "");
+                    this.uploadForm.title = rawName.replace(/[_-]/g, ' ');
+                }
+            }
+        },
+
+        handleFileDrop(e) {
+            if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                this.uploadForm.file = e.dataTransfer.files[0];
+                if (!this.uploadForm.title) {
+                    const rawName = e.dataTransfer.files[0].name.replace(/\.[^/.]+$/, "");
+                    this.uploadForm.title = rawName.replace(/[_-]/g, ' ');
+                }
+            }
+        },
+
+        async submitEvidenceUpload() {
+            if (!this.uploadForm.file || !this.uploadForm.title || !this.uploadForm.programId) {
+                alert('Please provide an evidence title and select a file.');
+                return;
+            }
+
+            this.isUploading = true;
+            const formData = new FormData();
+            formData.append('file', this.uploadForm.file);
+            formData.append('program_id', this.uploadForm.programId);
+            if (this.uploadForm.accreditationId) formData.append('accreditation_id', this.uploadForm.accreditationId);
+            if (this.uploadForm.criterionId) formData.append('instrument_criterion_id', this.uploadForm.criterionId);
+            if (this.uploadForm.criterionCode) formData.append('criterion_code', this.uploadForm.criterionCode);
+            if (this.activeArea) formData.append('area_code', this.activeArea.code);
+            formData.append('title', this.uploadForm.title);
+            if (this.uploadForm.description) formData.append('description', this.uploadForm.description);
+
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+            try {
+                const res = await fetch('/api/accreditation/evidence/upload', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json'
+                    },
+                    body: formData
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    // Find item in activeParam checklist and append document
+                    const targetItem = this.activeChecklistItems.find(i => i.id === this.uploadForm.criterionCode);
+                    if (targetItem) {
+                        if (!targetItem.documents) targetItem.documents = [];
+                        targetItem.documents.push(data.document);
+                    }
+
+                    const criterionCode = this.uploadForm.criterionCode;
+                    this.closeUploadModal();
+
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Evidence Uploaded',
+                            text: 'Document has been linked to criterion ' + criterionCode + ' successfully.',
+                            confirmButtonColor: '#1b355a'
+                        });
+                    } else {
+                        alert('Evidence document uploaded successfully.');
+                    }
+                } else {
+                    alert(data.error || 'Failed to upload evidence document.');
+                }
+            } catch (err) {
+                console.error('Upload error:', err);
+                alert('Network error occurred while uploading document.');
+            } finally {
+                this.isUploading = false;
+            }
+        },
+
+        openSubmitToDeanModal() {
+            this.submitDeanNotes = '';
+            this.showSubmitToDeanModal = true;
+        },
+
+        closeSubmitToDeanModal() {
+            this.showSubmitToDeanModal = false;
+            this.submitDeanNotes = '';
+        },
+
+        async submitEvidenceToDean() {
+            if (!this.accredProgram) return;
+
+            this.isSubmittingToDean = true;
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+            try {
+                const res = await fetch('/api/accreditation/evidence/submit-to-dean', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        program_id: this.accredProgram.id,
+                        accreditation_id: this.accredProgram.accreditation_id,
+                        notes: this.submitDeanNotes
+                    })
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    this.closeSubmitToDeanModal();
+                    if (this.accredProgram) {
+                        this.accredProgram.accreditation_status = 'dean_verification';
+                    }
+
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Submitted to College Dean',
+                            text: 'The evidence repository has been submitted for Dean verification and quality review.',
+                            confirmButtonColor: '#1b355a'
+                        });
+                    } else {
+                        alert('Evidence submitted to College Dean successfully.');
+                    }
+                } else {
+                    alert(data.error || 'Failed to submit evidence to Dean.');
+                }
+            } catch (err) {
+                console.error('Submission error:', err);
+                alert('Network error while submitting to Dean.');
+            } finally {
+                this.isSubmittingToDean = false;
+            }
         }
     };
 };

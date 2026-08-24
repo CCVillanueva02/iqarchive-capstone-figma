@@ -28,4 +28,8 @@
     <!-- LEVEL 4E: PROGRAM PERFORMANCE PORTFOLIO (PPP) VIEW -->
     @include('pages.documents.partials.program-accreditation.ppp')
 
+    <!-- STEP 5 MODALS: EVIDENCE UPLOAD & SUBMISSION -->
+    @include('pages.documents.partials.program-accreditation.modals.upload-evidence-modal')
+    @include('pages.documents.partials.program-accreditation.modals.submit-to-dean-modal')
+
 </div>

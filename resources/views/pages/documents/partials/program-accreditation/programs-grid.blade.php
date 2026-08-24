@@ -100,11 +100,28 @@
                         </div>
 
                         <!-- Accreditation Status / Level Info -->
-                        <div class="flex items-center justify-between pt-3 border-t border-slate-100 text-xs">
-                            <span class="text-zinc-400 font-medium">Accreditation Level:</span>
-                            <span class="font-extrabold px-2.5 py-1 rounded-full border text-label-xs"
-                                :class="prog.level.includes('Level IV') ? 'bg-blue-50 text-primary border-blue-100' : (prog.level.includes('Level III') ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : (prog.level.includes('Level II') ? 'bg-amber-50 text-amber-700 border-amber-100' : 'bg-slate-100 text-zinc-700 border-slate-200'))"
-                                x-text="prog.level"></span>
+                        <div class="flex flex-col gap-2 pt-3 border-t border-slate-100 text-xs">
+                            <div class="flex items-center justify-between">
+                                <span class="text-zinc-400 font-medium">Accreditation Level:</span>
+                                <span class="font-extrabold px-2.5 py-1 rounded-full border text-label-xs"
+                                    :class="prog.level.includes('Level IV') ? 'bg-blue-50 text-primary border-blue-100' : (prog.level.includes('Level III') ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : (prog.level.includes('Level II') ? 'bg-amber-50 text-amber-700 border-amber-100' : 'bg-slate-100 text-zinc-700 border-slate-200'))"
+                                    x-text="prog.level"></span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-zinc-400 font-medium">Instrument Status:</span>
+                                <template x-if="prog.instrument_verified">
+                                    <span class="font-bold px-2.5 py-0.5 rounded-full border text-label-xs bg-emerald-50 text-emerald-700 border-emerald-200 flex items-center gap-1">
+                                        <svg class="w-3 h-3 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                                        <span>Verified</span>
+                                    </span>
+                                </template>
+                                <template x-if="!prog.instrument_verified">
+                                    <span class="font-bold px-2.5 py-0.5 rounded-full border text-label-xs bg-amber-50 text-amber-800 border-amber-200 flex items-center gap-1">
+                                        <svg class="w-3 h-3 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                                        <span>Pending Setup</span>
+                                    </span>
+                                </template>
+                            </div>
                         </div>
                     </div>
 

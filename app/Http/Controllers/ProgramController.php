@@ -18,7 +18,9 @@ class ProgramController extends Controller
     {
         /** @var User|null $user */
         $user = Auth::user();
-        $query = Program::with('college')->orderBy('name');
+        $query = Program::with(['college', 'accreditations' => function ($q) {
+            $q->latest();
+        }, 'accreditations.instrument'])->orderBy('name');
 
         if ($user) {
             $isUnrestricted = $user->hasAnyRole(['iqa-staff', 'iqa-admin', 'system-administrator']) || 
@@ -77,6 +79,17 @@ class ProgramController extends Controller
                 default => 'bg-slate-100 text-slate-700',
             };
 
+            // Security & Governance Check: Instrument is verified once College Head finalizes it (status moves to document_preparation or beyond)
+            $latestAccred = $p->accreditations->first();
+            $accredStatus = $latestAccred?->status ?? 'no_active_accreditation';
+            $isInstrumentVerified = $latestAccred && in_array($latestAccred->status, [
+                'document_preparation',
+                'uploading',
+                'dean_verification',
+                'submitted',
+                'completed',
+            ]);
+
             return [
                 'id' => $p->id,
                 'code' => $p->code,
@@ -86,6 +99,9 @@ class ProgramController extends Controller
                 'college_id' => $p->college_id,
                 'level' => $p->accreditation_level ?: 'Candidate Status',
                 'iconBg' => $iconBg,
+                'accreditation_id' => $latestAccred?->id,
+                'accreditation_status' => $accredStatus,
+                'instrument_verified' => $isInstrumentVerified,
             ];
         });
 

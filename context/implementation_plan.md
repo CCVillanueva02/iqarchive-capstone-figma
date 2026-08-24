@@ -14,8 +14,8 @@
 | **2. Task Force Nomination** | College Dean | ✅ **Completed** | [TaskForceSetup.php](file:///c:/Users/janss/Herd/iqarchive/app/Livewire/CollegeHead/TaskForceSetup.php), [task-force-setup.blade.php](file:///c:/Users/janss/Herd/iqarchive/resources/views/livewire/college-head/task-force-setup.blade.php) |
 | **3. Task Force Official Assignment & Activation** | IQA & Dean | ✅ **Completed** | 1-Click Member Pre-registration & Reactivation, Dean Auto-Lead Assignment |
 | **4. Dynamic Instrument Builder & Customization** | Dean / IQA | ✅ **Completed** | [Instruments.php](file:///c:/Users/janss/Herd/iqarchive/app/Livewire/Configuration/Instruments.php), [InstrumentCustomization.php](file:///c:/Users/janss/Herd/iqarchive/app/Livewire/CollegeHead/InstrumentCustomization.php), [Instrument.php](file:///c:/Users/janss/Herd/iqarchive/app/Models/Instrument.php), [InstrumentArea.php](file:///c:/Users/janss/Herd/iqarchive/app/Models/InstrumentArea.php), [InstrumentParameter.php](file:///c:/Users/janss/Herd/iqarchive/app/Models/InstrumentParameter.php), [InstrumentCriterion.php](file:///c:/Users/janss/Herd/iqarchive/app/Models/InstrumentCriterion.php) |
-| **5. Area Workspace & Evidence Uploading** | Task Force & Lead | ⏳ **Upcoming (Next Priority)** | Area I–X Folders, Batch File Uploader, Metadata & Tagging, Document Reuse |
-| **6. Dean Verification & Compliance Locking** | College Dean | ⏳ **Upcoming** | Completeness Verification, Rework Feedback, Pre-evaluation Seal |
+| **5. Area Workspace & Evidence Uploading** | Task Force & Lead | ✅ **Completed** | [AccreditationEvidenceController.php](file:///c:/Users/janss/Herd/iqarchive/app/Http/Controllers/AccreditationEvidenceController.php), [upload-evidence-modal.blade.php](file:///c:/Users/janss/Herd/iqarchive/resources/views/pages/documents/partials/program-accreditation/modals/upload-evidence-modal.blade.php), [submit-to-dean-modal.blade.php](file:///c:/Users/janss/Herd/iqarchive/resources/views/pages/documents/partials/program-accreditation/modals/submit-to-dean-modal.blade.php), [supporting-docs.blade.php](file:///c:/Users/janss/Herd/iqarchive/resources/views/pages/documents/partials/program-accreditation/supporting-docs.blade.php), Gated Task Force Viewing |
+| **6. Dean Verification & Compliance Locking** | College Dean | ⏳ **Upcoming (Next Priority)** | Completeness Verification, Rework Feedback, Pre-evaluation Seal |
 | **7. Accreditation Submission & Accreditor Evaluation** | IQA & Accreditors | ⏳ **Upcoming** | Submission Handover, Lockouts, Accreditor Scoring Portal |
 
 ---
@@ -85,19 +85,23 @@
 
 ---
 
-### Module 5: Document Upload & Evidence Repository (Task Force Module) — ⏳ UPCOMING (NEXT PRIORITY)
-**Goal:** Secure, structured document repository matching the customized instrument for Task Force members to upload evidence.
+### Module 5: Document Upload & Evidence Repository (Task Force Module) — ✅ COMPLETED
+**Goal:** Secure, structured document repository matching the customized instrument for Task Force members to upload evidence and submit to the Dean.
 - **Security & Access Control:**
-  - Laravel Policies guaranteeing that *only* assigned Task Force members can view/upload evidence to their assigned program repository.
+  - **Gated Viewing:** Task Force members are strictly blocked from viewing/accessing program document folders when the instrument has not yet been verified by the College Head (status is `task_force_approved` / `instrument_building` / unfinalized).
+  - Prominent locked banner and disabled state inform Task Force members that instrument setup is currently in progress.
   - Upload access strictly active while accreditation status is `document_preparation` or `uploading`.
 - **UI & Functionality:**
-  - Dedicated Area-by-Area tabbed workspace inside [documents/index.blade.php](file:///c:/Users/janss/Herd/iqarchive/resources/views/pages/documents/index.blade.php).
-  - Multi-file drag-and-drop uploader with parameter tagging and metadata input.
-  - Linkage via [AccreditationDocumentLink.php](file:///c:/Users/janss/Herd/iqarchive/app/Models/AccreditationDocumentLink.php) (M:N relationship allowing single evidence to satisfy multiple criteria).
+  - Dedicated Area-by-Area tabbed workspace inside [documents/index.blade.php](file:///c:/Users/janss/Herd/iqarchive/resources/views/pages/documents/index.blade.php) and [supporting-docs.blade.php](file:///c:/Users/janss/Herd/iqarchive/resources/views/pages/documents/partials/program-accreditation/supporting-docs.blade.php).
+  - [upload-evidence-modal.blade.php](file:///c:/Users/janss/Herd/iqarchive/resources/views/pages/documents/partials/program-accreditation/modals/upload-evidence-modal.blade.php): Multi-file drag-and-drop uploader with parameter tagging, suggested `#Tags`, metadata input, and real-time checklist attachment.
+  - [submit-to-dean-modal.blade.php](file:///c:/Users/janss/Herd/iqarchive/resources/views/pages/documents/partials/program-accreditation/modals/submit-to-dean-modal.blade.php): Task Force "Submit Evidence to Dean" workflow advancing status to `dean_verification`, triggering Dean notifications and logging audit entries.
+  - Backed by [AccreditationEvidenceController.php](file:///c:/Users/janss/Herd/iqarchive/app/Http/Controllers/AccreditationEvidenceController.php) linking files via [AccreditationDocumentLink.php](file:///c:/Users/janss/Herd/iqarchive/app/Models/AccreditationDocumentLink.php) to [ComplianceRequirement.php](file:///c:/Users/janss/Herd/iqarchive/app/Models/ComplianceRequirement.php).
+- **Automated Tests:**
+  - Verified via [TaskForceInstrumentGatingTest.php](file:///c:/Users/janss/Herd/iqarchive/tests/Feature/TaskForceInstrumentGatingTest.php) and [TaskForceEvidenceUploadAndSubmissionTest.php](file:///c:/Users/janss/Herd/iqarchive/tests/Feature/TaskForceEvidenceUploadAndSubmissionTest.php) (75/75 passing across full repository).
 
 ---
 
-### Module 6: Two-Stage Dean Verification & Quality Control — ⏳ UPCOMING
+### Module 6: Two-Stage Dean Verification & Quality Control — ⏳ UPCOMING (NEXT PRIORITY)
 **Goal:** Provide the College Dean with a rigorous two-tier review pipeline prior to official university handover.
 - **Stage 1 (Error & Quality Review):**
   - Dean reviews uploaded artifacts, document clarity, and tag correctness.
@@ -124,8 +128,9 @@
 
 ## Next Immediate Steps
 
-1. **Module 5: Evidence Repository & Uploader Integration:**
-   - Link customized instrument criteria and `#Tags` directly into the Area I–X upload workspace.
-   - Implement multi-file drag-and-drop uploader attaching files via `AccreditationDocumentLink` to `ComplianceRequirement`.
+1. **Module 6: Two-Stage Dean Verification & Quality Control:**
+   - Implement Dean Document Review & Inline Feedback workflow.
+   - Implement Parameter Completeness Auditing & Compliance Locking sign-off.
+
 
 

@@ -15,14 +15,32 @@
             'programCount' => $user->college->programs()->count(),
         ] : null;
 
-        $userProgram = $user->program ? [
-            'id' => $user->program->id,
-            'name' => $user->program->name,
-            'code' => $user->program->code,
-            'college' => $user->program->college ? $user->program->college->name : '',
-            'collegeCode' => $user->program->college ? $user->program->college->code : '',
-            'college_id' => $user->program->college_id,
-            'level' => $user->program->accreditation_level ?: 'Candidate Status',
+        $resolvedProgram = $user->program;
+        if (!$resolvedProgram && ($user->hasRole('task-force-member') || $user->role === 'task-force-member')) {
+            $tf = $user->taskForces()->whereNotNull('program_id')->first();
+            $resolvedProgram = $tf?->program;
+        }
+
+        $latestAccred = $resolvedProgram ? $resolvedProgram->accreditations()->latest()->first() : null;
+        $isInstrumentVerified = $latestAccred && in_array($latestAccred->status, [
+            'document_preparation',
+            'uploading',
+            'dean_verification',
+            'submitted',
+            'completed',
+        ]);
+
+        $userProgram = $resolvedProgram ? [
+            'id' => $resolvedProgram->id,
+            'name' => $resolvedProgram->name,
+            'code' => $resolvedProgram->code,
+            'college' => $resolvedProgram->college ? $resolvedProgram->college->name : '',
+            'collegeCode' => $resolvedProgram->college ? $resolvedProgram->college->code : '',
+            'college_id' => $resolvedProgram->college_id,
+            'level' => $resolvedProgram->accreditation_level ?: 'Candidate Status',
+            'accreditation_id' => $latestAccred?->id,
+            'accreditation_status' => $latestAccred?->status ?? 'no_active_accreditation',
+            'instrument_verified' => $isInstrumentVerified,
         ] : null;
 
         $defaultTab = $canSeeCommonDocs ? 'common-documents' : 'program-accreditation';
