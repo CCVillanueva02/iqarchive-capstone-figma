@@ -9,21 +9,12 @@
                 <span>Back to Dashboard</span>
             </a>
             <span class="text-zinc-300">•</span>
-            <span class="px-2.5 py-0.5 rounded-full text-label-xs font-bold bg-amber-100 text-amber-800 border border-amber-200">
-                Stage 6 · Dean Verification
-            </span>
         </div>
 
         <div class="flex items-center gap-3 mt-1">
             <h1 class="text-heading font-extrabold text-primary tracking-tight">
                 {{ $acc->program->name }}
             </h1>
-            <span class="px-2.5 py-1 rounded-lg text-label-xs font-bold bg-blue-50 text-primary border border-blue-200">
-                {{ $acc->program->code }}
-            </span>
-            <span class="px-2.5 py-1 rounded-lg text-label-xs font-bold bg-slate-100 text-zinc-700">
-                {{ $acc->program->accreditation_level ?: 'Candidate' }}
-            </span>
         </div>
 
         <div class="flex flex-wrap items-center gap-4 text-body-sm text-zinc-500 mt-0.5">
