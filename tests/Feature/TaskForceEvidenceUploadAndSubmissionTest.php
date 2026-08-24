@@ -175,6 +175,14 @@ test('task force can upload evidence once instrument is finalized to document_pr
     $audit = AuditLog::where('target_type', 'Document')->where('target_id', $doc->id)->first();
     expect($audit)->not->toBeNull();
     expect($audit->user_id)->toBe($tfUser->id);
+
+    // Verify getProgramEvidence returns uploaded document for reload persistence
+    $getRes = $this->actingAs($tfUser)->getJson(route('api.accreditation.evidence.index', ['programId' => $bscs->id]));
+    $getRes->assertOk();
+    $list = $getRes->json();
+    expect($list)->toHaveCount(1);
+    expect($list[0]['name'])->toBe('BOR Resolution Approving VMGO');
+    expect($list[0]['criterion_code'])->toBe('S.1');
 });
 
 test('task force can submit evidence to dean and dean receives notification', function () {

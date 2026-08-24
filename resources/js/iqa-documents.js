@@ -2263,6 +2263,9 @@ window.documentWorkspace = function (initialState = {}) {
         selectProgram(prog) {
             this.accredProgram = prog;
             this.accredCategory = null;
+            if (prog && prog.id) {
+                this.loadProgramEvidence(prog.id);
+            }
         },
 
         clearProgram() {
@@ -2878,6 +2881,10 @@ window.documentWorkspace = function (initialState = {}) {
         init() {
             this.initBackendData();
 
+            if (this.accredProgram && this.accredProgram.id) {
+                this.loadProgramEvidence(this.accredProgram.id);
+            }
+
             // Sync accredLevel on initial load
             if (this.activeTab === 'institutional-accreditation') {
                 this.accredLevel = 'institutional';
@@ -2909,6 +2916,21 @@ window.documentWorkspace = function (initialState = {}) {
                         this.accredActiveAreaId = 'area_p1';
                         this.accredActiveParamId = 'param_p1_a';
                     }
+                    if (this.accredProgram && this.accredProgram.id) {
+                        this.loadProgramEvidence(this.accredProgram.id);
+                    }
+                }
+            });
+
+            this.$watch('accredCategory', (newCat) => {
+                if (newCat === 'Supporting Documents' && this.accredProgram && this.accredProgram.id) {
+                    this.loadProgramEvidence(this.accredProgram.id);
+                }
+            });
+
+            this.$watch('accredProgram', (newProg) => {
+                if (newProg && newProg.id) {
+                    this.loadProgramEvidence(newProg.id);
                 }
             });
 
@@ -2933,6 +2955,9 @@ window.documentWorkspace = function (initialState = {}) {
                         this.programsList = data;
                         if (this.currentUserRole === 'task-force-member' && data.length === 1 && !this.accredProgram) {
                             this.accredProgram = data[0];
+                            this.loadProgramEvidence(data[0].id);
+                        } else if (this.accredProgram && this.accredProgram.id) {
+                            this.loadProgramEvidence(this.accredProgram.id);
                         }
                     }
                 })
@@ -3677,7 +3702,12 @@ window.documentWorkspace = function (initialState = {}) {
                     }
 
                     const criterionCode = this.uploadForm.criterionCode;
+                    const programId = this.uploadForm.programId;
                     this.closeUploadModal();
+
+                    if (programId) {
+                        this.loadProgramEvidence(programId);
+                    }
 
                     if (typeof Swal !== 'undefined') {
                         Swal.fire({
@@ -3697,6 +3727,49 @@ window.documentWorkspace = function (initialState = {}) {
                 alert('Network error occurred while uploading document.');
             } finally {
                 this.isUploading = false;
+            }
+        },
+
+        async loadProgramEvidence(programId) {
+            if (!programId) return;
+            try {
+                const res = await fetch('/api/accreditation/evidence/' + programId);
+                if (!res.ok) return;
+                const data = await res.json();
+                const docs = Array.isArray(data) ? data : (data.documents || []);
+
+                if (!this.accredData || !this.accredData.program || !this.accredData.program.areas) return;
+
+                // Merge into accredData.program
+                this.accredData.program.areas.forEach(area => {
+                    (area.parameters || []).forEach(param => {
+                        const sections = param.sections || {};
+                        ['systems', 'implementation', 'outcomes', 'bestpractices'].forEach(secKey => {
+                            const items = sections[secKey] || [];
+                            items.forEach(item => {
+                                const matchingDocs = docs.filter(d => 
+                                    (d.criterion_code && (d.criterion_code === item.id || d.criterion_code === item.code)) ||
+                                    (d.criterion_id && item.criterion_id && d.criterion_id === item.criterion_id)
+                                );
+
+                                if (matchingDocs.length > 0) {
+                                    if (!item.documents) item.documents = [];
+                                    matchingDocs.forEach(dbDoc => {
+                                        const exists = item.documents.some(existing => 
+                                            (existing.id && existing.id === dbDoc.id) || 
+                                            (existing.name === dbDoc.name && existing.fileName === dbDoc.fileName)
+                                        );
+                                        if (!exists) {
+                                            item.documents.push(dbDoc);
+                                        }
+                                    });
+                                }
+                            });
+                        });
+                    });
+                });
+            } catch (err) {
+                console.warn('Failed to load program evidence:', err);
             }
         },
 

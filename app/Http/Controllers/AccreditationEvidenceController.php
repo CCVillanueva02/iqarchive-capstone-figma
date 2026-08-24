@@ -116,6 +116,9 @@ class AccreditationEvidenceController extends Controller
                 ->whereHas('parameter.area.instrument', function ($q) use ($program) {
                     $q->where('program_id', $program->id);
                 })->first();
+            if (!$criterion) {
+                $criterion = InstrumentCriterion::where('code', $validated['criterion_code'])->first();
+            }
             $criterionId = $criterion?->id;
         }
 
@@ -144,12 +147,13 @@ class AccreditationEvidenceController extends Controller
             }
 
             if ($resolvedInstrumentId) {
+                $critCode = $validated['criterion_code'] ?? ($criterion?->code ?? '');
                 $complianceRequirement = ComplianceRequirement::create([
                     'instrument_id' => $resolvedInstrumentId,
                     'accreditation_id' => $accreditationId,
                     'program_id' => $program->id,
                     'instrument_criterion_id' => $criterionId,
-                    'description' => $validated['description'] ?? ($validated['title'] ?? 'Accreditation Evidence'),
+                    'description' => "[Criterion: {$critCode}] " . ($validated['description'] ?? ($validated['title'] ?? 'Accreditation Evidence')),
                     'status' => 'pending',
                 ]);
             }
@@ -199,7 +203,7 @@ class AccreditationEvidenceController extends Controller
      */
     public function getProgramEvidence(Request $request, $programId)
     {
-        $program = Program::findOrFail($programId);
+        $program = Program::with('college')->findOrFail($programId);
 
         $documents = Document::with(['uploader', 'accreditationLinks.complianceRequirement.criterion'])
             ->where('program_id', $program->id)
@@ -207,19 +211,33 @@ class AccreditationEvidenceController extends Controller
             ->get();
 
         $data = $documents->map(function ($doc) {
-            $criterion = $doc->accreditationLinks->first()?->complianceRequirement?->criterion;
+            $link = $doc->accreditationLinks->first();
+            $req = $link?->complianceRequirement;
+            $criterion = $req?->criterion;
+
+            $criterionCode = $criterion?->code;
+            if (!$criterionCode && $req && preg_match('/\[Criterion:\s*([^\]]+)\]/', $req->description, $matches)) {
+                $criterionCode = trim($matches[1]);
+            }
+
+            $fileSizeFormatted = '1.0 MB';
+            if ($doc->file_path && Storage::disk('public')->exists($doc->file_path)) {
+                $bytes = Storage::disk('public')->size($doc->file_path);
+                $fileSizeFormatted = $bytes ? round($bytes / 1048576, 2) . ' MB' : '1.0 MB';
+            }
+
             return [
                 'id' => $doc->id,
                 'name' => $doc->title,
                 'fileName' => basename($doc->file_path),
                 'type' => strtoupper(pathinfo($doc->file_path, PATHINFO_EXTENSION)),
-                'size' => '1.2 MB',
+                'size' => $fileSizeFormatted,
                 'date' => $doc->created_at ? $doc->created_at->format('Y-m-d') : now()->format('Y-m-d'),
                 'uploader' => $doc->uploader ? $doc->uploader->name : 'Task Force Member',
                 'office' => $doc->program?->college?->name ?? 'BU College',
                 'status' => ucfirst($doc->status ?? 'pending'),
-                'criterion_code' => $criterion?->code,
-                'criterion_id' => $criterion?->id,
+                'criterion_code' => $criterionCode,
+                'criterion_id' => $criterion?->id ?? $req?->instrument_criterion_id,
                 'file_url' => $doc->file_path ? Storage::url($doc->file_path) : null,
             ];
         });
