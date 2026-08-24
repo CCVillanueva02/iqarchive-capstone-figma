@@ -271,6 +271,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('accreditation/{accreditation}/instrument', \App\Livewire\CollegeHead\InstrumentCustomization::class)
         ->name('accreditation.instrument');
 
+    // Dean Evidence Verification & Quality Control Portal (Step 6)
+    Route::get('accreditation/{accreditation}/verify', \App\Livewire\CollegeHead\DeanVerification::class)
+        ->name('accreditation.verify');
+
     // Document Submission Store (Program Chair / College Head / Task Force / IQA Member)
     Route::post('submissions/store', [SubmissionController::class, 'store'])->name('submissions.store');
     Route::post('submissions/{id}/review', [SubmissionController::class, 'review'])->name('submissions.review');

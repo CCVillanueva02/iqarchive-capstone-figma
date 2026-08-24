@@ -183,11 +183,13 @@
                     <span>View Lifecycle</span>
                 </button>
 
-                <button type="button" 
-                    wire:click="openTimeline({{ $acc->id }})"
-                    class="px-3.5 py-2 rounded-xl text-body-sm font-bold bg-primary hover:bg-primary-hover text-white transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs">
+                <a href="{{ route('accreditation.verify', $acc->id) }}" 
+                    class="px-4 py-2 rounded-xl text-body-sm font-bold bg-primary hover:bg-primary-hover text-white transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs">
+                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
                     <span>Start Verification</span>
-                </button>
+                </a>
             </div>
         </div>
         @endforeach

@@ -90,12 +90,23 @@
                     </td>
                     <td class="py-3.5 px-4 text-right">
                         @if($latestAcc)
-                        <button 
-                            type="button" 
-                            wire:click="openTimeline({{ $latestAcc->id }})"
-                            class="px-3 py-1.5 rounded-lg text-label-xs font-bold bg-primary hover:bg-primary-hover text-white transition-colors cursor-pointer shadow-xs">
-                            View Timeline
-                        </button>
+                            <div class="flex items-center justify-end gap-2">
+                                @if($latestAcc->status === 'dean_verification')
+                                <a href="{{ route('accreditation.verify', $latestAcc->id) }}"
+                                    class="px-3 py-1.5 rounded-lg text-label-xs font-bold bg-primary hover:bg-primary-hover text-white transition-colors cursor-pointer shadow-xs flex items-center gap-1">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <span>Verify Evidence</span>
+                                </a>
+                                @endif
+                                <button 
+                                    type="button" 
+                                    wire:click="openTimeline({{ $latestAcc->id }})"
+                                    class="px-3 py-1.5 rounded-lg text-label-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors cursor-pointer">
+                                    Timeline
+                                </button>
+                            </div>
                         @endif
                     </td>
                 </tr>

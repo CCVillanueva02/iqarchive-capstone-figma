@@ -36,14 +36,20 @@ $bodyClass = 'min-h-screen bg-[#f4f6fa] antialiased text-zinc-800';
                     loading: false,
                     startTime: 0,
                     timer: null,
+                    safetyTimer: null,
                     showLoader() {
                         if (this.timer) clearTimeout(this.timer);
+                        if (this.safetyTimer) clearTimeout(this.safetyTimer);
                         this.startTime = Date.now();
                         this.loading = true;
+                        this.safetyTimer = setTimeout(() => {
+                            this.loading = false;
+                        }, 3000);
                     },
                     hideLoader() {
+                        if (this.safetyTimer) clearTimeout(this.safetyTimer);
                         const elapsed = Date.now() - this.startTime;
-                        const remaining = Math.max(0, 700 - elapsed);
+                        const remaining = Math.max(0, 400 - elapsed);
                         this.timer = setTimeout(() => {
                             this.loading = false;
                         }, remaining);
