@@ -112,10 +112,13 @@ class AccreditationEvidenceController extends Controller
         // Resolve or create Compliance Requirement
         $criterionId = $validated['instrument_criterion_id'] ?? null;
         if (!$criterionId && !empty($validated['criterion_code'])) {
-            $criterion = InstrumentCriterion::where('code', $validated['criterion_code'])
-                ->whereHas('parameter.area.instrument', function ($q) use ($program) {
-                    $q->where('program_id', $program->id);
-                })->first();
+            $criterionQuery = InstrumentCriterion::where('code', $validated['criterion_code']);
+            if (!empty($validated['area_code'])) {
+                $criterionQuery->whereHas('parameter.area', function ($q) use ($validated) {
+                    $q->where('name', $validated['area_code'])->orWhere('code', $validated['area_code']);
+                });
+            }
+            $criterion = $criterionQuery->first();
             if (!$criterion) {
                 $criterion = InstrumentCriterion::where('code', $validated['criterion_code'])->first();
             }
@@ -148,12 +151,21 @@ class AccreditationEvidenceController extends Controller
 
             if ($resolvedInstrumentId) {
                 $critCode = $validated['criterion_code'] ?? ($criterion?->code ?? '');
+                $areaCode = $validated['area_code'] ?? ($criterion?->parameter?->area?->name ?? ($criterion?->parameter?->area?->code ?? ''));
+                $paramCode = $validated['parameter_code'] ?? ($criterion?->parameter?->name ?? ($criterion?->parameter?->code ?? ''));
+
+                $descParts = [];
+                if ($areaCode) $descParts[] = "[Area: {$areaCode}]";
+                if ($paramCode) $descParts[] = "[Parameter: {$paramCode}]";
+                if ($critCode) $descParts[] = "[Criterion: {$critCode}]";
+                $prefix = implode(' ', $descParts);
+
                 $complianceRequirement = ComplianceRequirement::create([
                     'instrument_id' => $resolvedInstrumentId,
                     'accreditation_id' => $accreditationId,
                     'program_id' => $program->id,
                     'instrument_criterion_id' => $criterionId,
-                    'description' => "[Criterion: {$critCode}] " . ($validated['description'] ?? ($validated['title'] ?? 'Accreditation Evidence')),
+                    'description' => trim("{$prefix} " . ($validated['description'] ?? ($validated['title'] ?? 'Accreditation Evidence'))),
                     'status' => 'pending',
                 ]);
             }
@@ -205,7 +217,7 @@ class AccreditationEvidenceController extends Controller
     {
         $program = Program::with('college')->findOrFail($programId);
 
-        $documents = Document::with(['uploader', 'accreditationLinks.complianceRequirement.criterion'])
+        $documents = Document::with(['uploader', 'accreditationLinks.complianceRequirement.criterion.parameter.area'])
             ->where('program_id', $program->id)
             ->latest()
             ->get();
@@ -218,6 +230,16 @@ class AccreditationEvidenceController extends Controller
             $criterionCode = $criterion?->code;
             if (!$criterionCode && $req && preg_match('/\[Criterion:\s*([^\]]+)\]/', $req->description, $matches)) {
                 $criterionCode = trim($matches[1]);
+            }
+
+            $areaCode = $criterion?->parameter?->area?->name ?? $criterion?->parameter?->area?->code;
+            if (!$areaCode && $req && preg_match('/\[Area:\s*([^\]]+)\]/', $req->description, $matches)) {
+                $areaCode = trim($matches[1]);
+            }
+
+            $paramCode = $criterion?->parameter?->name ?? $criterion?->parameter?->code;
+            if (!$paramCode && $req && preg_match('/\[Parameter:\s*([^\]]+)\]/', $req->description, $matches)) {
+                $paramCode = trim($matches[1]);
             }
 
             $fileSizeFormatted = '1.0 MB';
@@ -236,6 +258,8 @@ class AccreditationEvidenceController extends Controller
                 'uploader' => $doc->uploader ? $doc->uploader->name : 'Task Force Member',
                 'office' => $doc->program?->college?->name ?? 'BU College',
                 'status' => ucfirst($doc->status ?? 'pending'),
+                'area_code' => $areaCode,
+                'parameter_code' => $paramCode,
                 'criterion_code' => $criterionCode,
                 'criterion_id' => $criterion?->id ?? $req?->instrument_criterion_id,
                 'file_url' => $doc->file_path ? Storage::url($doc->file_path) : null,

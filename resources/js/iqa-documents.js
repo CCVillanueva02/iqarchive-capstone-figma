@@ -2878,7 +2878,61 @@ window.documentWorkspace = function (initialState = {}) {
             }
         },
 
+        cleanMockDocuments() {
+            if (!this.accredData) return;
+            ['program', 'institutional'].forEach(levelKey => {
+                const levelObj = this.accredData[levelKey];
+                if (levelObj && Array.isArray(levelObj.areas)) {
+                    levelObj.areas.forEach(area => {
+                        area.progress = 0;
+                        (area.parameters || []).forEach(param => {
+                            param.progress = 0;
+                            const sections = param.sections || {};
+                            ['systems', 'implementation', 'outcomes', 'bestpractices'].forEach(secKey => {
+                                const items = sections[secKey] || [];
+                                items.forEach(item => {
+                                    item.documents = [];
+                                });
+                            });
+                        });
+                    });
+                }
+            });
+        },
+
+        recalculateAccredProgress() {
+            if (!this.accredData) return;
+            ['program', 'institutional'].forEach(levelKey => {
+                const levelObj = this.accredData[levelKey];
+                if (levelObj && Array.isArray(levelObj.areas)) {
+                    levelObj.areas.forEach(area => {
+                        let areaTotal = 0;
+                        let areaFulfilled = 0;
+                        (area.parameters || []).forEach(param => {
+                            let paramTotal = 0;
+                            let paramFulfilled = 0;
+                            const sections = param.sections || {};
+                            ['systems', 'implementation', 'outcomes', 'bestpractices'].forEach(secKey => {
+                                const items = sections[secKey] || [];
+                                items.forEach(item => {
+                                    paramTotal++;
+                                    if (item.documents && item.documents.length > 0) {
+                                        paramFulfilled++;
+                                    }
+                                });
+                            });
+                            param.progress = paramTotal > 0 ? Math.round((paramFulfilled / paramTotal) * 100) : 0;
+                            areaTotal += paramTotal;
+                            areaFulfilled += paramFulfilled;
+                        });
+                        area.progress = areaTotal > 0 ? Math.round((areaFulfilled / areaTotal) * 100) : 0;
+                    });
+                }
+            });
+        },
+
         init() {
+            this.cleanMockDocuments();
             this.initBackendData();
 
             if (this.accredProgram && this.accredProgram.id) {
@@ -2916,9 +2970,6 @@ window.documentWorkspace = function (initialState = {}) {
                         this.accredActiveAreaId = 'area_p1';
                         this.accredActiveParamId = 'param_p1_a';
                     }
-                    if (this.accredProgram && this.accredProgram.id) {
-                        this.loadProgramEvidence(this.accredProgram.id);
-                    }
                 }
             });
 
@@ -2929,6 +2980,7 @@ window.documentWorkspace = function (initialState = {}) {
             });
 
             this.$watch('accredProgram', (newProg) => {
+                this.cleanMockDocuments();
                 if (newProg && newProg.id) {
                     this.loadProgramEvidence(newProg.id);
                 }
@@ -3628,6 +3680,8 @@ window.documentWorkspace = function (initialState = {}) {
             this.uploadForm.accreditationId = this.accredProgram ? this.accredProgram.accreditation_id : null;
             this.uploadForm.criterionId = item.criterion_id || item.dbId || null;
             this.uploadForm.criterionCode = item.id || item.code || '';
+            this.uploadForm.areaCode = this.activeArea ? (this.activeArea.code || this.activeArea.title) : '';
+            this.uploadForm.paramCode = this.activeParam ? (this.activeParam.code || this.activeParam.title) : '';
             this.uploadForm.criterionStatement = item.statement || '';
             this.uploadForm.suggestedTags = item.required_tags || item.tags || ['#BoardResolution', '#UniversityManual', '#DepartmentPolicy', '#CurriculumMatrix'];
             this.uploadForm.selectedTags = [];
@@ -3689,7 +3743,8 @@ window.documentWorkspace = function (initialState = {}) {
             if (this.uploadForm.accreditationId) formData.append('accreditation_id', this.uploadForm.accreditationId);
             if (this.uploadForm.criterionId) formData.append('instrument_criterion_id', this.uploadForm.criterionId);
             if (this.uploadForm.criterionCode) formData.append('criterion_code', this.uploadForm.criterionCode);
-            if (this.activeArea) formData.append('area_code', this.activeArea.code);
+            if (this.uploadForm.areaCode) formData.append('area_code', this.uploadForm.areaCode);
+            if (this.uploadForm.paramCode) formData.append('parameter_code', this.uploadForm.paramCode);
             formData.append('title', this.uploadForm.title);
             if (this.uploadForm.description) formData.append('description', this.uploadForm.description);
 
@@ -3707,13 +3762,6 @@ window.documentWorkspace = function (initialState = {}) {
 
                 const data = await res.json();
                 if (res.ok) {
-                    // Find item in activeParam checklist and append document
-                    const targetItem = this.activeChecklistItems.find(i => i.id === this.uploadForm.criterionCode);
-                    if (targetItem) {
-                        if (!targetItem.documents) targetItem.documents = [];
-                        targetItem.documents.push(data.document);
-                    }
-
                     const criterionCode = this.uploadForm.criterionCode;
                     const programId = this.uploadForm.programId;
                     this.closeUploadModal();
@@ -3751,36 +3799,43 @@ window.documentWorkspace = function (initialState = {}) {
                 const data = await res.json();
                 const docs = Array.isArray(data) ? data : (data.documents || []);
 
-                if (!this.accredData || !this.accredData.program || !this.accredData.program.areas) return;
+                if (!this.accredData) return;
 
-                // Merge into accredData.program
-                this.accredData.program.areas.forEach(area => {
-                    (area.parameters || []).forEach(param => {
-                        const sections = param.sections || {};
-                        ['systems', 'implementation', 'outcomes', 'bestpractices'].forEach(secKey => {
-                            const items = sections[secKey] || [];
-                            items.forEach(item => {
-                                const matchingDocs = docs.filter(d => 
-                                    (d.criterion_code && (d.criterion_code === item.id || d.criterion_code === item.code)) ||
-                                    (d.criterion_id && item.criterion_id && d.criterion_id === item.criterion_id)
-                                );
+                // Reset and populate strictly across BOTH program and institutional areas
+                ['program', 'institutional'].forEach(levelKey => {
+                    const levelObj = this.accredData[levelKey];
+                    if (levelObj && Array.isArray(levelObj.areas)) {
+                        levelObj.areas.forEach(area => {
+                            (area.parameters || []).forEach(param => {
+                                const sections = param.sections || {};
+                                ['systems', 'implementation', 'outcomes', 'bestpractices'].forEach(secKey => {
+                                    const items = sections[secKey] || [];
+                                    items.forEach(item => {
+                                        const matchingDocs = docs.filter(d => {
+                                            // 1. Strict area matching if area_code is provided
+                                            if (d.area_code) {
+                                                const areaMatch = area.code === d.area_code || 
+                                                                  area.title === d.area_code || 
+                                                                  (area.code && d.area_code.toLowerCase().includes(area.code.toLowerCase())) || 
+                                                                  (d.area_code && area.code && area.code.toLowerCase().includes(d.area_code.toLowerCase()));
+                                                if (!areaMatch) return false;
+                                            }
 
-                                if (matchingDocs.length > 0) {
-                                    if (!item.documents) item.documents = [];
-                                    matchingDocs.forEach(dbDoc => {
-                                        const exists = item.documents.some(existing => 
-                                            (existing.id && existing.id === dbDoc.id) || 
-                                            (existing.name === dbDoc.name && existing.fileName === dbDoc.fileName)
-                                        );
-                                        if (!exists) {
-                                            item.documents.push(dbDoc);
-                                        }
+                                            // 2. Strict criterion matching
+                                            const codeMatch = d.criterion_code && (d.criterion_code === item.id || d.criterion_code === item.code);
+                                            const idMatch = d.criterion_id && item.criterion_id && d.criterion_id === item.criterion_id;
+                                            return codeMatch || idMatch;
+                                        });
+
+                                        item.documents = matchingDocs;
                                     });
-                                }
+                                });
                             });
                         });
-                    });
+                    }
                 });
+
+                this.recalculateAccredProgress();
             } catch (err) {
                 console.warn('Failed to load program evidence:', err);
             }
