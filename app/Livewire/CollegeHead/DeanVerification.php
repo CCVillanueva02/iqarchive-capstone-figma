@@ -339,7 +339,7 @@ class DeanVerification extends Component
     public function confirmRequestRevisions(): void
     {
         $this->validate([
-            'reworkSummaryNotes' => 'required|string|min:10|max:2000',
+            'reworkSummaryNotes' => 'required|string|min:3|max:2000',
         ]);
 
         $user = Auth::user();
@@ -350,17 +350,41 @@ class DeanVerification extends Component
         ]);
 
         // Notify Task Force members
+        $notifiedUserIds = [];
         if ($acc->taskForce && $acc->taskForce->members) {
             foreach ($acc->taskForce->members as $member) {
-                if ($member->user_id && $member->user_id !== $user->id) {
+                $memberId = $member->id ?? $member->user_id;
+                if ($memberId && $memberId !== $user->id && !in_array($memberId, $notifiedUserIds)) {
+                    $notifiedUserIds[] = $memberId;
                     Notification::create([
-                        'user_id' => $member->user_id,
+                        'user_id' => $memberId,
                         'type' => 'revisions_requested',
                         'title' => 'Evidence Revisions Requested',
                         'message' => "The College Dean has requested revisions for {$acc->program->name}: {$this->reworkSummaryNotes}",
                         'is_read' => false,
                     ]);
                 }
+            }
+        }
+
+        // Also notify any task force members assigned to this program/college
+        $tfRoleId = Role::where('role_name', 'task-force-member')->value('id');
+        $tfUsers = $tfRoleId ? User::where('role_id', $tfRoleId)
+            ->where(function($q) use ($acc) {
+                $q->where('program_id', $acc->program_id)
+                  ->orWhere('college_id', $acc->program->college_id);
+            })->get() : collect();
+
+        foreach ($tfUsers as $tf) {
+            if ($tf->id !== $user->id && !in_array($tf->id, $notifiedUserIds)) {
+                $notifiedUserIds[] = $tf->id;
+                Notification::create([
+                    'user_id' => $tf->id,
+                    'type' => 'revisions_requested',
+                    'title' => 'Evidence Revisions Requested',
+                    'message' => "The College Dean has requested revisions for {$acc->program->name}: {$this->reworkSummaryNotes}",
+                    'is_read' => false,
+                ]);
             }
         }
 
@@ -373,7 +397,7 @@ class DeanVerification extends Component
         ]);
 
         session()->flash('success', "Evidence repository returned to Task Force for revisions.");
-        $this->redirect(route('dashboard.college-head'), navigate: true);
+        $this->redirect(route('dashboard.college-head'));
     }
 
     public function openSubmitToIqaModal(): void
@@ -389,7 +413,7 @@ class DeanVerification extends Component
     }
 
     /**
-     * Formally complete Dean Verification and submit the sealed repository to the IQA Central Office.
+     * Submit verified repository to Central IQA Office.
      */
     public function confirmSubmitToIqa(): void
     {
@@ -400,16 +424,16 @@ class DeanVerification extends Component
             'status' => 'submitted',
         ]);
 
-        // Notify IQA Central Office staff
+        // Notify Central IQA Staff
         $iqaRole = Role::where('role_name', 'iqa-staff')->first();
         if ($iqaRole) {
             $iqaStaffUsers = User::where('role_id', $iqaRole->id)->get();
-            foreach ($iqaStaffUsers as $iqaUser) {
+            foreach ($iqaStaffUsers as $staff) {
                 Notification::create([
-                    'user_id' => $iqaUser->id,
+                    'user_id' => $staff->id,
                     'type' => 'accreditation_submitted',
                     'title' => 'Accreditation Repository Submitted',
-                    'message' => "The College Dean has verified and submitted the accreditation repository for {$acc->program->name}.",
+                    'message' => "College Dean of {$acc->program->college?->name} verified and submitted evidence repository for {$acc->program->name}.",
                     'is_read' => false,
                 ]);
             }
@@ -417,14 +441,14 @@ class DeanVerification extends Component
 
         AuditLog::create([
             'user_id' => $user->id,
-            'action' => "College Dean completed verification and submitted {$acc->program->name} accreditation repository to IQA Office",
+            'action' => "College Dean approved and submitted evidence repository for {$acc->program->name} to Central IQA Office.",
             'target_type' => 'Accreditation',
             'target_id' => $acc->id,
             'timestamp' => now(),
         ]);
 
         session()->flash('success', "Accreditation repository for {$acc->program->name} successfully verified and submitted to the IQA Office!");
-        $this->redirect(route('dashboard.college-head'), navigate: true);
+        $this->redirect(route('dashboard.college-head'));
     }
 
     public function render()
