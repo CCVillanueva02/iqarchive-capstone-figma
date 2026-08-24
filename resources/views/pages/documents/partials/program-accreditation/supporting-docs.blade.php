@@ -1,5 +1,5 @@
 <!-- LEVEL 3A: SUPPORTING DOCUMENTS WORKSPACE -->
-<div x-show="accredCategory === 'Supporting Documents'" x-transition class="flex flex-col gap-5">
+<div x-show="accredCategory === 'Supporting Documents' && (currentUserRole !== 'task-force-member' || !accredProgram || accredProgram.instrument_verified)" x-transition class="flex flex-col gap-5">
     
     <!-- Context Header Bar for Supporting Docs Workspace -->
     <template x-if="accredProgram !== null">

@@ -1,5 +1,5 @@
 <!-- LEVEL 4D: NARRATIVE PROFILE VIEW -->
-<div x-show="accredCategory === 'Narrative Profile'"
+<div x-show="accredCategory === 'Narrative Profile' && (currentUserRole !== 'task-force-member' || !accredProgram || accredProgram.instrument_verified)"
      x-transition class="flex flex-col gap-5 w-full">
 
     <!-- Context Header Bar -->

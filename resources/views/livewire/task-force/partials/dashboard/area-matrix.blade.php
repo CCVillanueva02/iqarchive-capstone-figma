@@ -5,18 +5,25 @@
             <h2 class="text-heading-sm font-extrabold text-primary">Accreditation Instruments &amp; Repositories</h2>
             <p class="text-body-sm text-zinc-500 mt-0.5">Primary documentation pillars for program accreditation compliance.</p>
         </div>
-        <a href="{{ route('documents.task-force-member', ['tab' => 'program-accreditation']) }}" 
-            class="text-body-sm font-bold text-primary hover:text-primary-hover transition flex items-center gap-1 shrink-0">
-            <span>Open All Repositories</span>
-            <x-lucide-arrow-right class="w-4 h-4" />
-        </a>
+        @if($this->isInstrumentVerified)
+            <a href="{{ route('documents.task-force-member', ['tab' => 'program-accreditation']) }}" 
+                class="text-body-sm font-bold text-primary hover:text-primary-hover transition flex items-center gap-1 shrink-0">
+                <span>Open All Repositories</span>
+                <x-lucide-arrow-right class="w-4 h-4" />
+            </a>
+        @else
+            <span class="text-label-xs font-bold text-amber-800 bg-amber-100 px-3 py-1.5 rounded-xl flex items-center gap-1.5 shrink-0">
+                <x-lucide-lock class="w-3.5 h-3.5 text-amber-700" />
+                <span>Locked · Awaiting Dean Setup</span>
+            </span>
+        @endif
     </div>
 
     <!-- 5 Core Instruments Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         
         <!-- 1. Supporting Documents (Area I to X) -->
-        <div class="md:col-span-2 border border-slate-200/80 rounded-2xl p-5 flex flex-col justify-between hover:border-blue-300 hover:shadow-xs transition bg-blue-50/20 gap-4">
+        <div class="md:col-span-2 border border-slate-200/80 rounded-2xl p-5 flex flex-col justify-between hover:border-blue-300 hover:shadow-xs transition bg-blue-50/20 gap-4 {{ !$this->isInstrumentVerified ? 'opacity-70 bg-slate-50/60' : '' }}">
             <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                 <div class="flex items-start gap-3.5">
                     <div class="w-11 h-11 rounded-xl bg-blue-100 text-primary flex items-center justify-center shrink-0">
@@ -60,16 +67,23 @@
                     <span>Readiness:</span>
                     <span class="text-primary font-black">{{ $stats['readinessPct'] }}%</span>
                 </div>
-                <a href="{{ route('documents.task-force-member', ['tab' => 'program-accreditation', 'category' => 'Supporting Documents']) }}" 
-                    class="px-4 py-2 bg-primary hover:bg-primary-hover text-white text-body-sm font-bold rounded-xl shadow-3xs transition flex items-center gap-2 cursor-pointer">
-                    <x-lucide-folder-up class="w-4 h-4" />
-                    <span>Open Supporting Documents</span>
-                </a>
+                @if($this->isInstrumentVerified)
+                    <a href="{{ route('documents.task-force-member', ['tab' => 'program-accreditation', 'category' => 'Supporting Documents']) }}" 
+                        class="px-4 py-2 bg-primary hover:bg-primary-hover text-white text-body-sm font-bold rounded-xl shadow-3xs transition flex items-center gap-2 cursor-pointer">
+                        <x-lucide-folder-up class="w-4 h-4" />
+                        <span>Open Supporting Documents</span>
+                    </a>
+                @else
+                    <button type="button" disabled class="px-4 py-2 bg-slate-200 text-slate-500 text-body-sm font-bold rounded-xl cursor-not-allowed flex items-center gap-2">
+                        <x-lucide-lock class="w-4 h-4" />
+                        <span>Locked (Pending Dean Setup)</span>
+                    </button>
+                @endif
             </div>
         </div>
 
         <!-- 2. Self-Survey Matrix & Instrument -->
-        <div class="border border-slate-200/80 rounded-2xl p-5 flex flex-col justify-between hover:border-amber-300 hover:shadow-xs transition bg-amber-50/20 gap-4">
+        <div class="border border-slate-200/80 rounded-2xl p-5 flex flex-col justify-between hover:border-amber-300 hover:shadow-xs transition bg-amber-50/20 gap-4 {{ !$this->isInstrumentVerified ? 'opacity-70 bg-slate-50/60' : '' }}">
             <div class="flex items-start gap-3.5">
                 <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
                     <x-lucide-clipboard-check class="w-5 h-5 text-amber-700" />
@@ -84,18 +98,25 @@
 
             <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
                 <span class="text-label-xs font-bold text-amber-800 bg-amber-100/80 px-2.5 py-1 rounded-lg">
-                    Rating Matrix Active
+                    Rating Matrix
                 </span>
-                <a href="{{ route('documents.task-force-member', ['tab' => 'program-accreditation', 'category' => 'Self-Survey Documents']) }}" 
-                    class="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-lg shadow-3xs transition flex items-center gap-1.5 cursor-pointer">
-                    <span>Open Self-Survey</span>
-                    <x-lucide-arrow-right class="w-3.5 h-3.5" />
-                </a>
+                @if($this->isInstrumentVerified)
+                    <a href="{{ route('documents.task-force-member', ['tab' => 'program-accreditation', 'category' => 'Self-Survey Documents']) }}" 
+                        class="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold rounded-lg shadow-3xs transition flex items-center gap-1.5 cursor-pointer">
+                        <span>Open Self-Survey</span>
+                        <x-lucide-arrow-right class="w-3.5 h-3.5" />
+                    </a>
+                @else
+                    <button type="button" disabled class="px-3.5 py-1.5 bg-slate-200 text-slate-500 text-xs font-bold rounded-lg cursor-not-allowed flex items-center gap-1.5">
+                        <x-lucide-lock class="w-3.5 h-3.5" />
+                        <span>Locked</span>
+                    </button>
+                @endif
             </div>
         </div>
 
         <!-- 3. Compliance Reports -->
-        <div class="border border-slate-200/80 rounded-2xl p-5 flex flex-col justify-between hover:border-emerald-300 hover:shadow-xs transition bg-emerald-50/20 gap-4">
+        <div class="border border-slate-200/80 rounded-2xl p-5 flex flex-col justify-between hover:border-emerald-300 hover:shadow-xs transition bg-emerald-50/20 gap-4 {{ !$this->isInstrumentVerified ? 'opacity-70 bg-slate-50/60' : '' }}">
             <div class="flex items-start gap-3.5">
                 <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
                     <x-lucide-file-badge class="w-5 h-5 text-emerald-700" />
@@ -112,16 +133,23 @@
                 <span class="text-label-xs font-bold text-emerald-800 bg-emerald-100/80 px-2.5 py-1 rounded-lg">
                     Compliance Repository
                 </span>
-                <a href="{{ route('documents.task-force-member', ['tab' => 'program-accreditation', 'category' => 'Compliance Reports']) }}" 
-                    class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg shadow-3xs transition flex items-center gap-1.5 cursor-pointer">
-                    <span>Open Reports</span>
-                    <x-lucide-arrow-right class="w-3.5 h-3.5" />
-                </a>
+                @if($this->isInstrumentVerified)
+                    <a href="{{ route('documents.task-force-member', ['tab' => 'program-accreditation', 'category' => 'Compliance Reports']) }}" 
+                        class="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg shadow-3xs transition flex items-center gap-1.5 cursor-pointer">
+                        <span>Open Reports</span>
+                        <x-lucide-arrow-right class="w-3.5 h-3.5" />
+                    </a>
+                @else
+                    <button type="button" disabled class="px-3.5 py-1.5 bg-slate-200 text-slate-500 text-xs font-bold rounded-lg cursor-not-allowed flex items-center gap-1.5">
+                        <x-lucide-lock class="w-3.5 h-3.5" />
+                        <span>Locked</span>
+                    </button>
+                @endif
             </div>
         </div>
 
         <!-- 4. Program Performance Portfolio (PPP) -->
-        <div class="border border-slate-200/80 rounded-2xl p-5 flex flex-col justify-between hover:border-teal-300 hover:shadow-xs transition bg-teal-50/20 gap-4">
+        <div class="border border-slate-200/80 rounded-2xl p-5 flex flex-col justify-between hover:border-teal-300 hover:shadow-xs transition bg-teal-50/20 gap-4 {{ !$this->isInstrumentVerified ? 'opacity-70 bg-slate-50/60' : '' }}">
             <div class="flex items-start gap-3.5">
                 <div class="w-10 h-10 rounded-xl bg-teal-100 text-teal-700 flex items-center justify-center shrink-0">
                     <x-lucide-layout-panel-top class="w-5 h-5 text-teal-700" />
@@ -138,16 +166,23 @@
                 <span class="text-label-xs font-bold text-teal-800 bg-teal-100/80 px-2.5 py-1 rounded-lg">
                     Executive Profile
                 </span>
-                <a href="{{ route('documents.task-force-member', ['tab' => 'program-accreditation', 'category' => 'PPP']) }}" 
-                    class="px-3.5 py-1.5 bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold rounded-lg shadow-3xs transition flex items-center gap-1.5 cursor-pointer">
-                    <span>Open PPP</span>
-                    <x-lucide-arrow-right class="w-3.5 h-3.5" />
-                </a>
+                @if($this->isInstrumentVerified)
+                    <a href="{{ route('documents.task-force-member', ['tab' => 'program-accreditation', 'category' => 'PPP']) }}" 
+                        class="px-3.5 py-1.5 bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold rounded-lg shadow-3xs transition flex items-center gap-1.5 cursor-pointer">
+                        <span>Open PPP</span>
+                        <x-lucide-arrow-right class="w-3.5 h-3.5" />
+                    </a>
+                @else
+                    <button type="button" disabled class="px-3.5 py-1.5 bg-slate-200 text-slate-500 text-xs font-bold rounded-lg cursor-not-allowed flex items-center gap-1.5">
+                        <x-lucide-lock class="w-3.5 h-3.5" />
+                        <span>Locked</span>
+                    </button>
+                @endif
             </div>
         </div>
 
         <!-- 5. Narrative Profile -->
-        <div class="border border-slate-200/80 rounded-2xl p-5 flex flex-col justify-between hover:border-purple-300 hover:shadow-xs transition bg-purple-50/20 gap-4">
+        <div class="border border-slate-200/80 rounded-2xl p-5 flex flex-col justify-between hover:border-purple-300 hover:shadow-xs transition bg-purple-50/20 gap-4 {{ !$this->isInstrumentVerified ? 'opacity-70 bg-slate-50/60' : '' }}">
             <div class="flex items-start gap-3.5">
                 <div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center shrink-0">
                     <x-lucide-notebook-pen class="w-5 h-5 text-purple-700" />
@@ -162,13 +197,20 @@
 
             <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
                 <span class="text-label-xs font-bold text-purple-800 bg-purple-100/80 px-2.5 py-1 rounded-lg">
-                    In-App Narrative Editor
+                    In-App Narrative
                 </span>
-                <a href="{{ route('documents.task-force-member', ['tab' => 'program-accreditation', 'category' => 'Narrative Profile']) }}" 
-                    class="px-3.5 py-1.5 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold rounded-lg shadow-3xs transition flex items-center gap-1.5 cursor-pointer">
-                    <span>Open Narrative</span>
-                    <x-lucide-arrow-right class="w-3.5 h-3.5" />
-                </a>
+                @if($this->isInstrumentVerified)
+                    <a href="{{ route('documents.task-force-member', ['tab' => 'program-accreditation', 'category' => 'Narrative Profile']) }}" 
+                        class="px-3.5 py-1.5 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold rounded-lg shadow-3xs transition flex items-center gap-1.5 cursor-pointer">
+                        <span>Open Narrative</span>
+                        <x-lucide-arrow-right class="w-3.5 h-3.5" />
+                    </a>
+                @else
+                    <button type="button" disabled class="px-3.5 py-1.5 bg-slate-200 text-slate-500 text-xs font-bold rounded-lg cursor-not-allowed flex items-center gap-1.5">
+                        <x-lucide-lock class="w-3.5 h-3.5" />
+                        <span>Locked</span>
+                    </button>
+                @endif
             </div>
         </div>
 

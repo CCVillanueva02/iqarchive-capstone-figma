@@ -1,5 +1,5 @@
 <!-- LEVEL 3: PROGRAM ACCREDITATION SUB-CATEGORY SELECT -->
-<div x-show="accredProgram !== null && accredCategory === null" x-transition class="flex flex-col gap-5 w-full py-2">
+<div x-show="accredProgram !== null && (accredCategory === null || (currentUserRole === 'task-force-member' && !accredProgram.instrument_verified))" x-transition class="flex flex-col gap-5 w-full py-2">
     
     <!-- Context Banner for Selected Program -->
     <template x-if="accredProgram !== null">

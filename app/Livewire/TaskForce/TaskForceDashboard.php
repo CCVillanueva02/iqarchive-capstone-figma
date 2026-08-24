@@ -143,6 +143,23 @@ class TaskForceDashboard extends Component
         ];
     }
 
+    public function getIsInstrumentVerifiedProperty(): bool
+    {
+        $acc = $this->accreditation;
+        if (!$acc) {
+            return false;
+        }
+
+        return in_array($acc->status, [
+            'document_preparation',
+            'uploading',
+            'ready_for_verification',
+            'dean_verification',
+            'submitted',
+            'completed',
+        ]);
+    }
+
     public function openSubmitModal(): void
     {
         $this->submissionRemarks = '';

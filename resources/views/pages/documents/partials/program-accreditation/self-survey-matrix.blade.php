@@ -1,5 +1,5 @@
 <!-- LEVEL 3B: SELF SURVEY VIEW -->
-<div x-show="accredCategory === 'Self-Survey Documents'"
+<div x-show="accredCategory === 'Self-Survey Documents' && (currentUserRole !== 'task-force-member' || !accredProgram || accredProgram.instrument_verified)"
      x-init="$watch('accredCategory', val => { if (val === 'Self-Survey Documents' && !selfSurveyActiveAreaId && institutionalSurveyAreas.length) selectSurveyArea(institutionalSurveyAreas[0].id); })"
      x-transition class="flex flex-col gap-5 w-full">
 

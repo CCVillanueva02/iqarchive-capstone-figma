@@ -2945,12 +2945,16 @@ window.documentWorkspace = function (initialState = {}) {
             if (categoryParam) {
                 this.selectedCategory = categoryParam;
                 if (['Supporting Documents', 'Self-Survey Documents', 'Compliance Reports', 'Narrative Profile', 'PPP'].includes(categoryParam)) {
-                    this.accredCategory = categoryParam;
-                    if (categoryParam === 'Narrative Profile' && typeof this.initNarrativeProfile === 'function') {
-                        setTimeout(() => this.initNarrativeProfile(), 50);
-                    }
-                    if (categoryParam === 'PPP' && typeof this.initPPP === 'function') {
-                        setTimeout(() => this.initPPP(), 50);
+                    if (this.currentUserRole === 'task-force-member' && this.accredProgram && !this.accredProgram.instrument_verified) {
+                        this.accredCategory = null;
+                    } else {
+                        this.accredCategory = categoryParam;
+                        if (categoryParam === 'Narrative Profile' && typeof this.initNarrativeProfile === 'function') {
+                            setTimeout(() => this.initNarrativeProfile(), 50);
+                        }
+                        if (categoryParam === 'PPP' && typeof this.initPPP === 'function') {
+                            setTimeout(() => this.initPPP(), 50);
+                        }
                     }
                 }
             }

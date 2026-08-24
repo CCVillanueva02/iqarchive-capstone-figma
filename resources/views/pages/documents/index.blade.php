@@ -25,6 +25,7 @@
         $isInstrumentVerified = $latestAccred && in_array($latestAccred->status, [
             'document_preparation',
             'uploading',
+            'ready_for_verification',
             'dean_verification',
             'submitted',
             'completed',

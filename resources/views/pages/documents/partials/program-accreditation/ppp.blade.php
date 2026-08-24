@@ -1,5 +1,5 @@
 <!-- LEVEL 4E: PROGRAM PERFORMANCE PORTFOLIO (PPP) VIEW -->
-<div x-show="accredCategory === 'PPP'"
+<div x-show="accredCategory === 'PPP' && (currentUserRole !== 'task-force-member' || !accredProgram || accredProgram.instrument_verified)"
      x-transition class="flex flex-col gap-5 w-full">
 
     <!-- Context Header Bar -->
