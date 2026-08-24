@@ -91,7 +91,7 @@
                 <template x-if="!isSubmittingToDean">
                     <x-lucide-send class="w-4 h-4" />
                 </template>
-                <span x-text="isSubmittingToDean ? 'Submitting...' : 'Submit to Dean'"></span>
+                <span x-text="isSubmittingToDean ? 'Submitting...' : 'Submit'"></span>
             </button>
         </div>
     </div>

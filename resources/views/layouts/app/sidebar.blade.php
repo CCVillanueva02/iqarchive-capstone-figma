@@ -337,13 +337,12 @@
             </a>
             @endif
 
-            <!-- Configuration Section -->
-            @if (in_array($role, ['iqa-staff', 'system-administrator', 'university-administrator', 'college-head']))
+            <!-- Configuration Section (Central Administration & IQA) -->
+            @if (in_array($role, ['iqa-staff', 'system-administrator', 'university-administrator']))
             <div class="px-6 pt-3 pb-1">
                 <span class="text-label-xs font-bold uppercase tracking-[1.5px] text-white/40">Configuration</span>
             </div>
 
-            @if (in_array($role, ['iqa-staff', 'system-administrator', 'university-administrator']))
             <!-- Colleges & Programs -->
             <a href="{{ route('configuration.colleges-programs') }}" class="group flex items-center gap-3.5 px-6 py-3.5 border-l-4 text-body font-semibold transition-all {{ request()->routeIs('configuration.colleges-programs') ? 'bg-white/10 text-white border-l-brand-orange' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -352,26 +351,25 @@
                 </svg>
                 <span>Colleges &amp; Programs</span>
             </a>
-            @endif
 
-            <!-- Active Instruments Builder (Configuration Tab for IQA & Deans) -->
+            <!-- Active Instruments Builder (Master Templates) -->
             <a href="{{ route('configuration.instruments') }}" class="group flex items-center gap-3.5 px-6 py-3.5 border-l-4 text-body font-semibold transition-all {{ request()->routeIs('configuration.instruments*') ? 'bg-white/10 text-white border-l-brand-orange' : 'text-white/70 hover:text-white hover:bg-white/5 border-l-transparent' }}" wire:navigate>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                     <polyline points="14 2 14 8 20 8"></polyline>
                     <path d="m9 15 2 2 4-4"></path>
                 </svg>
-                <span>Instruments</span>
+                <span>Master Instruments</span>
             </a>
             @endif
 
-            <!-- Dean Dynamic Instrument Link (Visible when Accreditation reaches Task Force Approved / Instrument Setup) -->
+            <!-- Dean Dynamic Instrument Link (Workspace for Active Accreditation Cycle) -->
             @if ($role === 'college-head')
             @php
                 $deanUser = auth()->user();
                 $activeDeanAccreditation = $deanUser && $deanUser->college_id
                     ? \App\Models\Accreditation::whereHas('program', fn($q) => $q->where('college_id', $deanUser->college_id))
-                        ->whereIn('status', ['task_force_approved', 'instrument_building', 'document_preparation'])
+                        ->whereIn('status', ['task_force_approved', 'instrument_building', 'document_preparation', 'uploading', 'dean_verification'])
                         ->latest()
                         ->first()
                     : null;
@@ -393,7 +391,7 @@
                     <span>Instruments</span>
                 </div>
                 @if ($deanNeedsInstrumentAction)
-                <span class="text-label-xs px-2 py-0.5 rounded-full bg-brand-orange text-white font-bold uppercase tracking-wider animate-pulse">Action</span>
+                <span class="w-2 h-2 rounded-full bg-brand-orange animate-pulse shrink-0" title="Action Required"></span>
                 @endif
             </a>
             @endif

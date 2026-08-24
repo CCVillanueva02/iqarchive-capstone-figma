@@ -30,6 +30,9 @@ class AaccupMasterInstrumentSeeder extends Seeder
             ->whereNotIn('code', $templateCodes)
             ->delete();
 
+        // Clean up any empty non-template instruments without areas
+        Instrument::where('is_template', false)->whereDoesntHave('areas')->delete();
+
         // ─────────────────────────────────────────────────────────────
         // 1. PROGRAM ACCREDITATION: 10 AREAS MASTER DATA
         // ─────────────────────────────────────────────────────────────

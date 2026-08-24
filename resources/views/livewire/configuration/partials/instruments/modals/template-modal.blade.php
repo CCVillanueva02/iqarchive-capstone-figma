@@ -86,7 +86,7 @@
                 <div class="flex flex-col gap-1.5">
                     <label class="text-label font-bold text-slate-700">Duplicate for Program <span class="text-zinc-400 font-normal">(Optional)</span></label>
                     <select wire:model="cloneTargetProgramId" class="w-full rounded-lg border-slate-300 text-body-sm font-medium text-slate-800 focus:ring-2 focus:ring-brand-orange/20 focus:border-brand-orange shadow-xs transition cursor-pointer">
-                        <option value="">⭐ Generic Master Template (No Program)</option>
+                        <option value="">Generic Master Template (No Program)</option>
                         @foreach ($colleges as $college)
                             @if ($college->programs->isNotEmpty())
                             <optgroup label="{{ $college->name }} ({{ $college->code }})">

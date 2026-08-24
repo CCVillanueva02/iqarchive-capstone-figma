@@ -356,7 +356,8 @@ class InstrumentBuilderTest extends TestCase
 
         // Dean can clone master and add criteria for their college program
         $test = Livewire::test(\App\Livewire\Configuration\Instruments::class)
-            ->assertSet('selectedProgramId', $this->program->id)
+            ->assertSet('selectedProgramId', null)
+            ->call('selectProgram', $this->program->id)
             ->call('cloneMasterForProgram');
 
         $cloned = Instrument::where('program_id', $this->program->id)->first();

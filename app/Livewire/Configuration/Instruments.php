@@ -96,10 +96,6 @@ class Instruments extends Component
 
         if ($user->hasRole('college-head') && $user->college_id) {
             $this->accreditationScope = 'program';
-            $firstProgram = \App\Models\Program::where('college_id', $user->college_id)->orderBy('name')->first();
-            if ($firstProgram && ! $this->selectedProgramId) {
-                $this->selectedProgramId = $firstProgram->id;
-            }
         }
 
         $this->resolveActiveInstrument();
@@ -120,9 +116,9 @@ class Instruments extends Component
         $this->resolveActiveInstrument();
     }
 
-    public function selectProgram(?int $programId)
+    public function selectProgram($programId = null)
     {
-        $this->selectedProgramId = $programId ?: null;
+        $this->selectedProgramId = !empty($programId) ? (int) $programId : null;
         $this->resolveActiveInstrument();
     }
 
@@ -244,8 +240,9 @@ class Instruments extends Component
         ]);
     }
 
-    public function selectInstrument(int $id)
+    public function selectInstrument($id)
     {
+        $id = (int) $id;
         $this->selectedInstrumentId = $id;
         $instrument = Instrument::with(['areas.parameters.criteria'])->find($id);
 
@@ -266,8 +263,9 @@ class Instruments extends Component
         $this->activeSection = 'systems';
     }
 
-    public function selectArea(int $areaId)
+    public function selectArea($areaId)
     {
+        $areaId = (int) $areaId;
         $this->activeAreaId = $areaId;
         $area = InstrumentArea::with('parameters')->find($areaId);
 
@@ -278,9 +276,9 @@ class Instruments extends Component
         }
     }
 
-    public function selectParameter(int $paramId)
+    public function selectParameter($paramId)
     {
-        $this->activeParameterId = $paramId;
+        $this->activeParameterId = (int) $paramId;
     }
 
     public function setSection(string $section)
@@ -344,9 +342,9 @@ class Instruments extends Component
         ]);
     }
 
-    public function openCloneModal(int $sourceId)
+    public function openCloneModal($sourceId)
     {
-        $source = Instrument::findOrFail($sourceId);
+        $source = Instrument::findOrFail((int) $sourceId);
         $this->sourceTemplateId = $source->id;
         $this->cloneTargetProgramId = $this->selectedProgramId;
 

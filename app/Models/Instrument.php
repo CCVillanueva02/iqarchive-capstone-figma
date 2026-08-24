@@ -65,9 +65,24 @@ class Instrument extends Model
     public function cloneForProgram(Program $program, ?Accreditation $accreditation = null, ?User $actor = null): self
     {
         return DB::transaction(function () use ($program, $accreditation, $actor) {
+            $categorySuffix = match(true) {
+                str_contains($this->code, 'SELF-SURVEY') || str_contains($this->name, 'Self-Survey') => '-SURVEY',
+                str_contains($this->code, 'COMPLIANCE') || str_contains($this->name, 'Compliance') => '-COMPLIANCE',
+                str_contains($this->code, 'SUPPORTING') || str_contains($this->name, 'Supporting') => '-SUPP',
+                default => '',
+            };
+
+            $baseCode = "INST-{$program->code}" . $categorySuffix . '-' . strtoupper(str_replace(' ', '', $this->level ?? 'LVL')) . '-' . now()->year;
+            $code = $baseCode;
+            $counter = 1;
+            while (self::where('code', $code)->exists()) {
+                $counter++;
+                $code = "{$baseCode}-{$counter}";
+            }
+
             $clonedInstrument = self::create([
                 'name' => "{$this->name} - {$program->name}",
-                'code' => "INST-{$program->code}-" . strtoupper(str_replace(' ', '', $this->level ?? 'LVL')) . '-' . now()->year,
+                'code' => $code,
                 'level' => $this->level ?? $program->accreditation_level,
                 'accreditation_type' => $this->accreditation_type ?? 'program',
                 'program_id' => $program->id,
