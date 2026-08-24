@@ -5,9 +5,15 @@
             @php
                 $isActive = $activeAreaId === $area->id;
                 // Count area documents
-                $areaDocs = $allProgramDocs->filter(function($doc) use ($area) {
-                    $crit = $doc->accreditationLinks->first()?->complianceRequirement?->criterion;
-                    return $crit && $crit->parameter && $crit->parameter->instrument_area_id === $area->id;
+                $areaParamIds = $area->parameters->pluck('id')->toArray();
+                $areaDocs = $allProgramDocs->filter(function($doc) use ($areaParamIds) {
+                    foreach ($doc->accreditationLinks as $link) {
+                        $crit = $link->complianceRequirement?->criterion;
+                        if ($crit && in_array($crit->instrument_parameter_id, $areaParamIds)) {
+                            return true;
+                        }
+                    }
+                    return false;
                 });
                 $areaTotal = $areaDocs->count();
                 $areaVerified = $areaDocs->where('status', 'verified')->count();

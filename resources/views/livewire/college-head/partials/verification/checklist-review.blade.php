@@ -13,8 +13,13 @@
                     @php
                         $isParamActive = $activeParameterId === $param->id;
                         $paramDocs = $allProgramDocs->filter(function($doc) use ($param) {
-                            $crit = $doc->accreditationLinks->first()?->complianceRequirement?->criterion;
-                            return $crit && $crit->instrument_parameter_id === $param->id;
+                            foreach ($doc->accreditationLinks as $link) {
+                                $crit = $link->complianceRequirement?->criterion;
+                                if ($crit && $crit->instrument_parameter_id === $param->id) {
+                                    return true;
+                                }
+                            }
+                            return false;
                         });
                         $pTotal = $paramDocs->count();
                         $pVerified = $paramDocs->where('status', 'verified')->count();
@@ -65,9 +70,13 @@
             @forelse($criteria as $criterion)
                 @php
                     $critDocs = $allProgramDocs->filter(function($doc) use ($criterion) {
-                        $link = $doc->accreditationLinks->first();
-                        $c = $link?->complianceRequirement?->criterion;
-                        return ($c && $c->id === $criterion->id) || ($c && $c->code === $criterion->code);
+                        foreach ($doc->accreditationLinks as $link) {
+                            $req = $link->complianceRequirement;
+                            if ($req && ($req->instrument_criterion_id === $criterion->id || $req->criterion?->id === $criterion->id)) {
+                                return true;
+                            }
+                        }
+                        return false;
                     });
                 @endphp
                 <div class="border border-slate-200 rounded-2xl p-5 flex flex-col gap-4 bg-slate-50/25 shadow-3xs">

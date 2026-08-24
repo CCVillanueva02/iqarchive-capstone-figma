@@ -186,9 +186,11 @@ class DeanVerification extends Component
     public function getStatsProperty(): array
     {
         $acc = $this->accreditation;
-        $programId = $acc->program_id;
 
-        $documents = Document::where('program_id', $programId)->get();
+        $documents = Document::whereHas('accreditationLinks.complianceRequirement', function($q) use ($acc) {
+            $q->where('accreditation_id', $acc->id);
+        })->get();
+
         $totalDocs = $documents->count();
         $verifiedDocs = $documents->where('status', 'verified')->count();
         $pendingDocs = $documents->where('status', 'pending')->count();
@@ -436,9 +438,11 @@ class DeanVerification extends Component
 
         $criteria = $activeParameter?->criteria->where('section', $this->activeSection) ?? collect();
 
-        // Load all documents for the program
-        $allProgramDocs = Document::with(['uploader', 'accreditationLinks.complianceRequirement.criterion'])
-            ->where('program_id', $acc->program_id)
+        // Load all evidence documents specifically linked to this accreditation
+        $allProgramDocs = Document::with(['uploader', 'accreditationLinks.complianceRequirement.criterion.parameter.area'])
+            ->whereHas('accreditationLinks.complianceRequirement', function($q) use ($acc) {
+                $q->where('accreditation_id', $acc->id);
+            })
             ->get();
 
         return view('livewire.college-head.dean-verification', [
