@@ -67,8 +67,13 @@
                     @endphp
                     <tr class="hover:bg-slate-50 transition-colors">
                         <td class="px-5 py-3 font-bold text-primary border-r border-slate-200">
-                            <span class="text-primary-dark font-extrabold mr-2">{{ $item['college_code'] }}</span>
-                            <span class="text-label-xs text-primary-muted font-normal hidden lg:inline">{{ $item['college_name'] }}</span>
+                            <div class="flex items-center gap-3">
+                                <img src="{{ (new \App\Models\College(['code' => $item['college_code']]))->logo }}" alt="Logo" class="w-6 h-6 object-contain shrink-0" onerror="this.style.display='none'">
+                                <div class="flex flex-col">
+                                    <span class="text-primary-dark font-extrabold">{{ $item['college_code'] }}</span>
+                                    <span class="text-label-xs text-primary-muted font-normal hidden lg:block">{{ $item['college_name'] }}</span>
+                                </div>
+                            </div>
                         </td>
                         <td class="px-4 py-3 text-center font-black text-body text-slate-800 bg-slate-50 border-r border-slate-200">
                             {{ $item['total_visits'] }}

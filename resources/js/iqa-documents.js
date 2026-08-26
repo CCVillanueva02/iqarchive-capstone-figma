@@ -2201,6 +2201,7 @@ window.documentWorkspace = function (initialState = {}) {
                     name: c.name,
                     description: c.campus || c.description || 'Academic Unit',
                     iconBg: c.iconBg || 'bg-slate-100 text-[#1b355a]',
+                    logo: c.logo,
                     programCount: count
                 };
             });

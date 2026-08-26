@@ -19,9 +19,12 @@
             <!-- Top Row: Code Badge & Status Badge -->
             <div class="flex items-start justify-between gap-3">
                 <div class="flex-1">
-                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-label-xs font-mono font-bold bg-slate-100 text-primary border border-slate-200 mb-1.5">
-                        {{ $tf->college->code }}@if($tf->program) / {{ $tf->program->code }}@endif
-                    </span>
+                    <div class="flex items-center gap-2 mb-1.5">
+                        <img src="{{ $tf->college->logo }}" alt="Logo" class="w-6 h-6 object-contain shrink-0" onerror="this.style.display='none'">
+                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-label-xs font-mono font-bold bg-slate-100 text-primary border border-slate-200">
+                            {{ $tf->college->code }}@if($tf->program) / {{ $tf->program->code }}@endif
+                        </span>
+                    </div>
                     <h3 class="text-heading-sm font-bold text-primary group-hover:text-brand-orange transition-colors leading-snug line-clamp-2">
                         {{ $tf->name }}
                     </h3>

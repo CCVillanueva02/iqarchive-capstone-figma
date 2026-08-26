@@ -82,13 +82,15 @@
                         @if($user->program)
                             <span class="inline-flex items-center gap-1 font-mono text-label-xs font-bold text-slate-700 bg-surface-subtle px-2 py-0.5 rounded border border-slate-200" title="{{ $user->college?->name ? $user->college->name . ' — ' : '' }}{{ $user->program->name }}">
                                 @if($user->college)
+                                    <img src="{{ $user->college->logo }}" alt="Logo" class="w-4 h-4 object-contain shrink-0" onerror="this.style.display='none'">
                                     <span class="text-primary">{{ $user->college->code }}</span>
                                     <span class="text-slate-300">/</span>
                                 @endif
                                 <span>{{ $user->program->code }}</span>
                             </span>
                         @elseif($user->college)
-                            <span class="inline-flex items-center font-mono text-label-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded border border-primary/20" title="{{ $user->college->name }}">
+                            <span class="inline-flex items-center gap-1 font-mono text-label-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded border border-primary/20" title="{{ $user->college->name }}">
+                                <img src="{{ $user->college->logo }}" alt="Logo" class="w-4 h-4 object-contain shrink-0" onerror="this.style.display='none'">
                                 {{ $user->college->code }}
                             </span>
                         @else

@@ -57,7 +57,8 @@
                     <div class="flex items-start justify-between gap-3">
                         <!-- Left Side: Profile Icon & College Name -->
                         <div class="flex items-center gap-3 overflow-hidden">
-                            <div class="w-11 h-11 rounded-xl flex items-center justify-center font-black text-sm shrink-0" :class="col.iconBg || 'bg-blue-50 text-primary'">
+                            <img :src="col.logo" :alt="col.code + ' Logo'" class="w-11 h-11 object-contain shrink-0" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                            <div class="w-11 h-11 rounded-xl items-center justify-center font-black text-sm shrink-0" style="display: none;" :class="col.iconBg || 'bg-blue-50 text-primary'">
                                 <span x-text="col.code"></span>
                             </div>
                             <div class="flex flex-col overflow-hidden">

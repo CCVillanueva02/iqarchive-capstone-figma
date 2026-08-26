@@ -27,6 +27,9 @@
                 </span>
             </template>
             <span>&gt;</span>
+            <template x-if="accredCollege?.code">
+                <img :src="accredCollege.logo" alt="Logo" class="w-5 h-5 object-contain shrink-0" onerror="this.style.display='none'" />
+            </template>
             <span class="text-zinc-650 font-semibold" x-text="accredCollege?.name"></span>
         </div>
     </template>
@@ -49,6 +52,9 @@
                 </span>
             </template>
             <span>&gt;</span>
+            <template x-if="accredCollege?.code">
+                <img :src="accredCollege.logo" alt="Logo" class="w-5 h-5 object-contain shrink-0" onerror="this.style.display='none'" />
+            </template>
             <span class="hover:underline cursor-pointer" @click="clearProgram()" x-text="accredCollege?.name"></span>
             <span>&gt;</span>
             <span class="text-zinc-650 font-semibold" x-text="accredProgram?.name"></span>
@@ -72,6 +78,9 @@
                     </span>
                 </template>
                 <span>&gt;</span>
+                <template x-if="accredCollege?.code">
+                    <img :src="accredCollege.logo" alt="Logo" class="w-5 h-5 object-contain shrink-0" onerror="this.style.display='none'" />
+                </template>
                 <span class="hover:underline cursor-pointer" @click="clearProgram()" x-text="accredCollege?.name"></span>
                 <span>&gt;</span>
                 <span class="hover:underline cursor-pointer" @click="accredCategory = null" x-text="accredProgram?.name"></span>

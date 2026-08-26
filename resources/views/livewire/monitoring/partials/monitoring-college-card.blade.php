@@ -14,6 +14,7 @@
 
             <div class="flex flex-col min-w-0">
                 <div class="flex items-center gap-2.5 flex-wrap">
+                    <img src="{{ $college->logo }}" alt="{{ $college->code }} Logo" class="w-8 h-8 object-contain shrink-0" onerror="this.style.display='none'">
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-lg text-label-xs font-bold bg-primary text-white">
                         {{ $college->code }}
                     </span>

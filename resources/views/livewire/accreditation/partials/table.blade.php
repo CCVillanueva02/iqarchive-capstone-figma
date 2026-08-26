@@ -19,7 +19,10 @@
                     <!-- College & Program -->
                     <td class="px-6 py-4.5">
                         <div class="flex items-center gap-3">
-                            <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-label-xs font-bold {{ $isCancelled ? 'bg-slate-200 text-slate-600' : 'bg-primary/10 text-primary border border-primary/15' }} shrink-0">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-label-xs font-bold {{ $isCancelled ? 'bg-slate-200 text-slate-600' : 'bg-primary/10 text-primary border border-primary/15' }} shrink-0">
+                                @if($acc->program->college)
+                                    <img src="{{ $acc->program->college->logo }}" alt="Logo" class="w-4 h-4 object-contain shrink-0" onerror="this.style.display='none'">
+                                @endif
                                 {{ $acc->program->college->code ?? 'N/A' }}
                             </span>
                             <div class="flex flex-col">

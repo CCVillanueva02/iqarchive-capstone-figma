@@ -232,6 +232,7 @@ class ProgramController extends Controller
                 'campus' => $c->campus ?: 'BU Campus',
                 'description' => $c->campus ?: 'BU Academic Unit',
                 'iconBg' => $iconBg,
+                'logo' => $c->logo,
                 'programCount' => $c->programs_count,
             ];
         });
