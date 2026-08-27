@@ -16,12 +16,12 @@
 
         <!-- Action Buttons: Count Badge & Add Program Button -->
         <div class="flex flex-wrap items-center gap-3 shrink-0 self-start md:self-auto">
-            <button x-show="isUnrestricted || collegesList.length > 1" type="button" @click="clearCollege()" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-zinc-700 font-bold text-xs rounded-xl shadow-2xs transition cursor-pointer flex items-center gap-1.5">
+            <!-- <button x-show="isUnrestricted || collegesList.length > 1" type="button" @click="clearCollege()" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-zinc-700 font-bold text-xs rounded-xl shadow-2xs transition cursor-pointer flex items-center gap-1.5">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
                 </svg>
                 <span>Change College</span>
-            </button>
+            </button> -->
 
             <div class="flex items-center gap-2 bg-slate-50 border border-slate-200/60 px-3.5 py-2 rounded-xl">
                 <span class="text-xs font-semibold text-zinc-500">Available Programs:</span>
