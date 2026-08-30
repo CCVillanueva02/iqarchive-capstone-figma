@@ -10,7 +10,7 @@
     x-transition:leave="transition ease-in duration-200"
     x-transition:leave-start="opacity-100"
     x-transition:leave-end="opacity-0"
-    class="fixed inset-0 bg-slate-900/40 backdrop-blur-[2px] z-[200]">
+    class="fixed inset-0 bg-slate-900/40 backdrop-blur-[2px] z-200">
 </div>
 
 <!-- Document Preview Drawer Panel -->
@@ -23,7 +23,7 @@
     x-transition:leave="transition transform ease-in duration-200"
     x-transition:leave-start="translate-x-0"
     x-transition:leave-end="translate-x-full"
-    class="fixed right-0 top-0 h-screen w-full max-w-[460px] bg-white shadow-2xl z-[250] flex flex-col border-l border-slate-200/80 font-sans">
+    class="fixed right-0 top-0 h-screen w-full max-w-115 bg-white shadow-2xl z-250 flex flex-col border-l border-slate-200/80 font-sans">
 
     <!-- Drawer Header -->
     <div class="px-6 py-5 border-b border-slate-100 flex flex-col gap-1.5">
@@ -143,12 +143,12 @@
             <!-- Preview Viewer Card -->
             <div class="bg-white border border-slate-200/80 rounded-2xl overflow-hidden shadow-2xs flex flex-col">
                 <!-- Dark Viewer Canvas -->
-                <div class="bg-zinc-900 p-6 flex items-center justify-center min-h-[240px]">
+                <div class="bg-zinc-900 p-6 flex items-center justify-center min-h-60">
                     <template x-if="selectedDoc?.file_url">
-                        <iframe :src="selectedDoc.file_url + '#toolbar=0&navpanes=0&scrollbar=0&view=FitH'" class="w-full h-[240px] border-0 rounded"></iframe>
+                        <iframe :src="selectedDoc.file_url + '#toolbar=0&navpanes=0&scrollbar=0&view=FitH'" class="w-full h-60 border-0 rounded"></iframe>
                     </template>
                     <template x-if="!selectedDoc?.file_url">
-                        <div class="bg-white shadow-xl rounded p-6 max-w-[280px] w-full text-center flex flex-col gap-2 font-sans">
+                        <div class="bg-white shadow-xl rounded p-6 max-w-70 w-full text-center flex flex-col gap-2 font-sans">
                             <div class="text-body-sm font-extrabold text-primary-dark" x-text="'Document: ' + (selectedDoc?.name || 'Faculty Profile')"></div>
                             <p class="text-label text-slate-500 leading-relaxed" x-text="selectedDoc?.ocrText || 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore.'"></p>
                             <div class="text-label font-bold text-slate-400 mt-2 border-t border-slate-100 pt-2">Bicol University Institutional Quality Assurance Center</div>

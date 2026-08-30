@@ -51,7 +51,7 @@
                 </div>
 
                 <!-- Displayed Tags List -->
-                <div class="flex flex-wrap items-center gap-2 min-h-[32px] p-2 bg-slate-50 border border-slate-200/80 rounded-lg">
+                <div class="flex flex-wrap items-center gap-2 min-h-8 p-2 bg-slate-50 border border-slate-200/80 rounded-lg">
                     @forelse ($criterionTags as $index => $tag)
                     <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-label-xs font-bold bg-surface-subtle text-primary-dark border border-primary/15">
                         <span>{{ $tag }}</span>

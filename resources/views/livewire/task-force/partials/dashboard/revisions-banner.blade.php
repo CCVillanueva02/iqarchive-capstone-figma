@@ -30,7 +30,7 @@
     @endphp
 
     @if($flaggedDocs->isNotEmpty())
-        <div class="bg-gradient-to-r from-amber-500/10 via-amber-50/80 to-white border-l-4 border-amber-500 rounded-2xl p-5 shadow-3xs flex flex-col md:flex-row md:items-center justify-between gap-4 border border-amber-200/60">
+        <div class="bg-linear-to-r from-amber-500/10 via-amber-50/80 to-white border-l-4 border-amber-500 rounded-2xl p-5 shadow-3xs flex flex-col md:flex-row md:items-center justify-between gap-4 border border-amber-200/60">
             <div class="flex items-start gap-4">
                 <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center shrink-0 mt-0.5">
                     <x-lucide-alert-triangle class="w-5 h-5 text-amber-700" />

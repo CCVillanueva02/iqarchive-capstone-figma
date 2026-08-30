@@ -3,7 +3,7 @@
     <!-- Action Buttons -->
     <div class="bg-white border border-slate-200/60 rounded-xl p-4 shadow-3xs">
         <div class="flex flex-col sm:flex-row gap-3 items-center justify-between">
-            <div class="relative w-full max-w-[480px]">
+            <div class="relative w-full max-w-120">
                 <input 
                     type="text" 
                     x-model="searchQuery"

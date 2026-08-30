@@ -10,7 +10,7 @@
         <div class="flex overflow-x-auto gap-3 pb-2 w-full select-none">
             <template x-for="area in institutionalSurveyAreas" :key="area.id">
                 <button type="button"
-                    class="flex-1 shrink-0 min-w-[200px] bg-white rounded-xl border p-4 text-left shadow-3xs transition cursor-pointer flex flex-col justify-between h-24"
+                    class="flex-1 shrink-0 min-w-50 bg-white rounded-xl border p-4 text-left shadow-3xs transition cursor-pointer flex flex-col justify-between h-24"
                     :class="selfSurveyActiveAreaId === area.id ? 'border-primary ring-1 ring-primary/30 shadow-xs' : 'border-slate-200/60 hover:border-slate-350'"
                     @click="selectSurveyArea(area.id)">
                     <div>
@@ -85,15 +85,15 @@
                     <thead>
                         <tr class="bg-slate-50 border-b-2 border-slate-200">
                             <th class="px-5 py-3 text-left text-xs font-extrabold text-primary border-r border-slate-200">Indicators</th>
-                            <th class="border-r border-slate-200 py-3 px-2 text-center w-[100px] min-w-[100px] max-w-[100px]">
+                            <th class="border-r border-slate-200 py-3 px-2 text-center w-25 min-w-25 max-w-25">
                                 <div class="text-label font-extrabold text-primary uppercase tracking-wider leading-snug">Item Rating</div>
                                 <div class="text-label-xs text-zinc-400 font-semibold mt-0.5 leading-tight">IR</div>
                             </th>
-                            <th class="border-r border-slate-200 py-3 px-2 text-center w-[170px] min-w-[170px] max-w-[170px]">
+                            <th class="border-r border-slate-200 py-3 px-2 text-center w-42.5 min-w-42.5 max-w-42.5">
                                 <div class="text-label font-extrabold text-primary uppercase tracking-wider leading-snug">System – Implementation – Outcome Mean</div>
                                 <div class="text-label-xs text-zinc-400 font-semibold mt-0.5 leading-tight">SIOM</div>
                             </th>
-                            <th class="py-3 px-2 text-center w-[120px] min-w-[120px] max-w-[120px]">
+                            <th class="py-3 px-2 text-center w-30 min-w-30 max-w-30">
                                 <div class="text-label font-extrabold text-primary uppercase tracking-wider leading-snug">Parameter Mean</div>
                                 <div class="text-label-xs text-zinc-400 font-semibold mt-0.5 leading-tight">PM</div>
                             </th>
@@ -119,7 +119,7 @@
                                             <span class="leading-relaxed" x-text="ind.statement"></span>
                                         </div>
                                     </td>
-                                    <td class="border-r border-slate-200 text-center p-1 w-[100px] min-w-[100px] max-w-[100px]">
+                                    <td class="border-r border-slate-200 text-center p-1 w-25 min-w-25 max-w-25">
                                         <select
                                             @change="saveRating(ind.id, $event.target.value)"
                                             :value="selfSurveyRatings[ind.id] ?? ''"
@@ -134,17 +134,17 @@
                                             <option value="5">5</option>
                                         </select>
                                     </td>
-                                    <td class="border-r border-slate-200 text-center p-1 w-[170px] min-w-[170px] max-w-[170px]"></td>
-                                    <td class="text-center p-1 w-[120px] min-w-[120px] max-w-[120px]"></td>
+                                    <td class="border-r border-slate-200 text-center p-1 w-42.5 min-w-42.5 max-w-42.5"></td>
+                                    <td class="text-center p-1 w-30 min-w-30 max-w-30"></td>
                                 </tr>
                             </template>
                             <tr class="bg-blue-50/60 border-b border-slate-200">
                                 <td class="px-5 py-2 text-xs font-semibold text-zinc-400 italic border-r border-slate-200 text-right">System mean</td>
-                                <td class="border-r border-slate-200 text-center p-1 w-[100px] min-w-[100px] max-w-[100px]"></td>
-                                <td class="border-r border-slate-200 text-center p-1 w-[170px] min-w-[170px] max-w-[170px]">
+                                <td class="border-r border-slate-200 text-center p-1 w-25 min-w-25 max-w-25"></td>
+                                <td class="border-r border-slate-200 text-center p-1 w-42.5 min-w-42.5 max-w-42.5">
                                     <span class="text-sm font-extrabold text-primary" x-text="sectionMean(param.sections.system) ?? ''"></span>
                                 </td>
-                                <td class="text-center p-1 w-[120px] min-w-[120px] max-w-[120px]"></td>
+                                <td class="text-center p-1 w-30 min-w-30 max-w-30"></td>
                             </tr>
 
                             <tr class="bg-slate-100 border-b border-slate-200">
@@ -158,7 +158,7 @@
                                             <span class="leading-relaxed" x-text="ind.statement"></span>
                                         </div>
                                     </td>
-                                    <td class="border-r border-slate-200 text-center p-1 w-[100px] min-w-[100px] max-w-[100px]">
+                                    <td class="border-r border-slate-200 text-center p-1 w-25 min-w-25 max-w-25">
                                         <select
                                             @change="saveRating(ind.id, $event.target.value)"
                                             :value="selfSurveyRatings[ind.id] ?? ''"
@@ -173,17 +173,17 @@
                                             <option value="5">5</option>
                                         </select>
                                     </td>
-                                    <td class="border-r border-slate-200 text-center p-1 w-[170px] min-w-[170px] max-w-[170px]"></td>
-                                    <td class="text-center p-1 w-[120px] min-w-[120px] max-w-[120px]"></td>
+                                    <td class="border-r border-slate-200 text-center p-1 w-42.5 min-w-42.5 max-w-42.5"></td>
+                                    <td class="text-center p-1 w-30 min-w-30 max-w-30"></td>
                                 </tr>
                             </template>
                             <tr class="bg-surface-subtle/60 border-b border-slate-200">
                                 <td class="px-5 py-2 text-xs font-semibold text-zinc-400 italic border-r border-slate-200 text-right">Implementation mean</td>
-                                <td class="border-r border-slate-200 text-center p-1 w-[100px] min-w-[100px] max-w-[100px]"></td>
-                                <td class="border-r border-slate-200 text-center p-1 w-[170px] min-w-[170px] max-w-[170px]">
+                                <td class="border-r border-slate-200 text-center p-1 w-25 min-w-25 max-w-25"></td>
+                                <td class="border-r border-slate-200 text-center p-1 w-42.5 min-w-42.5 max-w-42.5">
                                     <span class="text-sm font-extrabold text-primary" x-text="sectionMean(param.sections.implementation) ?? ''"></span>
                                 </td>
-                                <td class="text-center p-1 w-[120px] min-w-[120px] max-w-[120px]"></td>
+                                <td class="text-center p-1 w-30 min-w-30 max-w-30"></td>
                             </tr>
 
                             <tr class="bg-slate-100 border-b border-slate-200">
@@ -197,7 +197,7 @@
                                             <span class="leading-relaxed" x-text="ind.statement"></span>
                                         </div>
                                     </td>
-                                    <td class="border-r border-slate-200 text-center p-1 w-[100px] min-w-[100px] max-w-[100px]">
+                                    <td class="border-r border-slate-200 text-center p-1 w-25 min-w-25 max-w-25">
                                         <select
                                             @change="saveRating(ind.id, $event.target.value)"
                                             :value="selfSurveyRatings[ind.id] ?? ''"
@@ -212,17 +212,17 @@
                                             <option value="5">5</option>
                                         </select>
                                     </td>
-                                    <td class="border-r border-slate-200 text-center p-1 w-[170px] min-w-[170px] max-w-[170px]"></td>
-                                    <td class="text-center p-1 w-[120px] min-w-[120px] max-w-[120px]"></td>
+                                    <td class="border-r border-slate-200 text-center p-1 w-42.5 min-w-42.5 max-w-42.5"></td>
+                                    <td class="text-center p-1 w-30 min-w-30 max-w-30"></td>
                                 </tr>
                             </template>
                             <tr class="bg-surface-subtle/60 border-b border-slate-200">
                                 <td class="px-5 py-2 text-xs font-semibold text-zinc-400 italic border-r border-slate-200 text-right">Outcome mean</td>
-                                <td class="border-r border-slate-200 text-center p-1 w-[100px] min-w-[100px] max-w-[100px]"></td>
-                                <td class="border-r border-slate-200 text-center p-1 w-[170px] min-w-[170px] max-w-[170px]">
+                                <td class="border-r border-slate-200 text-center p-1 w-25 min-w-25 max-w-25"></td>
+                                <td class="border-r border-slate-200 text-center p-1 w-42.5 min-w-42.5 max-w-42.5">
                                     <span class="text-sm font-extrabold text-primary" x-text="sectionMean(param.sections.outcome) ?? ''"></span>
                                 </td>
-                                <td class="text-center p-1 w-[120px] min-w-[120px] max-w-[120px]"></td>
+                                <td class="text-center p-1 w-30 min-w-30 max-w-30"></td>
                             </tr>
 
                             <tr class="bg-emerald-50/80 border-b border-slate-200">
@@ -230,9 +230,9 @@
                                     Parameter Mean —
                                     <span class="text-primary not-italic font-extrabold" x-text="'Parameter ' + param.code + ': ' + param.title"></span>
                                 </td>
-                                <td class="border-r border-slate-200 text-center p-1 w-[100px] min-w-[100px] max-w-[100px]"></td>
-                                <td class="border-r border-slate-200 text-center p-1 w-[170px] min-w-[170px] max-w-[170px]"></td>
-                                <td class="text-center p-1 w-[120px] min-w-[120px] max-w-[120px]">
+                                <td class="border-r border-slate-200 text-center p-1 w-25 min-w-25 max-w-25"></td>
+                                <td class="border-r border-slate-200 text-center p-1 w-42.5 min-w-42.5 max-w-42.5"></td>
+                                <td class="text-center p-1 w-30 min-w-30 max-w-30">
                                     <span class="text-sm font-extrabold text-emerald-700" x-text="paramMean(param) ?? ''"></span>
                                 </td>
                             </tr>
@@ -261,22 +261,22 @@
                                 Total Rating
                                 <span class="text-zinc-400 font-normal normal-case text-label-xs ml-1">(sum of all IR)</span>
                             </td>
-                            <td class="border-r border-slate-200 text-center p-2 w-[100px] min-w-[100px] max-w-[100px]">
+                            <td class="border-r border-slate-200 text-center p-2 w-25 min-w-25 max-w-25">
                                 <span class="text-base font-extrabold text-primary"
                                     x-text="(() => { const area = institutionalSurveyAreas.find(a => a.id === selfSurveyActiveAreaId); if (!area) return ''; let total = 0; area.parameters.forEach(p => { [...(p.sections.system||[]),...(p.sections.implementation||[]),...(p.sections.outcome||[])].forEach(ind => { const v = parseFloat(selfSurveyRatings[ind.id]); if (!isNaN(v)) total += v; }); }); return total; })()">
                                 </span>
                             </td>
-                            <td class="border-r border-slate-200 text-center p-2 w-[170px] min-w-[170px] max-w-[170px]"></td>
-                            <td class="text-center p-2 w-[120px] min-w-[120px] max-w-[120px]"></td>
+                            <td class="border-r border-slate-200 text-center p-2 w-42.5 min-w-42.5 max-w-42.5"></td>
+                            <td class="text-center p-2 w-30 min-w-30 max-w-30"></td>
                         </tr>
                         <tr class="bg-emerald-600 text-white">
                             <td class="px-5 py-3 text-xs font-extrabold uppercase tracking-wide border-r border-emerald-500 text-right">
                                 Area Mean
                                 <span class="font-normal normal-case text-emerald-100 text-label-xs ml-1">(mean of all parameter means)</span>
                             </td>
-                            <td class="border-r border-emerald-500 text-center p-2 w-[100px] min-w-[100px] max-w-[100px]"></td>
-                            <td class="border-r border-emerald-500 text-center p-2 w-[170px] min-w-[170px] max-w-[170px]"></td>
-                            <td class="text-center p-2 w-[120px] min-w-[120px] max-w-[120px]">
+                            <td class="border-r border-emerald-500 text-center p-2 w-25 min-w-25 max-w-25"></td>
+                            <td class="border-r border-emerald-500 text-center p-2 w-42.5 min-w-42.5 max-w-42.5"></td>
+                            <td class="text-center p-2 w-30 min-w-30 max-w-30">
                                 <span class="text-base font-extrabold"
                                     x-text="(() => { const area = institutionalSurveyAreas.find(a => a.id === selfSurveyActiveAreaId); if (!area) return ''; const means = area.parameters.map(p => paramMean(p)).filter(v => v !== null && v !== undefined && v !== ''); if (!means.length) return ''; return (means.reduce((a,b) => a + parseFloat(b), 0) / means.length).toFixed(2); })()">
                                 </span>

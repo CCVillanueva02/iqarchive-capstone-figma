@@ -189,13 +189,13 @@ new #[Title('Profile settings')] class extends Component {
             @endphp
 
             <!-- Summary Header Card (Dark Navy-to-Black Gradient, Two-Column SaaS Header) -->
-            <div class="relative overflow-hidden rounded-[16px] bg-gradient-to-r from-primary-dark via-[#091E3A] to-[#040D1A] border border-white/10 p-5 md:p-6 shadow-xl text-white flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="relative overflow-hidden rounded-2xl bg-linear-to-r from-primary-dark via-[#091E3A] to-[#040D1A] border border-white/10 p-5 md:p-6 shadow-xl text-white flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div class="absolute -right-12 -bottom-12 w-48 h-48 bg-brand-orange/10 rounded-full blur-3xl pointer-events-none"></div>
 
                 <!-- Left: Identity Block -->
                 <div class="flex items-center gap-4 min-w-0 w-full sm:w-auto relative z-10">
                     <!-- Square Avatar (~64px, ~12px rounded corners) with inside 10px status dot -->
-                    <div class="relative w-16 h-16 rounded-[12px] bg-brand-orange border border-white/15 text-white font-bold flex items-center justify-center text-2xl shrink-0 select-none overflow-hidden shadow-sm">
+                    <div class="relative w-16 h-16 rounded-xl bg-brand-orange border border-white/15 text-white font-bold flex items-center justify-center text-2xl shrink-0 select-none overflow-hidden shadow-sm">
                         @if ($avatar_file)
                         <img src="{{ $avatar_file->temporaryUrl() }}" class="w-full h-full object-cover">
                         @elseif ($user->avatar_url)

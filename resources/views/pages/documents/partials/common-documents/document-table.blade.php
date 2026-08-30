@@ -264,7 +264,7 @@
                                             <text x="3" y="22" fill="white" font-size="7" font-weight="900" font-family="sans-serif">XLS</text>
                                         </svg>
                                     </template>
-                                    <span class="font-bold text-zinc-900 group-hover:text-brand-orange transition leading-snug break-words" x-text="doc.name"></span>
+                                    <span class="font-bold text-zinc-900 group-hover:text-brand-orange transition leading-snug wrap-break-word" x-text="doc.name"></span>
                                 </div>
                             </td>
                             <td class="py-4 px-4 text-slate-700 font-semibold whitespace-nowrap shrink-0" x-text="doc.uploader || 'Sys Admin'"></td>

@@ -22,7 +22,7 @@
     <div class="flex overflow-x-auto gap-3 pb-2 w-full select-none">
         <template x-for="area in npAreas" :key="area.id">
             <button type="button"
-                class="flex-1 shrink-0 min-w-[200px] bg-white rounded-xl border p-4 text-left shadow-3xs transition cursor-pointer flex flex-col justify-between h-24"
+                class="flex-1 shrink-0 min-w-50 bg-white rounded-xl border p-4 text-left shadow-3xs transition cursor-pointer flex flex-col justify-between h-24"
                 :class="npActiveAreaId === area.id ? 'border-primary ring-1 ring-primary/30 shadow-xs bg-slate-50/50' : 'border-slate-200/60 hover:border-slate-350'"
                 @click="npActiveAreaId = area.id">
                 <div>
@@ -95,7 +95,7 @@
             <!-- Live Google Docs Embedded View IF Link Provided -->
             <template x-if="npDocGoogleUrls[npActiveAreaId]">
                 <div class="p-4 bg-slate-100 border-b border-slate-200">
-                    <div class="w-full bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm h-[650px] relative">
+                    <div class="w-full bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm h-162.5 relative">
                         <iframe :src="getGoogleEmbedUrl(npDocGoogleUrls[npActiveAreaId])" class="w-full h-full border-0" allow="clipboard-read; clipboard-write"></iframe>
                     </div>
                 </div>
@@ -133,7 +133,7 @@
      x-transition:leave="transition ease-in duration-150"
      x-transition:leave-start="opacity-100 scale-100"
      x-transition:leave-end="opacity-0 scale-98"
-     :class="editorIsFullscreen ? 'fixed inset-0 z-[9999] bg-white w-screen h-screen flex flex-col p-0' : 'fixed inset-0 z-[600] bg-slate-900/60 backdrop-blur-xs flex flex-col items-center justify-center p-2 sm:p-4'"
+     :class="editorIsFullscreen ? 'fixed inset-0 z-9999 bg-white w-screen h-screen flex flex-col p-0' : 'fixed inset-0 z-600 bg-slate-900/60 backdrop-blur-xs flex flex-col items-center justify-center p-2 sm:p-4'"
      @keydown.escape.window="if(npEditorOpen && !editorIsFullscreen) closeNPEditor(); if(editorIsFullscreen) editorIsFullscreen = false;">
 
     <!-- Editor Container -->

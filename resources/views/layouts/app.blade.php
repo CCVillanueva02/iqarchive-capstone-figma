@@ -77,7 +77,7 @@ $bodyClass = 'min-h-screen bg-surface-subtle antialiased text-zinc-800';
                  x-transition:leave="transition-opacity ease-in duration-200"
                  x-transition:leave-start="opacity-100"
                  x-transition:leave-end="opacity-0"
-                 class="fixed inset-y-0 right-0 left-0 lg:left-64 z-[9999] flex items-center justify-center bg-surface-subtle select-none"
+                 class="fixed inset-y-0 right-0 left-0 lg:left-64 z-9999 flex items-center justify-center bg-surface-subtle select-none"
                  style="display: none;">
                 <div class="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xl flex flex-col items-center gap-4 max-w-xs w-full mx-4">
                     <!-- Animated Dual-Ring Spinner -->
@@ -95,7 +95,7 @@ $bodyClass = 'min-h-screen bg-surface-subtle antialiased text-zinc-800';
         @endpersist
     @else
         <x-layouts::app.header>
-            <flux:main class="min-h-[calc(100vh-64px)] flex flex-col justify-between !p-0">
+            <flux:main class="min-h-[calc(100vh-64px)] flex flex-col justify-between p-0!">
                 <div class="flex-1 w-full app-layout-content">
                     {{ $slot }}
                 </div>

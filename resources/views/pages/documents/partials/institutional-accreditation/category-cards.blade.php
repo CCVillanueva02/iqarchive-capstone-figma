@@ -46,7 +46,7 @@
                 </div>
                 <div>
                     <h3 class="text-base font-bold text-primary">Supporting Documents</h3>
-                    <p class="text-sm text-zinc-500 mt-2 leading-relaxed min-h-[44px]">
+                    <p class="text-sm text-zinc-500 mt-2 leading-relaxed min-h-11">
                         Checklist criteria link inputs for inputs (Systems), implementation details, outcomes, and best practices.
                     </p>
                 </div>
@@ -64,7 +64,7 @@
                 </div>
                 <div>
                     <h3 class="text-base font-bold text-primary">Narrative Profile</h3>
-                    <p class="text-sm text-zinc-500 mt-2 leading-relaxed min-h-[44px]">
+                    <p class="text-sm text-zinc-500 mt-2 leading-relaxed min-h-11">
                         AACCUP Level 3 narrative profile templates organized by area with direct in-app editing and formatting.
                     </p>
                 </div>
@@ -82,7 +82,7 @@
                 </div>
                 <div>
                     <h3 class="text-base font-bold text-primary">Performance Portfolio (PPP)</h3>
-                    <p class="text-sm text-zinc-500 mt-2 leading-relaxed min-h-[44px]">
+                    <p class="text-sm text-zinc-500 mt-2 leading-relaxed min-h-11">
                         Institutional performance evidence portfolios and documentation templates organized by area for in-app compilation.
                     </p>
                 </div>

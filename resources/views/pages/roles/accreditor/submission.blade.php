@@ -40,7 +40,7 @@
             <div class="flex overflow-x-auto gap-4 pb-2 w-full select-none scrollbar-thin">
                 <template x-for="area in activeAccredData?.areas" :key="area.id">
                     <button type="button"
-                        class="flex-1 shrink-0 min-w-[280px] bg-white rounded-2xl border border-slate-200/50 p-5 text-left shadow-3xs hover:shadow-xs transition duration-200 cursor-pointer flex flex-col justify-center h-20 relative overflow-hidden"
+                        class="flex-1 shrink-0 min-w-70 bg-white rounded-2xl border border-slate-200/50 p-5 text-left shadow-3xs hover:shadow-xs transition duration-200 cursor-pointer flex flex-col justify-center h-20 relative overflow-hidden"
                         :class="accredActiveAreaId === area.id ? 'border-primary ring-1 ring-primary/10' : ''"
                         @click="selectArea(area.id)">
                         <div class="pr-2">

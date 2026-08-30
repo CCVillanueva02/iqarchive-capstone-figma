@@ -50,7 +50,7 @@
     </div>
 
     <!-- Quick QA Accreditation Resources Card -->
-    <div class="bg-gradient-to-br from-primary-dark to-primary rounded-2xl p-6 text-white shadow-3xs flex flex-col gap-4">
+    <div class="bg-linear-to-br from-primary-dark to-primary rounded-2xl p-6 text-white shadow-3xs flex flex-col gap-4">
         <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
                 <x-lucide-book-open class="w-5 h-5 text-brand-orange" />

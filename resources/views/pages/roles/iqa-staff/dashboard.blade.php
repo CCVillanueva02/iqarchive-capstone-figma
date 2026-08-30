@@ -37,7 +37,7 @@
         </div>
 
         <!-- Pending Common Documents Quick Access Alert Widget -->
-        <div class="bg-gradient-to-r from-primary-dark to-primary-hover text-white rounded-2xl p-6 shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-5 border border-primary-dark/40">
+        <div class="bg-linear-to-r from-primary-dark to-primary-hover text-white rounded-2xl p-6 shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-5 border border-primary-dark/40">
             <div class="flex items-start gap-4">
                 <div class="p-3 bg-amber-500/20 border border-amber-400/30 rounded-xl text-amber-300 shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-7 h-7">
@@ -161,7 +161,7 @@
                         <tbody class="divide-y divide-zinc-50">
                             @forelse($recentUploads as $doc)
                                 <tr>
-                                    <td class="py-3 max-w-[200px] truncate font-semibold text-zinc-800">
+                                    <td class="py-3 max-w-50 truncate font-semibold text-zinc-800">
                                         {{ $doc->title }}
                                         <span class="block text-label-xs text-zinc-400 font-normal mt-0.5 truncate">{{ $doc->category?->name }}</span>
                                     </td>

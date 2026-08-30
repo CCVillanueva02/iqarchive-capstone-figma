@@ -3,7 +3,7 @@
 
     <div class="flex-1 flex items-center justify-center p-6 md:p-10">
         <!-- Improved Login Box -->
-        <div class="w-full max-w-[440px] bg-white dark:bg-stone-900 border border-slate-200/80 dark:border-stone-800/80 rounded-2xl shadow-xs p-8 md:p-10 flex flex-col gap-6 hover:shadow-md transition-shadow duration-300">
+        <div class="w-full max-w-110 bg-white dark:bg-stone-900 border border-slate-200/80 dark:border-stone-800/80 rounded-2xl shadow-xs p-8 md:p-10 flex flex-col gap-6 hover:shadow-md transition-shadow duration-300">
             
             <div class="text-center flex flex-col items-center">
                 <!-- Bicol University Logo -->
@@ -34,7 +34,7 @@
 
             <!-- Sign in with Google Button -->
             <a href="{{ route('auth.google') }}" class="group relative flex items-center justify-center gap-3 w-full px-5 py-3 text-body font-semibold text-stone-700 dark:text-stone-300 bg-white dark:bg-stone-900 border border-slate-200 dark:border-stone-800 rounded-xl shadow-2xs hover:bg-slate-50 dark:hover:bg-stone-850 hover:border-slate-300 dark:hover:border-stone-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-orange transition-all duration-200 overflow-hidden">
-                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-slate-100/10 dark:via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out"></div>
+                <div class="absolute inset-0 bg-linear-to-r from-transparent via-slate-100/10 dark:via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out"></div>
                 <svg class="w-5 h-5 shrink-0 transition-transform group-hover:scale-110 duration-200" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
                     <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />

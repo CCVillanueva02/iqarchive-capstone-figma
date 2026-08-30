@@ -23,7 +23,7 @@
         }
     </script>
 </head>
-<body class="bg-gradient-to-br from-slate-950 via-stone-900 to-zinc-950 min-h-full flex flex-col justify-center items-center p-6 antialiased">
+<body class="bg-linear-to-br from-slate-950 via-stone-900 to-zinc-950 min-h-full flex flex-col justify-center items-center p-6 antialiased">
     <div class="w-full max-w-xl bg-slate-900/60 backdrop-blur-xl border border-slate-800/80 rounded-3xl shadow-2xl p-8 md:p-10 flex flex-col gap-6">
         
         <!-- Header Section -->
@@ -37,7 +37,7 @@
             </div>
 
             <!-- Title -->
-            <h1 class="text-heading-lg font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-brand-orange to-amber-300 tracking-tight">IQArchive Dev Switcher</h1>
+            <h1 class="text-heading-lg font-extrabold text-transparent bg-clip-text bg-linear-to-r from-brand-orange to-amber-300 tracking-tight">IQArchive Dev Switcher</h1>
             <p class="text-body text-slate-400 mt-2 max-w-xs">Instantly log in as any role without credentials. Exclusively available in local environment.</p>
         </div>
 
