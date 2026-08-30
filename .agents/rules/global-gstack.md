@@ -40,3 +40,7 @@ gStack follows the **Boil the Lake** principle — always do the complete thing 
 - **BAD:** "We can skip edge case handling to save time." (Edge case handling costs minutes with CC.)
 - **BAD:** "Let's defer test coverage to a follow-up PR." (Tests are the cheapest lake to boil.)
 - **BAD:** Quoting only human-team effort: "This would take 2 weeks." (Say: "2 weeks human / ~1 hour CC.")
+
+## Documentation Conventions
+
+All documentation workflows, generation, maintenance, and post-ship updates (specifically `/document-generate` and `/document-release`) must strictly adhere to the persistent project rules defined in [`documentation-conventions.md`](file:///c:/Users/janss/Herd/iqarchive/.agents/rules/documentation-conventions.md).
