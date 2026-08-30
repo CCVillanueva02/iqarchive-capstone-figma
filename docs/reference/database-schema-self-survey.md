@@ -73,11 +73,11 @@ CREATE TABLE self_survey_ratings (
 ## 3. Architecture Note
 
 > [!NOTE]
-> The `self_survey_*` subsystem represents an earlier dedicated institutional evaluation module. For modern program accreditation cycles, IQArchive utilizes the [Dynamic Instruments](file:///c:/Users/janss/Herd/iqarchive/docs/reference/database-schema-dynamic-instruments.md) module (`instruments`, `instrument_areas`, etc.).
+> The `self_survey_*` subsystem represents an earlier dedicated institutional evaluation module. For modern program accreditation cycles, IQArchive utilizes the [Dynamic Instruments](./database-schema-dynamic-instruments.md) module (`instruments`, `instrument_areas`, etc.).
 
 ---
 
 ## 4. Cross-Quadrant Links
 
-- **Dynamic Instruments Schema:** [Dynamic Instruments Reference](file:///c:/Users/janss/Herd/iqarchive/docs/reference/database-schema-dynamic-instruments.md)
-- **Role Reference:** [RBAC: Task Force Member](file:///c:/Users/janss/Herd/iqarchive/docs/reference/rbac-task-force-member.md)
+- **Dynamic Instruments Schema:** [Dynamic Instruments Reference](./database-schema-dynamic-instruments.md)
+- **Role Reference:** [RBAC: Task Force Member](./rbac-task-force-member.md)

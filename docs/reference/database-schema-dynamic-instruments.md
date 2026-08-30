@@ -8,12 +8,12 @@ This reference document details the schema for dynamic AACCUP accreditation inst
 
 | Table | Model | Migration Source | Purpose |
 | :--- | :--- | :--- | :--- |
-| [`instruments`](file:///c:/Users/janss/Herd/iqarchive/app/Models/Instrument.php) | `App\Models\Instrument` | `2026_08_24_000001_create_dynamic_instrument_tables.php` | Master templates and cloned survey instruments. |
-| [`instrument_areas`](file:///c:/Users/janss/Herd/iqarchive/app/Models/InstrumentArea.php) | `App\Models\InstrumentArea` | `2026_08_24_000001_create_dynamic_instrument_tables.php` | Top-level accreditation evaluation areas (Areas I–X). |
-| [`instrument_parameters`](file:///c:/Users/janss/Herd/iqarchive/app/Models/InstrumentParameter.php) | `App\Models\InstrumentParameter` | `2026_08_24_000001_create_dynamic_instrument_tables.php` | Area sub-parameters (Parameter A, B, etc.). |
-| [`instrument_criteria`](file:///c:/Users/janss/Herd/iqarchive/app/Models/InstrumentCriterion.php) | `App\Models\InstrumentCriterion` | `2026_08_24_000001_create_dynamic_instrument_tables.php` | Discrete checklist items across AACCUP 4 sections. |
-| [`compliance_requirements`](file:///c:/Users/janss/Herd/iqarchive/app/Models/ComplianceRequirement.php) | `App\Models\ComplianceRequirement` | `2026_08_24_000001_create_dynamic_instrument_tables.php` | Program-specific compliance tasks. |
-| [`accreditation_document_links`](file:///c:/Users/janss/Herd/iqarchive/app/Models/AccreditationDocumentLink.php) | `App\Models\AccreditationDocumentLink` | `2026_07_19_000000_create_iqarchive_core_tables.php` | Pivot linking uploaded evidence to requirements. |
+| [`instruments`](../../app/Models/Instrument.php) | `App\Models\Instrument` | `2026_08_24_000001_create_dynamic_instrument_tables.php` | Master templates and cloned survey instruments. |
+| [`instrument_areas`](../../app/Models/InstrumentArea.php) | `App\Models\InstrumentArea` | `2026_08_24_000001_create_dynamic_instrument_tables.php` | Top-level accreditation evaluation areas (Areas I–X). |
+| [`instrument_parameters`](../../app/Models/InstrumentParameter.php) | `App\Models\InstrumentParameter` | `2026_08_24_000001_create_dynamic_instrument_tables.php` | Area sub-parameters (Parameter A, B, etc.). |
+| [`instrument_criteria`](../../app/Models/InstrumentCriterion.php) | `App\Models\InstrumentCriterion` | `2026_08_24_000001_create_dynamic_instrument_tables.php` | Discrete checklist items across AACCUP 4 sections. |
+| [`compliance_requirements`](../../app/Models/ComplianceRequirement.php) | `App\Models\ComplianceRequirement` | `2026_08_24_000001_create_dynamic_instrument_tables.php` | Program-specific compliance tasks. |
+| [`accreditation_document_links`](../../app/Models/AccreditationDocumentLink.php) | `App\Models\AccreditationDocumentLink` | `2026_07_19_000000_create_iqarchive_core_tables.php` | Pivot linking uploaded evidence to requirements. |
 
 ---
 
@@ -93,6 +93,6 @@ The `Instrument::cloneForProgram()` method performs a deep clone of master instr
 
 ## 4. Cross-Quadrant Links
 
-- **Document Management Schema:** [Document Management Reference](file:///c:/Users/janss/Herd/iqarchive/docs/reference/database-schema-document-management.md)
-- **Role Reference:** [RBAC: Task Force Member](file:///c:/Users/janss/Herd/iqarchive/docs/reference/rbac-task-force-member.md)
-- **Role Reference:** [RBAC: IQA Staff](file:///c:/Users/janss/Herd/iqarchive/docs/reference/rbac-iqa-staff.md)
+- **Document Management Schema:** [Document Management Reference](./database-schema-document-management.md)
+- **Role Reference:** [RBAC: Task Force Member](./rbac-task-force-member.md)
+- **Role Reference:** [RBAC: IQA Staff](./rbac-iqa-staff.md)

@@ -35,7 +35,7 @@ User -> [Click "Sign in with Google"]
 
 ## 2. Technical Implementation Details
 
-- **Controller:** [`App\Http\Controllers\GoogleAuthController`](file:///c:/Users/janss/Herd/iqarchive/app/Http/Controllers/GoogleAuthController.php)
+- **Controller:** [`App\Http\Controllers\GoogleAuthController`](../../app/Http/Controllers/GoogleAuthController.php)
 - **Routes:**
   - `GET /auth/google` (`name('auth.google')`) — Initiates Socialite redirect.
   - `GET /auth/google/callback` (`name('auth.google.callback')`) — Handles OAuth token exchange.
@@ -91,6 +91,6 @@ $cleanNameToken = function (string $nameStr): string {
 
 ## 4. Cross-Quadrant Links
 
-- **How-To Guide:** [User Onboarding Flow](file:///c:/Users/janss/Herd/iqarchive/docs/how-to/user-onboarding-flow.md)
-- **Database Schema:** [Authentication & Security Schema](file:///c:/Users/janss/Herd/iqarchive/docs/reference/database-schema-auth-security.md)
-- **Role Specifications:** [RBAC: System Administrator](file:///c:/Users/janss/Herd/iqarchive/docs/reference/rbac-system-administrator.md)
+- **How-To Guide:** [User Onboarding Flow](../how-to/user-onboarding-flow.md)
+- **Database Schema:** [Authentication & Security Schema](./database-schema-auth-security.md)
+- **Role Specifications:** [RBAC: System Administrator](./rbac-system-administrator.md)

@@ -74,5 +74,5 @@ CREATE TABLE failed_jobs (
 
 ## 4. Cross-Quadrant Links
 
-- **Architecture Reference:** [System Architecture Overview](file:///c:/Users/janss/Herd/iqarchive/docs/reference/architecture-overview.md)
-- **Document Management Schema:** [Document Management Reference](file:///c:/Users/janss/Herd/iqarchive/docs/reference/database-schema-document-management.md)
+- **Architecture Reference:** [System Architecture Overview](./architecture-overview.md)
+- **Document Management Schema:** [Document Management Reference](./database-schema-document-management.md)

@@ -8,10 +8,10 @@ This reference document details the schema for accreditation survey cycles, orga
 
 | Table | Model | Migration Source | Purpose |
 | :--- | :--- | :--- | :--- |
-| [`accreditations`](file:///c:/Users/janss/Herd/iqarchive/app/Models/Accreditation.php) | `App\Models\Accreditation` | `2026_08_23_141853...`, `2026_08_23_143657...` | Formal accreditation survey visits and cycles. |
-| [`task_forces`](file:///c:/Users/janss/Herd/iqarchive/app/Models/TaskForce.php) | `App\Models\TaskForce` | `2026_07_28_000000...`, `2026_08_23_150550...` | College/program QA task force bodies. |
-| [`task_force_members`](file:///c:/Users/janss/Herd/iqarchive/app/Models/TaskForceMember.php) | `App\Models\TaskForceMember` | `2026_07_28_000000_create_task_forces_tables.php` | Pivot linking users to task forces with team roles. |
-| [`task_force_assignments`](file:///c:/Users/janss/Herd/iqarchive/app/Models/TaskForceAssignment.php) | `App\Models\TaskForceAssignment` | `2026_07_19_000000_create_iqarchive_core_tables.php` | Legacy direct user-to-program mapping. |
+| [`accreditations`](../../app/Models/Accreditation.php) | `App\Models\Accreditation` | `2026_08_23_141853...`, `2026_08_23_143657...` | Formal accreditation survey visits and cycles. |
+| [`task_forces`](../../app/Models/TaskForce.php) | `App\Models\TaskForce` | `2026_07_28_000000...`, `2026_08_23_150550...` | College/program QA task force bodies. |
+| [`task_force_members`](../../app/Models/TaskForceMember.php) | `App\Models\TaskForceMember` | `2026_07_28_000000_create_task_forces_tables.php` | Pivot linking users to task forces with team roles. |
+| [`task_force_assignments`](../../app/Models/TaskForceAssignment.php) | `App\Models\TaskForceAssignment` | `2026_07_19_000000_create_iqarchive_core_tables.php` | Legacy direct user-to-program mapping. |
 
 ---
 
@@ -71,12 +71,12 @@ Defines individual user participation and designated team roles (`lead`, `member
 
 ## 3. Automated Observer Assignment
 
-When a `TaskForce` is created with a non-null `college_id`, an Eloquent Observer in [`app/Providers/AppServiceProvider.php`](file:///c:/Users/janss/Herd/iqarchive/app/Providers/AppServiceProvider.php) automatically detects the College Head (Dean) and inserts a `task_force_members` record with `role_in_team = 'lead'`.
+When a `TaskForce` is created with a non-null `college_id`, an Eloquent Observer in [`app/Providers/AppServiceProvider.php`](../../app/Providers/AppServiceProvider.php) automatically detects the College Head (Dean) and inserts a `task_force_members` record with `role_in_team = 'lead'`.
 
 ---
 
 ## 4. Cross-Quadrant Links
 
-- **Role Reference:** [RBAC: Task Force Members Pivot](file:///c:/Users/janss/Herd/iqarchive/docs/reference/rbac-task-force-members-pivot.md)
-- **Role Reference:** [RBAC: Task Force Member](file:///c:/Users/janss/Herd/iqarchive/docs/reference/rbac-task-force-member.md)
-- **Explanation:** [College Head Contextual Elevation](file:///c:/Users/janss/Herd/iqarchive/docs/explanation/head-contextual-elevation.md)
+- **Role Reference:** [RBAC: Task Force Members Pivot](./rbac-task-force-members-pivot.md)
+- **Role Reference:** [RBAC: Task Force Member](./rbac-task-force-member.md)
+- **Explanation:** [College Head Contextual Elevation](../explanation/head-contextual-elevation.md)

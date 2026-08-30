@@ -41,6 +41,6 @@ Program Chairs operate within strict departmental boundaries:
 
 ## 5. Cross-Quadrant Links
 
-- **Related Role:** [RBAC: Task Force Member](file:///c:/Users/janss/Herd/iqarchive/docs/reference/rbac-task-force-member.md)
-- **Pivot Reference:** [Task Force Members Pivot](file:///c:/Users/janss/Herd/iqarchive/docs/reference/rbac-task-force-members-pivot.md)
-- **Hierarchy Schema:** [Organizational Hierarchy Schema](file:///c:/Users/janss/Herd/iqarchive/docs/reference/database-schema-organizational-hierarchy.md)
+- **Related Role:** [RBAC: Task Force Member](./rbac-task-force-member.md)
+- **Pivot Reference:** [Task Force Members Pivot](./rbac-task-force-members-pivot.md)
+- **Hierarchy Schema:** [Organizational Hierarchy Schema](./database-schema-organizational-hierarchy.md)

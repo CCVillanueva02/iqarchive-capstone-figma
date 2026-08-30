@@ -39,7 +39,7 @@ CREATE TABLE task_force_members (
 
 ## 3. Eloquent Model & Aliases
 
-- **Model:** [`App\Models\TaskForceMember`](file:///c:/Users/janss/Herd/iqarchive/app/Models/TaskForceMember.php)
+- **Model:** [`App\Models\TaskForceMember`](../../app/Models/TaskForceMember.php)
 - **Accessor/Mutator Compatibility:** To support legacy references expecting `role_in_task_force`, `TaskForceMember` maps:
   ```php
   public function getRoleInTaskForceAttribute(): string {
@@ -54,7 +54,7 @@ CREATE TABLE task_force_members (
 
 ## 4. Automatic Lead Assignment via Observer
 
-In [`app/Providers/AppServiceProvider.php`](file:///c:/Users/janss/Herd/iqarchive/app/Providers/AppServiceProvider.php), the `TaskForce::created` observer detects the College Head and creates the lead record:
+In [`app/Providers/AppServiceProvider.php`](../../app/Providers/AppServiceProvider.php), the `TaskForce::created` observer detects the College Head and creates the lead record:
 
 ```php
 \App\Models\TaskForce::created(function (\App\Models\TaskForce $taskForce) {
@@ -82,7 +82,7 @@ In [`app/Providers/AppServiceProvider.php`](file:///c:/Users/janss/Herd/iqarchiv
 
 ## 5. Cross-Quadrant Links
 
-- **Explanation:** [College Head Contextual Elevation](file:///c:/Users/janss/Herd/iqarchive/docs/explanation/head-contextual-elevation.md)
-- **Role Reference:** [RBAC: College Head](file:///c:/Users/janss/Herd/iqarchive/docs/reference/rbac-college-head.md)
-- **Role Reference:** [RBAC: Task Force Member](file:///c:/Users/janss/Herd/iqarchive/docs/reference/rbac-task-force-member.md)
-- **Schema Reference:** [Task Forces Schema](file:///c:/Users/janss/Herd/iqarchive/docs/reference/database-schema-task-forces.md)
+- **Explanation:** [College Head Contextual Elevation](../explanation/head-contextual-elevation.md)
+- **Role Reference:** [RBAC: College Head](./rbac-college-head.md)
+- **Role Reference:** [RBAC: Task Force Member](./rbac-task-force-member.md)
+- **Schema Reference:** [Task Forces Schema](./database-schema-task-forces.md)

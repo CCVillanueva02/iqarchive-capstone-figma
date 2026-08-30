@@ -8,9 +8,9 @@ This reference document details the organizational structures within Bicol Unive
 
 | Table | Model | Migration Source | Purpose |
 | :--- | :--- | :--- | :--- |
-| [`colleges`](file:///c:/Users/janss/Herd/iqarchive/app/Models/College.php) | `App\Models\College` | `0001_01_01_000000_create_users_table.php`, `2026_08_19_000001...` | Academic colleges and satellite campuses. |
-| [`programs`](file:///c:/Users/janss/Herd/iqarchive/app/Models/Program.php) | `App\Models\Program` | `0001_01_01_000000_create_users_table.php`, `2026_08_04_000000...` | Degree programs and accreditation levels. |
-| [`offices`](file:///c:/Users/janss/Herd/iqarchive/app/Models/Office.php) | `App\Models\Office` | `2026_08_18_141902_create_offices_table.php` | Central administrative offices issuing records. |
+| [`colleges`](../../app/Models/College.php) | `App\Models\College` | `0001_01_01_000000_create_users_table.php`, `2026_08_19_000001...` | Academic colleges and satellite campuses. |
+| [`programs`](../../app/Models/Program.php) | `App\Models\Program` | `0001_01_01_000000_create_users_table.php`, `2026_08_04_000000...` | Degree programs and accreditation levels. |
+| [`offices`](../../app/Models/Office.php) | `App\Models\Office` | `2026_08_18_141902_create_offices_table.php` | Central administrative offices issuing records. |
 
 ---
 
@@ -85,6 +85,6 @@ Office (1)  ──< Documents (N)
 
 ## 5. Cross-Quadrant Links
 
-- **Role Reference:** [RBAC: College Head](file:///c:/Users/janss/Herd/iqarchive/docs/reference/rbac-college-head.md)
-- **Role Reference:** [RBAC: Program Chair](file:///c:/Users/janss/Herd/iqarchive/docs/reference/rbac-program-chair.md)
-- **Explanation:** [College Head Contextual Elevation](file:///c:/Users/janss/Herd/iqarchive/docs/explanation/head-contextual-elevation.md)
+- **Role Reference:** [RBAC: College Head](./rbac-college-head.md)
+- **Role Reference:** [RBAC: Program Chair](./rbac-program-chair.md)
+- **Explanation:** [College Head Contextual Elevation](../explanation/head-contextual-elevation.md)

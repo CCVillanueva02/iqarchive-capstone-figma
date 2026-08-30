@@ -40,6 +40,6 @@ When a `TaskForce` is registered with a matching `college_id`, an Eloquent obser
 
 ## 5. Cross-Quadrant Links
 
-- **Explanation:** [College Head Contextual Elevation](file:///c:/Users/janss/Herd/iqarchive/docs/explanation/head-contextual-elevation.md)
-- **Pivot Reference:** [Task Force Members Pivot](file:///c:/Users/janss/Herd/iqarchive/docs/reference/rbac-task-force-members-pivot.md)
-- **Hierarchy Schema:** [Organizational Hierarchy Schema](file:///c:/Users/janss/Herd/iqarchive/docs/reference/database-schema-organizational-hierarchy.md)
+- **Explanation:** [College Head Contextual Elevation](../explanation/head-contextual-elevation.md)
+- **Pivot Reference:** [Task Force Members Pivot](./rbac-task-force-members-pivot.md)
+- **Hierarchy Schema:** [Organizational Hierarchy Schema](./database-schema-organizational-hierarchy.md)

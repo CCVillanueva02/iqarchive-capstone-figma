@@ -42,6 +42,6 @@ This reference document specifies the capabilities, authorization gates, and ope
 
 ## 5. Cross-Quadrant Links
 
-- **Explanation:** [IQA Staff Role Consolidation](file:///c:/Users/janss/Herd/iqarchive/docs/explanation/iqa-staff-role-consolidation.md)
-- **Document Management Schema:** [Document Management Reference](file:///c:/Users/janss/Herd/iqarchive/docs/reference/database-schema-document-management.md)
-- **Dynamic Instruments Schema:** [Dynamic Instruments Reference](file:///c:/Users/janss/Herd/iqarchive/docs/reference/database-schema-dynamic-instruments.md)
+- **Explanation:** [IQA Staff Role Consolidation](../explanation/iqa-staff-role-consolidation.md)
+- **Document Management Schema:** [Document Management Reference](./database-schema-document-management.md)
+- **Dynamic Instruments Schema:** [Dynamic Instruments Reference](./database-schema-dynamic-instruments.md)

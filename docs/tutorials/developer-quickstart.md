@@ -77,6 +77,6 @@ IQArchive includes standard seeded test accounts (password is `password` for all
 
 ## 4. Cross-Quadrant Links
 
-- **Architecture Overview:** [System Architecture Reference](file:///c:/Users/janss/Herd/iqarchive/docs/reference/architecture-overview.md)
-- **Database Schema & ERD:** [Database ERD Reference](file:///c:/Users/janss/Herd/iqarchive/docs/reference/database-schema-erd.md)
-- **Onboarding Guide:** [User Onboarding How-To](file:///c:/Users/janss/Herd/iqarchive/docs/how-to/user-onboarding-flow.md)
+- **Architecture Overview:** [System Architecture Reference](../reference/architecture-overview.md)
+- **Database Schema & ERD:** [Database ERD Reference](../reference/database-schema-erd.md)
+- **Onboarding Guide:** [User Onboarding How-To](../how-to/user-onboarding-flow.md)

@@ -39,6 +39,6 @@ To ensure unbiased and tamper-proof evaluation:
 
 ## 4. Cross-Quadrant Links
 
-- **Document Management Schema:** [Document Management Reference](file:///c:/Users/janss/Herd/iqarchive/docs/reference/database-schema-document-management.md)
-- **Role Reference:** [RBAC: IQA Staff](file:///c:/Users/janss/Herd/iqarchive/docs/reference/rbac-iqa-staff.md)
-- **Technical Reference:** [Google SSO Authentication Flow](file:///c:/Users/janss/Herd/iqarchive/docs/reference/auth-google-sso.md)
+- **Document Management Schema:** [Document Management Reference](./database-schema-document-management.md)
+- **Role Reference:** [RBAC: IQA Staff](./rbac-iqa-staff.md)
+- **Technical Reference:** [Google SSO Authentication Flow](./auth-google-sso.md)

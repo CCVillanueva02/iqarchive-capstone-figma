@@ -72,7 +72,7 @@ app/
 
 ## 5. Cross-Quadrant Links
 
-- **How-To Guide:** [User Onboarding Flow](file:///c:/Users/janss/Herd/iqarchive/docs/how-to/user-onboarding-flow.md)
-- **Technical Reference:** [Google SSO Authentication Flow](file:///c:/Users/janss/Herd/iqarchive/docs/reference/auth-google-sso.md)
-- **Role Specifications:** [RBAC: System Administrator](file:///c:/Users/janss/Herd/iqarchive/docs/reference/rbac-system-administrator.md) | [RBAC: IQA Staff](file:///c:/Users/janss/Herd/iqarchive/docs/reference/rbac-iqa-staff.md)
-- **Explanation:** [IQA Staff Role Consolidation](file:///c:/Users/janss/Herd/iqarchive/docs/explanation/iqa-staff-role-consolidation.md)
+- **How-To Guide:** [User Onboarding Flow](../how-to/user-onboarding-flow.md)
+- **Technical Reference:** [Google SSO Authentication Flow](./auth-google-sso.md)
+- **Role Specifications:** [RBAC: System Administrator](./rbac-system-administrator.md) | [RBAC: IQA Staff](./rbac-iqa-staff.md)
+- **Explanation:** [IQA Staff Role Consolidation](../explanation/iqa-staff-role-consolidation.md)

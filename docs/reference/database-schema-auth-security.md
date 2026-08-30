@@ -8,8 +8,8 @@ This reference document details the relational tables governing identity, user a
 
 | Table | Model | Migration Source | Purpose |
 | :--- | :--- | :--- | :--- |
-| [`roles`](file:///c:/Users/janss/Herd/iqarchive/app/Models/Role.php) | `App\Models\Role` | `0001_01_01_000000_create_users_table.php` | System access roles and capabilities. |
-| [`users`](file:///c:/Users/janss/Herd/iqarchive/app/Models/User.php) | `App\Models\User` | `0001_01_01_000000_create_users_table.php` | Central user accounts and identity records. |
+| [`roles`](../../app/Models/Role.php) | `App\Models\Role` | `0001_01_01_000000_create_users_table.php` | System access roles and capabilities. |
+| [`users`](../../app/Models/User.php) | `App\Models\User` | `0001_01_01_000000_create_users_table.php` | Central user accounts and identity records. |
 | `role_user` | Pivot (`User::roles()`) | `2026_07_30_000001_create_role_user_table...` | Many-to-many role assignments. |
 | `passkeys` | Fortify Authenticatable | `2024_01_01_000000_create_passkeys_table.php` | WebAuthn biometric/hardware credentials. |
 | `password_reset_tokens` | Framework managed | `0001_01_01_000000_create_users_table.php` | Secure tokens for password resets. |
@@ -95,6 +95,6 @@ CREATE TABLE passkeys (
 
 ## 4. Cross-Quadrant Links
 
-- **How-To Guide:** [User Onboarding Flow](file:///c:/Users/janss/Herd/iqarchive/docs/how-to/user-onboarding-flow.md)
-- **Technical Reference:** [Google SSO Authentication Flow](file:///c:/Users/janss/Herd/iqarchive/docs/reference/auth-google-sso.md)
-- **Architecture Reference:** [System Architecture Overview](file:///c:/Users/janss/Herd/iqarchive/docs/reference/architecture-overview.md)
+- **How-To Guide:** [User Onboarding Flow](../how-to/user-onboarding-flow.md)
+- **Technical Reference:** [Google SSO Authentication Flow](./auth-google-sso.md)
+- **Architecture Reference:** [System Architecture Overview](./architecture-overview.md)

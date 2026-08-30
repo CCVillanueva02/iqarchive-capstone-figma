@@ -43,4 +43,4 @@ gStack follows the **Boil the Lake** principle — always do the complete thing 
 
 ## Documentation Conventions
 
-All documentation workflows, generation, maintenance, and post-ship updates (specifically `/document-generate` and `/document-release`) must strictly adhere to the persistent project rules defined in [`documentation-conventions.md`](file:///c:/Users/janss/Herd/iqarchive/.agents/rules/documentation-conventions.md).
+All documentation workflows, generation, maintenance, and post-ship updates (specifically `/document-generate` and `/document-release`) must strictly adhere to the persistent project rules defined in [`documentation-conventions.md`](./documentation-conventions.md).

@@ -21,7 +21,7 @@ docs/
 └── explanation/             # Understanding-oriented: architectural decisions, background, design rationale
 ```
 
-- [`docs/index.md`](file:///c:/Users/janss/Herd/iqarchive/docs/index.md) serves as the primary entry point and documentation map, indexing all four quadrants.
+- [`docs/index.md`](../../docs/index.md) serves as the primary entry point and documentation map, indexing all four quadrants.
 
 ---
 

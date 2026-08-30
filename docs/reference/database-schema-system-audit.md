@@ -8,8 +8,8 @@ This reference document details the schema for system activity tracking, securit
 
 | Table | Model | Migration Source | Purpose |
 | :--- | :--- | :--- | :--- |
-| [`audit_logs`](file:///c:/Users/janss/Herd/iqarchive/app/Models/AuditLog.php) | `App\Models\AuditLog` | `2026_07_19_000000_create_iqarchive_core_tables.php` | Immutable system and security audit trail. |
-| [`notifications`](file:///c:/Users/janss/Herd/iqarchive/app/Models/Notification.php) | `App\Models\Notification` | `2026_07_19_000000_create_iqarchive_core_tables.php` | User notifications, status alerts, and reminders. |
+| [`audit_logs`](../../app/Models/AuditLog.php) | `App\Models\AuditLog` | `2026_07_19_000000_create_iqarchive_core_tables.php` | Immutable system and security audit trail. |
+| [`notifications`](../../app/Models/Notification.php) | `App\Models\Notification` | `2026_07_19_000000_create_iqarchive_core_tables.php` | User notifications, status alerts, and reminders. |
 
 ---
 
@@ -61,6 +61,6 @@ CREATE TABLE notifications (
 
 ## 4. Cross-Quadrant Links
 
-- **Role Reference:** [RBAC: System Administrator](file:///c:/Users/janss/Herd/iqarchive/docs/reference/rbac-system-administrator.md)
-- **Role Reference:** [RBAC: IQA Staff](file:///c:/Users/janss/Herd/iqarchive/docs/reference/rbac-iqa-staff.md)
-- **Architecture Reference:** [System Architecture Overview](file:///c:/Users/janss/Herd/iqarchive/docs/reference/architecture-overview.md)
+- **Role Reference:** [RBAC: System Administrator](./rbac-system-administrator.md)
+- **Role Reference:** [RBAC: IQA Staff](./rbac-iqa-staff.md)
+- **Architecture Reference:** [System Architecture Overview](./architecture-overview.md)

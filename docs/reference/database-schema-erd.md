@@ -76,11 +76,11 @@ DatabaseSeeder
 
 ## 3. Subsystem Schema References
 
-- [Authentication & Security Schema](file:///c:/Users/janss/Herd/iqarchive/docs/reference/database-schema-auth-security.md)
-- [Organizational Hierarchy Schema](file:///c:/Users/janss/Herd/iqarchive/docs/reference/database-schema-organizational-hierarchy.md)
-- [Document Management Schema](file:///c:/Users/janss/Herd/iqarchive/docs/reference/database-schema-document-management.md)
-- [Accreditations & Task Forces Schema](file:///c:/Users/janss/Herd/iqarchive/docs/reference/database-schema-task-forces.md)
-- [Dynamic Instruments Schema](file:///c:/Users/janss/Herd/iqarchive/docs/reference/database-schema-dynamic-instruments.md)
-- [System Auditing Schema](file:///c:/Users/janss/Herd/iqarchive/docs/reference/database-schema-system-audit.md)
-- [Framework & Queue Infrastructure Schema](file:///c:/Users/janss/Herd/iqarchive/docs/reference/database-schema-infrastructure-queues.md)
-- [Self-Survey Subsystem Schema](file:///c:/Users/janss/Herd/iqarchive/docs/reference/database-schema-self-survey.md)
+- [Authentication & Security Schema](./database-schema-auth-security.md)
+- [Organizational Hierarchy Schema](./database-schema-organizational-hierarchy.md)
+- [Document Management Schema](./database-schema-document-management.md)
+- [Accreditations & Task Forces Schema](./database-schema-task-forces.md)
+- [Dynamic Instruments Schema](./database-schema-dynamic-instruments.md)
+- [System Auditing Schema](./database-schema-system-audit.md)
+- [Framework & Queue Infrastructure Schema](./database-schema-infrastructure-queues.md)
+- [Self-Survey Subsystem Schema](./database-schema-self-survey.md)

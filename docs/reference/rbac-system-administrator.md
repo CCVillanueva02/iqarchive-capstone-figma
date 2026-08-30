@@ -41,6 +41,6 @@ This reference document specifies the capabilities, authorization gates, and ope
 
 ## 5. Cross-Quadrant Links
 
-- **Related Roles:** [RBAC: IQA Staff](file:///c:/Users/janss/Herd/iqarchive/docs/reference/rbac-iqa-staff.md)
-- **How-To Guide:** [User Onboarding Flow](file:///c:/Users/janss/Herd/iqarchive/docs/how-to/user-onboarding-flow.md)
-- **Schema Reference:** [Authentication & Security Schema](file:///c:/Users/janss/Herd/iqarchive/docs/reference/database-schema-auth-security.md)
+- **Related Roles:** [RBAC: IQA Staff](./rbac-iqa-staff.md)
+- **How-To Guide:** [User Onboarding Flow](../how-to/user-onboarding-flow.md)
+- **Schema Reference:** [Authentication & Security Schema](./database-schema-auth-security.md)

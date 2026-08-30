@@ -42,6 +42,6 @@ Faculty members often hold a baseline academic identity while being dynamically 
 
 ## 5. Cross-Quadrant Links
 
-- **Pivot Reference:** [Task Force Members Pivot](file:///c:/Users/janss/Herd/iqarchive/docs/reference/rbac-task-force-members-pivot.md)
-- **Dynamic Instruments Schema:** [Dynamic Instruments Reference](file:///c:/Users/janss/Herd/iqarchive/docs/reference/database-schema-dynamic-instruments.md)
-- **Document Management Schema:** [Document Management Reference](file:///c:/Users/janss/Herd/iqarchive/docs/reference/database-schema-document-management.md)
+- **Pivot Reference:** [Task Force Members Pivot](./rbac-task-force-members-pivot.md)
+- **Dynamic Instruments Schema:** [Dynamic Instruments Reference](./database-schema-dynamic-instruments.md)
+- **Document Management Schema:** [Document Management Reference](./database-schema-document-management.md)

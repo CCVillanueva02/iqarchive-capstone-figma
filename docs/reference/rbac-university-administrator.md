@@ -39,6 +39,6 @@ This reference document specifies the capabilities, reporting privileges, and an
 
 ## 5. Cross-Quadrant Links
 
-- **Related Roles:** [RBAC: College Head](file:///c:/Users/janss/Herd/iqarchive/docs/reference/rbac-college-head.md) | [RBAC: IQA Staff](file:///c:/Users/janss/Herd/iqarchive/docs/reference/rbac-iqa-staff.md)
-- **Hierarchy Schema:** [Organizational Hierarchy Schema](file:///c:/Users/janss/Herd/iqarchive/docs/reference/database-schema-organizational-hierarchy.md)
-- **Architecture Reference:** [System Architecture Overview](file:///c:/Users/janss/Herd/iqarchive/docs/reference/architecture-overview.md)
+- **Related Roles:** [RBAC: College Head](./rbac-college-head.md) | [RBAC: IQA Staff](./rbac-iqa-staff.md)
+- **Hierarchy Schema:** [Organizational Hierarchy Schema](./database-schema-organizational-hierarchy.md)
+- **Architecture Reference:** [System Architecture Overview](./architecture-overview.md)

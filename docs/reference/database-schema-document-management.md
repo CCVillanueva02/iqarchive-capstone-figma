@@ -8,11 +8,11 @@ This reference document details the schema for document storage, OCR validations
 
 | Table | Model | Migration Source | Purpose |
 | :--- | :--- | :--- | :--- |
-| [`document_categories`](file:///c:/Users/janss/Herd/iqarchive/app/Models/DocumentCategory.php) | `App\Models\DocumentCategory` | `2026_07_19_000000_create_iqarchive_core_tables.php` | Document taxonomy and categorization. |
-| [`documents`](file:///c:/Users/janss/Herd/iqarchive/app/Models/Document.php) | `App\Models\Document` | `2026_07_19_000000...`, `2026_08_18_141907...` | Core metadata record for uploaded PDFs. |
-| [`document_ocr_validations`](file:///c:/Users/janss/Herd/iqarchive/app/Models/DocumentOCRValidation.php) | `App\Models\DocumentOCRValidation` | `2026_07_19_000000_create_iqarchive_core_tables.php` | Optical character recognition text extraction. |
-| [`document_reviews`](file:///c:/Users/janss/Herd/iqarchive/app/Models/DocumentReview.php) | `App\Models\DocumentReview` | `2026_07_19_000000_create_iqarchive_core_tables.php` | Approval and rejection audit decisions. |
-| [`document_access_requests`](file:///c:/Users/janss/Herd/iqarchive/app/Models/DocumentAccessRequest.php) | `App\Models\DocumentAccessRequest` | `2026_07_19_000000_create_iqarchive_core_tables.php` | Temporary access grants for restricted files. |
+| [`document_categories`](../../app/Models/DocumentCategory.php) | `App\Models\DocumentCategory` | `2026_07_19_000000_create_iqarchive_core_tables.php` | Document taxonomy and categorization. |
+| [`documents`](../../app/Models/Document.php) | `App\Models\Document` | `2026_07_19_000000...`, `2026_08_18_141907...` | Core metadata record for uploaded PDFs. |
+| [`document_ocr_validations`](../../app/Models/DocumentOCRValidation.php) | `App\Models\DocumentOCRValidation` | `2026_07_19_000000_create_iqarchive_core_tables.php` | Optical character recognition text extraction. |
+| [`document_reviews`](../../app/Models/DocumentReview.php) | `App\Models\DocumentReview` | `2026_07_19_000000_create_iqarchive_core_tables.php` | Approval and rejection audit decisions. |
+| [`document_access_requests`](../../app/Models/DocumentAccessRequest.php) | `App\Models\DocumentAccessRequest` | `2026_07_19_000000_create_iqarchive_core_tables.php` | Temporary access grants for restricted files. |
 
 ---
 
@@ -101,6 +101,6 @@ CREATE TABLE document_access_requests (
 
 ## 4. Cross-Quadrant Links
 
-- **Role Reference:** [RBAC: IQA Staff](file:///c:/Users/janss/Herd/iqarchive/docs/reference/rbac-iqa-staff.md)
-- **Role Reference:** [RBAC: Accreditor](file:///c:/Users/janss/Herd/iqarchive/docs/reference/rbac-accreditor.md)
-- **Architecture Reference:** [System Architecture Overview](file:///c:/Users/janss/Herd/iqarchive/docs/reference/architecture-overview.md)
+- **Role Reference:** [RBAC: IQA Staff](./rbac-iqa-staff.md)
+- **Role Reference:** [RBAC: Accreditor](./rbac-accreditor.md)
+- **Architecture Reference:** [System Architecture Overview](./architecture-overview.md)

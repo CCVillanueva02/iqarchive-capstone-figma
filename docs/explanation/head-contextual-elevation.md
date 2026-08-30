@@ -34,7 +34,7 @@ Global Identity (users.role_id)         Contextual Assignment (task_force_member
 
 ## 3. Automated Observer Mechanics
 
-To eliminate manual administrative overhead, an Eloquent model event listener is registered in [`app/Providers/AppServiceProvider.php`](file:///c:/Users/janss/Herd/iqarchive/app/Providers/AppServiceProvider.php):
+To eliminate manual administrative overhead, an Eloquent model event listener is registered in [`app/Providers/AppServiceProvider.php`](../../app/Providers/AppServiceProvider.php):
 
 1. **Trigger:** Whenever an IQA coordinator creates a new `TaskForce` record with a `college_id`.
 2. **Resolution:** The observer queries all active users assigned to that `college_id` holding the `college-head` role (via primary `role_id` or `role_user` pivot).
@@ -58,6 +58,6 @@ To eliminate manual administrative overhead, an Eloquent model event listener is
 
 ## 5. Cross-Quadrant Links
 
-- **Role Reference:** [RBAC: College Head Reference](file:///c:/Users/janss/Herd/iqarchive/docs/reference/rbac-college-head.md)
-- **Pivot Reference:** [Task Force Members Pivot](file:///c:/Users/janss/Herd/iqarchive/docs/reference/rbac-task-force-members-pivot.md)
-- **Schema Reference:** [Task Forces Schema](file:///c:/Users/janss/Herd/iqarchive/docs/reference/database-schema-task-forces.md)
+- **Role Reference:** [RBAC: College Head Reference](../reference/rbac-college-head.md)
+- **Pivot Reference:** [Task Force Members Pivot](../reference/rbac-task-force-members-pivot.md)
+- **Schema Reference:** [Task Forces Schema](../reference/database-schema-task-forces.md)

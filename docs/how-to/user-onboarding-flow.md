@@ -34,7 +34,7 @@ This practical guide walks through the end-to-end process of onboarding a new fa
 ---
 
 ### Step 3: Automated Activation & Token Sanitization
-When Google redirects back to `/auth/google/callback`, [`GoogleAuthController`](file:///c:/Users/janss/Herd/iqarchive/app/Http/Controllers/GoogleAuthController.php) automatically executes:
+When Google redirects back to `/auth/google/callback`, [`GoogleAuthController`](../../app/Http/Controllers/GoogleAuthController.php) automatically executes:
 
 1. **Domain Verification:** Validates that the email domain matches `ALLOWED_EMAIL_DOMAINS` (`bicol-u.edu.ph`).
 2. **Account Linking:** Binds the user's permanent `google_id` and profile avatar.
@@ -66,6 +66,6 @@ Upon successful authentication, the `/dashboard` gateway immediately redirects t
 
 ## 4. Cross-Quadrant Links
 
-- **Technical Reference:** [Google SSO Authentication Flow](file:///c:/Users/janss/Herd/iqarchive/docs/reference/auth-google-sso.md)
-- **Role Reference:** [RBAC: System Administrator](file:///c:/Users/janss/Herd/iqarchive/docs/reference/rbac-system-administrator.md)
-- **Schema Reference:** [Authentication & Security Schema](file:///c:/Users/janss/Herd/iqarchive/docs/reference/database-schema-auth-security.md)
+- **Technical Reference:** [Google SSO Authentication Flow](../reference/auth-google-sso.md)
+- **Role Reference:** [RBAC: System Administrator](../reference/rbac-system-administrator.md)
+- **Schema Reference:** [Authentication & Security Schema](../reference/database-schema-auth-security.md)

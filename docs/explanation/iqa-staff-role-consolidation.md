@@ -55,6 +55,6 @@ On August 19, 2026, migration `2026_08_19_000000_refactor_roles_and_task_force_m
 
 ## 4. Cross-Quadrant Links
 
-- **Role Specification:** [RBAC: IQA Staff Reference](file:///c:/Users/janss/Herd/iqarchive/docs/reference/rbac-iqa-staff.md)
-- **Database Schema:** [Authentication & Security Schema](file:///c:/Users/janss/Herd/iqarchive/docs/reference/database-schema-auth-security.md)
-- **System Architecture:** [System Architecture Overview](file:///c:/Users/janss/Herd/iqarchive/docs/reference/architecture-overview.md)
+- **Role Specification:** [RBAC: IQA Staff Reference](../reference/rbac-iqa-staff.md)
+- **Database Schema:** [Authentication & Security Schema](../reference/database-schema-auth-security.md)
+- **System Architecture:** [System Architecture Overview](../reference/architecture-overview.md)
