@@ -4,6 +4,7 @@ use App\Concerns\ProfileValidationRules;
 /* @chisel-email-verification */
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 /* @end-chisel-email-verification */
+use App\Models\User;
 use Flux\Flux;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -12,6 +13,7 @@ use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
 use Livewire\Component;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
 
 new #[Title('Profile settings')] class extends Component {
@@ -20,17 +22,29 @@ new #[Title('Profile settings')] class extends Component {
 
     public string $name = '';
     public string $email = '';
-    public $avatar_file;
+    /** @var TemporaryUploadedFile|null */
+    public $avatar_file = null;
     public ?string $current_avatar = null;
     public ?string $google_avatar = null;
     public bool $has_google_linked = false;
+
+    /**
+     * Get the authenticated user model.
+     */
+    private function user(): User
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        return $user;
+    }
 
     /**
      * Mount the component.
      */
     public function mount(): void
     {
-        $user = Auth::user();
+        $user = $this->user();
         $this->name = $user->name;
         $this->email = $user->email;
         $this->current_avatar = $user->avatar;
@@ -43,7 +57,7 @@ new #[Title('Profile settings')] class extends Component {
      */
     public function updateProfileInformation(): void
     {
-        $user = Auth::user();
+        $user = $this->user();
 
         $rules = $this->profileRules($user->id);
         if ($this->avatar_file) {
@@ -82,7 +96,7 @@ new #[Title('Profile settings')] class extends Component {
      */
     public function useGoogleAvatar(): void
     {
-        $user = Auth::user();
+        $user = $this->user();
 
         $targetGoogleAvatar = $user->google_avatar;
         if (!$targetGoogleAvatar && $this->has_google_linked) {
@@ -114,7 +128,7 @@ new #[Title('Profile settings')] class extends Component {
      */
     public function removeAvatar(): void
     {
-        $user = Auth::user();
+        $user = $this->user();
         if ($user->avatar) {
             if (!Str::startsWith($user->avatar, ['http://', 'https://'])) {
                 Storage::disk('public')->delete($user->avatar);
@@ -133,7 +147,7 @@ new #[Title('Profile settings')] class extends Component {
      */
     public function resendVerificationNotification(): void
     {
-        $user = Auth::user();
+        $user = $this->user();
 
         if ($user->hasVerifiedEmail()) {
             $this->redirectIntended(default: route('dashboard', absolute: false));
@@ -149,14 +163,16 @@ new #[Title('Profile settings')] class extends Component {
     #[Computed]
     public function hasUnverifiedEmail(): bool
     {
-        return Auth::user() instanceof MustVerifyEmail && ! Auth::user()->hasVerifiedEmail();
+        $user = $this->user();
+        return $user instanceof MustVerifyEmail && ! $user->hasVerifiedEmail();
     }
 
     #[Computed]
     public function showDeleteUser(): bool
     {
-        return ! Auth::user() instanceof MustVerifyEmail
-            || (Auth::user() instanceof MustVerifyEmail && Auth::user()->hasVerifiedEmail());
+        $user = $this->user();
+        return ! $user instanceof MustVerifyEmail
+            || ($user instanceof MustVerifyEmail && $user->hasVerifiedEmail());
     }
     /* @end-chisel-email-verification */
 }; ?>
@@ -175,7 +191,7 @@ new #[Title('Profile settings')] class extends Component {
             if ($avatar_file) {
             $avatarType = 'preview';
             } elseif ($current_avatar) {
-            $avatarType = \Illuminate\Support\Str::startsWith($current_avatar, ['http://', 'https://']) ? 'google' : 'custom';
+            $avatarType = Str::startsWith($current_avatar, ['http://', 'https://']) ? 'google' : 'custom';
             }
             $roleTitle = match($user->role) {
                 'system-administrator' => 'System Administrator',
