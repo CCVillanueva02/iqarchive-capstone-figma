@@ -8,6 +8,11 @@
 
 @import '@fontsource-variable/inter';
 
+/* =========================================================
+   IQARCHIVE DESIGN SYSTEM TOKENS (Tailwind CSS v4)
+   Specification & Mapping Reference: resources/css/token-mapping.md
+   ========================================================= */
+
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
