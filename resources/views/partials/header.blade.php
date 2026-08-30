@@ -2,12 +2,12 @@
 <header class="w-full bg-primary-dark text-white shadow-md font-sans relative">
     <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
         <!-- Logo / Brand Section -->
-        <a href="{{ route('home') }}#home" class="group flex items-center gap-3 cursor-pointer select-none">
-            <img src="/bulogo.png" alt="Bicol University Logo" class="w-9 h-9 object-contain select-none shrink-0 transition-transform duration-200 group-hover:scale-105" />
-            <span class="font-extrabold text-heading tracking-tight text-white transition-opacity group-hover:opacity-95">
+        <div class="flex items-center gap-3 select-none">
+            <img src="/bulogo.png" alt="Bicol University Logo" class="w-9 h-9 object-contain select-none shrink-0" />
+            <span class="font-extrabold text-heading tracking-tight text-white">
                 <span class="text-brand-orange">IQA</span>rchive
             </span>
-        </a>
+        </div>
 
         <!-- Right Authentication / Controls Section -->
         <div class="flex items-center gap-4">
