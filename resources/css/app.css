@@ -61,13 +61,6 @@
     --text-hero: 3rem;       /* 48px */
 }
 
-/* @layer theme {
-    .dark {
-        --color-accent: var(--color-white);
-        --color-accent-content: var(--color-white);
-        --color-accent-foreground: var(--color-neutral-800);
-    }
-} */
 
 @layer base {
 
@@ -97,10 +90,6 @@ textarea:focus[data-flux-control],
 select:focus[data-flux-control] {
     @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
 }
-
-/* \[:where(&)\]:size-4 {
-    @apply size-4;
-} */
 
 [x-cloak] {
     display: none !important;
