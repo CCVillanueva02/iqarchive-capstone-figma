@@ -78,12 +78,12 @@
 
         <!-- 2. Dynamic Instrument Customization Needed (Stage 4) -->
         @foreach($pendingInstrumentAccreditations as $acc)
-        <div class="bg-surface-card border border-blue-300 rounded-2xl p-5 shadow-xs flex flex-col justify-between relative overflow-hidden ring-1 ring-blue-200">
+        <div class="bg-surface-card border border-primary/20 rounded-2xl p-5 shadow-xs flex flex-col justify-between relative overflow-hidden ring-1 ring-primary/20">
             <div class="absolute top-0 left-0 w-1.5 h-full bg-primary"></div>
             
             <div class="space-y-3">
                 <div class="flex items-center justify-between gap-2">
-                    <span class="text-label-xs font-bold text-primary bg-blue-50 border border-blue-200 px-2 py-0.5 rounded uppercase tracking-wider block">
+                    <span class="text-label-xs font-bold text-primary bg-surface-subtle border border-primary/15 px-2 py-0.5 rounded uppercase tracking-wider block">
                         Stage 4 · Instrument Customization
                     </span>
                     <span class="text-label-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">

@@ -41,7 +41,7 @@
         @endphp
         <button type="button"
             wire:click="selectInstrument({{ $inst->id }})"
-            class="shrink-0 min-w-[260px] max-w-[320px] text-left p-4 rounded-xl border transition-all cursor-pointer flex flex-col justify-between gap-3 {{ $isSelected ? 'bg-blue-50/60 border-primary shadow-xs ring-2 ring-primary/20' : 'bg-white hover:bg-slate-50 border-slate-200/80 shadow-3xs' }}">
+            class="shrink-0 min-w-[260px] max-w-[320px] text-left p-4 rounded-xl border transition-all cursor-pointer flex flex-col justify-between gap-3 {{ $isSelected ? 'bg-surface-subtle/60 border-primary shadow-xs ring-2 ring-primary/20' : 'bg-white hover:bg-slate-50 border-slate-200/80 shadow-3xs' }}">
             <div class="flex flex-col gap-1">
                 <div class="flex items-center justify-between gap-2">
                     <span class="text-label-xs font-bold px-2 py-0.5 rounded {{ $inst->is_template ? 'bg-primary text-white' : 'bg-emerald-100 text-emerald-800' }}">

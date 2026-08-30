@@ -28,7 +28,7 @@
                     <!-- Top Row: Icon Badge & Category Tag -->
                     <div class="flex items-start justify-between">
                         <!-- Icon Badge Container -->
-                        <div class="relative w-12 h-12 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center shrink-0 transition-colors group-hover:bg-blue-100/70">
+                        <div class="relative w-12 h-12 rounded-2xl bg-surface-subtle border border-primary/10 flex items-center justify-center shrink-0 transition-colors group-hover:bg-primary/10/70">
                             <!-- Building icon -->
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-primary-dark group-hover:text-primary-hover transition-colors">
                                 <path d="M3 21h18"></path><path d="M9 8h1"></path><path d="M9 12h1"></path><path d="M9 16h1"></path><path d="M14 8h1"></path><path d="M14 12h1"></path><path d="M14 16h1"></path><path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"></path>

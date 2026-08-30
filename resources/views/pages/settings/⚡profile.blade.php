@@ -205,7 +205,7 @@ new #[Title('Profile settings')] class extends Component {
                         @endif
 
                         <!-- Small circular status indicator (green, ~10px) positioned fully inside bottom-right corner with 2px dark border ring -->
-                        <span class="absolute bottom-1 right-1 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-[#091E3A] z-10 pointer-events-none"></span>
+                        <span class="absolute bottom-1 right-1 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-primary-dark z-10 pointer-events-none"></span>
                     </div>
 
                     <!-- Name, Outline Role Badge, and Monospace Email -->

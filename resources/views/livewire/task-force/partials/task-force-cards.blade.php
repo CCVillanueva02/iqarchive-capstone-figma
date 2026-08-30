@@ -3,7 +3,7 @@
     @php
         $progress = $tf->progress_percentage;
         $statusClasses = match($tf->status) {
-            'active' => 'bg-blue-50 text-blue-700 border-blue-200',
+            'active' => 'bg-surface-subtle text-primary border-primary/15',
             'pending_approval' => 'bg-amber-50 text-amber-700 border-amber-300 animate-pulse',
             'completed' => 'bg-emerald-50 text-emerald-700 border-emerald-200',
             'disbanded' => 'bg-slate-100 text-slate-600 border-slate-200',

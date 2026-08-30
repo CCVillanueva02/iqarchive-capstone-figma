@@ -44,7 +44,7 @@
                             <th class="px-3 py-2.5 font-extrabold text-zinc-700 border-r border-slate-200">1</th>
                             <th class="px-3 py-2.5 font-extrabold text-zinc-700 border-r border-slate-200">2</th>
                             <th class="px-3 py-2.5 font-extrabold text-primary border-r border-slate-200">3</th>
-                            <th class="px-3 py-2.5 font-extrabold text-blue-700 border-r border-slate-200">4</th>
+                            <th class="px-3 py-2.5 font-extrabold text-primary border-r border-slate-200">4</th>
                             <th class="px-3 py-2.5 font-extrabold text-emerald-700">5</th>
                         </tr>
                     </thead>
@@ -55,7 +55,7 @@
                             <td class="px-3 py-2 text-zinc-700 font-bold border-r border-slate-100">Poor</td>
                             <td class="px-3 py-2 text-zinc-700 font-bold border-r border-slate-100">Fair</td>
                             <td class="px-3 py-2 text-primary font-bold border-r border-slate-100">Satisfactory</td>
-                            <td class="px-3 py-2 text-blue-700 font-bold border-r border-slate-100">Very Satisfactory</td>
+                            <td class="px-3 py-2 text-primary font-bold border-r border-slate-100">Very Satisfactory</td>
                             <td class="px-3 py-2 text-emerald-700 font-bold">Excellent</td>
                         </tr>
                         <tr>
@@ -86,15 +86,15 @@
                         <tr class="bg-slate-50 border-b-2 border-slate-200">
                             <th class="px-5 py-3 text-left text-xs font-extrabold text-primary border-r border-slate-200">Indicators</th>
                             <th class="border-r border-slate-200 py-3 px-2 text-center w-[100px] min-w-[100px] max-w-[100px]">
-                                <div class="text-[11px] font-extrabold text-primary uppercase tracking-wider leading-snug">Item Rating</div>
+                                <div class="text-label font-extrabold text-primary uppercase tracking-wider leading-snug">Item Rating</div>
                                 <div class="text-label-xs text-zinc-400 font-semibold mt-0.5 leading-tight">IR</div>
                             </th>
                             <th class="border-r border-slate-200 py-3 px-2 text-center w-[170px] min-w-[170px] max-w-[170px]">
-                                <div class="text-[11px] font-extrabold text-primary uppercase tracking-wider leading-snug">System – Implementation – Outcome Mean</div>
+                                <div class="text-label font-extrabold text-primary uppercase tracking-wider leading-snug">System – Implementation – Outcome Mean</div>
                                 <div class="text-label-xs text-zinc-400 font-semibold mt-0.5 leading-tight">SIOM</div>
                             </th>
                             <th class="py-3 px-2 text-center w-[120px] min-w-[120px] max-w-[120px]">
-                                <div class="text-[11px] font-extrabold text-primary uppercase tracking-wider leading-snug">Parameter Mean</div>
+                                <div class="text-label font-extrabold text-primary uppercase tracking-wider leading-snug">Parameter Mean</div>
                                 <div class="text-label-xs text-zinc-400 font-semibold mt-0.5 leading-tight">PM</div>
                             </th>
                         </tr>
@@ -109,7 +109,7 @@
                             </tr>
 
                             <tr class="bg-slate-100 border-b border-slate-200">
-                                <td colspan="4" class="px-5 py-1.5 text-[11px] font-extrabold text-zinc-600 uppercase tracking-wider">SYSTEM – INPUTS AND PROCESSES</td>
+                                <td colspan="4" class="px-5 py-1.5 text-label font-extrabold text-zinc-600 uppercase tracking-wider">SYSTEM – INPUTS AND PROCESSES</td>
                             </tr>
                             <template x-for="ind in param.sections.system" :key="ind.id">
                                 <tr class="border-b border-slate-100 hover:bg-slate-50/60 transition">
@@ -148,7 +148,7 @@
                             </tr>
 
                             <tr class="bg-slate-100 border-b border-slate-200">
-                                <td colspan="4" class="px-5 py-1.5 text-[11px] font-extrabold text-zinc-600 uppercase tracking-wider">IMPLEMENTATION</td>
+                                <td colspan="4" class="px-5 py-1.5 text-label font-extrabold text-zinc-600 uppercase tracking-wider">IMPLEMENTATION</td>
                             </tr>
                             <template x-for="ind in param.sections.implementation" :key="ind.id">
                                 <tr class="border-b border-slate-100 hover:bg-slate-50/60 transition">
@@ -177,7 +177,7 @@
                                     <td class="text-center p-1 w-[120px] min-w-[120px] max-w-[120px]"></td>
                                 </tr>
                             </template>
-                            <tr class="bg-blue-50/60 border-b border-slate-200">
+                            <tr class="bg-surface-subtle/60 border-b border-slate-200">
                                 <td class="px-5 py-2 text-xs font-semibold text-zinc-400 italic border-r border-slate-200 text-right">Implementation mean</td>
                                 <td class="border-r border-slate-200 text-center p-1 w-[100px] min-w-[100px] max-w-[100px]"></td>
                                 <td class="border-r border-slate-200 text-center p-1 w-[170px] min-w-[170px] max-w-[170px]">
@@ -187,7 +187,7 @@
                             </tr>
 
                             <tr class="bg-slate-100 border-b border-slate-200">
-                                <td colspan="4" class="px-5 py-1.5 text-[11px] font-extrabold text-zinc-600 uppercase tracking-wider">OUTCOME/S</td>
+                                <td colspan="4" class="px-5 py-1.5 text-label font-extrabold text-zinc-600 uppercase tracking-wider">OUTCOME/S</td>
                             </tr>
                             <template x-for="ind in param.sections.outcome" :key="ind.id">
                                 <tr class="border-b border-slate-100 hover:bg-slate-50/60 transition">
@@ -216,7 +216,7 @@
                                     <td class="text-center p-1 w-[120px] min-w-[120px] max-w-[120px]"></td>
                                 </tr>
                             </template>
-                            <tr class="bg-blue-50/60 border-b border-slate-200">
+                            <tr class="bg-surface-subtle/60 border-b border-slate-200">
                                 <td class="px-5 py-2 text-xs font-semibold text-zinc-400 italic border-r border-slate-200 text-right">Outcome mean</td>
                                 <td class="border-r border-slate-200 text-center p-1 w-[100px] min-w-[100px] max-w-[100px]"></td>
                                 <td class="border-r border-slate-200 text-center p-1 w-[170px] min-w-[170px] max-w-[170px]">
@@ -272,7 +272,7 @@
                         <tr class="bg-emerald-600 text-white">
                             <td class="px-5 py-3 text-xs font-extrabold uppercase tracking-wide border-r border-emerald-500 text-right">
                                 Area Mean
-                                <span class="font-normal normal-case text-emerald-100 text-[10px] ml-1">(mean of all parameter means)</span>
+                                <span class="font-normal normal-case text-emerald-100 text-label-xs ml-1">(mean of all parameter means)</span>
                             </td>
                             <td class="border-r border-emerald-500 text-center p-2 w-[100px] min-w-[100px] max-w-[100px]"></td>
                             <td class="border-r border-emerald-500 text-center p-2 w-[170px] min-w-[170px] max-w-[170px]"></td>

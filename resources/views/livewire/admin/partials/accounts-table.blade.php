@@ -63,7 +63,7 @@
                                     $roleBadge = match($assignedRole->role_name) {
                                         'system-administrator' => 'bg-purple-100 text-purple-800 border-purple-200',
                                         'iqa-staff', 'iqa-admin' => 'bg-primary/10 text-primary border-primary/20',
-                                        'college-head' => 'bg-blue-100 text-blue-800 border-blue-200',
+                                        'college-head' => 'bg-surface-subtle text-primary-dark border-primary/15',
                                         'task-force-member' => 'bg-amber-100 text-amber-800 border-amber-200',
                                         'accreditor' => 'bg-emerald-100 text-emerald-800 border-emerald-200',
                                         'university-administrator' => 'bg-indigo-100 text-indigo-800 border-indigo-200',

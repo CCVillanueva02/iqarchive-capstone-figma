@@ -69,7 +69,7 @@
                             $badgeStyle = match(true) {
                                 str_contains($lvl, 'Level IV') => 'bg-purple-50 text-purple-700 border-purple-200',
                                 str_contains($lvl, 'Level III') => 'bg-emerald-50 text-emerald-700 border-emerald-200',
-                                str_contains($lvl, 'Level II') => 'bg-blue-50 text-blue-700 border-blue-200',
+                                str_contains($lvl, 'Level II') => 'bg-surface-subtle text-primary border-primary/15',
                                 str_contains($lvl, 'Level I') => 'bg-amber-50 text-amber-800 border-amber-200',
                                 default => 'bg-slate-100 text-slate-700 border-slate-200',
                             };

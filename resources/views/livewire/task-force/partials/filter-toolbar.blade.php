@@ -16,7 +16,7 @@
         <button 
             type="button" 
             wire:click="$set('statusFilter', 'active')" 
-            class="px-3.5 py-1.5 rounded-lg text-label-xs font-bold transition-all cursor-pointer {{ $statusFilter === 'active' ? 'bg-blue-600 text-white shadow-xs' : 'text-slate-600 hover:text-slate-900' }}">
+            class="px-3.5 py-1.5 rounded-lg text-label-xs font-bold transition-all cursor-pointer {{ $statusFilter === 'active' ? 'bg-primary text-white shadow-xs' : 'text-slate-600 hover:text-slate-900' }}">
             Active <span class="ml-1 px-1.5 py-0.2 rounded-full {{ $statusFilter === 'active' ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-700' }} text-label-xs font-bold">{{ $totalActiveCount }}</span>
         </button>
         <button 

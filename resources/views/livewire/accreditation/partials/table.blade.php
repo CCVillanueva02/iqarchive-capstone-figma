@@ -76,8 +76,8 @@
                             $stageMap = [
                                 'scheduled' => ['label' => '1. Scheduled', 'class' => 'bg-amber-100 text-amber-800 border-amber-200'],
                                 'pending_task_force' => ['label' => '2. TF Nomination', 'class' => 'bg-amber-100 text-amber-800 border-amber-200'],
-                                'task_force_setup' => ['label' => '2. TF Proposed', 'class' => 'bg-blue-100 text-blue-800 border-blue-200'],
-                                'task_force_approved' => ['label' => '3. TF Active', 'class' => 'bg-blue-100 text-blue-800 border-blue-200'],
+                                'task_force_setup' => ['label' => '2. TF Proposed', 'class' => 'bg-surface-subtle text-primary-dark border-primary/15'],
+                                'task_force_approved' => ['label' => '3. TF Active', 'class' => 'bg-surface-subtle text-primary-dark border-primary/15'],
                                 'instrument_building' => ['label' => '4. Instrument Customization', 'class' => 'bg-indigo-100 text-indigo-800 border-indigo-200'],
                                 'document_preparation' => ['label' => '5. Evidence Gathering', 'class' => 'bg-purple-100 text-purple-800 border-purple-200'],
                                 'uploading' => ['label' => '5. Evidence Gathering', 'class' => 'bg-purple-100 text-purple-800 border-purple-200'],

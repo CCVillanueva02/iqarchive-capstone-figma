@@ -2,7 +2,7 @@
 <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
     <!-- 1. Colleges & Satellites Simple Count Card -->
     <div class="lg:col-span-3 bg-white border border-slate-200/60 rounded-2xl p-5 shadow-3xs flex items-center gap-4">
-        <div class="w-12 h-12 rounded-xl bg-blue-50 text-primary flex items-center justify-center font-bold shrink-0">
+        <div class="w-12 h-12 rounded-xl bg-surface-subtle text-primary flex items-center justify-center font-bold shrink-0">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
                 <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
@@ -16,7 +16,7 @@
 
     <!-- 2. Degree Programs Simple Count Card -->
     <div class="lg:col-span-3 bg-white border border-slate-200/60 rounded-2xl p-5 shadow-3xs flex items-center gap-4">
-        <div class="w-12 h-12 rounded-xl bg-orange-50 text-brand-orange flex items-center justify-center font-bold shrink-0">
+        <div class="w-12 h-12 rounded-xl bg-brand-orange/10 text-brand-orange flex items-center justify-center font-bold shrink-0">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
                 <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>

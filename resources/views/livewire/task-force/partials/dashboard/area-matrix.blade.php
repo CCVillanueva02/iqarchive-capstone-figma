@@ -23,16 +23,16 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         
         <!-- 1. Supporting Documents (Area I to X) -->
-        <div class="md:col-span-2 border border-slate-200/80 rounded-2xl p-5 flex flex-col justify-between hover:border-blue-300 hover:shadow-xs transition bg-blue-50/20 gap-4 {{ !$this->isInstrumentVerified ? 'opacity-70 bg-slate-50/60' : '' }}">
+        <div class="md:col-span-2 border border-slate-200/80 rounded-2xl p-5 flex flex-col justify-between hover:border-primary-light hover:shadow-xs transition bg-surface-subtle/20 gap-4 {{ !$this->isInstrumentVerified ? 'opacity-70 bg-slate-50/60' : '' }}">
             <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                 <div class="flex items-start gap-3.5">
-                    <div class="w-11 h-11 rounded-xl bg-blue-100 text-primary flex items-center justify-center shrink-0">
+                    <div class="w-11 h-11 rounded-xl bg-surface-subtle text-primary flex items-center justify-center shrink-0">
                         <x-lucide-files class="w-6 h-6 text-primary" />
                     </div>
                     <div>
                         <div class="flex items-center gap-2">
                             <h3 class="text-body font-extrabold text-primary">Supporting Documents (Area I – X)</h3>
-                            <span class="px-2 py-0.5 rounded-full text-label-xs font-bold bg-blue-100 text-blue-800 border border-blue-200 uppercase">
+                            <span class="px-2 py-0.5 rounded-full text-label-xs font-bold bg-surface-subtle text-primary-dark border border-primary/15 uppercase">
                                 Primary Evidence
                             </span>
                         </div>
@@ -47,7 +47,7 @@
             </div>
 
             <!-- Stats Bar -->
-            <div class="grid grid-cols-3 gap-3 pt-2 border-t border-blue-100">
+            <div class="grid grid-cols-3 gap-3 pt-2 border-t border-primary/10">
                 <div class="p-2.5 bg-white rounded-xl border border-slate-200/70 text-center">
                     <span class="text-label-xs text-zinc-400 font-bold uppercase block">Total Attached</span>
                     <span class="text-body font-black text-primary">{{ $stats['totalDocs'] }} Files</span>

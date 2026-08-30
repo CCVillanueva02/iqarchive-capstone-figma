@@ -83,7 +83,7 @@
                     <!-- Criterion Header -->
                     <div class="flex items-start justify-between gap-3">
                         <div class="flex items-start gap-3">
-                            <span class="text-xs font-extrabold text-primary bg-blue-50 border border-blue-200 px-3 py-1 rounded-full shrink-0">
+                            <span class="text-xs font-extrabold text-primary bg-surface-subtle border border-primary/15 px-3 py-1 rounded-full shrink-0">
                                 {{ $criterion->code }}
                             </span>
                             <div>

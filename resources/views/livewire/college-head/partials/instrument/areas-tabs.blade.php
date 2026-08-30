@@ -8,7 +8,7 @@
         @endphp
         <button type="button"
             wire:click="selectArea({{ $area->id }})"
-            class="shrink-0 min-w-50 bg-white rounded-xl border p-3.5 text-left shadow-3xs transition cursor-pointer flex flex-col justify-between h-22 {{ $isSelected ? 'border-primary ring-2 ring-primary/20 bg-blue-50/40 shadow-xs' : 'border-slate-200/80 hover:border-slate-300' }}">
+            class="shrink-0 min-w-50 bg-white rounded-xl border p-3.5 text-left shadow-3xs transition cursor-pointer flex flex-col justify-between h-22 {{ $isSelected ? 'border-primary ring-2 ring-primary/20 bg-surface-subtle/40 shadow-xs' : 'border-slate-200/80 hover:border-slate-300' }}">
             <div>
                 <span class="text-label-xs font-extrabold text-primary-muted uppercase tracking-wider block">{{ $area->code }}</span>
                 <span class="text-body-sm font-bold text-primary mt-1 leading-tight line-clamp-1 block" title="{{ $area->name }}">{{ $area->name }}</span>

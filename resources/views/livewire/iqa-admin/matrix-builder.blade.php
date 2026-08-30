@@ -62,8 +62,8 @@
                         <div class="flex-1 flex flex-col gap-2">
                             <label class="text-label font-bold text-zinc-500 uppercase tracking-wider">Required Document Tags</label>
                             <div class="w-full bg-white border border-slate-200 rounded-lg p-2 min-h-9.5 flex items-center gap-2 shadow-2xs">
-                                <span class="bg-blue-100 text-blue-800 text-label font-bold px-2 py-0.5 rounded-full">#UniversityManual</span>
-                                <span class="bg-blue-100 text-blue-800 text-label font-bold px-2 py-0.5 rounded-full">#BoardResolution</span>
+                                <span class="bg-surface-subtle text-primary-dark text-label font-bold px-2 py-0.5 rounded-full">#UniversityManual</span>
+                                <span class="bg-surface-subtle text-primary-dark text-label font-bold px-2 py-0.5 rounded-full">#BoardResolution</span>
                                 <input type="text" placeholder="Add tag..." class="border-none bg-transparent text-body-sm focus:ring-0 w-24 p-0">
                             </div>
                         </div>
@@ -78,7 +78,7 @@
                         <div class="flex-1 flex flex-col gap-2">
                             <label class="text-label font-bold text-zinc-500 uppercase tracking-wider">Required Document Tags</label>
                             <div class="w-full bg-white border border-slate-200 rounded-lg p-2 min-h-9.5 flex items-center gap-2 shadow-2xs">
-                                <span class="bg-blue-100 text-blue-800 text-label font-bold px-2 py-0.5 rounded-full">#SurveyResults</span>
+                                <span class="bg-surface-subtle text-primary-dark text-label font-bold px-2 py-0.5 rounded-full">#SurveyResults</span>
                                 <input type="text" placeholder="Add tag..." class="border-none bg-transparent text-body-sm focus:ring-0 w-24 p-0">
                             </div>
                         </div>

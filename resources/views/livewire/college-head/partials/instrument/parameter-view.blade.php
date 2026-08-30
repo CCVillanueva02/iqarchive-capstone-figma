@@ -93,7 +93,7 @@
                 wire:click="setSection('{{ $key }}')"
                 class="pb-3 border-b-2 transition cursor-pointer whitespace-nowrap flex items-center gap-2 {{ $isActive ? 'border-primary text-primary font-extrabold' : 'border-transparent text-zinc-400 hover:text-zinc-700' }}">
                 <span>{{ $meta['title'] }}</span>
-                <span class="text-label-xs px-2 py-0.5 rounded-full font-bold {{ $isActive ? 'bg-blue-100 text-blue-800' : 'bg-slate-100 text-zinc-500' }}">
+                <span class="text-label-xs px-2 py-0.5 rounded-full font-bold {{ $isActive ? 'bg-surface-subtle text-primary-dark' : 'bg-slate-100 text-zinc-500' }}">
                     {{ $count }}
                 </span>
             </button>
@@ -106,7 +106,7 @@
             <div class="border border-slate-200/80 rounded-xl p-5 flex flex-col gap-3.5 bg-slate-50/30">
                 <div class="flex items-start justify-between gap-4">
                     <div class="flex items-start gap-3 min-w-0">
-                        <span class="text-body-sm font-extrabold text-blue-700 bg-blue-50 border border-blue-200 px-3 py-1 rounded-full shrink-0">
+                        <span class="text-body-sm font-extrabold text-primary bg-surface-subtle border border-primary/15 px-3 py-1 rounded-full shrink-0">
                             {{ $crit->code }}
                         </span>
                         <div class="flex flex-col">
@@ -139,7 +139,7 @@
                     <span class="text-label-xs font-bold uppercase tracking-wider text-primary-muted shrink-0">Required Evidence Tags:</span>
                     @if (!empty($crit->required_tags) && is_array($crit->required_tags))
                         @foreach ($crit->required_tags as $tag)
-                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-label-xs font-bold bg-blue-100 text-blue-800 border border-blue-200">
+                        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-label-xs font-bold bg-surface-subtle text-primary-dark border border-primary/15">
                             {{ $tag }}
                         </span>
                         @endforeach

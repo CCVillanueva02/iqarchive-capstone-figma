@@ -3,7 +3,7 @@
     <form wire:submit="createCollege" class="space-y-6">
         <div>
             <div class="flex items-center gap-2">
-                <div class="w-8 h-8 rounded-lg bg-blue-50 text-primary flex items-center justify-center font-bold">
+                <div class="w-8 h-8 rounded-lg bg-surface-subtle text-primary flex items-center justify-center font-bold">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
                         <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
@@ -22,7 +22,7 @@
             </div>
             <div>
                 <flux:input wire:model="college_code" :label="__('College Code / Abbreviation')" required placeholder="e.g. CS or BUP" />
-                <p class="text-[11px] text-slate-400 mt-1">Unique short code or abbreviation for official reports.</p>
+                <p class="text-label text-slate-400 mt-1">Unique short code or abbreviation for official reports.</p>
             </div>
             <div>
                 <flux:input wire:model="college_campus" :label="__('Campus Designation')" required placeholder="e.g. LEGAZPI WEST CAMPUS, BU POLANGUI" />
@@ -84,7 +84,7 @@
     <form wire:submit="createProgram" class="space-y-6">
         <div>
             <div class="flex items-center gap-2">
-                <div class="w-8 h-8 rounded-lg bg-orange-50 text-brand-orange flex items-center justify-center font-bold">
+                <div class="w-8 h-8 rounded-lg bg-brand-orange/10 text-brand-orange flex items-center justify-center font-bold">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
                         <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>

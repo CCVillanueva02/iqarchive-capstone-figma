@@ -41,7 +41,7 @@
         <!-- Supporting Documents Card -->
         <div class="bg-white border border-slate-200/70 rounded-2xl p-6 shadow-3xs hover:shadow-md transition-all duration-300 flex flex-col justify-between gap-5 h-full">
             <div class="flex flex-col gap-4">
-                <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                <div class="w-12 h-12 rounded-xl bg-surface-subtle text-primary flex items-center justify-center">
                     <x-lucide-files class="w-6 h-6" />
                 </div>
                 <div>

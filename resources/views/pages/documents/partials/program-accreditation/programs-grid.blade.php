@@ -3,7 +3,7 @@
     <!-- Hero Title Banner for Program Selection -->
     <div class="bg-white border border-slate-200/70 rounded-2xl p-6 shadow-3xs flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div class="flex items-start gap-4">
-            <div class="w-12 h-12 rounded-xl bg-blue-50 text-primary flex items-center justify-center shrink-0 mt-1">
+            <div class="w-12 h-12 rounded-xl bg-surface-subtle text-primary flex items-center justify-center shrink-0 mt-1">
                 <x-lucide-graduation-cap class="w-6 h-6" />
             </div>
             <div>
@@ -69,7 +69,7 @@
                         <div class="flex items-start justify-between gap-3">
                             <!-- Left Side: Profile Icon & Program Name -->
                             <div class="flex items-center gap-3 overflow-hidden">
-                                <div class="w-11 h-11 rounded-xl flex items-center justify-center font-black text-sm shrink-0" :class="prog.iconBg || 'bg-blue-50 text-primary'">
+                                <div class="w-11 h-11 rounded-xl flex items-center justify-center font-black text-sm shrink-0" :class="prog.iconBg || 'bg-surface-subtle text-primary'">
                                     <span x-text="prog.code"></span>
                                 </div>
                                 <div class="flex flex-col overflow-hidden">
@@ -104,7 +104,7 @@
                             <div class="flex items-center justify-between">
                                 <span class="text-zinc-400 font-medium">Accreditation Level:</span>
                                 <span class="font-extrabold px-2.5 py-1 rounded-full border text-label-xs"
-                                    :class="prog.level.includes('Level IV') ? 'bg-blue-50 text-primary border-blue-100' : (prog.level.includes('Level III') ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : (prog.level.includes('Level II') ? 'bg-amber-50 text-amber-700 border-amber-100' : 'bg-slate-100 text-zinc-700 border-slate-200'))"
+                                    :class="prog.level.includes('Level IV') ? 'bg-surface-subtle text-primary border-primary/10' : (prog.level.includes('Level III') ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : (prog.level.includes('Level II') ? 'bg-amber-50 text-amber-700 border-amber-100' : 'bg-slate-100 text-zinc-700 border-slate-200'))"
                                     x-text="prog.level"></span>
                             </div>
                             <div class="flex items-center justify-between">

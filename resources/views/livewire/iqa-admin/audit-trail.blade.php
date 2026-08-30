@@ -155,7 +155,7 @@
                         @forelse($logs as $log)
                             @php
                                 $badgeColor = match ($log->action) {
-                                    'CREATE_USER', 'account_create' => 'bg-blue-50 text-blue-700 border border-blue-200',
+                                    'CREATE_USER', 'account_create' => 'bg-surface-subtle text-primary border border-primary/15',
                                     'UPDATE_USER', 'account_update' => 'bg-amber-50 text-amber-700 border border-amber-200',
                                     'DEACTIVATE_USER' => 'bg-rose-50 text-rose-700 border border-rose-200',
                                     'ACTIVATE_USER' => 'bg-emerald-50 text-emerald-700 border border-emerald-200',
@@ -219,7 +219,7 @@
                         @forelse($logs as $log)
                             @php
                                 $badgeColor = match (true) {
-                                    str_contains($log->action, 'upload') => 'bg-blue-50 text-blue-700 border border-blue-200',
+                                    str_contains($log->action, 'upload') => 'bg-surface-subtle text-primary border border-primary/15',
                                     str_contains($log->action, 'approve') => 'bg-emerald-50 text-emerald-700 border border-emerald-200',
                                     str_contains($log->action, 'reject') => 'bg-rose-50 text-rose-700 border border-rose-200',
                                     str_contains($log->action, 'delete') => 'bg-slate-100 text-slate-700 border border-slate-200',

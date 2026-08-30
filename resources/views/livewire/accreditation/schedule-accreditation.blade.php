@@ -3,7 +3,7 @@
         <form wire:submit="save" class="space-y-5">
             <!-- Modal Header -->
             <div class="flex items-center gap-3 pb-4 border-b border-slate-200">
-                <div class="w-10 h-10 rounded-xl bg-orange-50 text-brand-orange border border-orange-200/60 flex items-center justify-center font-bold shrink-0">
+                <div class="w-10 h-10 rounded-xl bg-brand-orange/10 text-brand-orange border border-brand-orange/20/60 flex items-center justify-center font-bold shrink-0">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <rect x="3" y="4" width="18" height="18" rx="2" ry="2" stroke-width="2"></rect>
                         <line x1="16" y1="2" x2="16" y2="6"></line>

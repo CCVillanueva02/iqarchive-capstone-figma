@@ -32,11 +32,11 @@
         <!-- In Progress Visits -->
         <div class="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs flex items-center justify-between">
             <div>
-                <span class="text-label-xs font-bold uppercase tracking-wider text-blue-600">Active Preparations</span>
-                <h3 class="text-heading-lg font-bold text-blue-800 mt-1">{{ $activeAccreditations->count() }}</h3>
-                <span class="text-label-xs text-blue-600/80 mt-0.5 block">Visits currently in progress</span>
+                <span class="text-label-xs font-bold uppercase tracking-wider text-primary">Active Preparations</span>
+                <h3 class="text-heading-lg font-bold text-primary-dark mt-1">{{ $activeAccreditations->count() }}</h3>
+                <span class="text-label-xs text-primary/80 mt-0.5 block">Visits currently in progress</span>
             </div>
-            <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center shrink-0">
+            <div class="w-12 h-12 rounded-xl bg-surface-subtle text-primary border border-primary/10 flex items-center justify-center shrink-0">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                 </svg>
@@ -150,14 +150,14 @@
             <div class="px-5 py-4 border-b border-slate-200 bg-slate-50/70 flex items-center justify-between">
                 <div>
                     <h2 class="font-bold text-primary-dark text-heading-sm flex items-center gap-2">
-                        <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 text-primary-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                         </svg>
                         In Progress Accreditations
                     </h2>
                     <p class="text-label text-primary-muted mt-0.5">Programs currently undergoing survey preparation.</p>
                 </div>
-                <span class="bg-blue-100 text-blue-800 text-label-xs font-bold px-2.5 py-1 rounded-full border border-blue-200">
+                <span class="bg-surface-subtle text-primary-dark text-label-xs font-bold px-2.5 py-1 rounded-full border border-primary/15">
                     {{ $activeAccreditations->count() }} Programs
                 </span>
             </div>
@@ -183,7 +183,7 @@
                                 </span>
                             </td>
                             <td class="px-4 py-3.5">
-                                <span class="text-label-xs font-bold text-blue-700 uppercase tracking-wider block">
+                                <span class="text-label-xs font-bold text-primary uppercase tracking-wider block">
                                     {{ str_replace('_', ' ', $activeAcc->status) }}
                                 </span>
                                 <span class="text-label-xs text-slate-400">

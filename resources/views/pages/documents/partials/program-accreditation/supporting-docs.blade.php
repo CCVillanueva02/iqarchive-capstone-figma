@@ -5,7 +5,7 @@
     <template x-if="accredProgram !== null">
         <div class="bg-white border border-slate-200/60 rounded-xl px-5 py-3 shadow-3xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div class="flex items-center gap-2 text-xs font-bold text-primary">
-                <span class="px-2 py-0.5 bg-blue-50 text-primary rounded border border-blue-100" x-text="accredProgram.code"></span>
+                <span class="px-2 py-0.5 bg-surface-subtle text-primary rounded border border-primary/10" x-text="accredProgram.code"></span>
                 <span x-text="accredProgram.name"></span>
                 <span class="text-zinc-400 font-normal">•</span>
                 <span class="text-zinc-500 font-medium" x-text="accredProgram.college"></span>
@@ -150,7 +150,7 @@
                     <div class="border border-slate-200 rounded-xl p-5 flex flex-col gap-4 bg-slate-50/30">
                         <div class="flex items-start justify-between gap-3">
                             <div class="flex items-start gap-3">
-                                <span class="text-sm font-bold text-primary bg-blue-50 px-3 py-1 rounded-full shrink-0" x-text="item.id"></span>
+                                <span class="text-sm font-bold text-primary bg-surface-subtle px-3 py-1 rounded-full shrink-0" x-text="item.id"></span>
                                 <p class="text-sm font-bold text-primary leading-relaxed mt-0.5" x-text="item.statement"></p>
                             </div>
                             <!-- Quick Upload Action in Header -->

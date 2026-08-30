@@ -3,7 +3,7 @@
     <!-- Hero Title Banner for College Selection -->
     <div class="bg-white border border-slate-200/70 rounded-2xl p-6 shadow-3xs flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div class="flex items-start gap-4">
-            <div class="w-12 h-12 rounded-xl bg-blue-50 text-primary flex items-center justify-center shrink-0 mt-1">
+            <div class="w-12 h-12 rounded-xl bg-surface-subtle text-primary flex items-center justify-center shrink-0 mt-1">
                 <x-lucide-building-2 class="w-6 h-6" />
             </div>
             <div>
@@ -58,7 +58,7 @@
                         <!-- Left Side: Profile Icon & College Name -->
                         <div class="flex items-center gap-3 overflow-hidden">
                             <img :src="col.logo" :alt="col.code + ' Logo'" class="w-11 h-11 object-contain shrink-0" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
-                            <div class="w-11 h-11 rounded-xl items-center justify-center font-black text-sm shrink-0" style="display: none;" :class="col.iconBg || 'bg-blue-50 text-primary'">
+                            <div class="w-11 h-11 rounded-xl items-center justify-center font-black text-sm shrink-0" style="display: none;" :class="col.iconBg || 'bg-surface-subtle text-primary'">
                                 <span x-text="col.code"></span>
                             </div>
                             <div class="flex flex-col overflow-hidden">

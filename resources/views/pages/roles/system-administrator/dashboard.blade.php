@@ -46,12 +46,12 @@
                 <div class="flex flex-col">
                     <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Total Accounts</span>
                     <span class="text-3xl font-extrabold text-primary-dark mt-2">{{ $totalUsers }}</span>
-                    <span class="text-[11px] text-zinc-500 mt-1.5 flex items-center gap-2">
+                    <span class="text-label text-zinc-500 mt-1.5 flex items-center gap-2">
                         <span class="inline-block h-2 w-2 rounded-full bg-emerald-500"></span> {{ $activeUsers }} Active
                         <span class="inline-block h-2 w-2 rounded-full bg-zinc-300"></span> {{ $inactiveUsers }} Deactivated
                     </span>
                 </div>
-                <div class="p-3.5 rounded-xl bg-blue-50 text-blue-600">
+                <div class="p-3.5 rounded-xl bg-surface-subtle text-primary">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.109A11.386 11.386 0 0 1 10.089 20.08l-.014-.002c-.072 0-.143-.001-.215-.002-.136-.002-.27-.006-.404-.012l-.014-.001a11.384 11.384 0 0 1-4.46-1.334 4.123 4.123 0 0 1-1.422-2.58l-.004-.013c-.015-.062-.03-.124-.043-.187L3.48 16a9.09 9.09 0 0 1-.412-2.72c0-1.87.525-3.6 1.437-5.07a4.125 4.125 0 0 1 7.159 2.502M15 9.128a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM2.25 12h19.5" />
                     </svg>
@@ -63,9 +63,9 @@
                 <div class="flex flex-col">
                     <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Archived Files</span>
                     <span class="text-3xl font-extrabold text-primary-dark mt-2">{{ $totalDocuments }}</span>
-                    <span class="text-[11px] text-zinc-500 mt-1.5">Total PDFs & Docs uploaded</span>
+                    <span class="text-label text-zinc-500 mt-1.5">Total PDFs & Docs uploaded</span>
                 </div>
-                <div class="p-3.5 rounded-xl bg-orange-50 text-brand-orange">
+                <div class="p-3.5 rounded-xl bg-brand-orange/10 text-brand-orange">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
                     </svg>
@@ -77,7 +77,7 @@
                 <div class="flex flex-col">
                     <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Active Sessions</span>
                     <span class="text-3xl font-extrabold text-primary-dark mt-2">{{ $activeSessions }}</span>
-                    <span class="text-[11px] text-zinc-500 mt-1.5">Live authenticated users</span>
+                    <span class="text-label text-zinc-500 mt-1.5">Live authenticated users</span>
                 </div>
                 <div class="p-3.5 rounded-xl bg-emerald-50 text-emerald-600">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
@@ -91,7 +91,7 @@
                 <div class="flex flex-col">
                     <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Audit Log Count</span>
                     <span class="text-3xl font-extrabold text-primary-dark mt-2">{{ $totalLogs }}</span>
-                    <span class="text-[11px] text-zinc-500 mt-1.5">Total audited events</span>
+                    <span class="text-label text-zinc-500 mt-1.5">Total audited events</span>
                 </div>
                 <div class="p-3.5 rounded-xl bg-purple-50 text-purple-600">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
@@ -131,13 +131,13 @@
                                         @if($log->user && $log->user->avatar_url)
                                             <img src="{{ $log->user->avatar_url }}" alt="{{ $log->user->name }}" class="w-7 h-7 rounded-full object-cover border border-primary-dark/10" referrerpolicy="no-referrer" />
                                         @else
-                                            <div class="w-7 h-7 rounded-full bg-primary-dark/5 border border-primary-dark/10 text-primary-dark text-[10px] font-bold flex items-center justify-center">
+                                            <div class="w-7 h-7 rounded-full bg-primary-dark/5 border border-primary-dark/10 text-primary-dark text-label-xs font-bold flex items-center justify-center">
                                                 {{ $log->user ? $log->user->initials() : 'SYS' }}
                                             </div>
                                         @endif
                                         <div>
                                             <span class="font-medium text-zinc-800 block text-xs">{{ $log->user ? $log->user->name : 'System Scheduler' }}</span>
-                                            <span class="text-[10px] text-zinc-400 block">{{ $log->user ? ucwords(str_replace('-', ' ', $log->user->role)) : 'System' }}</span>
+                                            <span class="text-label-xs text-zinc-400 block">{{ $log->user ? ucwords(str_replace('-', ' ', $log->user->role)) : 'System' }}</span>
                                         </div>
                                     </td>
                                     <td class="py-3">
@@ -146,11 +146,11 @@
                                                 str_contains($log->action, 'login') => 'bg-emerald-50 text-emerald-700 border-emerald-100',
                                                 str_contains($log->action, 'logout') => 'bg-zinc-100 text-zinc-700 border-zinc-200',
                                                 str_contains($log->action, 'delete') || str_contains($log->action, 'reject') => 'bg-rose-50 text-rose-700 border-rose-100',
-                                                str_contains($log->action, 'upload') || str_contains($log->action, 'create') => 'bg-blue-50 text-blue-700 border-blue-100',
+                                                str_contains($log->action, 'upload') || str_contains($log->action, 'create') => 'bg-surface-subtle text-primary border-primary/10',
                                                 default => 'bg-amber-50 text-amber-700 border-amber-100'
                                             };
                                         @endphp
-                                        <span class="px-2 py-0.5 rounded text-[10px] font-semibold border {{ $actionClass }}">
+                                        <span class="px-2 py-0.5 rounded text-label-xs font-semibold border {{ $actionClass }}">
                                             {{ strtoupper(str_replace('_', ' ', $log->action)) }}
                                         </span>
                                     </td>
@@ -184,7 +184,7 @@
                             </div>
                             <div class="flex-1">
                                 <span class="block">Manage User Accounts</span>
-                                <span class="block text-[10px] text-zinc-400 font-normal mt-0.5">Provision and toggle status</span>
+                                <span class="block text-label-xs text-zinc-400 font-normal mt-0.5">Provision and toggle status</span>
                             </div>
                         </a>
                         <a href="{{ route('reports.system-administrator') }}" class="flex items-center gap-3 p-3.5 bg-zinc-50 hover:bg-zinc-100 border border-zinc-100 rounded-xl transition font-semibold text-primary-dark text-xs" wire:navigate>
@@ -196,7 +196,7 @@
                             </div>
                             <div class="flex-1">
                                 <span class="block">Security Audit Log Center</span>
-                                <span class="block text-[10px] text-zinc-400 font-normal mt-0.5">Filter, search & inspect activities</span>
+                                <span class="block text-label-xs text-zinc-400 font-normal mt-0.5">Filter, search & inspect activities</span>
                             </div>
                         </a>
                     </div>
@@ -236,7 +236,7 @@
                                 <span>{{ $otherPercent }}% ({{ $otherCount }} events)</span>
                             </div>
                             <div class="w-full bg-zinc-100 rounded-full h-2">
-                                <div class="bg-blue-600 h-2 rounded-full" style="width: {{ $otherPercent }}%"></div>
+                                <div class="bg-primary h-2 rounded-full" style="width: {{ $otherPercent }}%"></div>
                             </div>
                         </div>
                     </div>

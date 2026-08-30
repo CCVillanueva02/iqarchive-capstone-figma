@@ -28,7 +28,7 @@
                     <div>
                         <div class="flex items-center gap-2">
                             <h4 class="text-heading-sm font-bold text-primary-dark">3rd Survey Visit (Phase 1)</h4>
-                            <span class="bg-blue-100 text-blue-800 text-label-xs font-bold px-2 py-0.5 rounded border border-blue-200">Revisit</span>
+                            <span class="bg-surface-subtle text-primary-dark text-label-xs font-bold px-2 py-0.5 rounded border border-primary/15">Revisit</span>
                         </div>
                         <p class="text-label text-slate-500 font-medium mt-0.5 flex items-center gap-1.5">
                             <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

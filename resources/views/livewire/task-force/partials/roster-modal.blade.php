@@ -4,7 +4,7 @@
         <!-- Header -->
         <div class="border-b border-slate-200 pb-4">
             <div class="flex items-center gap-2 mb-1.5">
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-label-xs font-bold {{ $selectedTaskForce->status === 'pending_approval' ? 'bg-amber-50 text-amber-800 border border-amber-200' : 'bg-blue-50 text-blue-800 border border-blue-200' }}">
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-label-xs font-bold {{ $selectedTaskForce->status === 'pending_approval' ? 'bg-amber-50 text-amber-800 border border-amber-200' : 'bg-surface-subtle text-primary-dark border border-primary/15' }}">
                     {{ ucfirst(str_replace('_', ' ', $selectedTaskForce->status)) }}
                 </span>
             </div>
@@ -101,7 +101,7 @@
                         </div>
 
                         <div class="shrink-0 text-right">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-label-xs font-semibold {{ ($member->pivot->role_in_team ?? '') === 'lead' ? 'bg-amber-100 text-amber-800 border border-amber-200' : 'bg-blue-50 text-blue-800 border border-blue-100' }}">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-label-xs font-semibold {{ ($member->pivot->role_in_team ?? '') === 'lead' ? 'bg-amber-100 text-amber-800 border border-amber-200' : 'bg-surface-subtle text-primary-dark border border-primary/10' }}">
                                 {{ ($member->pivot->role_in_team ?? '') === 'lead' ? 'Task Force Lead (Dean)' : 'Task Force Member' }}
                             </span>
                             <span class="block text-label-xs text-slate-400 mt-0.5">

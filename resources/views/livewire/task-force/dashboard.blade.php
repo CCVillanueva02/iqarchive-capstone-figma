@@ -37,7 +37,7 @@
     @else
         <!-- Empty State: No Active Accreditation Assigned -->
         <div class="bg-white border border-slate-200/80 rounded-2xl p-12 text-center flex flex-col items-center gap-4 shadow-3xs max-w-lg mx-auto mt-10">
-            <div class="w-16 h-16 rounded-2xl bg-blue-50 text-primary flex items-center justify-center">
+            <div class="w-16 h-16 rounded-2xl bg-surface-subtle text-primary flex items-center justify-center">
                 <x-lucide-folder-archive class="w-8 h-8 text-primary" />
             </div>
             <h2 class="text-heading-sm font-bold text-primary">No Active Accreditation Cycle</h2>

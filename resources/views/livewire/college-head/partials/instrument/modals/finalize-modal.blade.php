@@ -16,8 +16,8 @@
                 </p>
             </div>
 
-            <div class="bg-blue-50 border border-blue-200 rounded-lg p-3.5 flex items-start gap-3 text-label-xs text-blue-800">
-                <svg class="w-4 h-4 text-blue-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="bg-surface-subtle border border-primary/15 rounded-lg p-3.5 flex items-start gap-3 text-label-xs text-primary-dark">
+                <svg class="w-4 h-4 text-primary shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
                 <span>Task Force members assigned to this accreditation will immediately receive notification to begin uploading supporting compliance documents.</span>

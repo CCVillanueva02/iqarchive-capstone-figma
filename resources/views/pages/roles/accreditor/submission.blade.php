@@ -9,14 +9,14 @@
                     <img src="/bulogo.png" alt="BU Logo" class="w-8 h-8 object-contain shrink-0" />
                     <div class="flex flex-col">
                         <span class="text-sm font-bold text-primary-dark leading-none">BU IQArchive</span>
-                        <span class="text-[9px] text-zinc-500 font-bold uppercase tracking-wider mt-1">Accreditation Audit Workspace</span>
+                        <span class="text-label-xs text-zinc-500 font-bold uppercase tracking-wider mt-1">Accreditation Audit Workspace</span>
                     </div>
                 </div>
                 <div class="flex items-center gap-3">
                     <span class="text-xs font-semibold text-zinc-500">Reviewer: <strong class="text-primary-dark">{{ auth()->user()->name }}</strong></span>
                     <form method="POST" action="{{ route('logout') }}" class="inline">
                         @csrf
-                        <button type="submit" class="px-3 py-1.5 bg-zinc-200 hover:bg-zinc-300 text-zinc-700 text-[11px] font-bold rounded-lg transition cursor-pointer">
+                        <button type="submit" class="px-3 py-1.5 bg-zinc-200 hover:bg-zinc-300 text-zinc-700 text-label font-bold rounded-lg transition cursor-pointer">
                             Log out
                         </button>
                     </form>
@@ -44,7 +44,7 @@
                         :class="accredActiveAreaId === area.id ? 'border-primary ring-1 ring-primary/10' : ''"
                         @click="selectArea(area.id)">
                         <div class="pr-2">
-                            <span class="text-[9px] font-bold text-zinc-400 uppercase tracking-wider block" x-text="area.code"></span>
+                            <span class="text-label-xs font-bold text-zinc-400 uppercase tracking-wider block" x-text="area.code"></span>
                             <span class="text-sm font-bold text-primary mt-1 leading-tight line-clamp-1 block" x-text="area.title"></span>
                         </div>
                     </button>
@@ -77,7 +77,7 @@
                     <div class="flex flex-col gap-2 pb-4 border-b border-slate-100">
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                             <div>
-                                <span class="text-[9px] font-bold text-zinc-400 uppercase tracking-wider" x-text="activeParam?.code"></span>
+                                <span class="text-label-xs font-bold text-zinc-400 uppercase tracking-wider" x-text="activeParam?.code"></span>
                                 <h2 class="text-base font-extrabold text-primary mt-0.5" x-text="activeParam?.code + ' - ' + activeParam?.title"></h2>
                             </div>
 
@@ -119,13 +119,13 @@
                             <div class="bg-zinc-50 border border-slate-200/50 rounded-xl p-5 shadow-3xs flex flex-col gap-4">
                                 <!-- Statement description -->
                                 <div class="flex gap-3.5 items-start">
-                                    <span class="px-2.5 py-1 bg-blue-50 text-primary font-bold text-xs rounded-full shrink-0 select-none" x-text="item.id"></span>
+                                    <span class="px-2.5 py-1 bg-surface-subtle text-primary font-bold text-xs rounded-full shrink-0 select-none" x-text="item.id"></span>
                                     <p class="text-sm font-semibold text-primary leading-relaxed pt-0.5" x-text="item.statement"></p>
                                 </div>
 
                                 <!-- Supporting Documents attached -->
                                 <div class="flex flex-col gap-2 border-t border-slate-200/60 pt-3">
-                                    <span class="text-[9px] font-bold uppercase tracking-wider text-zinc-400 block mb-1.5 font-sans">
+                                    <span class="text-label-xs font-bold uppercase tracking-wider text-zinc-400 block mb-1.5 font-sans">
                                         Supporting Documents Attached (<span x-text="item.documents ? item.documents.length : 0"></span>)
                                     </span>
                                     

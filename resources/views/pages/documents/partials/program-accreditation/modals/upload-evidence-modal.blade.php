@@ -18,7 +18,7 @@
         <!-- Modal Header -->
         <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-surface-subtle">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-blue-50 text-primary flex items-center justify-center shrink-0">
+                <div class="w-10 h-10 rounded-xl bg-surface-subtle text-primary flex items-center justify-center shrink-0">
                     <x-lucide-file-up class="w-5 h-5" />
                 </div>
                 <div>
@@ -32,9 +32,9 @@
         </div>
 
         <!-- Target Context Banner -->
-        <div class="px-6 py-3.5 bg-blue-50/60 border-b border-blue-100/80 flex flex-col gap-2">
+        <div class="px-6 py-3.5 bg-surface-subtle/60 border-b border-primary/10/80 flex flex-col gap-2">
             <div class="flex items-center gap-2 text-label-xs font-bold text-primary">
-                <span class="px-2 py-0.5 bg-white border border-blue-200 rounded text-primary" x-text="activeArea?.code || 'Area'"></span>
+                <span class="px-2 py-0.5 bg-white border border-primary/15 rounded text-primary" x-text="activeArea?.code || 'Area'"></span>
                 <span class="text-zinc-400">•</span>
                 <span class="text-zinc-600" x-text="activeParam?.code + ' - ' + (activeParam?.title || '')"></span>
             </div>
@@ -107,7 +107,7 @@
 
                     <template x-if="!uploadForm.file">
                         <div class="flex flex-col items-center gap-1.5 pointer-events-none">
-                            <div class="w-10 h-10 rounded-full bg-blue-50 text-primary flex items-center justify-center">
+                            <div class="w-10 h-10 rounded-full bg-surface-subtle text-primary flex items-center justify-center">
                                 <x-lucide-cloud-upload class="w-5 h-5 text-primary" />
                             </div>
                             <span class="text-body-sm font-bold text-primary">Choose a file or drag & drop</span>

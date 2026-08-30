@@ -3,7 +3,7 @@
     
     <!-- Context Banner for Selected Program -->
     <template x-if="accredProgram !== null">
-        <div class="bg-blue-50/70 border border-blue-200/70 rounded-xl px-5 py-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-3xs">
+        <div class="bg-surface-subtle/70 border border-primary/15/70 rounded-xl px-5 py-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-3xs">
             <div class="flex items-center gap-3">
                 <div class="w-9 h-9 rounded-lg bg-primary text-white flex items-center justify-center font-extrabold text-xs shrink-0">
                     <span x-text="accredProgram.code"></span>
@@ -11,7 +11,7 @@
                 <div>
                     <div class="flex items-center gap-2">
                         <span class="text-xs font-extrabold text-primary" x-text="accredProgram.name"></span>
-                        <span class="text-label-xs font-bold px-2 py-0.5 rounded bg-white border border-blue-200 text-primary" x-text="accredProgram.level"></span>
+                        <span class="text-label-xs font-bold px-2 py-0.5 rounded bg-white border border-primary/15 text-primary" x-text="accredProgram.level"></span>
                     </div>
                     <p class="text-label-xs text-zinc-500 mt-0.5" x-text="accredProgram.college"></p>
                 </div>
@@ -52,9 +52,9 @@
 
     <!-- Dean & Staff Setup Notice (When Instrument is NOT yet verified) -->
     <template x-if="currentUserRole !== 'task-force-member' && accredProgram && !accredProgram.instrument_verified">
-        <div class="bg-blue-50/80 border border-blue-200 rounded-2xl p-5 shadow-3xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div class="bg-surface-subtle/80 border border-primary/15 rounded-2xl p-5 shadow-3xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div class="flex items-start gap-3">
-                <div class="w-10 h-10 rounded-xl bg-blue-100 text-primary flex items-center justify-center shrink-0 mt-0.5">
+                <div class="w-10 h-10 rounded-xl bg-surface-subtle text-primary flex items-center justify-center shrink-0 mt-0.5">
                     <x-lucide-file-cog class="w-5 h-5" />
                 </div>
                 <div>
@@ -138,7 +138,7 @@
         <div class="bg-white border border-slate-200/70 rounded-2xl p-6 shadow-3xs hover:shadow-md transition-all duration-300 flex flex-col justify-between gap-5 h-full"
             :class="currentUserRole === 'task-force-member' && accredProgram && !accredProgram.instrument_verified ? 'opacity-60 bg-slate-50/80' : ''">
             <div class="flex flex-col gap-4">
-                <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                <div class="w-12 h-12 rounded-xl bg-surface-subtle text-primary flex items-center justify-center">
                     <x-lucide-files class="w-6 h-6" />
                 </div>
                 <div>

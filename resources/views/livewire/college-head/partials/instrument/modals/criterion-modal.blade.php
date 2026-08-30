@@ -53,9 +53,9 @@
                 <!-- Displayed Tags List -->
                 <div class="flex flex-wrap items-center gap-2 min-h-[32px] p-2 bg-slate-50 border border-slate-200/80 rounded-lg">
                     @forelse ($criterionTags as $index => $tag)
-                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-label-xs font-bold bg-blue-100 text-blue-800 border border-blue-200">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-label-xs font-bold bg-surface-subtle text-primary-dark border border-primary/15">
                         <span>{{ $tag }}</span>
-                        <button type="button" wire:click="removeTag({{ $index }})" class="text-blue-600 hover:text-blue-900 cursor-pointer font-extrabold">&times;</button>
+                        <button type="button" wire:click="removeTag({{ $index }})" class="text-primary hover:text-primary-dark-hover cursor-pointer font-extrabold">&times;</button>
                     </span>
                     @empty
                     <span class="text-label-xs text-zinc-400 italic">No evidence tags added yet.</span>

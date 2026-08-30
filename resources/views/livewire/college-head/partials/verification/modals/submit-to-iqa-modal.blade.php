@@ -36,7 +36,7 @@
                 </div>
                 <div class="flex items-center justify-between">
                     <span class="text-zinc-500 font-medium">Target Status:</span>
-                    <span class="font-bold text-primary bg-blue-50 px-2 py-0.5 rounded-full text-label-xs">Submitted for Accreditor Review</span>
+                    <span class="font-bold text-primary bg-surface-subtle px-2 py-0.5 rounded-full text-label-xs">Submitted for Accreditor Review</span>
                 </div>
             </div>
 

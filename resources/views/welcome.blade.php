@@ -64,7 +64,7 @@
 
                             <!-- LEVEL II -->
                             <div class="flex-1 flex flex-col items-center h-full justify-end group">
-                                <div class="w-full bg-[#b84d09] border border-brand-orange/30 rounded-xl flex items-center justify-center font-bold text-white transition-all duration-300 group-hover:brightness-110 shadow-md" style="height: 65%;">
+                                <div class="w-full bg-brand-orange-hover border border-brand-orange/30 rounded-xl flex items-center justify-center font-bold text-white transition-all duration-300 group-hover:brightness-110 shadow-md" style="height: 65%;">
                                     <span class="text-body-sm font-bold text-white">{{ $levelII }}</span>
                                 </div>
                                 <span class="text-label-xs text-zinc-400 font-semibold uppercase tracking-wider mt-3">LEVEL II</span>

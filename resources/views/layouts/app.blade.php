@@ -21,7 +21,7 @@ $bodyClass = 'min-h-screen bg-surface-subtle antialiased text-zinc-800';
                     </span>
                     <span>Logged in as <strong>System Administrator</strong> &bull; Superuser Mode</span>
                 </div>
-                <div class="text-[10px] bg-white/20 px-2 py-0.5 rounded font-mono uppercase tracking-wider">
+                <div class="text-label-xs bg-white/20 px-2 py-0.5 rounded font-mono uppercase tracking-wider">
                     System Admin Panel
                 </div>
             </div>
@@ -88,7 +88,7 @@ $bodyClass = 'min-h-screen bg-surface-subtle antialiased text-zinc-800';
                     </div>
                     <div class="flex flex-col items-center text-center">
                         <span class="text-xs font-extrabold text-primary-dark tracking-wider uppercase">Loading Workspace</span>
-                        <span class="text-[11px] text-zinc-400 font-medium mt-0.5">Please wait...</span>
+                        <span class="text-label text-zinc-400 font-medium mt-0.5">Please wait...</span>
                     </div>
                 </div>
             </div>

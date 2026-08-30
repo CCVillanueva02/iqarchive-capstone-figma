@@ -22,10 +22,13 @@ Use these pre-defined utility classes for backgrounds, text colors, borders, rin
 | **Scrollbar Thumb** | `var(--color-scrollbar-thumb)` | `#c4c9d4` |
 | **Scrollbar Thumb Hover** | `var(--color-scrollbar-thumb-hover)` | `#9ca3af` |
 
-*For standard status badges, use Tailwind palette utilities:*
+*For standard status badges and informational callouts:*
 - **Verified**: `bg-green-100 text-green-700 border-green-200`
 - **Pending**: `bg-amber-100 text-amber-800 border-amber-200`
 - **Rejected**: `bg-rose-100 text-rose-700 border-rose-200`
+
+> **Rule — Status & Feedback UI Exemptions:**
+> Status/feedback UI (badges, inline info or warning callouts) uses native Tailwind semantic colors directly and is exempt from brand-token mapping. Brand tokens are reserved for interactive/navigational UI.
 
 ---
 

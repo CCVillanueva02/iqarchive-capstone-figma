@@ -69,7 +69,7 @@
                 <!-- TAB 1: ACCESS & SESSIONS (2 columns for Login and Logout, paired in one row) -->
                 <table class="w-full text-left border-collapse font-sans text-xs">
                     <thead>
-                        <tr class="bg-slate-50/75 border-b border-slate-100 text-zinc-400 font-bold uppercase tracking-wider select-none text-[11px]">
+                        <tr class="bg-slate-50/75 border-b border-slate-100 text-zinc-400 font-bold uppercase tracking-wider select-none text-label">
 
                             <th class="py-3.5 px-6">Login Time</th>
                             <th class="py-3.5 px-6">Logout Time</th>
@@ -113,7 +113,7 @@
                                             {{ $logoutTime->format('M d, Y') }} &bull; {{ $logoutTime->format('h:i:s A') }}
                                         </div>
                                     @else
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-label-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
                                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                                             Active Session
                                         </span>
@@ -123,7 +123,7 @@
                                 <!-- Duration Column -->
                                 <td class="py-4 px-6 whitespace-nowrap font-semibold">
                                     @if($logoutTime)
-                                        <span class="px-2.5 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200">
+                                        <span class="px-2.5 py-0.5 rounded text-label-xs font-bold bg-slate-100 text-slate-700 border border-slate-200">
                                             {{ $durationText }}
                                         </span>
                                     @else
@@ -144,7 +144,7 @@
                 <!-- TAB 2: ACCOUNT CREATIONS & MANAGEMENT (No Target Resource column) -->
                 <table class="w-full text-left border-collapse font-sans text-xs">
                     <thead>
-                        <tr class="bg-slate-50/75 border-b border-slate-100 text-zinc-400 font-bold uppercase tracking-wider select-none text-[11px]">
+                        <tr class="bg-slate-50/75 border-b border-slate-100 text-zinc-400 font-bold uppercase tracking-wider select-none text-label">
                             <th class="py-3.5 px-6">Timestamp</th>
 
                             <th class="py-3.5 px-6">Action</th>
@@ -155,7 +155,7 @@
                         @forelse($logs as $log)
                             @php
                                 $badgeColor = match ($log->action) {
-                                    'CREATE_USER', 'account_create' => 'bg-blue-50 text-blue-700 border border-blue-200',
+                                    'CREATE_USER', 'account_create' => 'bg-surface-subtle text-primary border border-primary/15',
                                     'UPDATE_USER', 'account_update' => 'bg-amber-50 text-amber-700 border border-amber-200',
                                     'DEACTIVATE_USER' => 'bg-rose-50 text-rose-700 border border-rose-200',
                                     'ACTIVATE_USER' => 'bg-emerald-50 text-emerald-700 border border-emerald-200',
@@ -182,12 +182,12 @@
                                 };
                             @endphp
                             <tr class="hover:bg-slate-50/40 transition">
-                                <td class="py-4 px-6 text-zinc-500 font-mono text-[11px] whitespace-nowrap">
+                                <td class="py-4 px-6 text-zinc-500 font-mono text-label whitespace-nowrap">
                                     {{ $log->timestamp->format('M d, Y') }} &bull; {{ $log->timestamp->format('h:i:s A') }}
                                 </td>
 
                                 <td class="py-4 px-6 whitespace-nowrap">
-                                    <span class="px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide inline-block {{ $badgeColor }}">
+                                    <span class="px-2.5 py-0.5 rounded text-label-xs font-bold uppercase tracking-wide inline-block {{ $badgeColor }}">
                                         {{ $actionLabel }}
                                     </span>
                                 </td>
@@ -208,7 +208,7 @@
                 <!-- TAB 3: FILE MODIFICATIONS & APPROVALS (No Target Resource column) -->
                 <table class="w-full text-left border-collapse font-sans text-xs">
                     <thead>
-                        <tr class="bg-slate-50/75 border-b border-slate-100 text-zinc-400 font-bold uppercase tracking-wider select-none text-[11px]">
+                        <tr class="bg-slate-50/75 border-b border-slate-100 text-zinc-400 font-bold uppercase tracking-wider select-none text-label">
                             <th class="py-3.5 px-6">Timestamp</th>
 
                             <th class="py-3.5 px-6">Action</th>
@@ -219,7 +219,7 @@
                         @forelse($logs as $log)
                             @php
                                 $badgeColor = match (true) {
-                                    str_contains($log->action, 'upload') => 'bg-blue-50 text-blue-700 border border-blue-200',
+                                    str_contains($log->action, 'upload') => 'bg-surface-subtle text-primary border border-primary/15',
                                     str_contains($log->action, 'approve') => 'bg-emerald-50 text-emerald-700 border border-emerald-200',
                                     str_contains($log->action, 'reject') => 'bg-rose-50 text-rose-700 border border-rose-200',
                                     str_contains($log->action, 'delete') => 'bg-slate-100 text-slate-700 border border-slate-200',
@@ -244,12 +244,12 @@
                                 };
                             @endphp
                             <tr class="hover:bg-slate-50/40 transition">
-                                <td class="py-4 px-6 text-zinc-500 font-mono text-[11px] whitespace-nowrap">
+                                <td class="py-4 px-6 text-zinc-500 font-mono text-label whitespace-nowrap">
                                     {{ $log->timestamp->format('M d, Y') }} &bull; {{ $log->timestamp->format('h:i:s A') }}
                                 </td>
 
                                 <td class="py-4 px-6 whitespace-nowrap">
-                                    <span class="px-2.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide inline-block {{ $badgeColor }}">
+                                    <span class="px-2.5 py-0.5 rounded text-label-xs font-bold uppercase tracking-wide inline-block {{ $badgeColor }}">
                                         {{ $actionLabel }}
                                     </span>
                                 </td>

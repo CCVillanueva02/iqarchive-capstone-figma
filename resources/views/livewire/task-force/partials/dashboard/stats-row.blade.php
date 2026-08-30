@@ -4,7 +4,7 @@
     <div class="bg-white border border-slate-200/70 rounded-2xl p-5 shadow-3xs flex flex-col justify-between">
         <div class="flex items-center justify-between">
             <span class="text-label-xs font-bold uppercase tracking-wider text-zinc-400">Total Uploads</span>
-            <div class="w-8 h-8 rounded-xl bg-blue-50 text-primary flex items-center justify-center">
+            <div class="w-8 h-8 rounded-xl bg-surface-subtle text-primary flex items-center justify-center">
                 <x-lucide-file-text class="w-4 h-4 text-primary" />
             </div>
         </div>

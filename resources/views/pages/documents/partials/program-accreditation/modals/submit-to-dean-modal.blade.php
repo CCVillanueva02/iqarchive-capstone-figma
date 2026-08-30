@@ -16,7 +16,7 @@
         x-transition:enter-end="opacity-100 scale-100">
 
         <!-- Modal Header -->
-        <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-blue-50/50">
+        <div class="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-surface-subtle/50">
             <div class="flex items-center gap-3">
                 <div class="w-11 h-11 rounded-xl bg-primary text-white flex items-center justify-center shrink-0">
                     <x-lucide-send class="w-5 h-5" />

@@ -10,7 +10,7 @@
                     <span>Program: {{ $selectedProgram->code }}</span>
                 </span>
                 @else
-                <span class="px-2.5 py-0.5 rounded-md bg-blue-100 text-blue-800 border border-blue-200 text-label-xs font-bold uppercase tracking-wider flex items-center gap-1">
+                <span class="px-2.5 py-0.5 rounded-md bg-surface-subtle text-primary-dark border border-primary/15 text-label-xs font-bold uppercase tracking-wider flex items-center gap-1">
                     <span>Master Template Baseline</span>
                 </span>
                 @endif

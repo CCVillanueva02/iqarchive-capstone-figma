@@ -110,7 +110,7 @@
                 <template x-for="item in activeChecklistItems" :key="item.id">
                     <div class="border border-slate-150 rounded-xl p-5 flex flex-col gap-4 bg-slate-50/20">
                         <div class="flex items-start gap-3">
-                            <span class="text-sm font-bold text-blue-700 bg-blue-50 px-3 py-1 rounded-full shrink-0" x-text="item.id"></span>
+                            <span class="text-sm font-bold text-primary bg-surface-subtle px-3 py-1 rounded-full shrink-0" x-text="item.id"></span>
                             <p class="text-sm font-bold text-primary leading-relaxed mt-0.5" x-text="item.statement"></p>
                         </div>
 
@@ -142,7 +142,7 @@
                                                     <span class="px-2 py-0.5 rounded text-label-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-100"
                                                         :class="doc.status === 'Verified' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-amber-50 text-amber-700 border-amber-100'"
                                                         x-text="doc.status"></span>
-                                                    <button type="button" class="text-sm font-bold text-blue-650 hover:underline cursor-pointer" @click="openDoc(doc)">
+                                                    <button type="button" class="text-sm font-bold text-primary hover:underline cursor-pointer" @click="openDoc(doc)">
                                                         View Drawer
                                                     </button>
                                                 </div>

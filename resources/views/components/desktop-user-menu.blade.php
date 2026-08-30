@@ -47,7 +47,7 @@
                 <form method="POST" action="{{ route('switch-role') }}" class="w-full">
                     @csrf
                     <input type="hidden" name="role" value="{{ $roleCode }}" />
-                    <button type="submit" class="w-full text-left px-2 py-1.5 rounded-lg flex items-center justify-between text-body-sm font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors {{ $isActive ? 'text-brand-orange font-bold bg-orange-50/50' : 'text-zinc-700 dark:text-zinc-300' }}">
+                    <button type="submit" class="w-full text-left px-2 py-1.5 rounded-lg flex items-center justify-between text-body-sm font-medium hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors {{ $isActive ? 'text-brand-orange font-bold bg-brand-orange/10/50' : 'text-zinc-700 dark:text-zinc-300' }}">
                         <span>{{ $roleTitle }}</span>
                         @if($isActive)
                             <span class="inline-flex items-center px-1.5 py-0.5 rounded text-label-xs font-bold bg-brand-orange text-white">Active</span>

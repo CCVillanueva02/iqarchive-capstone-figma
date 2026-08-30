@@ -4,7 +4,7 @@
     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
         <div>
             <div class="flex items-center gap-2">
-                <span class="text-label-xs font-bold px-2 py-0.5 rounded bg-blue-100 text-blue-800 uppercase tracking-wider">
+                <span class="text-label-xs font-bold px-2 py-0.5 rounded bg-surface-subtle text-primary-dark uppercase tracking-wider">
                     {{ $activeArea?->code }} &bull; {{ $activeParameter->code }}
                 </span>
                 <span class="text-label-xs text-zinc-400 font-bold uppercase">Section Benchmark Editor</span>
@@ -46,7 +46,7 @@
             wire:click="setSection('{{ $key }}')"
             class="pb-3 border-b-2 transition cursor-pointer whitespace-nowrap flex items-center gap-2 {{ $isActive ? 'border-brand-orange text-brand-orange' : 'border-transparent text-zinc-500 hover:text-primary' }}">
             <span>{{ $meta['title'] }}</span>
-            <span class="text-label-xs px-2 py-0.5 rounded-full font-extrabold {{ $isActive ? 'bg-orange-100 text-brand-orange' : 'bg-slate-100 text-zinc-500' }}">
+            <span class="text-label-xs px-2 py-0.5 rounded-full font-extrabold {{ $isActive ? 'bg-brand-orange/10 text-brand-orange' : 'bg-slate-100 text-zinc-500' }}">
                 {{ $count }}
             </span>
         </button>
@@ -59,7 +59,7 @@
         <div class="border border-slate-200/80 rounded-xl p-5 bg-slate-50/40 hover:bg-slate-50/80 transition flex flex-col gap-3.5">
             <div class="flex items-start justify-between gap-4">
                 <div class="flex items-start gap-3 min-w-0">
-                    <span class="text-body-sm font-extrabold px-3 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200 shrink-0">
+                    <span class="text-body-sm font-extrabold px-3 py-1 rounded-full bg-surface-subtle text-primary border border-primary/15 shrink-0">
                         {{ $crit->code }}
                     </span>
                     <div class="flex flex-col">
@@ -102,7 +102,7 @@
                 </span>
                 @if (!empty($crit->required_tags) && is_array($crit->required_tags))
                     @foreach ($crit->required_tags as $tag)
-                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-label-xs font-bold bg-blue-100/70 text-blue-800 border border-blue-200">
+                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-label-xs font-bold bg-surface-subtle/70 text-primary-dark border border-primary/15">
                         <span>{{ $tag }}</span>
                     </span>
                     @endforeach

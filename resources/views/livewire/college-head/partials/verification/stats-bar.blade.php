@@ -6,7 +6,7 @@
             <span class="text-label-xs font-bold text-zinc-400 uppercase tracking-wider block">Areas</span>
             <span class="text-heading font-extrabold text-primary block mt-0.5">{{ $stats['totalAreas'] }}</span>
         </div>
-        <div class="w-10 h-10 rounded-xl bg-blue-50 text-primary flex items-center justify-center shrink-0">
+        <div class="w-10 h-10 rounded-xl bg-surface-subtle text-primary flex items-center justify-center shrink-0">
             <x-lucide-folder-kanban class="w-5 h-5" />
         </div>
     </div>

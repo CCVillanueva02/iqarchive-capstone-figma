@@ -7,9 +7,9 @@
         x-transition:enter-end="opacity-100 scale-100">
 
         <!-- Header -->
-        <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-blue-50/60">
+        <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-surface-subtle/60">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-blue-100 text-primary flex items-center justify-center shrink-0">
+                <div class="w-10 h-10 rounded-xl bg-surface-subtle text-primary flex items-center justify-center shrink-0">
                     <x-lucide-send class="w-5 h-5 text-primary" />
                 </div>
                 <div>
@@ -24,7 +24,7 @@
 
         <!-- Body Form -->
         <form wire:submit="confirmSubmitToDean" class="p-6 flex flex-col gap-4">
-            <div class="bg-blue-50/80 border border-blue-200/80 rounded-xl p-3.5 text-xs text-blue-950 leading-relaxed">
+            <div class="bg-surface-subtle/80 border border-primary/15/80 rounded-xl p-3.5 text-xs text-primary-dark leading-relaxed">
                 By submitting this repository, you confirm that all required documentation for <strong>{{ $acc->program->name }}</strong> has been prepared and attached to their respective evaluation criteria.
             </div>
 

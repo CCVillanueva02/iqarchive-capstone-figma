@@ -116,7 +116,7 @@
                                     <!-- +N more toggle -->
                                     <template x-if="rec.documents.length > 2">
                                         <button type="button"
-                                            class="text-xs font-bold text-blue-600 hover:text-blue-800 cursor-pointer border border-slate-200 rounded-lg px-3 py-1.5 bg-white hover:bg-slate-50 transition w-fit"
+                                            class="text-xs font-bold text-primary hover:text-primary-hover cursor-pointer border border-slate-200 rounded-lg px-3 py-1.5 bg-white hover:bg-slate-50 transition w-fit"
                                             @click="toggleDocs(rec.id)"
                                             x-text="expandedDocs[rec.id] ? 'Show less' : '+' + (rec.documents.length - 2) + ' more'">
                                         </button>
