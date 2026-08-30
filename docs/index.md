@@ -16,10 +16,11 @@ docs/
 
 ---
 
-## 1. Tutorials (Learning-Oriented)
+## 1. Tutorials & Guides (Learning-Oriented)
 Practical walkthroughs designed to get you productive immediately.
 
 - [Developer Environment Quickstart](tutorials/developer-quickstart.md) — Set up PHP, Composer, SQLite/MySQL, migrations, seeders, and run the local development server in 5 minutes.
+- [gStack-Antigravity Workflow Guide](gstack-guide/gstack-guide.md) — Directory of all 34 AI personas and the recommended 5-stage engineering lifecycle.
 
 ---
 
