@@ -2200,7 +2200,7 @@ window.documentWorkspace = function (initialState = {}) {
                     code: c.code,
                     name: c.name,
                     description: c.campus || c.description || 'Academic Unit',
-                    iconBg: c.iconBg || 'bg-slate-100 text-[#1b355a]',
+                    iconBg: c.iconBg || 'bg-slate-100 text-primary',
                     logo: c.logo,
                     programCount: count
                 };
@@ -2686,7 +2686,7 @@ window.documentWorkspace = function (initialState = {}) {
                 cancelButtonText: 'Cancel',
                 customClass: {
                     popup: 'rounded-2xl border border-slate-200/60 shadow-lg font-sans',
-                    title: 'text-[#1b355a] font-bold text-xl',
+                    title: 'text-primary font-bold text-xl',
                     confirmButton: 'px-6 py-2.5 rounded-xl font-semibold text-white',
                     cancelButton: 'px-6 py-2.5 rounded-xl font-semibold text-zinc-700 bg-slate-100 hover:bg-slate-200'
                 }
@@ -2716,7 +2716,7 @@ window.documentWorkspace = function (initialState = {}) {
                         confirmButtonColor: '#F47920',
                         customClass: {
                             popup: 'rounded-2xl border border-slate-200/60 shadow-lg font-sans',
-                            title: 'text-[#1b355a] font-bold text-xl',
+                            title: 'text-primary font-bold text-xl',
                             confirmButton: 'px-6 py-2.5 rounded-xl font-semibold text-white'
                         }
                     });
