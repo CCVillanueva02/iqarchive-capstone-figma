@@ -24,3 +24,4 @@ yarn-error.log
 /.zed
 .playwright-mcp
 /.agents/tmp/gstack-upstream
+/.antigravity/design-reports
