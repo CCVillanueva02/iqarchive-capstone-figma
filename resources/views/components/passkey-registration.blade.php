@@ -74,7 +74,7 @@
             <flux:button
                 variant="primary"
                 icon="plus"
-                style="--color-accent: #F47920; --color-accent-foreground: #ffffff;"
+                style="--color-accent: var(--color-brand-orange); --color-accent-foreground: #ffffff;"
                 class="text-white font-semibold border-none shadow-xs"
                 x-on:click="showForm = true"
             >
@@ -100,7 +100,7 @@
             <div class="flex gap-2">
                 <flux:button
                     variant="primary"
-                    style="--color-accent: #F47920; --color-accent-foreground: #ffffff;"
+                    style="--color-accent: var(--color-brand-orange); --color-accent-foreground: #ffffff;"
                     class="text-white font-semibold border-none shadow-xs"
                     x-on:click="register()"
                     x-bind:disabled="loading || !name.trim()"

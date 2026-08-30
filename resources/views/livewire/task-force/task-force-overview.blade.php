@@ -33,7 +33,7 @@
                     icon: data.icon || 'success',
                     title: data.title || '',
                     text: data.text || '',
-                    confirmButtonColor: '#f27224',
+                    confirmButtonColor: '#f47920',
                     customClass: {
                         popup: 'rounded-2xl border border-slate-200 shadow-lg font-sans',
                         title: 'text-primary font-bold text-xl',

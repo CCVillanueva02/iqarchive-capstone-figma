@@ -23,11 +23,11 @@
 @endphp
 
 <x-layouts::app :title="__('Dashboard')">
-    <div class="w-full px-8 py-8 flex flex-col gap-6 bg-[#f4f6fa] min-h-screen">
+    <div class="w-full px-8 py-8 flex flex-col gap-6 bg-surface-subtle min-h-screen">
         <!-- Top header bar -->
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-                <h1 class="text-2xl font-bold text-[#002B61]">System Administrator Dashboard</h1>
+                <h1 class="text-heading-lg font-bold text-primary-dark">System Administrator Dashboard</h1>
                 <p class="text-xs text-zinc-500 mt-1">IQArchive Core Control Center</p>
             </div>
             <div class="flex items-center gap-3">
@@ -45,7 +45,7 @@
             <div class="bg-white p-6 rounded-2xl border border-slate-200/60 shadow-3xs hover:shadow-xs transition duration-200 flex items-center justify-between">
                 <div class="flex flex-col">
                     <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Total Accounts</span>
-                    <span class="text-3xl font-extrabold text-[#002B61] mt-2">{{ $totalUsers }}</span>
+                    <span class="text-3xl font-extrabold text-primary-dark mt-2">{{ $totalUsers }}</span>
                     <span class="text-[11px] text-zinc-500 mt-1.5 flex items-center gap-2">
                         <span class="inline-block h-2 w-2 rounded-full bg-emerald-500"></span> {{ $activeUsers }} Active
                         <span class="inline-block h-2 w-2 rounded-full bg-zinc-300"></span> {{ $inactiveUsers }} Deactivated
@@ -62,10 +62,10 @@
             <div class="bg-white p-6 rounded-2xl border border-slate-200/60 shadow-3xs hover:shadow-xs transition duration-200 flex items-center justify-between">
                 <div class="flex flex-col">
                     <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Archived Files</span>
-                    <span class="text-3xl font-extrabold text-[#002B61] mt-2">{{ $totalDocuments }}</span>
+                    <span class="text-3xl font-extrabold text-primary-dark mt-2">{{ $totalDocuments }}</span>
                     <span class="text-[11px] text-zinc-500 mt-1.5">Total PDFs & Docs uploaded</span>
                 </div>
-                <div class="p-3.5 rounded-xl bg-orange-50 text-[#F47920]">
+                <div class="p-3.5 rounded-xl bg-orange-50 text-brand-orange">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
                     </svg>
@@ -76,7 +76,7 @@
             <div class="bg-white p-6 rounded-2xl border border-slate-200/60 shadow-3xs hover:shadow-xs transition duration-200 flex items-center justify-between">
                 <div class="flex flex-col">
                     <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Active Sessions</span>
-                    <span class="text-3xl font-extrabold text-[#002B61] mt-2">{{ $activeSessions }}</span>
+                    <span class="text-3xl font-extrabold text-primary-dark mt-2">{{ $activeSessions }}</span>
                     <span class="text-[11px] text-zinc-500 mt-1.5">Live authenticated users</span>
                 </div>
                 <div class="p-3.5 rounded-xl bg-emerald-50 text-emerald-600">
@@ -90,7 +90,7 @@
             <div class="bg-white p-6 rounded-2xl border border-slate-200/60 shadow-3xs hover:shadow-xs transition duration-200 flex items-center justify-between">
                 <div class="flex flex-col">
                     <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Audit Log Count</span>
-                    <span class="text-3xl font-extrabold text-[#002B61] mt-2">{{ $totalLogs }}</span>
+                    <span class="text-3xl font-extrabold text-primary-dark mt-2">{{ $totalLogs }}</span>
                     <span class="text-[11px] text-zinc-500 mt-1.5">Total audited events</span>
                 </div>
                 <div class="p-3.5 rounded-xl bg-purple-50 text-purple-600">
@@ -107,10 +107,10 @@
             <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200/60 p-6 shadow-3xs flex flex-col gap-4">
                 <div class="flex items-center justify-between border-b border-zinc-100 pb-4">
                     <div>
-                        <h2 class="text-lg font-bold text-[#002B61]">Recent Audit Trail Logs</h2>
+                        <h2 class="text-heading-sm font-bold text-primary-dark">Recent Audit Trail Logs</h2>
                         <p class="text-xs text-zinc-400 mt-0.5">Live monitoring of admin & auth activities</p>
                     </div>
-                    <a href="{{ route('reports.system-administrator') }}" class="text-xs font-semibold text-[#F47920] hover:underline" wire:navigate>
+                    <a href="{{ route('reports.system-administrator') }}" class="text-xs font-semibold text-brand-orange hover:underline" wire:navigate>
                         View Full Trail &rarr;
                     </a>
                 </div>
@@ -129,9 +129,9 @@
                                 <tr>
                                     <td class="py-3 flex items-center gap-2">
                                         @if($log->user && $log->user->avatar_url)
-                                            <img src="{{ $log->user->avatar_url }}" alt="{{ $log->user->name }}" class="w-7 h-7 rounded-full object-cover border border-[#002B61]/10" referrerpolicy="no-referrer" />
+                                            <img src="{{ $log->user->avatar_url }}" alt="{{ $log->user->name }}" class="w-7 h-7 rounded-full object-cover border border-primary-dark/10" referrerpolicy="no-referrer" />
                                         @else
-                                            <div class="w-7 h-7 rounded-full bg-[#002B61]/5 border border-[#002B61]/10 text-[#002B61] text-[10px] font-bold flex items-center justify-center">
+                                            <div class="w-7 h-7 rounded-full bg-primary-dark/5 border border-primary-dark/10 text-primary-dark text-[10px] font-bold flex items-center justify-center">
                                                 {{ $log->user ? $log->user->initials() : 'SYS' }}
                                             </div>
                                         @endif
@@ -142,7 +142,7 @@
                                     </td>
                                     <td class="py-3">
                                         @php
-                                            $actionClass = match(true) {
+                                             $actionClass = match(true) {
                                                 str_contains($log->action, 'login') => 'bg-emerald-50 text-emerald-700 border-emerald-100',
                                                 str_contains($log->action, 'logout') => 'bg-zinc-100 text-zinc-700 border-zinc-200',
                                                 str_contains($log->action, 'delete') || str_contains($log->action, 'reject') => 'bg-rose-50 text-rose-700 border-rose-100',
@@ -174,10 +174,10 @@
             <div class="flex flex-col gap-6">
                 <!-- Quick Tools Card -->
                 <div class="bg-white rounded-2xl border border-slate-200/60 p-6 shadow-3xs flex flex-col gap-4">
-                    <h3 class="text-sm font-bold text-[#002B61] uppercase tracking-wider">Quick Actions</h3>
+                    <h3 class="text-sm font-bold text-primary-dark uppercase tracking-wider">Quick Actions</h3>
                     <div class="flex flex-col gap-3">
-                        <a href="{{ route('accounts.system-administrator') }}" class="flex items-center gap-3 p-3.5 bg-zinc-50 hover:bg-zinc-100 border border-zinc-100 rounded-xl transition font-semibold text-[#002B61] text-xs" wire:navigate>
-                            <div class="p-2 bg-[#002B61] text-white rounded-lg">
+                        <a href="{{ route('accounts.system-administrator') }}" class="flex items-center gap-3 p-3.5 bg-zinc-50 hover:bg-zinc-100 border border-zinc-100 rounded-xl transition font-semibold text-primary-dark text-xs" wire:navigate>
+                            <div class="p-2 bg-primary-dark text-white rounded-lg">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z" />
                                 </svg>
@@ -187,7 +187,7 @@
                                 <span class="block text-[10px] text-zinc-400 font-normal mt-0.5">Provision and toggle status</span>
                             </div>
                         </a>
-                        <a href="{{ route('reports.system-administrator') }}" class="flex items-center gap-3 p-3.5 bg-zinc-50 hover:bg-zinc-100 border border-zinc-100 rounded-xl transition font-semibold text-[#002B61] text-xs" wire:navigate>
+                        <a href="{{ route('reports.system-administrator') }}" class="flex items-center gap-3 p-3.5 bg-zinc-50 hover:bg-zinc-100 border border-zinc-100 rounded-xl transition font-semibold text-primary-dark text-xs" wire:navigate>
                             <div class="p-2 bg-purple-600 text-white rounded-lg">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
@@ -204,7 +204,7 @@
 
                 <!-- Activity Share breakdown widget -->
                 <div class="bg-white rounded-2xl border border-slate-200/60 p-6 shadow-3xs flex flex-col gap-4">
-                    <h3 class="text-sm font-bold text-[#002B61] uppercase tracking-wider">Audit Log Share</h3>
+                    <h3 class="text-sm font-bold text-primary-dark uppercase tracking-wider">Audit Log Share</h3>
                     
                     <div class="flex flex-col gap-3 mt-1">
                         <!-- Login bar -->
@@ -225,7 +225,7 @@
                                 <span>{{ $docPercent }}% ({{ $docCount }} events)</span>
                             </div>
                             <div class="w-full bg-zinc-100 rounded-full h-2">
-                                <div class="bg-[#F47920] h-2 rounded-full" style="width: {{ $docPercent }}%"></div>
+                                <div class="bg-brand-orange h-2 rounded-full" style="width: {{ $docPercent }}%"></div>
                             </div>
                         </div>
 

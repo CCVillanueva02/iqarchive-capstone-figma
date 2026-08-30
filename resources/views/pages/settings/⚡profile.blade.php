@@ -189,13 +189,13 @@ new #[Title('Profile settings')] class extends Component {
             @endphp
 
             <!-- Summary Header Card (Dark Navy-to-Black Gradient, Two-Column SaaS Header) -->
-            <div class="relative overflow-hidden rounded-[16px] bg-gradient-to-r from-[#002B61] via-[#091E3A] to-[#040D1A] border border-white/10 p-5 md:p-6 shadow-xl text-white flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div class="absolute -right-12 -bottom-12 w-48 h-48 bg-[#F47920]/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="relative overflow-hidden rounded-[16px] bg-gradient-to-r from-primary-dark via-[#091E3A] to-[#040D1A] border border-white/10 p-5 md:p-6 shadow-xl text-white flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="absolute -right-12 -bottom-12 w-48 h-48 bg-brand-orange/10 rounded-full blur-3xl pointer-events-none"></div>
 
                 <!-- Left: Identity Block -->
                 <div class="flex items-center gap-4 min-w-0 w-full sm:w-auto relative z-10">
                     <!-- Square Avatar (~64px, ~12px rounded corners) with inside 10px status dot -->
-                    <div class="relative w-[64px] h-[64px] rounded-[12px] bg-[#F47920] border border-white/15 text-white font-bold flex items-center justify-center text-2xl shrink-0 select-none overflow-hidden shadow-sm">
+                    <div class="relative w-16 h-16 rounded-[12px] bg-brand-orange border border-white/15 text-white font-bold flex items-center justify-center text-2xl shrink-0 select-none overflow-hidden shadow-sm">
                         @if ($avatar_file)
                         <img src="{{ $avatar_file->temporaryUrl() }}" class="w-full h-full object-cover">
                         @elseif ($user->avatar_url)
@@ -205,13 +205,13 @@ new #[Title('Profile settings')] class extends Component {
                         @endif
 
                         <!-- Small circular status indicator (green, ~10px) positioned fully inside bottom-right corner with 2px dark border ring -->
-                        <span class="absolute bottom-1 right-1 w-[10px] h-[10px] rounded-full bg-emerald-500 ring-2 ring-[#091E3A] z-10 pointer-events-none"></span>
+                        <span class="absolute bottom-1 right-1 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-[#091E3A] z-10 pointer-events-none"></span>
                     </div>
 
                     <!-- Name, Outline Role Badge, and Monospace Email -->
                     <div class="flex-1 min-w-0">
                         <div class="flex flex-wrap items-center gap-2.5">
-                            <h2 class="text-[20px] font-bold text-white tracking-tight leading-tight truncate">{{ $user->name }}</h2>
+                            <h2 class="text-heading-sm font-bold text-white tracking-tight leading-tight truncate">{{ $user->name }}</h2>
 
                             <!-- Outline-Only Role Badge (Thin gray border, no fill, gray text) -->
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-normal text-slate-300 border border-slate-600/80 bg-transparent tracking-wide select-none">
@@ -220,7 +220,7 @@ new #[Title('Profile settings')] class extends Component {
                         </div>
 
                         <!-- Monospace Email (~4px tight spacing below name line) -->
-                        <p class="text-xs text-slate-400 font-mono mt-[4px] truncate">{{ $user->email }}</p>
+                        <p class="text-xs text-slate-400 font-mono mt-1 truncate">{{ $user->email }}</p>
                     </div>
                 </div>
 
@@ -250,7 +250,7 @@ new #[Title('Profile settings')] class extends Component {
 
                 <div class="flex flex-col sm:flex-row items-center gap-6 pt-1">
                     <!-- Photo Preview Frame -->
-                    <div class="relative w-20 h-20 rounded-2xl bg-[#F47920] border-2 border-slate-200 dark:border-zinc-700 text-white font-bold flex items-center justify-center text-2xl shrink-0 select-none shadow-xs overflow-hidden">
+                    <div class="relative w-20 h-20 rounded-2xl bg-brand-orange border-2 border-slate-200 dark:border-zinc-700 text-white font-bold flex items-center justify-center text-2xl shrink-0 select-none shadow-xs overflow-hidden">
                         @if ($avatar_file)
                         <img src="{{ $avatar_file->temporaryUrl() }}" class="w-full h-full object-cover">
                         @elseif ($user->avatar_url)
@@ -265,7 +265,7 @@ new #[Title('Profile settings')] class extends Component {
                         <div class="flex flex-wrap items-center justify-center sm:justify-start gap-3">
                             <!-- Custom Upload Button -->
                             <label class="cursor-pointer">
-                                <span class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-[#F47920] hover:bg-[#e06812] rounded-xl shadow-xs transition duration-150 ease-in-out">
+                                <span class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-brand-orange hover:bg-brand-orange-hover rounded-xl shadow-xs transition duration-150 ease-in-out">
                                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                                     </svg>
@@ -299,11 +299,11 @@ new #[Title('Profile settings')] class extends Component {
                         </div>
 
                         <!-- Explicit File Constraints Notice -->
-                        <p class="text-[11px] text-slate-400 dark:text-zinc-500 font-mono">
+                        <p class="text-label-xs text-slate-400 dark:text-zinc-500 font-mono">
                             JPG, PNG or WebP. Max 2MB.
                         </p>
 
-                        <div wire:loading wire:target="avatar_file" class="text-xs text-[#F47920] font-semibold flex items-center justify-center sm:justify-start gap-2">
+                        <div wire:loading wire:target="avatar_file" class="text-xs text-brand-orange font-semibold flex items-center justify-center sm:justify-start gap-2">
                             <flux:icon.loading class="w-3.5 h-3.5" /> Uploading temporary preview...
                         </div>
                         @error('avatar_file')
@@ -354,7 +354,7 @@ new #[Title('Profile settings')] class extends Component {
                     </div>
 
                     <div class="pt-2 flex items-center justify-end">
-                        <flux:button variant="primary" type="submit" style="--color-accent: #F47920; --color-accent-foreground: #ffffff;" class="px-6 text-white font-bold border-none shadow-xs hover:opacity-95" data-test="update-profile-button">
+                        <flux:button variant="primary" type="submit" style="--color-accent: var(--color-brand-orange); --color-accent-foreground: #ffffff;" class="px-6 text-white font-bold border-none shadow-xs hover:opacity-95" data-test="update-profile-button">
                             <svg class="w-4 h-4 inline mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                             </svg>

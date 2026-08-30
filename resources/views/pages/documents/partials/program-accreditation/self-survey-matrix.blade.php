@@ -11,11 +11,11 @@
             <template x-for="area in institutionalSurveyAreas" :key="area.id">
                 <button type="button"
                     class="flex-1 shrink-0 min-w-[200px] bg-white rounded-xl border p-4 text-left shadow-3xs transition cursor-pointer flex flex-col justify-between h-24"
-                    :class="selfSurveyActiveAreaId === area.id ? 'border-[#1b355a] ring-1 ring-[#1b355a]/30 shadow-xs' : 'border-slate-200/60 hover:border-slate-350'"
+                    :class="selfSurveyActiveAreaId === area.id ? 'border-primary ring-1 ring-primary/30 shadow-xs' : 'border-slate-200/60 hover:border-slate-350'"
                     @click="selectSurveyArea(area.id)">
                     <div>
-                        <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block" x-text="area.code"></span>
-                        <span class="text-sm font-bold text-[#1b355a] mt-1 leading-tight line-clamp-2 block" x-text="area.title"></span>
+                        <span class="text-label-xs font-bold text-zinc-400 uppercase tracking-wider block" x-text="area.code"></span>
+                        <span class="text-sm font-bold text-primary mt-1 leading-tight line-clamp-2 block" x-text="area.title"></span>
                     </div>
                     <div class="w-full mt-2">
                         <div class="w-full h-1 bg-slate-100 rounded-full overflow-hidden">
@@ -29,7 +29,7 @@
         <!-- RATING SCALE LEGEND — collapsible dropdown -->
         <details class="group bg-white border border-slate-200/60 rounded-2xl shadow-3xs overflow-hidden">
             <summary class="flex items-center justify-between px-5 py-3 cursor-pointer select-none list-none bg-slate-50 hover:bg-slate-100 transition">
-                <span class="text-xs font-extrabold text-[#1b355a] uppercase tracking-widest">Rating Scale Reference</span>
+                <span class="text-xs font-extrabold text-primary uppercase tracking-widest">Rating Scale Reference</span>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"
                     class="w-4 h-4 text-zinc-400 transition-transform duration-200 group-open:rotate-180">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
@@ -43,7 +43,7 @@
                             <th class="px-3 py-2.5 font-extrabold text-zinc-500 border-r border-slate-200 w-16">0</th>
                             <th class="px-3 py-2.5 font-extrabold text-zinc-700 border-r border-slate-200">1</th>
                             <th class="px-3 py-2.5 font-extrabold text-zinc-700 border-r border-slate-200">2</th>
-                            <th class="px-3 py-2.5 font-extrabold text-[#1b355a] border-r border-slate-200">3</th>
+                            <th class="px-3 py-2.5 font-extrabold text-primary border-r border-slate-200">3</th>
                             <th class="px-3 py-2.5 font-extrabold text-blue-700 border-r border-slate-200">4</th>
                             <th class="px-3 py-2.5 font-extrabold text-emerald-700">5</th>
                         </tr>
@@ -54,7 +54,7 @@
                             <td class="px-3 py-2 text-zinc-500 font-semibold border-r border-slate-100">–</td>
                             <td class="px-3 py-2 text-zinc-700 font-bold border-r border-slate-100">Poor</td>
                             <td class="px-3 py-2 text-zinc-700 font-bold border-r border-slate-100">Fair</td>
-                            <td class="px-3 py-2 text-[#1b355a] font-bold border-r border-slate-100">Satisfactory</td>
+                            <td class="px-3 py-2 text-primary font-bold border-r border-slate-100">Satisfactory</td>
                             <td class="px-3 py-2 text-blue-700 font-bold border-r border-slate-100">Very Satisfactory</td>
                             <td class="px-3 py-2 text-emerald-700 font-bold">Excellent</td>
                         </tr>
@@ -84,25 +84,25 @@
                     </colgroup>
                     <thead>
                         <tr class="bg-slate-50 border-b-2 border-slate-200">
-                            <th class="px-5 py-3 text-left text-xs font-extrabold text-[#1b355a] border-r border-slate-200">Indicators</th>
+                            <th class="px-5 py-3 text-left text-xs font-extrabold text-primary border-r border-slate-200">Indicators</th>
                             <th class="border-r border-slate-200 py-3 px-2 text-center w-[100px] min-w-[100px] max-w-[100px]">
-                                <div class="text-[11px] font-extrabold text-[#1b355a] uppercase tracking-wider leading-snug">Item Rating</div>
-                                <div class="text-[10px] text-zinc-400 font-semibold mt-0.5 leading-tight">IR</div>
+                                <div class="text-[11px] font-extrabold text-primary uppercase tracking-wider leading-snug">Item Rating</div>
+                                <div class="text-label-xs text-zinc-400 font-semibold mt-0.5 leading-tight">IR</div>
                             </th>
                             <th class="border-r border-slate-200 py-3 px-2 text-center w-[170px] min-w-[170px] max-w-[170px]">
-                                <div class="text-[11px] font-extrabold text-[#1b355a] uppercase tracking-wider leading-snug">System – Implementation – Outcome Mean</div>
-                                <div class="text-[10px] text-zinc-400 font-semibold mt-0.5 leading-tight">SIOM</div>
+                                <div class="text-[11px] font-extrabold text-primary uppercase tracking-wider leading-snug">System – Implementation – Outcome Mean</div>
+                                <div class="text-label-xs text-zinc-400 font-semibold mt-0.5 leading-tight">SIOM</div>
                             </th>
                             <th class="py-3 px-2 text-center w-[120px] min-w-[120px] max-w-[120px]">
-                                <div class="text-[11px] font-extrabold text-[#1b355a] uppercase tracking-wider leading-snug">Parameter Mean</div>
-                                <div class="text-[10px] text-zinc-400 font-semibold mt-0.5 leading-tight">PM</div>
+                                <div class="text-[11px] font-extrabold text-primary uppercase tracking-wider leading-snug">Parameter Mean</div>
+                                <div class="text-label-xs text-zinc-400 font-semibold mt-0.5 leading-tight">PM</div>
                             </th>
                         </tr>
                     </thead>
 
                     <template x-for="(param, pIdx) in institutionalSurveyAreas.find(a => a.id === selfSurveyActiveAreaId)?.parameters" :key="param.id">
                         <tbody class="border-b-2 border-slate-300">
-                            <tr class="bg-[#1b355a]">
+                            <tr class="bg-primary">
                                 <td colspan="4" class="px-5 py-2.5 text-xs font-extrabold text-white uppercase tracking-wide">
                                     <span x-text="'PARAMETER ' + param.code + ': ' + param.title"></span>
                                 </td>
@@ -113,7 +113,7 @@
                             </tr>
                             <template x-for="ind in param.sections.system" :key="ind.id">
                                 <tr class="border-b border-slate-100 hover:bg-slate-50/60 transition">
-                                    <td class="px-5 py-3 text-sm text-[#1b355a] border-r border-slate-200">
+                                    <td class="px-5 py-3 text-sm text-primary border-r border-slate-200">
                                         <div class="flex items-start gap-3">
                                             <span class="font-bold shrink-0 text-zinc-500 mt-0.5 w-8" x-text="ind.code + '.'"></span>
                                             <span class="leading-relaxed" x-text="ind.statement"></span>
@@ -142,7 +142,7 @@
                                 <td class="px-5 py-2 text-xs font-semibold text-zinc-400 italic border-r border-slate-200 text-right">System mean</td>
                                 <td class="border-r border-slate-200 text-center p-1 w-[100px] min-w-[100px] max-w-[100px]"></td>
                                 <td class="border-r border-slate-200 text-center p-1 w-[170px] min-w-[170px] max-w-[170px]">
-                                    <span class="text-sm font-extrabold text-[#1b355a]" x-text="sectionMean(param.sections.system) ?? ''"></span>
+                                    <span class="text-sm font-extrabold text-primary" x-text="sectionMean(param.sections.system) ?? ''"></span>
                                 </td>
                                 <td class="text-center p-1 w-[120px] min-w-[120px] max-w-[120px]"></td>
                             </tr>
@@ -152,7 +152,7 @@
                             </tr>
                             <template x-for="ind in param.sections.implementation" :key="ind.id">
                                 <tr class="border-b border-slate-100 hover:bg-slate-50/60 transition">
-                                    <td class="px-5 py-3 text-sm text-[#1b355a] border-r border-slate-200">
+                                    <td class="px-5 py-3 text-sm text-primary border-r border-slate-200">
                                         <div class="flex items-start gap-3">
                                             <span class="font-bold shrink-0 text-zinc-500 mt-0.5 w-8" x-text="ind.code + '.'"></span>
                                             <span class="leading-relaxed" x-text="ind.statement"></span>
@@ -181,7 +181,7 @@
                                 <td class="px-5 py-2 text-xs font-semibold text-zinc-400 italic border-r border-slate-200 text-right">Implementation mean</td>
                                 <td class="border-r border-slate-200 text-center p-1 w-[100px] min-w-[100px] max-w-[100px]"></td>
                                 <td class="border-r border-slate-200 text-center p-1 w-[170px] min-w-[170px] max-w-[170px]">
-                                    <span class="text-sm font-extrabold text-[#1b355a]" x-text="sectionMean(param.sections.implementation) ?? ''"></span>
+                                    <span class="text-sm font-extrabold text-primary" x-text="sectionMean(param.sections.implementation) ?? ''"></span>
                                 </td>
                                 <td class="text-center p-1 w-[120px] min-w-[120px] max-w-[120px]"></td>
                             </tr>
@@ -191,7 +191,7 @@
                             </tr>
                             <template x-for="ind in param.sections.outcome" :key="ind.id">
                                 <tr class="border-b border-slate-100 hover:bg-slate-50/60 transition">
-                                    <td class="px-5 py-3 text-sm text-[#1b355a] border-r border-slate-200">
+                                    <td class="px-5 py-3 text-sm text-primary border-r border-slate-200">
                                         <div class="flex items-start gap-3">
                                             <span class="font-bold shrink-0 text-zinc-500 mt-0.5 w-8" x-text="ind.code + '.'"></span>
                                             <span class="leading-relaxed" x-text="ind.statement"></span>
@@ -220,7 +220,7 @@
                                 <td class="px-5 py-2 text-xs font-semibold text-zinc-400 italic border-r border-slate-200 text-right">Outcome mean</td>
                                 <td class="border-r border-slate-200 text-center p-1 w-[100px] min-w-[100px] max-w-[100px]"></td>
                                 <td class="border-r border-slate-200 text-center p-1 w-[170px] min-w-[170px] max-w-[170px]">
-                                    <span class="text-sm font-extrabold text-[#1b355a]" x-text="sectionMean(param.sections.outcome) ?? ''"></span>
+                                    <span class="text-sm font-extrabold text-primary" x-text="sectionMean(param.sections.outcome) ?? ''"></span>
                                 </td>
                                 <td class="text-center p-1 w-[120px] min-w-[120px] max-w-[120px]"></td>
                             </tr>
@@ -228,7 +228,7 @@
                             <tr class="bg-emerald-50/80 border-b border-slate-200">
                                 <td class="px-5 py-2.5 text-xs font-bold text-zinc-500 border-r border-slate-200 italic">
                                     Parameter Mean —
-                                    <span class="text-[#1b355a] not-italic font-extrabold" x-text="'Parameter ' + param.code + ': ' + param.title"></span>
+                                    <span class="text-primary not-italic font-extrabold" x-text="'Parameter ' + param.code + ': ' + param.title"></span>
                                 </td>
                                 <td class="border-r border-slate-200 text-center p-1 w-[100px] min-w-[100px] max-w-[100px]"></td>
                                 <td class="border-r border-slate-200 text-center p-1 w-[170px] min-w-[170px] max-w-[170px]"></td>
@@ -256,13 +256,13 @@
                     </template>
 
                     <tfoot>
-                        <tr class="bg-[#1b355a]/10 border-t-2 border-[#1b355a]/30">
-                            <td class="px-5 py-3 text-xs font-extrabold text-[#1b355a] uppercase tracking-wide border-r border-slate-200 text-right">
+                        <tr class="bg-primary/10 border-t-2 border-primary/30">
+                            <td class="px-5 py-3 text-xs font-extrabold text-primary uppercase tracking-wide border-r border-slate-200 text-right">
                                 Total Rating
-                                <span class="text-zinc-400 font-normal normal-case text-[10px] ml-1">(sum of all IR)</span>
+                                <span class="text-zinc-400 font-normal normal-case text-label-xs ml-1">(sum of all IR)</span>
                             </td>
                             <td class="border-r border-slate-200 text-center p-2 w-[100px] min-w-[100px] max-w-[100px]">
-                                <span class="text-base font-extrabold text-[#1b355a]"
+                                <span class="text-base font-extrabold text-primary"
                                     x-text="(() => { const area = institutionalSurveyAreas.find(a => a.id === selfSurveyActiveAreaId); if (!area) return ''; let total = 0; area.parameters.forEach(p => { [...(p.sections.system||[]),...(p.sections.implementation||[]),...(p.sections.outcome||[])].forEach(ind => { const v = parseFloat(selfSurveyRatings[ind.id]); if (!isNaN(v)) total += v; }); }); return total; })()">
                                 </span>
                             </td>

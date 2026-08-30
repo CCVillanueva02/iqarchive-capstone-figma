@@ -73,7 +73,7 @@
                         icon: data.icon || 'success',
                         title: data.title || '',
                         text: data.text || '',
-                        confirmButtonColor: '#f27224',
+                        confirmButtonColor: '#f47920',
                         customClass: {
                             popup: 'rounded-2xl border border-slate-200 font-sans',
                             confirmButton: 'px-6 py-2.5 rounded-xl font-semibold text-white'
