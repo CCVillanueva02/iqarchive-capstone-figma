@@ -9,7 +9,12 @@
         @include('partials.head', ['title' => $title])
     </head>
     <body @if($bodyClass) class="{{ $bodyClass }}" @endif>
-        {{ $slot }}
+        {{-- Desktop-Only Mobile Screen Guard --}}
+        <x-mobile-unsupported />
+
+        <div class="hidden lg:contents">
+            {{ $slot }}
+        </div>
 
         @persist('toast')
             <flux:toast.group>
