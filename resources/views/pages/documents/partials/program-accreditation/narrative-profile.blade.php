@@ -1,18 +1,18 @@
 <!-- LEVEL 4D: NARRATIVE PROFILE VIEW -->
-<div x-show="accredCategory === 'Narrative Profile'"
+<div x-show="accredCategory === 'Narrative Profile' && (currentUserRole !== 'task-force-member' || !accredProgram || accredProgram.instrument_verified)"
      x-transition class="flex flex-col gap-5 w-full">
 
     <!-- Context Header Bar -->
     <template x-if="accredProgram !== null">
         <div class="bg-white border border-slate-200/60 rounded-xl px-5 py-3 shadow-3xs flex items-center justify-between">
-            <div class="flex items-center gap-2 text-xs font-bold text-[#1b355a]">
+            <div class="flex items-center gap-2 text-xs font-bold text-primary">
                 <span class="px-2 py-0.5 bg-violet-50 text-violet-700 rounded border border-violet-200" x-text="accredProgram.code"></span>
                 <span x-text="accredProgram.name"></span>
                 <span class="text-zinc-400 font-normal">•</span>
                 <span class="text-zinc-500 font-medium" x-text="accredProgram.college"></span>
-                <span class="ml-2 text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-violet-100 text-violet-700">AACCUP Level 3 Narrative Profile</span>
+                <span class="ml-2 text-label-xs font-bold px-2.5 py-0.5 rounded-full bg-violet-100 text-violet-700">AACCUP Level 3 Narrative Profile</span>
             </div>
-            <button type="button" @click="clearProgram()" class="text-xs font-bold text-violet-600 hover:underline cursor-pointer">
+            <button x-show="isUnrestricted || filteredPrograms.length > 1" type="button" @click="clearProgram()" class="text-xs font-bold text-violet-600 hover:underline cursor-pointer">
                 Switch Program
             </button>
         </div>
@@ -22,25 +22,25 @@
     <div class="flex overflow-x-auto gap-3 pb-2 w-full select-none">
         <template x-for="area in npAreas" :key="area.id">
             <button type="button"
-                class="flex-1 shrink-0 min-w-[200px] bg-white rounded-xl border p-4 text-left shadow-3xs transition cursor-pointer flex flex-col justify-between h-24"
-                :class="npActiveAreaId === area.id ? 'border-[#1b355a] ring-1 ring-[#1b355a]/30 shadow-xs bg-slate-50/50' : 'border-slate-200/60 hover:border-slate-350'"
+                class="flex-1 shrink-0 min-w-50 bg-white rounded-xl border p-4 text-left shadow-3xs transition cursor-pointer flex flex-col justify-between h-24"
+                :class="npActiveAreaId === area.id ? 'border-primary ring-1 ring-primary/30 shadow-xs bg-slate-50/50' : 'border-slate-200/60 hover:border-slate-350'"
                 @click="npActiveAreaId = area.id">
                 <div>
-                    <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block" x-text="area.code"></span>
-                    <span class="text-sm font-bold text-[#1b355a] mt-1 leading-tight line-clamp-2 block" x-text="area.title"></span>
+                    <span class="text-label-xs font-bold text-zinc-400 uppercase tracking-wider block" x-text="area.code"></span>
+                    <span class="text-sm font-bold text-primary mt-1 leading-tight line-clamp-2 block" x-text="area.title"></span>
                 </div>
                 <div class="flex items-center justify-between mt-2">
                     <template x-if="npDocContents[area.id] && npDocContents[area.id].lastSaved">
-                        <span class="text-[10px] font-bold text-emerald-600 flex items-center gap-1">
+                        <span class="text-label-xs font-bold text-emerald-600 flex items-center gap-1">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
                             Edited & Saved
                         </span>
                     </template>
                     <template x-if="!npDocContents[area.id] || !npDocContents[area.id].lastSaved">
-                        <span class="text-[10px] font-bold text-zinc-400">Template Ready</span>
+                        <span class="text-label-xs font-bold text-zinc-400">Template Ready</span>
                     </template>
                     <template x-if="npDocGoogleUrls[area.id]">
-                        <span class="text-[10px] font-bold text-blue-600 flex items-center gap-0.5">
+                        <span class="text-label-xs font-bold text-primary flex items-center gap-0.5">
                             <svg class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
                             Linked
                         </span>
@@ -56,21 +56,21 @@
             <!-- Card Header -->
             <div class="bg-slate-50 border-b border-slate-200 px-6 py-4 flex items-center justify-between flex-wrap gap-4">
                 <div>
-                    <span class="text-[10px] font-bold text-violet-600 uppercase tracking-widest block" x-text="npAreas.find(a => a.id === npActiveAreaId)?.code"></span>
-                    <h3 class="text-base font-extrabold text-[#1b355a] mt-0.5" x-text="'Narrative Profile – ' + npAreas.find(a => a.id === npActiveAreaId)?.title"></h3>
+                    <span class="text-label-xs font-bold text-violet-600 uppercase tracking-widest block" x-text="npAreas.find(a => a.id === npActiveAreaId)?.code"></span>
+                    <h3 class="text-base font-extrabold text-primary mt-0.5" x-text="'Narrative Profile – ' + npAreas.find(a => a.id === npActiveAreaId)?.title"></h3>
                 </div>
                 
                 <!-- Workspace Mode Selector & Action Buttons -->
                 <div class="flex items-center gap-2.5 flex-wrap">
                     <!-- Google Docs Link Input Trigger -->
                     <div class="flex items-center bg-white border border-slate-200 rounded-xl px-2.5 py-1 shadow-3xs text-xs">
-                        <svg class="w-4 h-4 text-blue-500 mr-1.5 shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                        <svg class="w-4 h-4 text-primary-light mr-1.5 shrink-0" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
                         <input type="url"
                             placeholder="Paste Google Docs link..."
                             x-model="npDocGoogleUrls[npActiveAreaId]"
                             class="outline-none text-xs text-zinc-700 w-44 placeholder:text-zinc-400">
                         <template x-if="npDocGoogleUrls[npActiveAreaId]">
-                            <a :href="npDocGoogleUrls[npActiveAreaId]" target="_blank" class="ml-1 text-blue-600 hover:text-blue-800" title="Open in Google Docs">
+                            <a :href="npDocGoogleUrls[npActiveAreaId]" target="_blank" class="ml-1 text-primary hover:text-primary-hover" title="Open in Google Docs">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
                             </a>
                         </template>
@@ -78,15 +78,15 @@
 
                     <button type="button"
                         @click="printDocument(npDocContents[npActiveAreaId]?.content || getDefaultNPTemplate(npActiveAreaId), 'Narrative Profile – ' + (npAreas.find(a => a.id === npActiveAreaId)?.title || ''))"
-                        class="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-[#1b355a] font-bold text-xs rounded-xl transition cursor-pointer shadow-3xs flex items-center gap-1.5">
+                        class="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-primary font-bold text-xs rounded-xl transition cursor-pointer shadow-3xs flex items-center gap-1.5">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z" /></svg>
                         Print
                     </button>
                     
                     <button type="button"
                         @click="openNPEditor(npActiveAreaId)"
-                        class="px-4 py-2 bg-[#1b355a] hover:bg-[#152a48] text-white font-bold text-xs rounded-xl shadow-3xs transition cursor-pointer flex items-center gap-2">
-                        <svg class="w-4 h-4 text-blue-400" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                        class="px-4 py-2 bg-primary hover:bg-primary-dark-hover text-white font-bold text-xs rounded-xl shadow-3xs transition cursor-pointer flex items-center gap-2">
+                        <svg class="w-4 h-4 text-primary-muted" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
                         Open Google Docs Editor
                     </button>
                 </div>
@@ -95,7 +95,7 @@
             <!-- Live Google Docs Embedded View IF Link Provided -->
             <template x-if="npDocGoogleUrls[npActiveAreaId]">
                 <div class="p-4 bg-slate-100 border-b border-slate-200">
-                    <div class="w-full bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm h-[650px] relative">
+                    <div class="w-full bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm h-162.5 relative">
                         <iframe :src="getGoogleEmbedUrl(npDocGoogleUrls[npActiveAreaId])" class="w-full h-full border-0" allow="clipboard-read; clipboard-write"></iframe>
                     </div>
                 </div>
@@ -103,15 +103,15 @@
 
             <!-- Document Preview Section (Floating Paper Aesthetic) -->
             <div class="p-8 bg-slate-100/70 flex justify-center">
-                <div class="w-full max-w-3xl bg-white rounded-lg border border-slate-200 shadow-md p-10 font-serif text-sm text-zinc-800 leading-relaxed relative cursor-pointer hover:border-blue-400 transition group"
+                <div class="w-full max-w-3xl bg-white rounded-lg border border-slate-200 shadow-md p-10 font-serif text-sm text-zinc-800 leading-relaxed relative cursor-pointer hover:border-primary-light transition group"
                     @click="openNPEditor(npActiveAreaId)">
                     
                     <div class="relative prose max-w-none" x-html="npDocContents[npActiveAreaId] ? npDocContents[npActiveAreaId].content : getDefaultNPTemplate(npActiveAreaId)"></div>
 
                     <!-- Interactive Hover Overlay -->
                     <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition bg-slate-900/10 backdrop-blur-[1px] rounded-lg">
-                        <div class="flex items-center gap-2 bg-[#1b355a] text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-xl transform scale-95 group-hover:scale-100 transition duration-150">
-                            <svg class="w-4 h-4 text-blue-400" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                        <div class="flex items-center gap-2 bg-primary text-white px-5 py-2.5 rounded-xl font-bold text-sm shadow-xl transform scale-95 group-hover:scale-100 transition duration-150">
+                            <svg class="w-4 h-4 text-primary-muted" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
                             Click to Open Full Document Editor
                         </div>
                     </div>
@@ -133,7 +133,7 @@
      x-transition:leave="transition ease-in duration-150"
      x-transition:leave-start="opacity-100 scale-100"
      x-transition:leave-end="opacity-0 scale-98"
-     :class="editorIsFullscreen ? 'fixed inset-0 z-[9999] bg-white w-screen h-screen flex flex-col p-0' : 'fixed inset-0 z-[600] bg-slate-900/60 backdrop-blur-xs flex flex-col items-center justify-center p-2 sm:p-4'"
+     :class="editorIsFullscreen ? 'fixed inset-0 z-9999 bg-white w-screen h-screen flex flex-col p-0' : 'fixed inset-0 z-600 bg-slate-900/60 backdrop-blur-xs flex flex-col items-center justify-center p-2 sm:p-4'"
      @keydown.escape.window="if(npEditorOpen && !editorIsFullscreen) closeNPEditor(); if(editorIsFullscreen) editorIsFullscreen = false;">
 
     <!-- Editor Container -->
@@ -143,25 +143,25 @@
         <div class="bg-white border-b border-slate-200 px-4 py-2 flex items-center justify-between gap-4 shrink-0 select-none">
             <!-- Left: Document Icon, Title & Real-Time Auto-Save Status -->
             <div class="flex items-center gap-3 min-w-0">
-                <div class="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold shrink-0">
+                <div class="w-9 h-9 rounded-lg bg-surface-subtle text-primary flex items-center justify-center font-bold shrink-0">
                     <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
                 </div>
                 <div class="min-w-0">
                     <div class="flex items-center gap-2">
-                        <h2 class="text-sm font-extrabold text-[#1b355a] truncate" x-text="npEditorAreaId ? ('Narrative Profile – ' + npAreas.find(a => a.id === npEditorAreaId)?.title) : ''"></h2>
+                        <h2 class="text-sm font-extrabold text-primary truncate" x-text="npEditorAreaId ? ('Narrative Profile – ' + npAreas.find(a => a.id === npEditorAreaId)?.title) : ''"></h2>
                         <span class="text-xs px-2 py-0.5 bg-slate-100 text-slate-600 rounded font-medium" x-text="npEditorAreaId ? npAreas.find(a => a.id === npEditorAreaId)?.code : ''"></span>
                     </div>
                     
                     <!-- Auto-Save Status Indicator -->
                     <div class="flex items-center gap-2 mt-0.5">
                         <template x-if="autoSaveStatus === 'saving'">
-                            <span class="text-[11px] font-semibold text-amber-600 flex items-center gap-1">
+                            <span class="text-label font-semibold text-amber-600 flex items-center gap-1">
                                 <svg class="animate-spin w-3 h-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                                 Saving changes...
                             </span>
                         </template>
                         <template x-if="autoSaveStatus === 'saved'">
-                            <span class="text-[11px] font-medium text-emerald-600 flex items-center gap-1">
+                            <span class="text-label font-medium text-emerald-600 flex items-center gap-1">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3.5 h-3.5"><path fill-rule="evenodd" d="M5.5 17a4.5 4.5 0 01-1.44-8.765 4.5 4.5 0 018.302-3.046 3.5 3.5 0 014.504 4.272A4 4 0 0115 17H5.5zm3.75-5.25l3.5-3.5-1.06-1.06-2.44 2.44-1.44-1.44-1.06 1.06 2.5 2.5z" clip-rule="evenodd" /></svg>
                                 All changes auto-saved to drive • <span class="text-zinc-400" x-text="lastSavedTime"></span>
                             </span>
@@ -184,7 +184,7 @@
                         </div>
                     </template>
                     <template x-if="editorIsFullscreen">
-                        <div class="flex items-center gap-1 text-blue-600">
+                        <div class="flex items-center gap-1 text-primary">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M9 9V4.5M9 9H4.5M9 9L3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5l5.25 5.25" /></svg>
                             <span class="hidden md:inline">Exit Full Screen</span>
                         </div>
@@ -192,13 +192,13 @@
                 </button>
 
                 <!-- Save Now Button -->
-                <button type="button" @click="saveNPEditor()" class="px-3.5 py-2 bg-[#1b355a] hover:bg-[#152a48] text-white font-bold text-xs rounded-xl transition cursor-pointer shadow-3xs flex items-center gap-1.5">
+                <button type="button" @click="saveNPEditor()" class="px-3.5 py-2 bg-primary hover:bg-primary-dark-hover text-white font-bold text-xs rounded-xl transition cursor-pointer shadow-3xs flex items-center gap-1.5">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 3.75H6.912a2.25 2.25 0 00-2.15 1.588L2.35 13.177a3.75 3.75 0 00-.1.811V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18v-4.162c0-.224-.034-.447-.1-.611l-2.4-7.539a2.25 2.25 0 00-2.15-1.588H15M2.25 13.5h3.86a2.25 2.25 0 012.012 1.244l.256.512a2.25 2.25 0 002.013 1.244h3.218a2.25 2.25 0 002.013-1.244l.256-.512a2.25 2.25 0 012.013-1.244h3.859M12 3v8.25m0 0l-3-3m3 3l3-3" /></svg>
                     Save
                 </button>
 
                 <!-- Print Button -->
-                <button type="button" @click="printCurrentEditor('np-editor-sheet', 'Narrative Profile – ' + (npAreas.find(a => a.id === npEditorAreaId)?.title || ''))" class="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-[#1b355a] font-bold text-xs rounded-xl transition cursor-pointer shadow-3xs flex items-center gap-1.5">
+                <button type="button" @click="printCurrentEditor('np-editor-sheet', 'Narrative Profile – ' + (npAreas.find(a => a.id === npEditorAreaId)?.title || ''))" class="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-primary font-bold text-xs rounded-xl transition cursor-pointer shadow-3xs flex items-center gap-1.5">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z" /></svg>
                     Print
                 </button>
@@ -307,16 +307,16 @@
 
                 <!-- Quick Row & Column Modifiers -->
                 <button type="button" @click="insertTableRow('np-editor-sheet', 'below')" title="Add Row Below" class="px-1.5 py-1 hover:bg-slate-100 rounded text-zinc-700 text-xs font-semibold transition cursor-pointer flex items-center gap-0.5">
-                    <span class="text-[10px]">+Row</span>
+                    <span class="text-label-xs">+Row</span>
                 </button>
                 <button type="button" @click="deleteTableRow('np-editor-sheet')" title="Delete Current Row" class="px-1.5 py-1 hover:bg-red-50 hover:text-red-600 rounded text-zinc-600 text-xs font-semibold transition cursor-pointer flex items-center gap-0.5">
-                    <span class="text-[10px]">-Row</span>
+                    <span class="text-label-xs">-Row</span>
                 </button>
                 <button type="button" @click="insertTableColumn('np-editor-sheet', 'right')" title="Add Column Right" class="px-1.5 py-1 hover:bg-slate-100 rounded text-zinc-700 text-xs font-semibold transition cursor-pointer flex items-center gap-0.5">
-                    <span class="text-[10px]">+Col</span>
+                    <span class="text-label-xs">+Col</span>
                 </button>
                 <button type="button" @click="deleteTableColumn('np-editor-sheet')" title="Delete Current Column" class="px-1.5 py-1 hover:bg-red-50 hover:text-red-600 rounded text-zinc-600 text-xs font-semibold transition cursor-pointer flex items-center gap-0.5">
-                    <span class="text-[10px]">-Col</span>
+                    <span class="text-label-xs">-Col</span>
                 </button>
             </div>
 
@@ -360,7 +360,7 @@
                 <span class="text-zinc-300">•</span>
                 <span>Click directly on the page to type • Table management available in ribbon</span>
             </div>
-            <div class="text-[11px] text-zinc-400">
+            <div class="text-label text-zinc-400">
                 AACCUP Level 3 Narrative Profile Workspace
             </div>
         </div>

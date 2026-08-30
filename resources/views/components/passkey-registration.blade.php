@@ -74,7 +74,7 @@
             <flux:button
                 variant="primary"
                 icon="plus"
-                style="--color-accent: #F47920; --color-accent-foreground: #ffffff;"
+                style="--color-accent: var(--color-brand-orange); --color-accent-foreground: #ffffff;"
                 class="text-white font-semibold border-none shadow-xs"
                 x-on:click="showForm = true"
             >
@@ -93,14 +93,14 @@
                 x-ref="passkeyNameInput"
                 x-init="$nextTick(() => $refs.passkeyNameInput?.focus())"
             />
-            <flux:text class="!mt-1">{{ __('Give this passkey a name to help you identify it later.') }}</flux:text>
+            <flux:text class="mt-1!">{{ __('Give this passkey a name to help you identify it later.') }}</flux:text>
 
             <p x-show="error" x-text="error" x-cloak class="text-sm text-red-600 dark:text-red-400"></p>
 
             <div class="flex gap-2">
                 <flux:button
                     variant="primary"
-                    style="--color-accent: #F47920; --color-accent-foreground: #ffffff;"
+                    style="--color-accent: var(--color-brand-orange); --color-accent-foreground: #ffffff;"
                     class="text-white font-semibold border-none shadow-xs"
                     x-on:click="register()"
                     x-bind:disabled="loading || !name.trim()"

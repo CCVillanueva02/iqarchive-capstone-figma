@@ -6,12 +6,12 @@
     <div class="flex overflow-x-auto gap-3 pb-2 w-full select-none">
         <template x-for="area in complianceReports" :key="area.id">
             <button type="button"
-                class="flex-1 shrink-0 min-w-[200px] bg-white rounded-xl border p-4 text-left shadow-3xs transition cursor-pointer flex flex-col justify-between h-24"
-                :class="complianceActiveAreaId === area.id ? 'border-[#1b355a] ring-1 ring-[#1b355a]/30 shadow-xs' : 'border-slate-200/60 hover:border-slate-350'"
+                class="flex-1 shrink-0 min-w-50 bg-white rounded-xl border p-4 text-left shadow-3xs transition cursor-pointer flex flex-col justify-between h-24"
+                :class="complianceActiveAreaId === area.id ? 'border-primary ring-1 ring-primary/30 shadow-xs' : 'border-slate-200/60 hover:border-slate-350'"
                 @click="selectComplianceArea(area.id)">
                 <div>
-                    <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block" x-text="area.code"></span>
-                    <span class="text-sm font-bold text-[#1b355a] mt-1 leading-tight line-clamp-2 block" x-text="area.title"></span>
+                    <span class="text-label-xs font-bold text-zinc-400 uppercase tracking-wider block" x-text="area.code"></span>
+                    <span class="text-sm font-bold text-primary mt-1 leading-tight line-clamp-2 block" x-text="area.title"></span>
                 </div>
                 <div class="w-full mt-2">
                     <div class="w-full h-1 bg-slate-100 rounded-full overflow-hidden">
@@ -28,23 +28,23 @@
     <div class="grid grid-cols-2 md:grid-cols-4 gap-3" x-data="{ stats: $el.__x_compStats }" x-effect="stats = complianceStats(activeComplianceArea)">
         <!-- Recommendations -->
         <div class="bg-slate-50 border border-slate-200/60 rounded-xl p-4">
-            <span class="text-[11px] font-bold text-zinc-500 uppercase tracking-wide block">Recommendations</span>
-            <span class="text-2xl font-extrabold text-[#1b355a] mt-1 block" x-text="complianceStats(activeComplianceArea).total"></span>
+            <span class="text-label-xs font-bold text-zinc-500 uppercase tracking-wide block">Recommendations</span>
+            <span class="text-heading font-extrabold text-primary mt-1 block" x-text="complianceStats(activeComplianceArea).total"></span>
         </div>
         <!-- Fully complied -->
         <div class="bg-emerald-50/60 border border-emerald-100 rounded-xl p-4">
-            <span class="text-[11px] font-bold text-emerald-700 uppercase tracking-wide block">Fully complied</span>
-            <span class="text-2xl font-extrabold text-emerald-700 mt-1 block" x-text="complianceStats(activeComplianceArea).complied"></span>
+            <span class="text-label-xs font-bold text-emerald-700 uppercase tracking-wide block">Fully complied</span>
+            <span class="text-heading font-extrabold text-emerald-700 mt-1 block" x-text="complianceStats(activeComplianceArea).complied"></span>
         </div>
         <!-- Partial -->
         <div class="bg-amber-50/60 border border-amber-100 rounded-xl p-4">
-            <span class="text-[11px] font-bold text-amber-700 uppercase tracking-wide block">Partial</span>
-            <span class="text-2xl font-extrabold text-amber-700 mt-1 block" x-text="complianceStats(activeComplianceArea).partial"></span>
+            <span class="text-label-xs font-bold text-amber-700 uppercase tracking-wide block">Partial</span>
+            <span class="text-heading font-extrabold text-amber-700 mt-1 block" x-text="complianceStats(activeComplianceArea).partial"></span>
         </div>
         <!-- Not started -->
         <div class="bg-rose-50/60 border border-rose-100 rounded-xl p-4">
-            <span class="text-[11px] font-bold text-rose-700 uppercase tracking-wide block">Not started</span>
-            <span class="text-2xl font-extrabold text-rose-700 mt-1 block" x-text="complianceStats(activeComplianceArea).notStarted"></span>
+            <span class="text-label-xs font-bold text-rose-700 uppercase tracking-wide block">Not started</span>
+            <span class="text-heading font-extrabold text-rose-700 mt-1 block" x-text="complianceStats(activeComplianceArea).notStarted"></span>
         </div>
     </div>
 
@@ -63,9 +63,9 @@
                                   'bg-rose-50 text-rose-600': rec.status === 'Not started'
                               }"
                               x-text="rec.id"></span>
-                        <p class="text-sm font-semibold text-[#1b355a] leading-relaxed pt-1" x-text="rec.text"></p>
+                        <p class="text-sm font-semibold text-primary leading-relaxed pt-1" x-text="rec.text"></p>
                     </div>
-                    <span class="shrink-0 px-3 py-1 rounded-full text-[11px] font-bold whitespace-nowrap"
+                    <span class="shrink-0 px-3 py-1 rounded-full text-label-xs font-bold whitespace-nowrap"
                           :class="{
                               'bg-emerald-50 text-emerald-700 border border-emerald-200': rec.status === 'Fully complied',
                               'bg-amber-50 text-amber-700 border border-amber-200': rec.status === 'Partial',
@@ -80,11 +80,11 @@
 
                         <!-- Actions Taken Column -->
                         <div class="flex-1 min-w-0" x-show="rec.actions && rec.actions.length > 0">
-                            <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block mb-2">Actions Taken</span>
+                            <span class="text-label-xs font-bold text-zinc-400 uppercase tracking-wider block mb-2">Actions Taken</span>
                             <ul class="space-y-1.5">
                                 <template x-for="(action, idx) in rec.actions" :key="idx">
                                     <li class="flex items-start gap-2 text-sm text-zinc-600 leading-relaxed">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-zinc-300 shrink-0 mt-[7px]"></span>
+                                        <span class="w-1.5 h-1.5 rounded-full bg-zinc-300 shrink-0 mt-1.75"></span>
                                         <span x-text="action"></span>
                                     </li>
                                 </template>
@@ -93,7 +93,7 @@
 
                         <!-- Supporting Documents Column -->
                         <div class="flex-1 min-w-0">
-                            <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block mb-2"
+                            <span class="text-label-xs font-bold text-zinc-400 uppercase tracking-wider block mb-2"
                                   x-text="'Supporting Documents (' + (rec.documents ? rec.documents.length : 0) + ')'"></span>
 
                             <template x-if="rec.documents && rec.documents.length > 0">
@@ -105,9 +105,9 @@
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-rose-400 shrink-0">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                                                 </svg>
-                                                <span class="font-semibold text-[#1b355a] truncate" x-text="doc.name"></span>
+                                                <span class="font-semibold text-primary truncate" x-text="doc.name"></span>
                                             </div>
-                                            <span class="shrink-0 px-2 py-0.5 rounded-full text-[10px] font-bold"
+                                            <span class="shrink-0 px-2 py-0.5 rounded-full text-label-xs font-bold"
                                                   :class="doc.status === 'Verified' ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-amber-50 text-amber-700 border border-amber-100'"
                                                   x-text="doc.status"></span>
                                         </div>
@@ -116,7 +116,7 @@
                                     <!-- +N more toggle -->
                                     <template x-if="rec.documents.length > 2">
                                         <button type="button"
-                                            class="text-xs font-bold text-blue-600 hover:text-blue-800 cursor-pointer border border-slate-200 rounded-lg px-3 py-1.5 bg-white hover:bg-slate-50 transition w-fit"
+                                            class="text-xs font-bold text-primary hover:text-primary-hover cursor-pointer border border-slate-200 rounded-lg px-3 py-1.5 bg-white hover:bg-slate-50 transition w-fit"
                                             @click="toggleDocs(rec.id)"
                                             x-text="expandedDocs[rec.id] ? 'Show less' : '+' + (rec.documents.length - 2) + ' more'">
                                         </button>
@@ -136,7 +136,7 @@
                 <!-- Remarks Section -->
                 <div class="px-5 pb-5 -mt-1" x-show="rec.remarks">
                     <div class="bg-slate-50 border border-slate-150 rounded-lg p-3.5">
-                        <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block mb-1">Remarks</span>
+                        <span class="text-label-xs font-bold text-zinc-400 uppercase tracking-wider block mb-1">Remarks</span>
                         <p class="text-sm text-zinc-600 leading-relaxed" x-text="rec.remarks"></p>
                     </div>
                 </div>

@@ -1,18 +1,18 @@
 <!-- LEVEL 4E: PROGRAM PERFORMANCE PORTFOLIO (PPP) VIEW -->
-<div x-show="accredCategory === 'PPP'"
+<div x-show="accredCategory === 'PPP' && (currentUserRole !== 'task-force-member' || !accredProgram || accredProgram.instrument_verified)"
      x-transition class="flex flex-col gap-5 w-full">
 
     <!-- Context Header Bar -->
     <template x-if="accredProgram !== null">
         <div class="bg-white border border-slate-200/60 rounded-xl px-5 py-3 shadow-3xs flex items-center justify-between">
-            <div class="flex items-center gap-2 text-xs font-bold text-[#1b355a]">
+            <div class="flex items-center gap-2 text-xs font-bold text-primary">
                 <span class="px-2 py-0.5 bg-teal-50 text-teal-700 rounded border border-teal-200" x-text="accredProgram.code"></span>
                 <span x-text="accredProgram.name"></span>
                 <span class="text-zinc-400 font-normal">•</span>
                 <span class="text-zinc-500 font-medium" x-text="accredProgram.college"></span>
-                <span class="ml-2 text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-teal-100 text-teal-700">Program Performance Portfolio (PPP)</span>
+                <span class="ml-2 text-label-xs font-bold px-2.5 py-0.5 rounded-full bg-teal-100 text-teal-700">Program Performance Portfolio (PPP)</span>
             </div>
-            <button type="button" @click="clearProgram()" class="text-xs font-bold text-teal-600 hover:underline cursor-pointer">
+            <button x-show="isUnrestricted || filteredPrograms.length > 1" type="button" @click="clearProgram()" class="text-xs font-bold text-teal-600 hover:underline cursor-pointer">
                 Switch Program
             </button>
         </div>
@@ -22,25 +22,25 @@
     <div class="flex overflow-x-auto gap-3 pb-2 w-full select-none">
         <template x-for="area in pppAreas" :key="area.id">
             <button type="button"
-                class="flex-1 shrink-0 min-w-[200px] bg-white rounded-xl border p-4 text-left shadow-3xs transition cursor-pointer flex flex-col justify-between h-24"
-                :class="pppActiveAreaId === area.id ? 'border-[#1b355a] ring-1 ring-[#1b355a]/30 shadow-xs bg-slate-50/50' : 'border-slate-200/60 hover:border-slate-350'"
+                class="flex-1 shrink-0 min-w-50 bg-white rounded-xl border p-4 text-left shadow-3xs transition cursor-pointer flex flex-col justify-between h-24"
+                :class="pppActiveAreaId === area.id ? 'border-primary ring-1 ring-primary/30 shadow-xs bg-slate-50/50' : 'border-slate-200/60 hover:border-slate-350'"
                 @click="pppActiveAreaId = area.id">
                 <div>
-                    <span class="text-[10px] font-bold text-zinc-400 uppercase tracking-wider block" x-text="area.code"></span>
-                    <span class="text-sm font-bold text-[#1b355a] mt-1 leading-tight line-clamp-2 block" x-text="area.title"></span>
+                    <span class="text-label-xs font-bold text-zinc-400 uppercase tracking-wider block" x-text="area.code"></span>
+                    <span class="text-sm font-bold text-primary mt-1 leading-tight line-clamp-2 block" x-text="area.title"></span>
                 </div>
                 <div class="flex items-center justify-between mt-2">
                     <template x-if="pppDocContents[area.id] && pppDocContents[area.id].lastSaved">
-                        <span class="text-[10px] font-bold text-emerald-600 flex items-center gap-1">
+                        <span class="text-label-xs font-bold text-emerald-600 flex items-center gap-1">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3 h-3"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
                             Edited & Saved
                         </span>
                     </template>
                     <template x-if="!pppDocContents[area.id] || !pppDocContents[area.id].lastSaved">
-                        <span class="text-[10px] font-bold text-zinc-400">Template Ready</span>
+                        <span class="text-label-xs font-bold text-zinc-400">Template Ready</span>
                     </template>
                     <template x-if="pppDocGoogleUrls[area.id]">
-                        <span class="text-[10px] font-bold text-teal-600 flex items-center gap-0.5">
+                        <span class="text-label-xs font-bold text-teal-600 flex items-center gap-0.5">
                             <svg class="w-3 h-3" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
                             Linked
                         </span>
@@ -56,8 +56,8 @@
             <!-- Card Header -->
             <div class="bg-slate-50 border-b border-slate-200 px-6 py-4 flex items-center justify-between flex-wrap gap-4">
                 <div>
-                    <span class="text-[10px] font-bold text-teal-600 uppercase tracking-widest block" x-text="pppAreas.find(a => a.id === pppActiveAreaId)?.code"></span>
-                    <h3 class="text-base font-extrabold text-[#1b355a] mt-0.5" x-text="'Program Performance Portfolio – ' + pppAreas.find(a => a.id === pppActiveAreaId)?.title"></h3>
+                    <span class="text-label-xs font-bold text-teal-600 uppercase tracking-widest block" x-text="pppAreas.find(a => a.id === pppActiveAreaId)?.code"></span>
+                    <h3 class="text-base font-extrabold text-primary mt-0.5" x-text="'Program Performance Portfolio – ' + pppAreas.find(a => a.id === pppActiveAreaId)?.title"></h3>
                 </div>
                 
                 <!-- Workspace Mode Selector & Action Buttons -->
@@ -78,7 +78,7 @@
 
                     <button type="button"
                         @click="printDocument(pppDocContents[pppActiveAreaId]?.content || getDefaultPPPTemplate(pppActiveAreaId), 'PPP – ' + (pppAreas.find(a => a.id === pppActiveAreaId)?.title || ''))"
-                        class="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-[#1b355a] font-bold text-xs rounded-xl transition cursor-pointer shadow-3xs flex items-center gap-1.5">
+                        class="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-primary font-bold text-xs rounded-xl transition cursor-pointer shadow-3xs flex items-center gap-1.5">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z" /></svg>
                         Print
                     </button>
@@ -95,7 +95,7 @@
             <!-- Live Google Docs Embedded View IF Link Provided -->
             <template x-if="pppDocGoogleUrls[pppActiveAreaId]">
                 <div class="p-4 bg-slate-100 border-b border-slate-200">
-                    <div class="w-full bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm h-[650px] relative">
+                    <div class="w-full bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm h-162.5 relative">
                         <iframe :src="getGoogleEmbedUrl(pppDocGoogleUrls[pppActiveAreaId])" class="w-full h-full border-0" allow="clipboard-read; clipboard-write"></iframe>
                     </div>
                 </div>
@@ -133,7 +133,7 @@
      x-transition:leave="transition ease-in duration-150"
      x-transition:leave-start="opacity-100 scale-100"
      x-transition:leave-end="opacity-0 scale-98"
-     :class="editorIsFullscreen ? 'fixed inset-0 z-[9999] bg-white w-screen h-screen flex flex-col p-0' : 'fixed inset-0 z-[600] bg-slate-900/60 backdrop-blur-xs flex flex-col items-center justify-center p-2 sm:p-4'"
+     :class="editorIsFullscreen ? 'fixed inset-0 z-9999 bg-white w-screen h-screen flex flex-col p-0' : 'fixed inset-0 z-600 bg-slate-900/60 backdrop-blur-xs flex flex-col items-center justify-center p-2 sm:p-4'"
      @keydown.escape.window="if(pppEditorOpen && !editorIsFullscreen) closePPPEditor(); if(editorIsFullscreen) editorIsFullscreen = false;">
 
     <!-- Editor Container -->
@@ -148,20 +148,20 @@
                 </div>
                 <div class="min-w-0">
                     <div class="flex items-center gap-2">
-                        <h2 class="text-sm font-extrabold text-[#1b355a] truncate" x-text="pppEditorAreaId ? ('Program Performance Portfolio – ' + pppAreas.find(a => a.id === pppEditorAreaId)?.title) : ''"></h2>
+                        <h2 class="text-sm font-extrabold text-primary truncate" x-text="pppEditorAreaId ? ('Program Performance Portfolio – ' + pppAreas.find(a => a.id === pppEditorAreaId)?.title) : ''"></h2>
                         <span class="text-xs px-2 py-0.5 bg-teal-50 text-teal-700 rounded font-medium" x-text="pppEditorAreaId ? pppAreas.find(a => a.id === pppEditorAreaId)?.code : ''"></span>
                     </div>
                     
                     <!-- Auto-Save Status Indicator -->
                     <div class="flex items-center gap-2 mt-0.5">
                         <template x-if="autoSaveStatus === 'saving'">
-                            <span class="text-[11px] font-semibold text-amber-600 flex items-center gap-1">
+                            <span class="text-label font-semibold text-amber-600 flex items-center gap-1">
                                 <svg class="animate-spin w-3 h-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                                 Saving changes...
                             </span>
                         </template>
                         <template x-if="autoSaveStatus === 'saved'">
-                            <span class="text-[11px] font-medium text-emerald-600 flex items-center gap-1">
+                            <span class="text-label font-medium text-emerald-600 flex items-center gap-1">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3.5 h-3.5"><path fill-rule="evenodd" d="M5.5 17a4.5 4.5 0 01-1.44-8.765 4.5 4.5 0 018.302-3.046 3.5 3.5 0 014.504 4.272A4 4 0 0115 17H5.5zm3.75-5.25l3.5-3.5-1.06-1.06-2.44 2.44-1.44-1.44-1.06 1.06 2.5 2.5z" clip-rule="evenodd" /></svg>
                                 All changes auto-saved to drive • <span class="text-zinc-400" x-text="lastSavedTime"></span>
                             </span>
@@ -198,7 +198,7 @@
                 </button>
 
                 <!-- Print Button -->
-                <button type="button" @click="printCurrentEditor('ppp-editor-sheet', 'PPP – ' + (pppAreas.find(a => a.id === pppEditorAreaId)?.title || ''))" class="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-[#1b355a] font-bold text-xs rounded-xl transition cursor-pointer shadow-3xs flex items-center gap-1.5">
+                <button type="button" @click="printCurrentEditor('ppp-editor-sheet', 'PPP – ' + (pppAreas.find(a => a.id === pppEditorAreaId)?.title || ''))" class="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-primary font-bold text-xs rounded-xl transition cursor-pointer shadow-3xs flex items-center gap-1.5">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z" /></svg>
                     Print
                 </button>
@@ -307,16 +307,16 @@
 
                 <!-- Quick Row & Column Modifiers -->
                 <button type="button" @click="insertTableRow('ppp-editor-sheet', 'below')" title="Add Row Below" class="px-1.5 py-1 hover:bg-slate-100 rounded text-zinc-700 text-xs font-semibold transition cursor-pointer flex items-center gap-0.5">
-                    <span class="text-[10px]">+Row</span>
+                    <span class="text-label-xs">+Row</span>
                 </button>
                 <button type="button" @click="deleteTableRow('ppp-editor-sheet')" title="Delete Current Row" class="px-1.5 py-1 hover:bg-red-50 hover:text-red-600 rounded text-zinc-600 text-xs font-semibold transition cursor-pointer flex items-center gap-0.5">
-                    <span class="text-[10px]">-Row</span>
+                    <span class="text-label-xs">-Row</span>
                 </button>
                 <button type="button" @click="insertTableColumn('ppp-editor-sheet', 'right')" title="Add Column Right" class="px-1.5 py-1 hover:bg-slate-100 rounded text-zinc-700 text-xs font-semibold transition cursor-pointer flex items-center gap-0.5">
-                    <span class="text-[10px]">+Col</span>
+                    <span class="text-label-xs">+Col</span>
                 </button>
                 <button type="button" @click="deleteTableColumn('ppp-editor-sheet')" title="Delete Current Column" class="px-1.5 py-1 hover:bg-red-50 hover:text-red-600 rounded text-zinc-600 text-xs font-semibold transition cursor-pointer flex items-center gap-0.5">
-                    <span class="text-[10px]">-Col</span>
+                    <span class="text-label-xs">-Col</span>
                 </button>
             </div>
 
@@ -360,7 +360,7 @@
                 <span class="text-zinc-300">•</span>
                 <span>Click directly on the page to type • Table management available in ribbon</span>
             </div>
-            <div class="text-[11px] text-zinc-400">
+            <div class="text-label text-zinc-400">
                 Program Performance Portfolio (PPP) Workspace
             </div>
         </div>

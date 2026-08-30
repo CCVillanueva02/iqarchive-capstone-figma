@@ -25,6 +25,7 @@ class Accounts extends Component
 
     // Modal view states
     public bool $showCreateModal = false;
+    public bool $showQuickTfModal = false;
     public bool $showEditModal = false;
     public bool $showDeleteModal = false;
 
@@ -40,6 +41,11 @@ class Accounts extends Component
     public $selected_role_ids = [];
     public $college_id = '';
     public $program_id = '';
+
+    // Quick Task Force Pre-Registration State
+    public $quick_tf_college_id = '';
+    public $quick_tf_program_id = '';
+    public $quick_tf_emails = '';
 
     // Deactivation target status ('active', 'pending_activation', or 'inactive')
     public $targetUserStatus = '';
@@ -83,6 +89,11 @@ class Accounts extends Component
         $this->program_id = '';
     }
 
+    public function updatedQuickTfCollegeId($value)
+    {
+        $this->quick_tf_program_id = '';
+    }
+
     public function openCreateModal()
     {
         $this->resetForm();
@@ -93,6 +104,126 @@ class Accounts extends Component
     {
         $this->showCreateModal = false;
         $this->resetForm();
+    }
+
+    public function openQuickTfModal()
+    {
+        $this->resetQuickTfForm();
+        $this->showQuickTfModal = true;
+    }
+
+    public function closeQuickTfModal()
+    {
+        $this->showQuickTfModal = false;
+        $this->resetQuickTfForm();
+    }
+
+    private function resetQuickTfForm()
+    {
+        $this->quick_tf_college_id = '';
+        $this->quick_tf_program_id = '';
+        $this->quick_tf_emails = '';
+        $this->resetValidation();
+    }
+
+    /**
+     * Quick Pre-Register multiple Task Force members for a college/program.
+     * 
+     * Security Reasoning: Scopes role strictly to task-force-member and defaults accounts 
+     * to pending_activation status until verified via Google Workspace OAuth authentication.
+     */
+    public function quickRegisterTaskForce()
+    {
+        $this->validate([
+            'quick_tf_college_id' => ['required', 'exists:colleges,id'],
+            'quick_tf_program_id' => ['nullable', 'exists:programs,id'],
+            'quick_tf_emails' => ['required', 'string'],
+        ], [
+            'quick_tf_college_id.required' => 'Please select the college for this Task Force.',
+            'quick_tf_college_id.exists' => 'Selected college does not exist.',
+            'quick_tf_emails.required' => 'Please enter at least one institutional email.',
+        ]);
+
+        $rawEmails = preg_split('/[\r\n,;]+/', $this->quick_tf_emails);
+        $cleanEmails = array_values(array_unique(array_filter(array_map('trim', $rawEmails))));
+
+        if (empty($cleanEmails)) {
+            $this->addError('quick_tf_emails', 'Please enter at least one valid email address.');
+            return;
+        }
+
+        $invalidEmails = [];
+        foreach ($cleanEmails as $em) {
+            if (!filter_var($em, FILTER_VALIDATE_EMAIL)) {
+                $invalidEmails[] = $em;
+            }
+        }
+
+        if (!empty($invalidEmails)) {
+            $this->addError('quick_tf_emails', 'Invalid email format: ' . implode(', ', array_slice($invalidEmails, 0, 3)));
+            return;
+        }
+
+        $tfRole = Role::firstOrCreate(['role_name' => 'task-force-member'], ['description' => 'Task Force']);
+
+        $createdCount = 0;
+        $skippedCount = 0;
+
+        DB::transaction(function () use ($cleanEmails, $tfRole, &$createdCount, &$skippedCount) {
+            foreach ($cleanEmails as $em) {
+                $email = strtolower($em);
+                $existing = User::where('email', $email)->first();
+
+                if ($existing) {
+                    if (!$existing->hasRole('task-force-member')) {
+                        $existing->roles()->syncWithoutDetaching([$tfRole->id]);
+                    }
+                    if (!$existing->college_id && $this->quick_tf_college_id) {
+                        $existing->college_id = $this->quick_tf_college_id;
+                        $existing->save();
+                    }
+                    $skippedCount++;
+                    continue;
+                }
+
+                $newUser = User::create([
+                    'first_name' => 'Pending',
+                    'middle_name' => null,
+                    'last_name' => 'User',
+                    'email' => $email,
+                    'password' => bcrypt(Str::random(32)),
+                    'role_id' => $tfRole->id,
+                    'college_id' => $this->quick_tf_college_id,
+                    'program_id' => $this->quick_tf_program_id ?: null,
+                    'status' => 'pending_activation',
+                ]);
+
+                $newUser->roles()->sync([$tfRole->id]);
+
+                AuditLog::create([
+                    'user_id' => auth()->id(),
+                    'action' => 'QUICK_PRE_REGISTER_TASK_FORCE',
+                    'target_type' => User::class,
+                    'target_id' => $newUser->id,
+                    'timestamp' => now(),
+                ]);
+
+                $createdCount++;
+            }
+        });
+
+        $this->closeQuickTfModal();
+
+        $message = "Pre-registered {$createdCount} Task Force " . Str::plural('member', $createdCount) . " successfully.";
+        if ($skippedCount > 0) {
+            $message .= " ({$skippedCount} existing account(s) updated).";
+        }
+
+        $this->dispatch('swal', [
+            'icon' => 'success',
+            'title' => __('Task Force Pre-Registered!'),
+            'text' => $message,
+        ]);
     }
 
     private function resetForm()
@@ -400,6 +531,10 @@ class Accounts extends Component
             ? Program::where('college_id', $this->college_id)->orderBy('name', 'asc')->get()
             : collect();
 
+        $quickTfPrograms = !empty($this->quick_tf_college_id)
+            ? Program::where('college_id', $this->quick_tf_college_id)->orderBy('name', 'asc')->get()
+            : collect();
+
         // Counts
         $baseQuery = User::where('id', '!=', auth()->id())
             ->when($sysAdminRoleId, function ($q) use ($sysAdminRoleId) {
@@ -416,6 +551,7 @@ class Accounts extends Component
             'roles' => $roles,
             'colleges' => $colleges,
             'programs' => $programs,
+            'quickTfPrograms' => $quickTfPrograms,
             'totalCount' => $totalCount,
             'activeCount' => $activeCount,
             'pendingCount' => $pendingCount,

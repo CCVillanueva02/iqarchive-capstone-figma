@@ -42,7 +42,7 @@
                 <p class="text-body-sm text-zinc-500 mt-1">Bicol University Institutional Quality Assurance Overview</p>
             </div>
             <div class="flex items-center gap-3">
-                <span class="px-3 py-1.5 rounded-full bg-blue-50 text-primary-dark border border-blue-100 text-label font-bold select-none">Academic Year 2025–2026</span>
+                <span class="px-3 py-1.5 rounded-full bg-surface-subtle text-primary-dark border border-primary/10 text-label font-bold select-none">Academic Year 2025–2026</span>
             </div>
         </div>
 
@@ -64,7 +64,7 @@
             <div class="bg-white p-5 rounded-2xl border border-slate-200/60 shadow-3xs hover:shadow-xs transition duration-200">
                 <div class="flex items-center justify-between mb-3">
                     <span class="text-label font-bold text-zinc-400 uppercase tracking-wider">Total Programs</span>
-                    <div class="p-2 rounded-lg bg-blue-50 text-blue-600">
+                    <div class="p-2 rounded-lg bg-surface-subtle text-primary">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.57 50.57 0 0 0-2.658-.813A5.99 5.99 0 0 1 12 3.453a5.99 5.99 0 0 1 4.543 5.881 50.58 50.58 0 0 0-2.658.813m-9.227 0L12 13.545l3.878-3.4m-7.756 0a48.36 48.36 0 0 1 7.756 0" /></svg>
                     </div>
                 </div>
@@ -76,7 +76,7 @@
             <div class="bg-white p-5 rounded-2xl border border-slate-200/60 shadow-3xs hover:shadow-xs transition duration-200">
                 <div class="flex items-center justify-between mb-3">
                     <span class="text-label font-bold text-zinc-400 uppercase tracking-wider">Accredited Programs</span>
-                    <div class="p-2 rounded-lg bg-orange-50 text-brand-orange">
+                    <div class="p-2 rounded-lg bg-brand-orange/10 text-brand-orange">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 0 1 3 3h-15a3 3 0 0 1 3-3m9 0v-3.375c0-.621-.504-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 0 1-.982-3.172M9.497 14.25a7.454 7.454 0 0 0 .981-3.172M5.25 4.236c-.996.178-1.943.442-2.827.787C3.68 5.692 4.784 6.75 6 6.75h.75m0 0h10.5m-10.5 0V4.5m10.5 2.25c1.216 0 2.32-1.058 3.577-1.727-.884-.345-1.831-.609-2.827-.787M15 4.5V2.25" /></svg>
                     </div>
                 </div>
@@ -128,9 +128,9 @@
                         @php
                             $colorMap = [
                                 'Level IV' => 'bg-emerald-500',
-                                'Level III' => 'bg-blue-500',
+                                'Level III' => 'bg-primary-light',
                                 'Level II' => 'bg-amber-500',
-                                'Level I' => 'bg-orange-500',
+                                'Level I' => 'bg-brand-orange',
                                 'Candidate' => 'bg-zinc-400',
                             ];
                         @endphp
@@ -208,7 +208,7 @@
                                     @php
                                         $levelColor = match($college['level']) {
                                             'Level IV' => 'bg-emerald-50 text-emerald-700 border-emerald-100',
-                                            'Level III' => 'bg-blue-50 text-blue-700 border-blue-100',
+                                            'Level III' => 'bg-surface-subtle text-primary border-primary/10',
                                             'Level II' => 'bg-amber-50 text-amber-700 border-amber-100',
                                             'Level I' => 'bg-orange-50 text-orange-700 border-orange-100',
                                             default => 'bg-zinc-100 text-zinc-600 border-zinc-200',

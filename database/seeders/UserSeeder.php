@@ -53,7 +53,7 @@ class UserSeeder extends Seeder
                 'college' => null,
             ],
             [
-                'first_name' => 'QA Task Force',
+                'first_name' => 'Task Force',
                 'last_name' => 'Member',
                 'email' => 'taskforcemember@example.com',
                 'role' => 'task-force-member',

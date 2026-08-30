@@ -211,7 +211,7 @@ new class extends Component {
 
                         <flux:button
                             variant="primary"
-                            style="--color-accent: #F47920; --color-accent-foreground: #ffffff;"
+                            style="--color-accent: var(--color-brand-orange); --color-accent-foreground: #ffffff;"
                             class="flex-1 text-white font-semibold border-none shadow-xs"
                             wire:click="confirmTwoFactor"
                             x-bind:disabled="$wire.code.length < 6"
@@ -248,7 +248,7 @@ new class extends Component {
                     <flux:button
                         :disabled="$errors->has('setupData')"
                         variant="primary"
-                        style="--color-accent: #F47920; --color-accent-foreground: #ffffff;"
+                        style="--color-accent: var(--color-brand-orange); --color-accent-foreground: #ffffff;"
                         class="w-full text-white font-semibold border-none shadow-xs"
                         wire:click="showVerificationIfNecessary"
                     >

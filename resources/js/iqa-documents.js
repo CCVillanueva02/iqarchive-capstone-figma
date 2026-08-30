@@ -2,6 +2,10 @@ window.documentWorkspace = function (initialState = {}) {
     const userRole = initialState.userRole || '';
     const canSeeCommonDocs = ['iqa-staff', 'iqa-admin', 'iqa-member', 'task-force-member', 'college-head', 'system-administrator'].includes(userRole);
     const canSeeInstitutionalDocs = ['iqa-staff', 'iqa-admin', 'iqa-member', 'system-administrator'].includes(userRole);
+    const isUnrestricted = initialState.isUnrestricted !== undefined ? initialState.isUnrestricted : ['iqa-staff', 'iqa-admin', 'system-administrator'].includes(userRole);
+    const userCollege = initialState.userCollege || null;
+    const userProgram = initialState.userProgram || null;
+
     let defaultTab = initialState.activeTab || (canSeeCommonDocs ? 'common-documents' : 'program-accreditation');
     if (!canSeeCommonDocs && defaultTab === 'common-documents') {
         defaultTab = 'program-accreditation';
@@ -16,13 +20,25 @@ window.documentWorkspace = function (initialState = {}) {
         initialAccredLevel = 'institutional';
     }
 
+    let initialCollege = null;
+    if (!isUnrestricted && userCollege) {
+        initialCollege = userCollege;
+    }
+    let initialProgram = null;
+    if (userRole === 'task-force-member' && userProgram) {
+        initialProgram = userProgram;
+    }
+
     return {
         currentUserId: initialState.userId || null,
         currentUserRole: initialState.userRole || '',
+        isUnrestricted: isUnrestricted,
+        userCollege: userCollege,
+        userProgram: userProgram,
         activeTab: defaultTab, // 'common-documents', 'program-accreditation', 'institutional-accreditation'
         accredLevel: initialAccredLevel, // 'program' or 'institutional'
-        accredCollege: null, // selected college object
-        accredProgram: null, // selected program object
+        accredCollege: initialCollege, // selected college object
+        accredProgram: initialProgram, // selected program object
         collegeSearchQuery: '',
         programSearchQuery: '',
         programCollegeFilter: 'all',
@@ -917,6 +933,461 @@ window.documentWorkspace = function (initialState = {}) {
         },
 
         // ================================================================
+        // COMPLIANCE REPORTS – Program Accreditation
+        // 10 AACCUP Areas for Academic Degree Programs
+        // ================================================================
+        programComplianceActiveAreaId: 'prog_comp_area_1',
+        programComplianceFilter: 'all', // 'all', 'Fully complied', 'Partial', 'Not started'
+        programComplianceSearch: '',
+        programCertificatesModalOpen: false,
+        programComplianceExpandedDocs: {},
+        programCertificates: [
+            {
+                id: 'cert_1',
+                title: 'AACCUP Certificate of Program Accreditation',
+                type: 'Level IV Re-accredited',
+                level: 'Level IV',
+                validity: 'December 16, 2024 – December 15, 2029',
+                status: 'Valid & Active',
+                issuer: 'Accrediting Agency of Chartered Colleges and Universities in the Philippines (AACCUP)',
+                boardResolution: 'AACCUP Board Resolution No. 108, s. 2024',
+                filename: 'AACCUP_Level_IV_Re-accredited_Certificate_Official.pdf',
+                fileSize: '3.4 MB'
+            },
+            {
+                id: 'cert_2',
+                title: 'External Evaluation & Survey Visit Technical Audit Report',
+                type: 'Official Survey Report',
+                level: 'Comprehensive',
+                validity: 'Survey Conducted: Oct 2024',
+                status: 'Official Record',
+                issuer: 'AACCUP Lead Survey Team',
+                boardResolution: 'Institutional QA Assessment Dossier',
+                filename: 'AACCUP_Technical_Audit_Summary_Report_2024.pdf',
+                fileSize: '6.8 MB'
+            },
+            {
+                id: 'cert_3',
+                title: 'Certificate of Compliance Monitoring & Corrective Actions Validation',
+                type: 'Compliance Validation',
+                level: 'Post-Survey Audit',
+                validity: 'Evaluated: AY 2025-2026',
+                status: 'Satisfactory',
+                issuer: 'University Internal Quality Assurance Directorate',
+                boardResolution: 'IQA Directorate Action Order No. 42, s. 2025',
+                filename: 'IQA_Post_Survey_Compliance_Validation_Certificate.pdf',
+                fileSize: '2.1 MB'
+            }
+        ],
+        programComplianceReports: [
+            {
+                id: 'prog_comp_area_1',
+                code: 'Area I',
+                title: 'Vision, Mission, Goals, and Objectives',
+                progress: 100,
+                recommendations: [
+                    {
+                        id: 1,
+                        text: 'Ensure that Program Educational Objectives (PEOs) are systematically reviewed every three years with documented participation from external industry advisory boards and alumni representatives.',
+                        status: 'Fully complied',
+                        actions: [
+                            'Constituted the Industry-Academe Consultative Council (IACC) for regular stakeholder review',
+                            'Conducted biennial stakeholder VMGO & PEO review forum with 45+ partner agencies',
+                            'Board of Regents approved the revised Program Educational Objectives alignment'
+                        ],
+                        documents: [
+                            { name: 'IACC Resolution on PEO Validation 2025', type: 'PDF', size: '1.8 MB', date: '2025-03-14', status: 'Verified', uploader: 'Maria Reyes', office: 'College of Science', ocrText: 'INDUSTRY ADVISORY COUNCIL RESOLUTION APPROVING PROGRAM OBJECTIVES...' },
+                            { name: 'Minutes of Stakeholder Consultation Assembly', type: 'PDF', size: '1.9 MB', date: '2025-04-18', status: 'Verified', uploader: 'Prof. Amelia Vega', office: 'College of Science', ocrText: 'STAKEHOLDERS VMGO ASSEMBLY MINUTES...' }
+                        ],
+                        remarks: 'PEO review mechanism is fully institutionalized. Regular multi-stakeholder participation is documented and endorsed by the College Academic Council.'
+                    },
+                    {
+                        id: 2,
+                        text: 'Improve the visibility and accessibility of the program objectives on all student learning management portals and departmental course syllabi.',
+                        status: 'Fully complied',
+                        actions: [
+                            'Embedded approved VMGO and PEO statements in 100% of Outcomes-Based Education (OBE) course syllabi',
+                            'Published interactive VMGO info card on the student portal and college website'
+                        ],
+                        documents: [
+                            { name: 'OBE Syllabi VMGO Verification Log', type: 'PDF', size: '2.2 MB', date: '2025-06-20', status: 'Verified', uploader: 'Maria Reyes', office: 'IQA Central Office', ocrText: 'OBE SYLLABI VERIFICATION AUDIT LOG SHOWING PEO INTEGRATION...' }
+                        ],
+                        remarks: 'Complied across all degree levels. Syllabi audit confirmed 100% inclusion of updated VMGO.'
+                    }
+                ]
+            },
+            {
+                id: 'prog_comp_area_2',
+                code: 'Area II',
+                title: 'Faculty',
+                progress: 85,
+                recommendations: [
+                    {
+                        id: 1,
+                        text: 'Increase the percentage of full-time regular faculty members holding relevant doctorate degrees in computing, data science, and information systems.',
+                        status: 'Partial',
+                        actions: [
+                            'Awarded institutional faculty development fellowship grants to 4 faculty members for doctoral studies',
+                            'Recruited 2 visiting professors with PhDs in Computer Science & Applied Computing',
+                            'Institutionalized sabbatical support for dissertation completion'
+                        ],
+                        documents: [
+                            { name: 'Faculty Development & PhD Scholarship Grant Matrix', type: 'PDF', size: '2.4 MB', date: '2025-08-15', status: 'Verified', uploader: 'Maria Reyes', office: 'HRMO', ocrText: 'FACULTY SCHOLARSHIP AND DOCTORAL ADVANCEMENT REPORT...' },
+                            { name: 'Doctorate Faculty Credentials Verification', type: 'PDF', size: '1.7 MB', date: '2025-10-02', status: 'Verified', uploader: 'Maria Reyes', office: 'College of Science', ocrText: 'VERIFIED DOCTORAL DIPLOMAS AND TRANSCRIPTS OF ACTIVE FACULTY...' }
+                        ],
+                        remarks: '2 faculty members currently at dissertation writing stage. Target ratio of 60% doctorate holders projected by AY 2026-2027.'
+                    },
+                    {
+                        id: 2,
+                        text: 'Enhance faculty research productivity and participation in international conferences and peer-reviewed journal publications.',
+                        status: 'Fully complied',
+                        actions: [
+                            'Implemented university faculty publication monetary incentive and citation bonus guidelines',
+                            'Sponsored full travel and registration grants for 6 faculty research presentations at IEEE and ACM conferences',
+                            'Organized biannual faculty manuscript writing bootcamps with Scopus-indexed journal editors'
+                        ],
+                        documents: [
+                            { name: 'Faculty International Conference Participation Summary 2025', type: 'PDF', size: '3.1 MB', date: '2025-11-20', status: 'Verified', uploader: 'Dr. Roger Cruz', office: 'Research and Development Office', ocrText: 'INTERNATIONAL RESEARCH CONFERENCE PRESENTATIONS AND TRAVEL AWARDS...' },
+                            { name: 'Journal Publication Grants & Citation Awards Report', type: 'PDF', size: '2.0 MB', date: '2025-12-10', status: 'Verified', uploader: 'Maria Reyes', office: 'RDC Office', ocrText: 'APPROVED FACULTY INCENTIVE DISBURSEMENTS FOR SCOPUS PUBLICATIONS...' }
+                        ],
+                        remarks: 'Full compliance achieved. Peer-reviewed journal publications increased by 42% over the last evaluation cycle.'
+                    },
+                    {
+                        id: 3,
+                        text: 'Standardize faculty performance evaluation rubrics balancing instruction, research, and extension commitments.',
+                        status: 'Fully complied',
+                        actions: [
+                            'Revised Strategic Performance Management System (SPMS) Individual Performance Commitment and Review (IPCR) matrix',
+                            'Digitized faculty portfolio submission and peer evaluation portal'
+                        ],
+                        documents: [
+                            { name: 'Revised Faculty IPCR Standard Operating Procedure', type: 'PDF', size: '1.5 MB', date: '2025-05-18', status: 'Verified', uploader: 'Maria Reyes', office: 'HRMO', ocrText: 'SPMS-IPCR EVALUATION MANUAL FOR ACADEMIC TEACHING PERSONNEL...' }
+                        ],
+                        remarks: 'Fully implemented across all academic departments.'
+                    }
+                ]
+            },
+            {
+                id: 'prog_comp_area_3',
+                code: 'Area III',
+                title: 'Curriculum and Instruction',
+                progress: 90,
+                recommendations: [
+                    {
+                        id: 1,
+                        text: 'Institutionalize periodic curriculum mapping and alignment with CHED Policies, Standards and Guidelines (PSGs) and international IT accreditation benchmarks.',
+                        status: 'Fully complied',
+                        actions: [
+                            'Completed comprehensive curriculum review in partnership with the Industry Advisory Council',
+                            'Updated course prerequisites, lab contact hours, and terminal competencies matrix',
+                            'Endorsed by University Curriculum Committee and ratified by the Board of Regents'
+                        ],
+                        documents: [
+                            { name: 'Curriculum Mapping & PSG Compliance Matrix 2025', type: 'PDF', size: '4.2 MB', date: '2025-04-10', status: 'Verified', uploader: 'Maria Reyes', office: 'Office of Academic Affairs', ocrText: 'COMPREHENSIVE CURRICULUM MAPPING REPORT AND CHED COMPLIANCE TABLE...' },
+                            { name: 'CHED CMO Alignment Certificate & BOR Resolution', type: 'PDF', size: '1.6 MB', date: '2025-05-22', status: 'Verified', uploader: 'Dr. Albert Santos', office: 'Office of the President', ocrText: 'BOR RESOLUTION APPROVING REVISED PROGRAM CURRICULAR STRUCTURE...' }
+                        ],
+                        remarks: 'Full compliance. Curriculum is officially aligned with current CHED CMO guidelines.'
+                    },
+                    {
+                        id: 2,
+                        text: 'Strengthen student capstone and thesis mentoring through industry co-advisers and structured milestone defenses.',
+                        status: 'Fully complied',
+                        actions: [
+                            'Adopted Capstone & Thesis Manual mandating industry panelists and external technical reviewers',
+                            'Implemented digital plagiarism and originality screening policy (Turnitin verification required)'
+                        ],
+                        documents: [
+                            { name: 'Capstone Mentorship & Industry Defense Guidelines', type: 'PDF', size: '2.8 MB', date: '2025-07-15', status: 'Verified', uploader: 'Maria Reyes', office: 'College of Science', ocrText: 'GUIDELINES ON UNDERGRADUATE AND GRADUATE CAPSTONE ADVISING...' }
+                        ],
+                        remarks: 'All candidate thesis defenses now feature external technical evaluators.'
+                    },
+                    {
+                        id: 3,
+                        text: 'Expand digital instructional materials and interactive simulation software in advanced computing courses.',
+                        status: 'Partial',
+                        actions: [
+                            'Procured institutional AWS Academy and Google Cloud Platform academic lab credits',
+                            'Developed multimedia video lectures and localized laboratory walkthroughs for database systems'
+                        ],
+                        documents: [
+                            { name: 'AWS Cloud Academy Academic License Agreement', type: 'PDF', size: '1.4 MB', date: '2025-09-08', status: 'Verified', uploader: 'Maria Reyes', office: 'College of Science', ocrText: 'CLOUD COMPUTING ACADEMIC PARTNERSHIP AND LAB CREDITS AGREEMENT...' }
+                        ],
+                        remarks: 'Cloud lab credits active. Additional specialized modeling software licenses are currently in the procurement pipeline for next semester.'
+                    }
+                ]
+            },
+            {
+                id: 'prog_comp_area_4',
+                code: 'Area IV',
+                title: 'Support to Students',
+                progress: 80,
+                recommendations: [
+                    {
+                        id: 1,
+                        text: 'Establish a dedicated academic tutoring and peer-assisted learning mechanism for students in foundational programming and math courses.',
+                        status: 'Fully complied',
+                        actions: [
+                            'Launched Peer-Assisted Study Sessions (PASS) in partnership with the Computer Science Society',
+                            'Designated faculty academic advisers for students requiring academic remediation'
+                        ],
+                        documents: [
+                            { name: 'Peer Tutoring Program Charter & Attendance Logs', type: 'PDF', size: '1.9 MB', date: '2025-06-18', status: 'Verified', uploader: 'Prof. Evelyn Diaz', office: 'Student Affairs Office', ocrText: 'PASS TUTORING PROGRAM IMPLEMENTATION REPORT AND ATTENDANCE LOGS...' }
+                        ],
+                        remarks: 'Student passing rates in core programming prerequisites improved by 14% following PASS deployment.'
+                    },
+                    {
+                        id: 2,
+                        text: 'Strengthen graduate career tracking and tracer study documentation within two years of graduation.',
+                        status: 'Partial',
+                        actions: [
+                            'Deployed digital alumni tracer survey platform linked with LinkedIn verification',
+                            'Conducted annual graduate employment audit in coordination with the University Alumni Office'
+                        ],
+                        documents: [
+                            { name: 'Alumni Graduate Tracer Study Report 2025', type: 'PDF', size: '3.6 MB', date: '2025-10-30', status: 'Verified', uploader: 'Maria Reyes', office: 'College of Science', ocrText: 'ANNUAL GRADUATE TRACER AND EMPLOYABILITY SURVEY RESULTS...' }
+                        ],
+                        remarks: 'Current tracer response rate is 78.5%. Continuing outreach underway to reach the 85% target.'
+                    },
+                    {
+                        id: 3,
+                        text: 'Expand mental health wellness programs and psychological support tailored to academic stress management.',
+                        status: 'Fully complied',
+                        actions: [
+                            'Conducted semesterly wellness seminars and stress debriefing workshops with licensed guidance counselors',
+                            'Established confidential online mental health appointment portal'
+                        ],
+                        documents: [
+                            { name: 'OSAS Student Wellness & Counseling Portfolio 2025', type: 'PDF', size: '2.5 MB', date: '2025-11-12', status: 'Verified', uploader: 'Prof. Evelyn Diaz', office: 'OSAS', ocrText: 'STUDENT WELLNESS, MENTAL HEALTH, AND GUIDANCE COUNSELING PORTFOLIO...' }
+                        ],
+                        remarks: 'Services actively utilized with positive feedback from student leadership.'
+                    }
+                ]
+            },
+            {
+                id: 'prog_comp_area_5',
+                code: 'Area V',
+                title: 'Research',
+                progress: 75,
+                recommendations: [
+                    {
+                        id: 1,
+                        text: 'Formulate a focused departmental research agenda aligned with national smart technologies priorities and regional development needs.',
+                        status: 'Fully complied',
+                        actions: [
+                            'Drafted and approved the 5-Year Program Research Agenda (2024–2029)',
+                            'Organized 3 departmental research clusters: AI & Intelligent Systems, Data Engineering, and Cybersecurity'
+                        ],
+                        documents: [
+                            { name: 'Program Thematic Research Agenda 2024-2029', type: 'PDF', size: '2.7 MB', date: '2024-11-15', status: 'Verified', uploader: 'Dr. Roger Cruz', office: 'Research and Development Office', ocrText: 'STRATEGIC RESEARCH AGENDA AND PRIORITY THEMATIC CLUSTERS...' },
+                            { name: 'Department Research Council Resolution', type: 'PDF', size: '1.1 MB', date: '2024-12-05', status: 'Verified', uploader: 'Maria Reyes', office: 'College of Science', ocrText: 'RESOLUTION ADOPTING THE THEMATIC RESEARCH CLUSTERS...' }
+                        ],
+                        remarks: 'Research roadmap actively guides faculty and student thesis proposals.'
+                    },
+                    {
+                        id: 2,
+                        text: 'Increase externally funded research grants through partnerships with DOST-PCIEERD, CHED, and industry sponsors.',
+                        status: 'Partial',
+                        actions: [
+                            'Submitted 3 collaborative research grant proposals to DOST-PCIEERD; 1 approved with PHP 2.8M funding grant',
+                            'Partnered with regional tech industry consortium for funded applied data analytics projects'
+                        ],
+                        documents: [
+                            { name: 'DOST-PCIEERD Approved Research Grant Agreement', type: 'PDF', size: '3.4 MB', date: '2025-06-15', status: 'Verified', uploader: 'Dr. Roger Cruz', office: 'RDC Office', ocrText: 'MEMORANDUM OF AGREEMENT FOR FUNDED RESEARCH PROJECT...' }
+                        ],
+                        remarks: '1 major external grant actively running. Remaining 2 grant proposals currently under technical review by the funding agency.'
+                    },
+                    {
+                        id: 3,
+                        text: 'Facilitate intellectual property (IP) registrations, software copyright certificates, and utility models for student and faculty outputs.',
+                        status: 'Fully complied',
+                        actions: [
+                            'Conducted IP orientation with the University Intellectual Property Management Office (IPMO)',
+                            'Secured 8 official software copyright certificates from the National Library and IPOPHL'
+                        ],
+                        documents: [
+                            { name: 'IPOPHL Software Copyright Registration Certificates', type: 'PDF', size: '2.9 MB', date: '2025-09-25', status: 'Verified', uploader: 'Maria Reyes', office: 'RDC Office', ocrText: 'CERTIFICATES OF COPYRIGHT REGISTRATION AND DEPOSIT FOR SOFTWARE SYSTEMS...' }
+                        ],
+                        remarks: 'Copyright deposits successfully formalized.'
+                    }
+                ]
+            },
+            {
+                id: 'prog_comp_area_6',
+                code: 'Area VI',
+                title: 'Extension and Community Involvement',
+                progress: 100,
+                recommendations: [
+                    {
+                        id: 1,
+                        text: 'Develop long-term sustainable extension projects that provide measurable technology transfer and IT capability training to partner communities and LGUs.',
+                        status: 'Fully complied',
+                        actions: [
+                            'Signed a 3-year MOA with partner Local Government Units for e-governance capability training and records digitization',
+                            'Conducted 6 digital literacy and cybersecurity awareness workshops for local high school teachers and barangay leaders'
+                        ],
+                        documents: [
+                            { name: 'LGU Partner MOA for Community Technology Transfer', type: 'PDF', size: '3.8 MB', date: '2024-09-12', status: 'Verified', uploader: 'Engr. Sarah Gomez', office: 'Extension Services Division', ocrText: 'MEMORANDUM OF AGREEMENT FOR COMMUNITY DIGITAL CAPABILITY EXTENSION...' },
+                            { name: 'Extension Accomplishment & Impact Assessment Report', type: 'PDF', size: '4.5 MB', date: '2025-08-18', status: 'Verified', uploader: 'Engr. Sarah Gomez', office: 'Extension Services Division', ocrText: 'EXTENSION PROGRAM IMPACT ASSESSMENT AND BENEFICIARY EVALUATION...' }
+                        ],
+                        remarks: 'Extension program rated "Outstanding" by beneficiary LGUs. Impact assessment documented 300+ trained participants.'
+                    },
+                    {
+                        id: 2,
+                        text: 'Ensure full faculty participation in community extension programs aligned with their area of technical specialization.',
+                        status: 'Fully complied',
+                        actions: [
+                            'Embedded required extension workload credits into faculty assignment matrices',
+                            'Documented 100% faculty engagement across community extension initiatives'
+                        ],
+                        documents: [
+                            { name: 'Faculty Extension Workload Assignment Matrix', type: 'PDF', size: '1.6 MB', date: '2025-07-10', status: 'Verified', uploader: 'Maria Reyes', office: 'Extension Services Division', ocrText: 'FACULTY EXTENSION ASSIGNMENT AND PARTICIPATION ROSTER...' }
+                        ],
+                        remarks: 'All regular and probationary faculty have verified extension involvement.'
+                    }
+                ]
+            },
+            {
+                id: 'prog_comp_area_7',
+                code: 'Area VII',
+                title: 'Library',
+                progress: 85,
+                recommendations: [
+                    {
+                        id: 1,
+                        text: 'Increase recent edition textbook holdings and physical reference materials published within the last 5 years.',
+                        status: 'Partial',
+                        actions: [
+                            'Allocated PHP 750,000 for specialized computing, software engineering, and AI book acquisitions',
+                            'Accessioned and cataloged 95 newly published physical book titles'
+                        ],
+                        documents: [
+                            { name: 'Library Book Requisition & Accession List 2025', type: 'PDF', size: '2.1 MB', date: '2025-05-14', status: 'Verified', uploader: 'Librarian Delia Santos', office: 'University Library', ocrText: 'LIBRARY ACQUISITIONS AND ACCESSION LOGS FOR COMPUTING DISCIPLINES...' }
+                        ],
+                        remarks: 'Phase 1 acquisitions delivered. Phase 2 titles currently undergoing customs clearance and cataloging.'
+                    },
+                    {
+                        id: 2,
+                        text: 'Expand 24/7 remote off-campus access to IEEE Xplore, ScienceDirect, and ACM Digital Library subscriptions for students and faculty.',
+                        status: 'Fully complied',
+                        actions: [
+                            'Configured OpenAthens single-sign-on integration enabling seamless remote database access',
+                            'Conducted library user education webinars on e-journal search strategies'
+                        ],
+                        documents: [
+                            { name: 'OpenAthens E-Library Remote Access Log Report', type: 'PDF', size: '2.8 MB', date: '2025-08-20', status: 'Verified', uploader: 'Librarian Delia Santos', office: 'University Library', ocrText: 'REMOTE ACCESS UTILIZATION METRICS AND ACTIVE USER SESSION LOGS...' },
+                            { name: 'IEEE & ACM Digital Subscriptions Invoices 2025', type: 'PDF', size: '1.5 MB', date: '2025-02-10', status: 'Verified', uploader: 'Librarian Delia Santos', office: 'University Library', ocrText: 'OFFICIAL INVOICES AND LICENSING AGREEMENTS FOR DATABASE SUBSCRIPTIONS...' }
+                        ],
+                        remarks: 'Remote access operational across all campuses with 5,000+ monthly searches recorded.'
+                    }
+                ]
+            },
+            {
+                id: 'prog_comp_area_8',
+                code: 'Area VIII',
+                title: 'Physical Plant and Facilities',
+                progress: 100,
+                recommendations: [
+                    {
+                        id: 1,
+                        text: 'Ensure lecture halls and seminar rooms are equipped with modern interactive presentation displays, dedicated air conditioning, and ergonomic seating.',
+                        status: 'Fully complied',
+                        actions: [
+                            'Installed laser smart projectors, motorized screens, and audio amplifiers in all departmental classrooms',
+                            'Completed routine HVAC preventative maintenance and air quality inspections'
+                        ],
+                        documents: [
+                            { name: 'Classroom Facilities Upgrade & Inspection Report', type: 'PDF', size: '3.2 MB', date: '2025-06-30', status: 'Verified', uploader: 'Arch. Leo Alba', office: 'Physical Plant Office', ocrText: 'INSPECTION AND TURNOVER CERTIFICATE FOR MODERNIZED CLASSROOMS...' }
+                        ],
+                        remarks: 'All classrooms modernized and cleared for accreditation inspection.'
+                    },
+                    {
+                        id: 2,
+                        text: 'Enhance accessibility features (ramps, tactile paving, accessible restrooms) for Persons with Disabilities (PWD) in accordance with BP 344.',
+                        status: 'Fully complied',
+                        actions: [
+                            'Constructed compliant PWD access ramps at main entrances',
+                            'Installed accessible comfort room stalls and tactile directional indicators'
+                        ],
+                        documents: [
+                            { name: 'BP 344 PWD Accessibility Compliance Certificate', type: 'PDF', size: '1.8 MB', date: '2025-04-25', status: 'Verified', uploader: 'Arch. Leo Alba', office: 'Physical Plant Office', ocrText: 'ACCESSIBILITY AUDIT CERTIFICATE UNDER BATAS PAMBANSA BLG. 344...' }
+                        ],
+                        remarks: 'Full physical plant compliance achieved.'
+                    }
+                ]
+            },
+            {
+                id: 'prog_comp_area_9',
+                code: 'Area IX',
+                title: 'Laboratories',
+                progress: 90,
+                recommendations: [
+                    {
+                        id: 1,
+                        text: 'Upgrade specialized computing laboratory workstations with modern multi-core processors, dedicated GPUs, and high-speed gigabit LAN switches.',
+                        status: 'Fully complied',
+                        actions: [
+                            'Procured 60 high-performance workstations (Core i7, 32GB RAM, RTX GPU) for Data Science and Graphics laboratories',
+                            'Upgraded structured network cabling to CAT6 with gigabit managed switches'
+                        ],
+                        documents: [
+                            { name: 'Laboratory Modernization Inventory & Turn-Over Certificate', type: 'PDF', size: '2.9 MB', date: '2025-07-20', status: 'Verified', uploader: 'Maria Reyes', office: 'College of Science', ocrText: 'HARDWARE INVENTORY AUDIT AND ASSET TURNOVER DOCUMENTATION...' },
+                            { name: 'Network Speed & Bandwidth Performance Benchmark', type: 'PDF', size: '1.4 MB', date: '2025-08-05', status: 'Verified', uploader: 'Maria Reyes', office: 'ICT Office', ocrText: 'GIGABIT NETWORK PERFORMANCE AUDIT AND SPEED TEST CERTIFICATION...' }
+                        ],
+                        remarks: 'Laboratories fully operational and supporting intensive computational laboratory classes.'
+                    },
+                    {
+                        id: 2,
+                        text: 'Establish an IoT & Embedded Systems prototyping workbench with safety equipment, soldering stations, and sensor development kits.',
+                        status: 'Partial',
+                        actions: [
+                            'Dedicated room CS-304 converted into IoT prototyping hub',
+                            'Procured microcontroller kits, sensors, and electronic testing equipment'
+                        ],
+                        documents: [
+                            { name: 'IoT Laboratory Equipment Procurement Order', type: 'PDF', size: '1.9 MB', date: '2025-09-15', status: 'Verified', uploader: 'Maria Reyes', office: 'College of Science', ocrText: 'PROCUREMENT PURCHASE ORDER FOR IOT AND EMBEDDED SYSTEM TOOLKITS...' }
+                        ],
+                        remarks: 'Workbench setup completed. Final shipment of specialized sensor modules arriving this quarter.'
+                    }
+                ]
+            },
+            {
+                id: 'prog_comp_area_10',
+                code: 'Area X',
+                title: 'Administration',
+                progress: 100,
+                recommendations: [
+                    {
+                        id: 1,
+                        text: 'Establish a computerized document tracking, audit logging, and digital accreditation repository system for the department.',
+                        status: 'Fully complied',
+                        actions: [
+                            'Implemented IQArchive Quality Assurance and Accreditation Management System',
+                            'Digitized 100% of historical accreditation self-survey exhibits and compliance evidence'
+                        ],
+                        documents: [
+                            { name: 'IQArchive System Implementation & User Training Certificate', type: 'PDF', size: '2.5 MB', date: '2025-01-20', status: 'Verified', uploader: 'Maria Reyes', office: 'IQA Central Office', ocrText: 'INSTITUTIONAL ROLLOUT AND TRAINING CERTIFICATE FOR IQARCHIVE PLATFORM...' },
+                            { name: 'Document Digitization Verification Report', type: 'PDF', size: '1.7 MB', date: '2025-03-10', status: 'Verified', uploader: 'Maria Reyes', office: 'IQA Central Office', ocrText: 'DIGITIZATION AUDIT REPORT VERIFYING COMPLETE HISTORICAL RECORD ARCHIVING...' }
+                        ],
+                        remarks: 'IQArchive is fully deployed with automated audit logging and role-based access controls.'
+                    },
+                    {
+                        id: 2,
+                        text: 'Institutionalize quarterly client satisfaction surveys to evaluate administrative efficiency and service delivery.',
+                        status: 'Fully complied',
+                        actions: [
+                            'Deployed digital feedback kiosks and online client evaluation forms aligned with ISO 9001:2015 standards',
+                            'Conducted quarterly management review of customer satisfaction metrics'
+                        ],
+                        documents: [
+                            { name: 'Client Satisfaction Survey Analysis Report 2025', type: 'PDF', size: '2.2 MB', date: '2025-10-15', status: 'Verified', uploader: 'Prof. Amelia Vega', office: 'IQA Central Office', ocrText: 'QUARTERLY CITIZEN CLIENT SATISFACTION SURVEY CONSOLIDATION REPORT...' }
+                        ],
+                        remarks: 'Achieved 96.8% positive client satisfaction rating across all student and faculty service interactions.'
+                    }
+                ]
+            }
+        ],
+
+        // ================================================================
         // COMPLIANCE REPORTS – Institutional Accreditation
         // Recommendations, Actions Taken, Supporting Documents, Remarks
         // ================================================================
@@ -1729,7 +2200,8 @@ window.documentWorkspace = function (initialState = {}) {
                     code: c.code,
                     name: c.name,
                     description: c.campus || c.description || 'Academic Unit',
-                    iconBg: c.iconBg || 'bg-slate-100 text-[#1b355a]',
+                    iconBg: c.iconBg || 'bg-slate-100 text-primary',
+                    logo: c.logo,
                     programCount: count
                 };
             });
@@ -1754,6 +2226,11 @@ window.documentWorkspace = function (initialState = {}) {
         },
 
         clearCollege() {
+            if (!this.isUnrestricted && this.collegesList.length <= 1) {
+                this.accredProgram = null;
+                this.accredCategory = null;
+                return;
+            }
             this.accredCollege = null;
             this.accredProgram = null;
             this.accredCategory = null;
@@ -1787,9 +2264,16 @@ window.documentWorkspace = function (initialState = {}) {
         selectProgram(prog) {
             this.accredProgram = prog;
             this.accredCategory = null;
+            if (prog && prog.id) {
+                this.loadProgramEvidence(prog.id);
+            }
         },
 
         clearProgram() {
+            if (this.currentUserRole === 'task-force-member' && this.programsList.length <= 1) {
+                this.accredCategory = null;
+                return;
+            }
             this.accredProgram = null;
             this.accredCategory = null;
         },
@@ -1823,7 +2307,63 @@ window.documentWorkspace = function (initialState = {}) {
             this.accredActiveSection = 'systems';
         },
 
-        // ── Compliance Report helpers ────────────────────────────────
+        // ── Program Compliance Report helpers ─────────────────────────
+
+        get activeProgramComplianceArea() {
+            return this.programComplianceReports.find(a => a.id === this.programComplianceActiveAreaId) || this.programComplianceReports[0];
+        },
+
+        selectProgramComplianceArea(areaId) {
+            this.programComplianceActiveAreaId = areaId;
+        },
+
+        filteredProgramRecommendations(area) {
+            if (!area || !area.recommendations) return [];
+            let recs = area.recommendations;
+            if (this.programComplianceFilter && this.programComplianceFilter !== 'all') {
+                recs = recs.filter(r => r.status === this.programComplianceFilter);
+            }
+            if (this.programComplianceSearch && this.programComplianceSearch.trim()) {
+                const q = this.programComplianceSearch.toLowerCase().trim();
+                recs = recs.filter(r => 
+                    (r.text && r.text.toLowerCase().includes(q)) ||
+                    (r.actions && r.actions.some(a => a.toLowerCase().includes(q))) ||
+                    (r.remarks && r.remarks.toLowerCase().includes(q)) ||
+                    (r.documents && r.documents.some(d => d.name.toLowerCase().includes(q)))
+                );
+            }
+            return recs;
+        },
+
+        programAreaStats(area) {
+            if (!area || !area.recommendations) return { total: 0, complied: 0, partial: 0, notStarted: 0, rate: 0 };
+            const recs = area.recommendations;
+            const total = recs.length;
+            const complied = recs.filter(r => r.status === 'Fully complied').length;
+            const partial = recs.filter(r => r.status === 'Partial').length;
+            const notStarted = recs.filter(r => r.status === 'Not started').length;
+            const rate = total > 0 ? Math.round(((complied * 1.0) + (partial * 0.5)) / total * 100) : 0;
+            return { total, complied, partial, notStarted, rate };
+        },
+
+        programOverallStats() {
+            let total = 0, complied = 0, partial = 0, notStarted = 0;
+            this.programComplianceReports.forEach(area => {
+                const stats = this.programAreaStats(area);
+                total += stats.total;
+                complied += stats.complied;
+                partial += stats.partial;
+                notStarted += stats.notStarted;
+            });
+            const rate = total > 0 ? Math.round(((complied * 1.0) + (partial * 0.5)) / total * 100) : 0;
+            return { total, complied, partial, notStarted, rate };
+        },
+
+        toggleProgramDocExpand(recId) {
+            this.programComplianceExpandedDocs[recId] = !this.programComplianceExpandedDocs[recId];
+        },
+
+        // ── Institutional Compliance Report helpers ───────────────────
 
         get activeComplianceArea() {
             return this.complianceReports.find(a => a.id === this.complianceActiveAreaId) || this.complianceReports[0];
@@ -2146,7 +2686,7 @@ window.documentWorkspace = function (initialState = {}) {
                 cancelButtonText: 'Cancel',
                 customClass: {
                     popup: 'rounded-2xl border border-slate-200/60 shadow-lg font-sans',
-                    title: 'text-[#1b355a] font-bold text-xl',
+                    title: 'text-primary font-bold text-xl',
                     confirmButton: 'px-6 py-2.5 rounded-xl font-semibold text-white',
                     cancelButton: 'px-6 py-2.5 rounded-xl font-semibold text-zinc-700 bg-slate-100 hover:bg-slate-200'
                 }
@@ -2176,7 +2716,7 @@ window.documentWorkspace = function (initialState = {}) {
                         confirmButtonColor: '#F47920',
                         customClass: {
                             popup: 'rounded-2xl border border-slate-200/60 shadow-lg font-sans',
-                            title: 'text-[#1b355a] font-bold text-xl',
+                            title: 'text-primary font-bold text-xl',
                             confirmButton: 'px-6 py-2.5 rounded-xl font-semibold text-white'
                         }
                     });
@@ -2339,8 +2879,66 @@ window.documentWorkspace = function (initialState = {}) {
             }
         },
 
+        cleanMockDocuments() {
+            if (!this.accredData) return;
+            ['program', 'institutional'].forEach(levelKey => {
+                const levelObj = this.accredData[levelKey];
+                if (levelObj && Array.isArray(levelObj.areas)) {
+                    levelObj.areas.forEach(area => {
+                        area.progress = 0;
+                        (area.parameters || []).forEach(param => {
+                            param.progress = 0;
+                            const sections = param.sections || {};
+                            ['systems', 'implementation', 'outcomes', 'bestpractices'].forEach(secKey => {
+                                const items = sections[secKey] || [];
+                                items.forEach(item => {
+                                    item.documents = [];
+                                });
+                            });
+                        });
+                    });
+                }
+            });
+        },
+
+        recalculateAccredProgress() {
+            if (!this.accredData) return;
+            ['program', 'institutional'].forEach(levelKey => {
+                const levelObj = this.accredData[levelKey];
+                if (levelObj && Array.isArray(levelObj.areas)) {
+                    levelObj.areas.forEach(area => {
+                        let areaTotal = 0;
+                        let areaFulfilled = 0;
+                        (area.parameters || []).forEach(param => {
+                            let paramTotal = 0;
+                            let paramFulfilled = 0;
+                            const sections = param.sections || {};
+                            ['systems', 'implementation', 'outcomes', 'bestpractices'].forEach(secKey => {
+                                const items = sections[secKey] || [];
+                                items.forEach(item => {
+                                    paramTotal++;
+                                    if (item.documents && item.documents.length > 0) {
+                                        paramFulfilled++;
+                                    }
+                                });
+                            });
+                            param.progress = paramTotal > 0 ? Math.round((paramFulfilled / paramTotal) * 100) : 0;
+                            areaTotal += paramTotal;
+                            areaFulfilled += paramFulfilled;
+                        });
+                        area.progress = areaTotal > 0 ? Math.round((areaFulfilled / areaTotal) * 100) : 0;
+                    });
+                }
+            });
+        },
+
         init() {
+            this.cleanMockDocuments();
             this.initBackendData();
+
+            if (this.accredProgram && this.accredProgram.id) {
+                this.loadProgramEvidence(this.accredProgram.id);
+            }
 
             // Sync accredLevel on initial load
             if (this.activeTab === 'institutional-accreditation') {
@@ -2376,6 +2974,19 @@ window.documentWorkspace = function (initialState = {}) {
                 }
             });
 
+            this.$watch('accredCategory', (newCat) => {
+                if (newCat === 'Supporting Documents' && this.accredProgram && this.accredProgram.id) {
+                    this.loadProgramEvidence(this.accredProgram.id);
+                }
+            });
+
+            this.$watch('accredProgram', (newProg) => {
+                this.cleanMockDocuments();
+                if (newProg && newProg.id) {
+                    this.loadProgramEvidence(newProg.id);
+                }
+            });
+
             // Check URL parameters for status filter or category
             const urlParams = new URLSearchParams(window.location.search);
             const statusParam = urlParams.get('status');
@@ -2386,6 +2997,19 @@ window.documentWorkspace = function (initialState = {}) {
             }
             if (categoryParam) {
                 this.selectedCategory = categoryParam;
+                if (['Supporting Documents', 'Self-Survey Documents', 'Compliance Reports', 'Narrative Profile', 'PPP'].includes(categoryParam)) {
+                    if (this.currentUserRole === 'task-force-member' && this.accredProgram && !this.accredProgram.instrument_verified) {
+                        this.accredCategory = null;
+                    } else {
+                        this.accredCategory = categoryParam;
+                        if (categoryParam === 'Narrative Profile' && typeof this.initNarrativeProfile === 'function') {
+                            setTimeout(() => this.initNarrativeProfile(), 50);
+                        }
+                        if (categoryParam === 'PPP' && typeof this.initPPP === 'function') {
+                            setTimeout(() => this.initPPP(), 50);
+                        }
+                    }
+                }
             }
         },
 
@@ -2393,8 +3017,14 @@ window.documentWorkspace = function (initialState = {}) {
             fetch('/api/programs')
                 .then(res => res.json())
                 .then(data => {
-                    if (Array.isArray(data) && data.length > 0) {
+                    if (Array.isArray(data)) {
                         this.programsList = data;
+                        if (this.currentUserRole === 'task-force-member' && data.length === 1 && !this.accredProgram) {
+                            this.accredProgram = data[0];
+                            this.loadProgramEvidence(data[0].id);
+                        } else if (this.accredProgram && this.accredProgram.id) {
+                            this.loadProgramEvidence(this.accredProgram.id);
+                        }
                     }
                 })
                 .catch(err => console.error('Error fetching programs from backend:', err));
@@ -2404,6 +3034,9 @@ window.documentWorkspace = function (initialState = {}) {
                 .then(data => {
                     if (Array.isArray(data)) {
                         this.collegesList = data;
+                        if (!this.isUnrestricted && data.length === 1 && !this.accredCollege) {
+                            this.accredCollege = data[0];
+                        }
                         if (data.length > 0 && !this.newProgram.college_id) {
                             this.newProgram.college_id = data[0].id;
                         }
@@ -3020,6 +3653,252 @@ window.documentWorkspace = function (initialState = {}) {
                 printWindow.print();
                 printWindow.close();
             }, 400);
+        },
+
+        // ── STEP 5: EVIDENCE UPLOADER & DEAN SUBMISSION HANDLERS ─────
+
+        showUploadModal: false,
+        isUploading: false,
+        uploadForm: {
+            programId: null,
+            accreditationId: null,
+            criterionId: null,
+            criterionCode: '',
+            criterionStatement: '',
+            suggestedTags: [],
+            selectedTags: [],
+            title: '',
+            description: '',
+            file: null
+        },
+
+        showSubmitToDeanModal: false,
+        isSubmittingToDean: false,
+        submitDeanNotes: '',
+
+        openUploadModal(item) {
+            this.uploadForm.programId = this.accredProgram ? this.accredProgram.id : null;
+            this.uploadForm.accreditationId = this.accredProgram ? this.accredProgram.accreditation_id : null;
+            this.uploadForm.criterionId = item.criterion_id || item.dbId || null;
+            this.uploadForm.criterionCode = item.id || item.code || '';
+            this.uploadForm.areaCode = this.activeArea ? (this.activeArea.code || this.activeArea.title) : '';
+            this.uploadForm.paramCode = this.activeParam ? (this.activeParam.code || this.activeParam.title) : '';
+            this.uploadForm.criterionStatement = item.statement || '';
+            this.uploadForm.suggestedTags = item.required_tags || item.tags || ['#BoardResolution', '#UniversityManual', '#DepartmentPolicy', '#CurriculumMatrix'];
+            this.uploadForm.selectedTags = [];
+            this.uploadForm.title = '';
+            this.uploadForm.description = '';
+            this.uploadForm.file = null;
+            this.showUploadModal = true;
+        },
+
+        closeUploadModal() {
+            this.showUploadModal = false;
+            this.uploadForm.file = null;
+            this.uploadForm.title = '';
+            this.uploadForm.description = '';
+            this.uploadForm.selectedTags = [];
+        },
+
+        toggleUploadTag(tag) {
+            if (this.uploadForm.selectedTags.includes(tag)) {
+                this.uploadForm.selectedTags = this.uploadForm.selectedTags.filter(t => t !== tag);
+            } else {
+                this.uploadForm.selectedTags.push(tag);
+                if (!this.uploadForm.title.includes(tag)) {
+                    this.uploadForm.title = (this.uploadForm.title ? this.uploadForm.title + ' ' : '') + tag;
+                }
+            }
+        },
+
+        handleFileSelect(e) {
+            if (e.target.files && e.target.files[0]) {
+                this.uploadForm.file = e.target.files[0];
+                if (!this.uploadForm.title) {
+                    const rawName = e.target.files[0].name.replace(/\.[^/.]+$/, "");
+                    this.uploadForm.title = rawName.replace(/[_-]/g, ' ');
+                }
+            }
+        },
+
+        handleFileDrop(e) {
+            if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                this.uploadForm.file = e.dataTransfer.files[0];
+                if (!this.uploadForm.title) {
+                    const rawName = e.dataTransfer.files[0].name.replace(/\.[^/.]+$/, "");
+                    this.uploadForm.title = rawName.replace(/[_-]/g, ' ');
+                }
+            }
+        },
+
+        async submitEvidenceUpload() {
+            if (!this.uploadForm.file || !this.uploadForm.title || !this.uploadForm.programId) {
+                alert('Please provide an evidence title and select a file.');
+                return;
+            }
+
+            this.isUploading = true;
+            const formData = new FormData();
+            formData.append('file', this.uploadForm.file);
+            formData.append('program_id', this.uploadForm.programId);
+            if (this.uploadForm.accreditationId) formData.append('accreditation_id', this.uploadForm.accreditationId);
+            if (this.uploadForm.criterionId) formData.append('instrument_criterion_id', this.uploadForm.criterionId);
+            if (this.uploadForm.criterionCode) formData.append('criterion_code', this.uploadForm.criterionCode);
+            if (this.uploadForm.areaCode) formData.append('area_code', this.uploadForm.areaCode);
+            if (this.uploadForm.paramCode) formData.append('parameter_code', this.uploadForm.paramCode);
+            formData.append('title', this.uploadForm.title);
+            if (this.uploadForm.description) formData.append('description', this.uploadForm.description);
+
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+            try {
+                const res = await fetch('/api/accreditation/evidence/upload', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json'
+                    },
+                    body: formData
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    const criterionCode = this.uploadForm.criterionCode;
+                    const programId = this.uploadForm.programId;
+                    this.closeUploadModal();
+
+                    if (programId) {
+                        this.loadProgramEvidence(programId);
+                    }
+
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Evidence Uploaded',
+                            text: 'Document has been linked to criterion ' + criterionCode + ' successfully.',
+                            confirmButtonColor: '#1b355a'
+                        });
+                    } else {
+                        alert('Evidence document uploaded successfully.');
+                    }
+                } else {
+                    alert(data.error || 'Failed to upload evidence document.');
+                }
+            } catch (err) {
+                console.error('Upload error:', err);
+                alert('Network error occurred while uploading document.');
+            } finally {
+                this.isUploading = false;
+            }
+        },
+
+        async loadProgramEvidence(programId) {
+            if (!programId) return;
+            try {
+                const res = await fetch('/api/accreditation/evidence/' + programId);
+                if (!res.ok) return;
+                const data = await res.json();
+                const docs = Array.isArray(data) ? data : (data.documents || []);
+
+                if (!this.accredData) return;
+
+                // Reset and populate strictly across BOTH program and institutional areas
+                ['program', 'institutional'].forEach(levelKey => {
+                    const levelObj = this.accredData[levelKey];
+                    if (levelObj && Array.isArray(levelObj.areas)) {
+                        levelObj.areas.forEach(area => {
+                            (area.parameters || []).forEach(param => {
+                                const sections = param.sections || {};
+                                ['systems', 'implementation', 'outcomes', 'bestpractices'].forEach(secKey => {
+                                    const items = sections[secKey] || [];
+                                    items.forEach(item => {
+                                        const matchingDocs = docs.filter(d => {
+                                            // 1. Strict area matching if area_code is provided
+                                            if (d.area_code) {
+                                                const areaMatch = area.code === d.area_code || 
+                                                                  area.title === d.area_code || 
+                                                                  (area.code && d.area_code.toLowerCase().includes(area.code.toLowerCase())) || 
+                                                                  (d.area_code && area.code && area.code.toLowerCase().includes(d.area_code.toLowerCase()));
+                                                if (!areaMatch) return false;
+                                            }
+
+                                            // 2. Strict criterion matching
+                                            const codeMatch = d.criterion_code && (d.criterion_code === item.id || d.criterion_code === item.code);
+                                            const idMatch = d.criterion_id && item.criterion_id && d.criterion_id === item.criterion_id;
+                                            return codeMatch || idMatch;
+                                        });
+
+                                        item.documents = matchingDocs;
+                                    });
+                                });
+                            });
+                        });
+                    }
+                });
+
+                this.recalculateAccredProgress();
+            } catch (err) {
+                console.warn('Failed to load program evidence:', err);
+            }
+        },
+
+        openSubmitToDeanModal() {
+            this.submitDeanNotes = '';
+            this.showSubmitToDeanModal = true;
+        },
+
+        closeSubmitToDeanModal() {
+            this.showSubmitToDeanModal = false;
+            this.submitDeanNotes = '';
+        },
+
+        async submitEvidenceToDean() {
+            if (!this.accredProgram) return;
+
+            this.isSubmittingToDean = true;
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+            try {
+                const res = await fetch('/api/accreditation/evidence/submit-to-dean', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        program_id: this.accredProgram.id,
+                        accreditation_id: this.accredProgram.accreditation_id,
+                        notes: this.submitDeanNotes
+                    })
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    this.closeSubmitToDeanModal();
+                    if (this.accredProgram) {
+                        this.accredProgram.accreditation_status = 'dean_verification';
+                    }
+
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Submitted to College Dean',
+                            text: 'The evidence repository has been submitted for Dean verification and quality review.',
+                            confirmButtonColor: '#1b355a'
+                        });
+                    } else {
+                        alert('Evidence submitted to College Dean successfully.');
+                    }
+                } else {
+                    alert(data.error || 'Failed to submit evidence to Dean.');
+                }
+            } catch (err) {
+                console.error('Submission error:', err);
+                alert('Network error while submitting to Dean.');
+            } finally {
+                this.isSubmittingToDean = false;
+            }
         }
     };
 };

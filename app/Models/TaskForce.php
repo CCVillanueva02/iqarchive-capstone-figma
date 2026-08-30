@@ -15,7 +15,12 @@ class TaskForce extends Model
         'program_id',
         'purpose',
         'status',
+        'proposed_members',
         'created_by',
+    ];
+
+    protected $casts = [
+        'proposed_members' => 'array',
     ];
 
     public function college()
@@ -38,6 +43,11 @@ class TaskForce extends Model
     public function creator()
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function accreditation()
+    {
+        return $this->hasOne(Accreditation::class);
     }
 
     /**

@@ -21,10 +21,9 @@ class DatabaseSeeder extends Seeder
             ProgramSeeder::class,
             DocumentCategorySeeder::class,
             UserSeeder::class,
-            InstrumentSeeder::class,
+            AaccupMasterInstrumentSeeder::class,
             DocumentSeeder::class,
             AuditLogSeeder::class,
-            TaskForceSeeder::class,
             TestPdfSeeder::class,
         ]);
     }

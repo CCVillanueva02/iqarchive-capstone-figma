@@ -36,4 +36,9 @@ class Program extends Model
     {
         return $this->hasMany(TaskForceAssignment::class);
     }
+
+    public function accreditations()
+    {
+        return $this->hasMany(Accreditation::class);
+    }
 }

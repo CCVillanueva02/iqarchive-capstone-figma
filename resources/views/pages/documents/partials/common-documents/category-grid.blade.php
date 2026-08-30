@@ -22,7 +22,7 @@
     <!-- Search bar for categories & Action Buttons -->
     <div class="bg-white border border-slate-200/60 rounded-xl p-4 shadow-3xs">
         <div class="flex flex-col sm:flex-row gap-3 items-center justify-between">
-            <div class="relative w-full max-w-[480px]">
+            <div class="relative w-full max-w-120">
                 <input
                     type="text"
                     x-model="searchQuery"
@@ -77,7 +77,7 @@
                     <!-- Top Row: Icon Badge & Category Tag -->
                     <div class="flex items-start justify-between">
                         <!-- Icon Badge Container with Counter Badge -->
-                        <div class="relative w-12 h-12 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center shrink-0 transition-colors group-hover:bg-blue-100/70">
+                        <div class="relative w-12 h-12 rounded-2xl bg-surface-subtle border border-primary/10 flex items-center justify-center shrink-0 transition-colors group-hover:bg-primary/10/70">
                             <!-- Blue stroke folder icon (Lucide folder icon) -->
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6 text-primary-dark group-hover:text-primary-hover transition-colors">
                                 <path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L8.6 3.3A2 2 0 0 0 7.1 2.5H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2z" />

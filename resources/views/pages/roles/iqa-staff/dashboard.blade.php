@@ -37,7 +37,7 @@
         </div>
 
         <!-- Pending Common Documents Quick Access Alert Widget -->
-        <div class="bg-gradient-to-r from-primary-dark to-primary-hover text-white rounded-2xl p-6 shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-5 border border-blue-900/40">
+        <div class="bg-linear-to-r from-primary-dark to-primary-hover text-white rounded-2xl p-6 shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-5 border border-primary-dark/40">
             <div class="flex items-start gap-4">
                 <div class="p-3 bg-amber-500/20 border border-amber-400/30 rounded-xl text-amber-300 shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-7 h-7">
@@ -51,7 +51,7 @@
                             {{ $pendingCommonDocsCount }} Pending
                         </span>
                     </div>
-                    <p class="text-body-sm text-blue-100/90 mt-1 max-w-2xl leading-relaxed">
+                    <p class="text-body-sm text-white/90 mt-1 max-w-2xl leading-relaxed">
                         There {{ $pendingCommonDocsCount === 1 ? 'is' : 'are' }} {{ $pendingCommonDocsCount }} common document(s) uploaded by staff awaiting verification. Review uploaded files, manage approval status, or flag documents.
                     </p>
                 </div>
@@ -92,7 +92,7 @@
                         Accreditation is about to expire
                     </span>
                 </div>
-                <div class="p-3.5 rounded-xl bg-orange-50 text-brand-orange">
+                <div class="p-3.5 rounded-xl bg-brand-orange/10 text-brand-orange">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                     </svg>
@@ -124,7 +124,7 @@
                         Total university compliance rate
                     </span>
                 </div>
-                <div class="p-3.5 rounded-xl bg-blue-50 text-blue-600">
+                <div class="p-3.5 rounded-xl bg-surface-subtle text-primary">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 1 0 7.5 7.5h-7.5V6Z" />
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 10.5H21A7.5 7.5 0 0 0 13.5 3v7.5Z" />
@@ -161,9 +161,9 @@
                         <tbody class="divide-y divide-zinc-50">
                             @forelse($recentUploads as $doc)
                                 <tr>
-                                    <td class="py-3 max-w-[200px] truncate font-semibold text-zinc-800">
+                                    <td class="py-3 max-w-50 truncate font-semibold text-zinc-800">
                                         {{ $doc->title }}
-                                        <span class="block text-[10px] text-zinc-400 font-normal mt-0.5 truncate">{{ $doc->category?->name }}</span>
+                                        <span class="block text-label-xs text-zinc-400 font-normal mt-0.5 truncate">{{ $doc->category?->name }}</span>
                                     </td>
                                     <td class="py-3 text-xs font-bold text-zinc-600">
                                         {{ $doc->program?->code ?? 'General' }}
@@ -179,7 +179,7 @@
                                                 default => 'bg-amber-50 text-amber-700 border-amber-100'
                                             };
                                         @endphp
-                                        <span class="px-2 py-0.5 rounded text-[10px] font-semibold border {{ $statusClass }}">
+                                        <span class="px-2 py-0.5 rounded text-label-xs font-semibold border {{ $statusClass }}">
                                             {{ strtoupper($doc->status) }}
                                         </span>
                                     </td>
@@ -218,7 +218,7 @@
                             </div>
                         </a>
                         <a href="{{ route('accounts.iqa-staff') }}" class="flex items-center gap-3 p-3.5 bg-zinc-50 hover:bg-zinc-100 border border-zinc-100 rounded-xl transition" wire:navigate>
-                            <div class="p-2 bg-orange-500 text-white rounded-lg">
+                            <div class="p-2 bg-brand-orange text-white rounded-lg">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.109A11.386 11.386 0 0 1 10.089 20.08l-.014-.002c-.072 0-.143-.001-.215-.002-.136-.002-.27-.006-.404-.012l-.014-.001a11.384 11.384 0 0 1-4.46-1.334 4.123 4.123 0 0 1-1.422-2.58l-.004-.013c-.015-.062-.03-.124-.043-.187L3.48 16a9.09 9.09 0 0 1-.412-2.72c0-1.87.525-3.6 1.437-5.07a4.125 4.125 0 0 1 7.159 2.502M15 9.128a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM2.25 12h19.5" />
                                 </svg>
