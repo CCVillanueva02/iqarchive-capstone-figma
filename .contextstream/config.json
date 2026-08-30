@@ -1,0 +1,13 @@
+{
+  "associated_at": "2026-08-30T08:35:51.867836300+00:00",
+  "checkout_id": "checkout-v1:cbc47e3b-bf1e-45b5-b70e-047d2eecd7ca",
+  "checkout_identity_kind": "git",
+  "checkout_root": "\\\\?\\C:\\Users\\janss\\Herd\\iqarchive",
+  "project_id": "06be0ea0-9d91-4277-af45-71e617c5264a",
+  "project_name": "iqarchive-capstone",
+  "repository_fingerprint": "git-common-dir-v1:79ab0659-4bb6-442e-8f73-e184f6bd8049",
+  "repository_remote_identity": "git-remote-v1:github.com/Janssen-Carl/iqarchive-capstone",
+  "version": "0.5.100",
+  "workspace_id": "d0847c14-a014-4c5d-bfb4-ce1e08fb517a",
+  "workspace_name": "Janssen12's Workspace"
+}
