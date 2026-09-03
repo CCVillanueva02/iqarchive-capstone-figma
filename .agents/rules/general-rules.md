@@ -63,3 +63,14 @@ When accessing, inspecting, or testing the running website locally (via browser 
    - Accreditor: `/dev/login/accreditor`
    - University Administrator: `/dev/login/university-administrator`
 4. **Security Isolation:** Dev login routes are strictly gated to `local` and `testing` environments (`app()->environment(['local', 'testing'])`) in [`routes/web.php`](file:///c:/Users/janss/Herd/iqarchive/routes/web.php) to prevent privilege escalation outside development.
+
+# Mandatory Code Commenting & Documentation Standards
+
+Every file created or modified by AI agents must adhere strictly to these commenting standards:
+1. **Meaningful Top-of-File Summary:** Always include a comprehensive docblock or comment header at the very top of each file detailing:
+   - The file's core purpose and responsibility.
+   - Its architectural role in the IQArchive system.
+   - Relevant authorization, RBAC, or security context.
+   - Use the native comment syntax for the file type (e.g., `/** ... */` in PHP/JS, `{{-- ... --}}` in Blade templates, `/* ... */` in CSS, `# ...` in shell/python).
+2. **Comment Per Logical Block:** Add an explanatory comment before every distinct logical block of code (e.g., methods, lifecycle hooks, Livewire action handlers, complex conditionals, query scopes, API routes, or major UI markup sections) describing *what* the block does, *why* it is structured that way, and any non-obvious business or security logic.
+3. **Preserve Existing Comments:** Do not delete or overwrite existing explanatory comments during refactoring unless they have become obsolete due to intentional architectural changes.

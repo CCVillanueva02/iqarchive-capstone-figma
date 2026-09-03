@@ -7,3 +7,4 @@
 - Run `cmd /c npm run build` to verify asset compilation.
 - Commit every meaningful unit incrementally; do not accumulate bulky, monolithic commits.
 - For local browser testing and access, always use Dev Login (`/dev` or `/dev/login/{role}`).
+- Always add comments to every file: a meaningful summary at the top (purpose, architecture, security context) and a clear comment per logical block of code.
