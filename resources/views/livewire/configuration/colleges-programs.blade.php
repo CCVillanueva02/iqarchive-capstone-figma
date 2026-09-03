@@ -29,22 +29,30 @@
     <!-- Filter & Search Control Panel -->
     @include('livewire.configuration.partials.filter-bar')
 
-    <!-- Colleges & Programs List -->
-    <div class="flex flex-col gap-5">
-        @forelse($colleges as $college)
-            @include('livewire.configuration.partials.college-card')
-        @empty
-        <div class="bg-white border border-slate-200/60 rounded-2xl p-12 text-center text-zinc-400 shadow-3xs flex flex-col items-center gap-3">
-            <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                    <circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/>
-                </svg>
-            </div>
-            <p class="font-bold text-primary text-heading-sm">No Colleges or Programs Found</p>
-            <p class="text-body-sm text-zinc-500">No entries match your search query or selected filter criteria.</p>
+    <!-- Master-Detail Workstation Layout (Direction A) -->
+    @if($colleges->isNotEmpty())
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <!-- Left Master Pane: Colleges Directory (4 cols / ~33%) -->
+        <div class="lg:col-span-4 bg-white border border-slate-200/70 rounded-2xl shadow-3xs overflow-hidden flex flex-col">
+            @include('livewire.configuration.partials.master-directory')
         </div>
-        @endforelse
+
+        <!-- Right Detail Pane: Selected College & Degree Programs Matrix (8 cols / ~67%) -->
+        <div class="lg:col-span-8 flex flex-col gap-6">
+            @include('livewire.configuration.partials.detail-programs')
+        </div>
     </div>
+    @else
+    <div class="bg-white border border-slate-200/60 rounded-2xl p-12 text-center text-zinc-400 shadow-3xs flex flex-col items-center gap-3">
+        <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/>
+            </svg>
+        </div>
+        <p class="font-bold text-primary text-heading-sm">No Colleges or Programs Found</p>
+        <p class="text-body-sm text-zinc-500">No entries match your search query or selected filter criteria.</p>
+    </div>
+    @endif
 
     <!-- Modals (College & Program Forms) -->
     @if($canManage)

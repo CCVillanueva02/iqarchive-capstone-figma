@@ -66,14 +66,18 @@ class CollegesPrograms extends Component
 
     public $targetProgramName = '';
 
-    // Expanded College Accordions Tracking
+    // Expanded College Accordions Tracking (Legacy fallback)
     public array $expandedCollegeIds = [];
+
+    // Master-Detail Selected College Tracking
+    public ?int $selectedCollegeId = null;
 
     protected $queryString = [
         'search' => ['except' => ''],
         'campusFilter' => ['except' => ''],
         'collegeFilter' => ['except' => ''],
         'levelFilter' => ['except' => ''],
+        'selectedCollegeId' => ['except' => null, 'as' => 'college'],
     ];
 
     public function mount()
@@ -85,8 +89,18 @@ class CollegesPrograms extends Component
 
         $this->canManage = Gate::allows('manageCollegesAndPrograms');
 
-        // Expand all colleges by default
+        // Set default selected college
+        if (! $this->selectedCollegeId) {
+            $this->selectedCollegeId = College::orderBy('name')->value('id');
+        }
+
+        // Expand all colleges by default (fallback)
         $this->expandedCollegeIds = College::pluck('id')->toArray();
+    }
+
+    public function selectCollege(int $id)
+    {
+        $this->selectedCollegeId = $id;
     }
 
     public function updatingSearch()
@@ -598,8 +612,20 @@ class CollegesPrograms extends Component
             'Level IV Re-accredited',
         ];
 
+        $selectedCollege = null;
+        if ($colleges->isNotEmpty()) {
+            $selectedCollege = $colleges->firstWhere('id', $this->selectedCollegeId) ?? $colleges->first();
+            $this->selectedCollegeId = $selectedCollege?->id;
+        }
+
+        $collegesByCampus = $colleges->groupBy(function ($col) {
+            return $col->campus ?: 'Main Campus (Legazpi)';
+        });
+
         return view('livewire.configuration.colleges-programs', [
             'colleges' => $colleges,
+            'selectedCollege' => $selectedCollege,
+            'collegesByCampus' => $collegesByCampus,
             'allCollegesDropdown' => $allCollegesDropdown,
             'campusesList' => $campusesList,
             'totalColleges' => $totalColleges,

@@ -130,3 +130,28 @@ test('iqa staff can soft delete college and program', function () {
 
     $this->assertSoftDeleted('colleges', ['id' => $college->id]);
 });
+
+test('master-detail workstation automatically selects first college and allows switching colleges', function () {
+    $user = createTestUser('iqa-staff');
+
+    $collegeA = College::create(['name' => 'College of Arts and Letters', 'code' => 'CAL', 'campus' => 'Main Campus']);
+    $progA = Program::create(['name' => 'BA Communication', 'code' => 'BACOMM', 'college_id' => $collegeA->id]);
+
+    $collegeB = College::create(['name' => 'College of Science', 'code' => 'CS', 'campus' => 'Main Campus']);
+    $progB = Program::create(['name' => 'BS Computer Science', 'code' => 'BSCS', 'college_id' => $collegeB->id]);
+
+    Livewire::actingAs($user)
+        ->test(CollegesPrograms::class)
+        // Verify Master Directory renders
+        ->assertSee('Colleges Directory')
+        ->assertSee('Select a unit to manage programs')
+        ->assertSee('College of Arts and Letters')
+        ->assertSee('College of Science')
+        // Automatically selects first college
+        ->assertSet('selectedCollegeId', $collegeA->id)
+        ->assertSee('BA Communication')
+        // Switch to College B
+        ->call('selectCollege', $collegeB->id)
+        ->assertSet('selectedCollegeId', $collegeB->id)
+        ->assertSee('BS Computer Science');
+});
