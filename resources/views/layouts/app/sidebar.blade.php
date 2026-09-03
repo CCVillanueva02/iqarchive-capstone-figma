@@ -17,33 +17,38 @@
     @endphp
 
     <!-- Wrapper for Scrollable Nav Area & Low-Opacity Chevron Indicator -->
-    <div class="relative flex-1 min-h-0 flex flex-col">
-        <div x-data="{
-                 hasMoreBelow: false,
-                 checkScroll() {
-                     const el = this.$el;
-                     const isOverflowing = el.scrollHeight > el.clientHeight;
-                     const isAtBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 4;
-                     this.hasMoreBelow = isOverflowing && !isAtBottom;
-                 },
-                 restoreScroll() {
-                     const stored = sessionStorage.getItem('sidebar_scroll_top');
-                     if (stored !== null) {
-                         this.$el.scrollTop = parseInt(stored, 10);
-                     }
-                     this.checkScroll();
-                 },
-                 saveScroll() {
-                     sessionStorage.setItem('sidebar_scroll_top', this.$el.scrollTop);
-                     this.checkScroll();
+    <div x-data="{
+             hasMoreBelow: false,
+             checkScroll() {
+                 const el = this.$refs.scrollContainer;
+                 if (! el) return;
+                 const isOverflowing = el.scrollHeight > el.clientHeight;
+                 const isAtBottom = el.scrollTop + el.clientHeight >= el.scrollHeight - 4;
+                 this.hasMoreBelow = isOverflowing && !isAtBottom;
+             },
+             restoreScroll() {
+                 const el = this.$refs.scrollContainer;
+                 if (! el) return;
+                 const stored = sessionStorage.getItem('sidebar_scroll_top');
+                 if (stored !== null) {
+                     el.scrollTop = parseInt(stored, 10);
                  }
-             }"
-            x-init="
-                 restoreScroll();
-                 this.$nextTick(() => restoreScroll());
-                 document.addEventListener('livewire:navigated', () => restoreScroll());
-             "
-            x-ref="scrollContainer"
+                 this.checkScroll();
+             },
+             saveScroll() {
+                 const el = this.$refs.scrollContainer;
+                 if (! el) return;
+                 sessionStorage.setItem('sidebar_scroll_top', el.scrollTop);
+                 this.checkScroll();
+             }
+         }"
+        x-init="
+             restoreScroll();
+             $nextTick(() => restoreScroll());
+             document.addEventListener('livewire:navigated', () => restoreScroll());
+         "
+        class="relative flex-1 min-h-0 flex flex-col">
+        <div x-ref="scrollContainer"
             @scroll.debounce.50ms="saveScroll()"
             @resize.window.debounce.100ms="checkScroll()"
             class="flex flex-col gap-1.5 flex-1 py-6 overflow-y-auto no-scrollbar relative">
