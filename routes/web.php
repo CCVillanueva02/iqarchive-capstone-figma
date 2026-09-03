@@ -329,7 +329,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('api/common-documents', [DocumentCategoryController::class, 'storeDocument'])->name('api.common-documents.store');
     Route::post('api/common-documents/{id}/status', [DocumentCategoryController::class, 'updateStatus'])->name('api.common-documents.update-status');
     Route::delete('api/common-documents/{id}', [DocumentCategoryController::class, 'destroyDocument'])->name('api.common-documents.destroy');
-    Route::get('documents/{id}/view', [DocumentCategoryController::class, 'serveDocument'])->name('documents.serve');
+    Route::get('documents/{id}/view', [DocumentCategoryController::class, 'serveDocument'])->name('documents.view');
 
     // Self-Survey API routes (Institutional Accreditation)
     Route::get('api/self-survey/areas', [SelfSurveyController::class, 'getAreas'])->name('api.self-survey.areas');
