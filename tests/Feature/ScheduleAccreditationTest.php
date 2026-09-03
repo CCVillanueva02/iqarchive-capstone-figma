@@ -144,4 +144,3 @@ test('cannot schedule duplicate active accreditation for the same program', func
     // Only 1 accreditation in database
     expect(Accreditation::where('program_id', $program->id)->count())->toBe(1);
 });
-

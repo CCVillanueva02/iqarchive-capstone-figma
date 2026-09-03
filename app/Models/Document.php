@@ -27,6 +27,16 @@ class Document extends Model
         'confirmed_at' => 'datetime',
     ];
 
+    public function getFileExtensionAttribute(): string
+    {
+        return strtoupper(pathinfo($this->file_path ?? '', PATHINFO_EXTENSION));
+    }
+
+    public function getFileSizeAttribute(): string
+    {
+        return '1.2 MB';
+    }
+
     public function uploader()
     {
         return $this->belongsTo(User::class, 'uploaded_by');

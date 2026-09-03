@@ -93,4 +93,3 @@ test('ensure user has role middleware protects role routes and sets active_role 
         ->assertStatus(200)
         ->assertSessionHas('active_role', 'college-head');
 });
-

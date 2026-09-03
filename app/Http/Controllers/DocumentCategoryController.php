@@ -6,6 +6,7 @@ use App\Models\Document;
 use App\Models\DocumentCategory;
 use App\Models\Office;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class DocumentCategoryController extends Controller
 {
@@ -429,9 +430,9 @@ class DocumentCategoryController extends Controller
             abort(404, 'Invalid file name for this document.');
         }
 
-        if (\Illuminate\Support\Facades\Storage::disk('public')->exists($document->file_path)) {
-            $fullPath = \Illuminate\Support\Facades\Storage::disk('public')->path($document->file_path);
-            $mimeType = \Illuminate\Support\Facades\Storage::disk('public')->mimeType($document->file_path) ?? 'application/pdf';
+        if (Storage::disk('public')->exists($document->file_path)) {
+            $fullPath = Storage::disk('public')->path($document->file_path);
+            $mimeType = Storage::disk('public')->mimeType($document->file_path) ?? 'application/pdf';
 
             return response()->file($fullPath, [
                 'Content-Type' => $mimeType,

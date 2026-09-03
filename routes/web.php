@@ -12,6 +12,7 @@ use App\Livewire\CollegeHead\DeanVerification;
 use App\Livewire\CollegeHead\InstrumentCustomization;
 use App\Livewire\Configuration\CollegesPrograms;
 use App\Livewire\Configuration\Instruments;
+use App\Livewire\Documents\DocumentWorkspace;
 use App\Livewire\IqaAdmin\Accounts;
 use App\Livewire\Monitoring\MonitoringOverview;
 use App\Livewire\TaskForce\TaskForceOverview;
@@ -194,9 +195,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 return view("pages.roles.{$role}.dashboard");
             })->name("dashboard.{$role}");
 
-            Route::get("roles/{$role}/documents", function () {
-                return view('pages.documents.index');
-            })->name("documents.{$role}");
+            Route::get("roles/{$role}/documents", DocumentWorkspace::class)->name("documents.{$role}");
 
             Route::get("roles/{$role}/submissions", function () use ($role) {
                 return view('pages.workspace.placeholder', [

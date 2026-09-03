@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             DocumentSeeder::class,
             AuditLogSeeder::class,
             TestPdfSeeder::class,
+            SelfSurveySeeder::class,
         ]);
     }
 }
