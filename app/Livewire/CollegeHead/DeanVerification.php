@@ -8,7 +8,6 @@ use App\Models\Document;
 use App\Models\DocumentReview;
 use App\Models\Instrument;
 use App\Models\InstrumentArea;
-use App\Models\InstrumentParameter;
 use App\Models\Notification;
 use App\Models\Role;
 use App\Models\User;
@@ -22,23 +21,34 @@ use Livewire\Component;
 class DeanVerification extends Component
 {
     public int $accreditationId;
+
     public ?int $selectedInstrumentId = null;
+
     public ?int $activeAreaId = null;
+
     public ?int $activeParameterId = null;
+
     public string $activeSection = 'systems'; // 'systems', 'implementation', 'outcomes', 'bestpractices'
+
     public string $docFilter = 'all'; // 'all', 'pending', 'verified', 'needs_revision'
 
     // Modals state
     public bool $showFlagModal = false;
+
     public ?int $flaggingDocId = null;
+
     public string $flaggingDocTitle = '';
+
     public string $flaggingDocCriterion = '';
+
     public string $revisionRemarks = '';
 
     public bool $showRequestRevisionsModal = false;
+
     public string $reworkSummaryNotes = '';
 
     public bool $showSubmitToIqaModal = false;
+
     public string $signoffNotes = '';
 
     public function mount($accreditation)
@@ -66,7 +76,7 @@ class DeanVerification extends Component
             ->where('accreditation_id', $acc->id)
             ->where(function ($q) {
                 $q->where('code', 'like', '%SUPP%')
-                  ->orWhere('name', 'like', '%Supporting%');
+                    ->orWhere('name', 'like', '%Supporting%');
             })
             ->first();
 
@@ -103,13 +113,13 @@ class DeanVerification extends Component
     {
         $instrument = $this->instrument;
         if ($instrument && $instrument->areas->isNotEmpty()) {
-            if (!$this->activeAreaId || !$instrument->areas->contains('id', $this->activeAreaId)) {
+            if (! $this->activeAreaId || ! $instrument->areas->contains('id', $this->activeAreaId)) {
                 $this->activeAreaId = $instrument->areas->first()->id;
             }
 
             $activeArea = $instrument->areas->firstWhere('id', $this->activeAreaId);
             if ($activeArea && $activeArea->parameters->isNotEmpty()) {
-                if (!$this->activeParameterId || !$activeArea->parameters->contains('id', $this->activeParameterId)) {
+                if (! $this->activeParameterId || ! $activeArea->parameters->contains('id', $this->activeParameterId)) {
                     $this->activeParameterId = $activeArea->parameters->first()->id;
                 }
             }
@@ -149,7 +159,9 @@ class DeanVerification extends Component
             $inst = Instrument::with([
                 'areas.parameters.criteria.complianceRequirements.documentLinks.document.uploader',
             ])->find($this->selectedInstrumentId);
-            if ($inst) return $inst;
+            if ($inst) {
+                return $inst;
+            }
         }
 
         $acc = $this->accreditation;
@@ -157,27 +169,27 @@ class DeanVerification extends Component
         $instrument = Instrument::with([
             'areas.parameters.criteria.complianceRequirements.documentLinks.document.uploader',
         ])
-        ->where('accreditation_id', $acc->id)
-        ->where(function ($q) {
-            $q->where('code', 'like', '%SUPP%')
-              ->orWhere('name', 'like', '%Supporting%');
-        })
-        ->first();
+            ->where('accreditation_id', $acc->id)
+            ->where(function ($q) {
+                $q->where('code', 'like', '%SUPP%')
+                    ->orWhere('name', 'like', '%Supporting%');
+            })
+            ->first();
 
         if (! $instrument) {
             $instrument = Instrument::with([
                 'areas.parameters.criteria.complianceRequirements.documentLinks.document.uploader',
             ])
-            ->where('accreditation_id', $acc->id)
-            ->first();
+                ->where('accreditation_id', $acc->id)
+                ->first();
         }
 
         if (! $instrument && $acc->program_id) {
             $instrument = Instrument::with([
                 'areas.parameters.criteria.complianceRequirements.documentLinks.document.uploader',
             ])
-            ->where('program_id', $acc->program_id)
-            ->first();
+                ->where('program_id', $acc->program_id)
+                ->first();
         }
 
         return $instrument;
@@ -187,7 +199,7 @@ class DeanVerification extends Component
     {
         $acc = $this->accreditation;
 
-        $documents = Document::whereHas('accreditationLinks.complianceRequirement', function($q) use ($acc) {
+        $documents = Document::whereHas('accreditationLinks.complianceRequirement', function ($q) use ($acc) {
             $q->where('accreditation_id', $acc->id);
         })->get();
 
@@ -354,7 +366,7 @@ class DeanVerification extends Component
         if ($acc->taskForce && $acc->taskForce->members) {
             foreach ($acc->taskForce->members as $member) {
                 $memberId = $member->id ?? $member->user_id;
-                if ($memberId && $memberId !== $user->id && !in_array($memberId, $notifiedUserIds)) {
+                if ($memberId && $memberId !== $user->id && ! in_array($memberId, $notifiedUserIds)) {
                     $notifiedUserIds[] = $memberId;
                     Notification::create([
                         'user_id' => $memberId,
@@ -370,13 +382,13 @@ class DeanVerification extends Component
         // Also notify any task force members assigned to this program/college
         $tfRoleId = Role::where('role_name', 'task-force-member')->value('id');
         $tfUsers = $tfRoleId ? User::where('role_id', $tfRoleId)
-            ->where(function($q) use ($acc) {
+            ->where(function ($q) use ($acc) {
                 $q->where('program_id', $acc->program_id)
-                  ->orWhere('college_id', $acc->program->college_id);
+                    ->orWhere('college_id', $acc->program->college_id);
             })->get() : collect();
 
         foreach ($tfUsers as $tf) {
-            if ($tf->id !== $user->id && !in_array($tf->id, $notifiedUserIds)) {
+            if ($tf->id !== $user->id && ! in_array($tf->id, $notifiedUserIds)) {
                 $notifiedUserIds[] = $tf->id;
                 Notification::create([
                     'user_id' => $tf->id,
@@ -396,7 +408,7 @@ class DeanVerification extends Component
             'timestamp' => now(),
         ]);
 
-        session()->flash('success', "Evidence repository returned to Task Force for revisions.");
+        session()->flash('success', 'Evidence repository returned to Task Force for revisions.');
         $this->redirect(route('dashboard.college-head'));
     }
 
@@ -464,7 +476,7 @@ class DeanVerification extends Component
 
         // Load all evidence documents specifically linked to this accreditation
         $allProgramDocs = Document::with(['uploader', 'accreditationLinks.complianceRequirement.criterion.parameter.area'])
-            ->whereHas('accreditationLinks.complianceRequirement', function($q) use ($acc) {
+            ->whereHas('accreditationLinks.complianceRequirement', function ($q) use ($acc) {
                 $q->where('accreditation_id', $acc->id);
             })
             ->get();

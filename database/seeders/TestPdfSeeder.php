@@ -43,8 +43,9 @@ class TestPdfSeeder extends Seeder
 
         // 3. Retrieve system user for uploader
         $sysUser = User::where('email', 'sysadmin@example.com')->first() ?: User::first();
-        if (!$sysUser) {
+        if (! $sysUser) {
             $this->command?->error('No user found to assign documents to.');
+
             return;
         }
 
@@ -253,7 +254,7 @@ class TestPdfSeeder extends Seeder
 
             $category = DocumentCategory::firstOrCreate(
                 ['name' => $categoryName],
-                ['description' => 'Institutional QA documents for ' . $categoryName]
+                ['description' => 'Institutional QA documents for '.$categoryName]
             );
 
             $relativeFilePath = "documents/{$fileName}";

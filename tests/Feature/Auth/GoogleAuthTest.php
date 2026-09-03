@@ -3,6 +3,7 @@
 use App\Models\AuditLog;
 use App\Models\Role;
 use App\Models\User;
+use Laravel\Socialite\Contracts\Provider;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\User as SocialiteUser;
 
@@ -13,16 +14,16 @@ beforeEach(function () {
 
 function mockGoogleUser(string $id, string $email, string $name, ?string $avatarUrl = 'https://lh3.googleusercontent.com/a/mock-avatar')
 {
-    $abstractUser = Mockery::mock(\Laravel\Socialite\Two\User::class);
+    $abstractUser = Mockery::mock(SocialiteUser::class);
     $abstractUser->shouldReceive('getId')->andReturn($id);
     $abstractUser->shouldReceive('getEmail')->andReturn($email);
     $abstractUser->shouldReceive('getName')->andReturn($name);
     $abstractUser->shouldReceive('getAvatar')->andReturn($avatarUrl);
 
-    $provider = Mockery::mock(\Laravel\Socialite\Contracts\Provider::class);
+    $provider = Mockery::mock(Provider::class);
     $provider->shouldReceive('user')->andReturn($abstractUser);
 
-    \Laravel\Socialite\Facades\Socialite::shouldReceive('driver')->with('google')->andReturn($provider);
+    Socialite::shouldReceive('driver')->with('google')->andReturn($provider);
 }
 
 test('redirect to google auth page works', function () {

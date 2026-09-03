@@ -18,18 +18,26 @@ use Livewire\Component;
 class Dashboard extends Component
 {
     public $searchProgram = '';
+
     public $statusFilter = 'all';
 
     public $selectedAccreditationId = null;
+
     public $selectedProgramId = null;
+
     public $showProposeModal = false;
+
     public $showTimelineModal = false;
+
     public $showHistoryModal = false;
 
     // Task Force Nomination Form State
     public $newName = '';
+
     public $newEmail = '';
+
     public $newPhone = '';
+
     public $proposedMembers = [];
 
     protected $listeners = [
@@ -39,7 +47,7 @@ class Dashboard extends Component
 
     /**
      * Retrieve the active college scoped for the Dean / College Head.
-     * 
+     *
      * Security Reasoning: Queries are strictly constrained by the authenticated user's
      * assigned college_id to enforce multi-tenant college data isolation and prevent unauthorized cross-college data access.
      */
@@ -78,6 +86,7 @@ class Dashboard extends Component
 
         $accreditedCount = $programs->filter(function ($p) {
             $lvl = strtolower($p->accreditation_level ?? '');
+
             return str_contains($lvl, 'level') || str_contains($lvl, 'accredited');
         })->count();
 
@@ -192,8 +201,8 @@ class Dashboard extends Component
             })
             ->when(! empty($this->searchProgram), function ($query) {
                 $query->where(function ($q) {
-                    $q->where('name', 'like', '%' . $this->searchProgram . '%')
-                        ->orWhere('code', 'like', '%' . $this->searchProgram . '%');
+                    $q->where('name', 'like', '%'.$this->searchProgram.'%')
+                        ->orWhere('code', 'like', '%'.$this->searchProgram.'%');
                 });
             })
             ->orderBy('name')
@@ -214,8 +223,8 @@ class Dashboard extends Component
             ->where('college_id', $college->id)
             ->when(! empty($this->searchProgram), function ($query) {
                 $query->where(function ($q) {
-                    $q->where('name', 'like', '%' . $this->searchProgram . '%')
-                        ->orWhere('code', 'like', '%' . $this->searchProgram . '%');
+                    $q->where('name', 'like', '%'.$this->searchProgram.'%')
+                        ->orWhere('code', 'like', '%'.$this->searchProgram.'%');
                 });
             })
             ->orderBy('name')
@@ -289,7 +298,7 @@ class Dashboard extends Component
 
         // Stage 1
         $stage1Status = 'completed';
-        $stage1Meta = 'Initiated by ' . ($acc->creator?->name ?? 'IQA Staff');
+        $stage1Meta = 'Initiated by '.($acc->creator?->name ?? 'IQA Staff');
 
         // Stage 2
         $stage2Status = 'pending';
@@ -315,7 +324,7 @@ class Dashboard extends Component
         } elseif ($stage2Status === 'completed') {
             if ($currentRank >= 3 || $hasAssignedTaskForce) {
                 $stage3Status = 'completed';
-                $stage3Meta = $acc->taskForce ? ('Roster assigned: ' . $acc->taskForce->name) : 'Roster officially assigned';
+                $stage3Meta = $acc->taskForce ? ('Roster assigned: '.$acc->taskForce->name) : 'Roster officially assigned';
             } elseif ($currentRank === 2 || $hasProposedMembers) {
                 $stage3Status = 'in_progress';
                 $stage3Meta = 'Pending IQA roster review & assignment';
@@ -502,7 +511,7 @@ class Dashboard extends Component
 
     /**
      * Submit proposed Task Force members to IQA for review and formalization.
-     * 
+     *
      * Security Reasoning: College Deans have institutional authority over college faculty
      * rosters to nominate task force members while IQA retains central verification and approval authority.
      */
@@ -526,7 +535,7 @@ class Dashboard extends Component
         if (! $accreditation->task_force_id) {
             $taskForceName = "{$accreditation->program->code} Accreditation Task Force";
             if (TaskForce::where('name', $taskForceName)->exists()) {
-                $taskForceName .= ' (' . now()->year . ')';
+                $taskForceName .= ' ('.now()->year.')';
             }
 
             $taskForce = TaskForce::create([
@@ -554,7 +563,7 @@ class Dashboard extends Component
         // Audit Log
         AuditLog::create([
             'user_id' => $user->id,
-            'action' => "Submitted Task Force nomination (" . count($this->proposedMembers) . " members) for {$accreditation->program->name}",
+            'action' => 'Submitted Task Force nomination ('.count($this->proposedMembers)." members) for {$accreditation->program->name}",
             'target_type' => 'Accreditation',
             'target_id' => $accreditation->id,
             'timestamp' => now(),

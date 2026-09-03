@@ -3,7 +3,6 @@
 use App\Livewire\CollegeHead\Dashboard as DeanDashboard;
 use App\Livewire\TaskForce\TaskForceOverview;
 use App\Models\Accreditation;
-use App\Models\AuditLog;
 use App\Models\College;
 use App\Models\Program;
 use App\Models\Role;

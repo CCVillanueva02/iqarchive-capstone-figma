@@ -13,7 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         // 1. Create role_user pivot table
-        if (!Schema::hasTable('role_user')) {
+        if (! Schema::hasTable('role_user')) {
             Schema::create('role_user', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
@@ -34,7 +34,7 @@ return new class extends Migration
             }
 
             $hasMemberRole = DB::table('roles')->where('role_name', 'task-force-member')->exists();
-            if (!$hasMemberRole) {
+            if (! $hasMemberRole) {
                 DB::table('roles')->insert([
                     'role_name' => 'task-force-member',
                     'description' => 'Task Force Member',

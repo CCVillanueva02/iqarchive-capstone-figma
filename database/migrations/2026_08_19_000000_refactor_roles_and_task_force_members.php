@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
@@ -12,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasTable('roles')) {
+        if (! Schema::hasTable('roles')) {
             return;
         }
 
         // 1. Ensure 'iqa-staff' role exists
         $iqaStaff = DB::table('roles')->where('role_name', 'iqa-staff')->first();
-        if (!$iqaStaff) {
+        if (! $iqaStaff) {
             $iqaStaffId = DB::table('roles')->insertGetId([
                 'role_name' => 'iqa-staff',
                 'description' => 'IQA Staff',
@@ -35,7 +34,7 @@ return new class extends Migration
             ->pluck('id')
             ->toArray();
 
-        if (!empty($oldIqaRoleIds)) {
+        if (! empty($oldIqaRoleIds)) {
             // Update users having old IQA roles to iqa-staff
             DB::table('users')
                 ->whereIn('role_id', $oldIqaRoleIds)
@@ -71,7 +70,7 @@ return new class extends Migration
             ->pluck('id')
             ->toArray();
 
-        if (!empty($deprecatedRoles)) {
+        if (! empty($deprecatedRoles)) {
             if (Schema::hasTable('role_user')) {
                 DB::table('role_user')->whereIn('role_id', $deprecatedRoles)->delete();
             }

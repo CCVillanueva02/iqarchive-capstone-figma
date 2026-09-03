@@ -18,9 +18,11 @@ class VisitsIndex extends Component
     use WithPagination;
 
     public $search = '';
+
     public $statusFilter = 'all';
 
     public $selectedAccreditationId = null;
+
     public $showTimelineModal = false;
 
     protected $listeners = ['accreditation-scheduled' => '$refresh'];
@@ -49,7 +51,7 @@ class VisitsIndex extends Component
 
     /**
      * Cancel an initiated accreditation visit.
-     * 
+     *
      * Security Reasoning: Only IQA Staff, IQA Admin, and System Administrator
      * roles are permitted to cancel an active accreditation visit to prevent
      * unauthorized cancellation of compliance workflows and university surveys.
@@ -67,8 +69,9 @@ class VisitsIndex extends Component
             $this->dispatch('swal', [
                 'icon' => 'info',
                 'title' => 'Already Cancelled',
-                'text' => 'This accreditation visit is already cancelled.'
+                'text' => 'This accreditation visit is already cancelled.',
             ]);
+
             return;
         }
 
@@ -83,7 +86,7 @@ class VisitsIndex extends Component
         // 3. Write to AuditLog (Audit trail enforcement)
         AuditLog::create([
             'user_id' => $user->id,
-            'action' => 'Cancelled accreditation visit for ' . ($accreditation->program->name ?? 'Program'),
+            'action' => 'Cancelled accreditation visit for '.($accreditation->program->name ?? 'Program'),
             'target_type' => 'Accreditation',
             'target_id' => $accreditation->id,
             'timestamp' => now(),
@@ -100,7 +103,7 @@ class VisitsIndex extends Component
                 Notification::create([
                     'user_id' => $dean->id,
                     'type' => 'accreditation_cancelled',
-                    'message' => 'Accreditation visit for ' . $accreditation->program->name . ' has been cancelled by the IQA Office.',
+                    'message' => 'Accreditation visit for '.$accreditation->program->name.' has been cancelled by the IQA Office.',
                     'is_read' => false,
                 ]);
             }
@@ -111,7 +114,7 @@ class VisitsIndex extends Component
         $this->dispatch('swal', [
             'icon' => 'success',
             'title' => 'Accreditation Cancelled',
-            'text' => 'The accreditation visit for ' . ($accreditation->program->name ?? 'the program') . ' has been cancelled.'
+            'text' => 'The accreditation visit for '.($accreditation->program->name ?? 'the program').' has been cancelled.',
         ]);
     }
 
@@ -158,7 +161,7 @@ class VisitsIndex extends Component
 
         // STAGE 1: Always completed once visit is initialized
         $stage1Status = 'completed';
-        $stage1Meta = 'Initiated by ' . ($acc->creator?->name ?? 'IQA Staff');
+        $stage1Meta = 'Initiated by '.($acc->creator?->name ?? 'IQA Staff');
 
         // STAGE 2: Task Force Nomination (Dean)
         // Can ONLY be completed if stage 1 is completed AND ($currentRank >= 2 || $hasProposedMembers)
@@ -187,7 +190,7 @@ class VisitsIndex extends Component
         } elseif ($stage2Status === 'completed') {
             if ($currentRank >= 3 || $hasAssignedTaskForce) {
                 $stage3Status = 'completed';
-                $stage3Meta = $acc->taskForce ? ('Roster assigned: ' . $acc->taskForce->name) : 'Roster officially assigned';
+                $stage3Meta = $acc->taskForce ? ('Roster assigned: '.$acc->taskForce->name) : 'Roster officially assigned';
             } elseif ($currentRank === 2 || $hasProposedMembers) {
                 $stage3Status = 'in_progress';
                 $stage3Meta = 'Pending IQA roster review & assignment';
@@ -268,7 +271,7 @@ class VisitsIndex extends Component
                 'description' => 'Accreditation visit recorded with target date. Notification dispatched to College Dean.',
                 'status' => 'completed',
                 'timestamp' => $acc->created_at ? $acc->created_at->format('M d, Y · h:i A') : null,
-                'meta' => 'Initiated by ' . ($acc->creator?->name ?? 'IQA Staff'),
+                'meta' => 'Initiated by '.($acc->creator?->name ?? 'IQA Staff'),
             ],
             [
                 'step' => 2,
@@ -360,14 +363,14 @@ class VisitsIndex extends Component
         $query = clone $baseQuery;
 
         if (! empty($this->search)) {
-            $term = '%' . $this->search . '%';
+            $term = '%'.$this->search.'%';
             $query->where(function ($q) use ($term) {
                 $q->whereHas('program', function ($sub) use ($term) {
                     $sub->where('name', 'like', $term)
                         ->orWhere('code', 'like', $term)
                         ->orWhereHas('college', function ($c) use ($term) {
                             $c->where('name', 'like', $term)
-                              ->orWhere('code', 'like', $term);
+                                ->orWhere('code', 'like', $term);
                         });
                 });
             });

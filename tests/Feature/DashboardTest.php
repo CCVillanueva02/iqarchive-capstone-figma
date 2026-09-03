@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\User;
 use App\Models\Role;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -22,11 +22,11 @@ test('guests are redirected to the login page', function () {
 
 dataset('system_roles_redirection', [
     'System Administrator' => ['system-administrator', 'dashboard.system-administrator'],
-    'IQA Staff'            => ['iqa-staff', 'dashboard.iqa-staff'],
-    'Accreditor'           => ['accreditor', 'submissions.accreditor'],
-    'BU Executive'         => ['university-administrator', 'analytics.university-administrator'],
-    'College Head'         => ['college-head', 'dashboard.college-head'],
-    'Task Force Member'    => ['task-force-member', 'dashboard.task-force-member'],
+    'IQA Staff' => ['iqa-staff', 'dashboard.iqa-staff'],
+    'Accreditor' => ['accreditor', 'submissions.accreditor'],
+    'BU Executive' => ['university-administrator', 'analytics.university-administrator'],
+    'College Head' => ['college-head', 'dashboard.college-head'],
+    'Task Force Member' => ['task-force-member', 'dashboard.task-force-member'],
 ]);
 
 test('every role can log in and is redirected to their correct landing page', function (string $roleName, string $expectedRouteName) {

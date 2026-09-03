@@ -18,7 +18,9 @@ use Livewire\Component;
 class TaskForceDashboard extends Component
 {
     public ?int $selectedAccreditationId = null;
+
     public bool $showSubmitModal = false;
+
     public string $submissionRemarks = '';
 
     public function mount()
@@ -81,7 +83,7 @@ class TaskForceDashboard extends Component
     public function getInstrumentProperty(): ?Instrument
     {
         $acc = $this->accreditation;
-        if (!$acc) {
+        if (! $acc) {
             return null;
         }
 
@@ -99,7 +101,7 @@ class TaskForceDashboard extends Component
     public function getStatsProperty(): array
     {
         $acc = $this->accreditation;
-        if (!$acc) {
+        if (! $acc) {
             return [
                 'totalDocs' => 0,
                 'verifiedDocs' => 0,
@@ -146,7 +148,7 @@ class TaskForceDashboard extends Component
     public function getIsInstrumentVerifiedProperty(): bool
     {
         $acc = $this->accreditation;
-        if (!$acc) {
+        if (! $acc) {
             return false;
         }
 
@@ -181,7 +183,7 @@ class TaskForceDashboard extends Component
         $user = Auth::user();
         $acc = $this->accreditation;
 
-        if (!$acc) {
+        if (! $acc) {
             return;
         }
 
@@ -220,7 +222,7 @@ class TaskForceDashboard extends Component
         ]);
 
         $this->closeSubmitModal();
-        session()->flash('success', "Evidence repository successfully submitted to College Dean for verification!");
+        session()->flash('success', 'Evidence repository successfully submitted to College Dean for verification!');
     }
 
     public function render()

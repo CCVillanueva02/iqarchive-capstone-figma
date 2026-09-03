@@ -13,12 +13,17 @@ class MonitoringOverview extends Component
     use WithPagination;
 
     public $tab = 'dashboard';
+
     public $search = '';
+
     public $collegeFilter = 'all';
+
     public $levelFilter = 'all';
+
     public $reportYear = '2026';
 
     public $selectedProgramId = null;
+
     public $showHistoryModal = false;
 
     // Track expanded college accordion IDs
@@ -149,7 +154,7 @@ class MonitoringOverview extends Component
                 $pq->where('accreditation_level', $this->levelFilter);
             }
             if (! empty($this->search)) {
-                $term = '%' . $this->search . '%';
+                $term = '%'.$this->search.'%';
                 $pq->where(function ($sub) use ($term) {
                     $sub->where('name', 'like', $term)
                         ->orWhere('code', 'like', $term);
@@ -165,14 +170,14 @@ class MonitoringOverview extends Component
         }
 
         if (! empty($this->search)) {
-            $term = '%' . $this->search . '%';
+            $term = '%'.$this->search.'%';
             $collegesCardsQuery->where(function ($q) use ($term) {
                 $q->where('name', 'like', $term)
-                  ->orWhere('code', 'like', $term)
-                  ->orWhereHas('programs', function ($pq) use ($term) {
-                      $pq->where('name', 'like', $term)
-                         ->orWhere('code', 'like', $term);
-                  });
+                    ->orWhere('code', 'like', $term)
+                    ->orWhereHas('programs', function ($pq) use ($term) {
+                        $pq->where('name', 'like', $term)
+                            ->orWhere('code', 'like', $term);
+                    });
             });
         }
 
@@ -199,7 +204,7 @@ class MonitoringOverview extends Component
                 'deferred' => $deferred,
                 'revisit' => max(0, $revisit),
                 'pending_count' => $pendingCount,
-                'target' => $pendingCount > 0 ? 'Nov ' . date('Y') : 'Completed',
+                'target' => $pendingCount > 0 ? 'Nov '.date('Y') : 'Completed',
             ];
         });
 

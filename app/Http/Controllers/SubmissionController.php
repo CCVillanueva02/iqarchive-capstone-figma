@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AuditLog;
 use App\Models\Document;
 use App\Models\DocumentReview;
-use App\Models\AuditLog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
 class SubmissionController extends Controller
@@ -18,7 +19,7 @@ class SubmissionController extends Controller
     {
         $user = auth()->user();
 
-        if (!$user) {
+        if (! $user) {
             abort(401);
         }
 
@@ -38,17 +39,17 @@ class SubmissionController extends Controller
             || $user->isTaskForceLead()
             || $user->isTaskForceMember();
 
-        if (!$isAllowed) {
+        if (! $isAllowed) {
             abort(403, 'Unauthorized. Only authorized roles can submit documents.');
         }
 
         // Validate input
         $validated = $request->validate([
-            'title'       => 'required|string|max:255',
-            'program_id'  => 'nullable|integer|exists:programs,id',
+            'title' => 'required|string|max:255',
+            'program_id' => 'nullable|integer|exists:programs,id',
             'category_id' => 'required|integer|exists:document_categories,id',
             'description' => 'nullable|string|max:2000',
-            'file'        => 'required|file|mimes:pdf,doc,docx,xls,xlsx|max:51200', // 50 MB
+            'file' => 'required|file|mimes:pdf,doc,docx,xls,xlsx|max:51200', // 50 MB
         ]);
 
         // Determine the program to attach
@@ -56,39 +57,39 @@ class SubmissionController extends Controller
 
         // Store the uploaded file in public/storage/documents/submissions
         $uploadedFile = $request->file('file');
-        $filename     = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '_', $uploadedFile->getClientOriginalName());
-        $filePath     = $uploadedFile->storeAs('documents/submissions', $filename, 'public');
+        $filename = time().'_'.preg_replace('/[^a-zA-Z0-9._-]/', '_', $uploadedFile->getClientOriginalName());
+        $filePath = $uploadedFile->storeAs('documents/submissions', $filename, 'public');
 
         // Create the Document record with pending status
         $document = Document::create([
-            'title'       => $validated['title'],
+            'title' => $validated['title'],
             'uploaded_by' => $user->id,
-            'program_id'  => $programId,
+            'program_id' => $programId,
             'category_id' => $validated['category_id'],
-            'file_path'   => $filePath,
-            'status'      => 'pending',
-            'visibility'  => 'private',
+            'file_path' => $filePath,
+            'status' => 'pending',
+            'visibility' => 'private',
         ]);
 
         // Write to Audit Log
         AuditLog::create([
-            'user_id'     => $user->id,
-            'action'      => 'document_submitted',
+            'user_id' => $user->id,
+            'action' => 'document_submitted',
             'target_type' => Document::class,
-            'target_id'   => $document->id,
-            'timestamp'   => now(),
+            'target_id' => $document->id,
+            'timestamp' => now(),
         ]);
 
         // Resolve the correct submissions route for the user's role
-        $roleSlug  = $user->role;
-        $routeName = 'submissions.' . $roleSlug;
-        if (! \Illuminate\Support\Facades\Route::has($routeName)) {
+        $roleSlug = $user->role;
+        $routeName = 'submissions.'.$roleSlug;
+        if (! Route::has($routeName)) {
             $routeName = 'dashboard';
         }
 
         return redirect()
             ->route($routeName)
-            ->with('success', '✅ Document "' . $document->title . '" submitted successfully! It is now in the IQA Review Queue as Pending.');
+            ->with('success', '✅ Document "'.$document->title.'" submitted successfully! It is now in the IQA Review Queue as Pending.');
     }
 
     /**
@@ -98,13 +99,13 @@ class SubmissionController extends Controller
     {
         $user = auth()->user();
 
-        if (!$user) {
+        if (! $user) {
             abort(401);
         }
 
         $document = Document::findOrFail($id);
 
-        if (!$document->file_path) {
+        if (! $document->file_path) {
             abort(404, 'File path not recorded for this document.');
         }
 
@@ -115,17 +116,18 @@ class SubmissionController extends Controller
 
             return response()->file($fullPath, [
                 'Content-Type' => $mimeType,
-                'Content-Disposition' => 'inline; filename="' . basename($document->file_path) . '"'
+                'Content-Disposition' => 'inline; filename="'.basename($document->file_path).'"',
             ]);
         }
 
         // Also check direct storage_path
-        $altPath = storage_path('app/public/' . $document->file_path);
+        $altPath = storage_path('app/public/'.$document->file_path);
         if (file_exists($altPath)) {
             $mimeType = mime_content_type($altPath) ?: 'application/pdf';
+
             return response()->file($altPath, [
                 'Content-Type' => $mimeType,
-                'Content-Disposition' => 'inline; filename="' . basename($altPath) . '"'
+                'Content-Disposition' => 'inline; filename="'.basename($altPath).'"',
             ]);
         }
 
@@ -141,7 +143,7 @@ class SubmissionController extends Controller
     {
         $user = auth()->user();
 
-        if (!$user) {
+        if (! $user) {
             abort(401);
         }
 
@@ -151,7 +153,7 @@ class SubmissionController extends Controller
             || $user->hasRole('iqa-admin')
             || $user->hasRole('system-administrator');
 
-        if (!$isAllowed) {
+        if (! $isAllowed) {
             abort(403, 'Unauthorized. Only IQA Staff and Administrators can review document submissions.');
         }
 
@@ -163,11 +165,11 @@ class SubmissionController extends Controller
 
         $validated = $request->validate([
             'decision' => 'required|string|in:approved,returned,denied',
-            'remarks'  => 'nullable|string|max:1000',
+            'remarks' => 'nullable|string|max:1000',
         ]);
 
         // Update document status
-        $document->status       = $validated['decision'];
+        $document->status = $validated['decision'];
         $document->confirmed_by = $user->id;
         $document->confirmed_at = now();
         $document->save();
@@ -176,27 +178,27 @@ class SubmissionController extends Controller
         DocumentReview::create([
             'document_id' => $document->id,
             'reviewed_by' => $user->id,
-            'decision'    => $validated['decision'],
-            'remarks'     => $validated['remarks'] ?? 'No remarks provided.',
+            'decision' => $validated['decision'],
+            'remarks' => $validated['remarks'] ?? 'No remarks provided.',
             'reviewed_at' => now(),
         ]);
 
         // Audit Log
         AuditLog::create([
-            'user_id'     => $user->id,
-            'action'      => 'document_' . $validated['decision'],
+            'user_id' => $user->id,
+            'action' => 'document_'.$validated['decision'],
             'target_type' => Document::class,
-            'target_id'   => $document->id,
-            'timestamp'   => now(),
+            'target_id' => $document->id,
+            'timestamp' => now(),
         ]);
 
-        $statusLabel = match($validated['decision']) {
+        $statusLabel = match ($validated['decision']) {
             'approved' => 'Approved ✅',
             'returned' => 'Returned for Revision ↩️',
-            'denied'   => 'Denied ❌',
-            default    => ucfirst($validated['decision'])
+            'denied' => 'Denied ❌',
+            default => ucfirst($validated['decision'])
         };
 
-        return back()->with('success', 'Document "' . $document->title . '" has been marked as ' . $statusLabel . '. The submitter will see this update immediately.');
+        return back()->with('success', 'Document "'.$document->title.'" has been marked as '.$statusLabel.'. The submitter will see this update immediately.');
     }
 }

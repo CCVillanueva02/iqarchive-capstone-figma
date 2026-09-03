@@ -4,11 +4,14 @@ namespace App\Providers;
 
 use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\ResetUserPassword;
+use App\Models\User;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Fortify;
 
 class FortifyServiceProvider extends ServiceProvider
@@ -53,20 +56,21 @@ class FortifyServiceProvider extends ServiceProvider
             ]);
 
             // 3. Retrieve user
-            $user = \App\Models\User::where('email', $email)->first();
+            $user = User::where('email', $email)->first();
 
             // 4. Authenticate and verify status
-            if ($user && \Illuminate\Support\Facades\Hash::check($password, $user->password)) {
+            if ($user && Hash::check($password, $user->password)) {
                 if ($user->status !== 'active') {
-                    throw \Illuminate\Validation\ValidationException::withMessages([
+                    throw ValidationException::withMessages([
                         'email' => ['Your account has been deactivated.'],
                     ]);
                 }
+
                 return $user;
             }
 
             // 5. Enhanced error response
-            throw \Illuminate\Validation\ValidationException::withMessages([
+            throw ValidationException::withMessages([
                 'email' => ['These credentials do not match our records. Please double-check your email and password.'],
             ]);
         });

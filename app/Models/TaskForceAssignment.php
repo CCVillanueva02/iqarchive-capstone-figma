@@ -12,7 +12,7 @@ class TaskForceAssignment extends Model
     protected $fillable = ['user_id', 'program_id', 'assigned_at', 'status'];
 
     protected $casts = [
-        'assigned_at' => 'datetime'
+        'assigned_at' => 'datetime',
     ];
 
     public function user()

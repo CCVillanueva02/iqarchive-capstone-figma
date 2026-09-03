@@ -13,44 +13,44 @@ return new class extends Migration
     {
         // 1. Add fields to existing instruments table if they don't exist
         Schema::table('instruments', function (Blueprint $table) {
-            if (!Schema::hasColumn('instruments', 'accreditation_type')) {
+            if (! Schema::hasColumn('instruments', 'accreditation_type')) {
                 $table->string('accreditation_type')->default('program')->after('code');
             }
-            if (!Schema::hasColumn('instruments', 'program_id')) {
+            if (! Schema::hasColumn('instruments', 'program_id')) {
                 $table->foreignId('program_id')->nullable()->after('accreditation_type')->constrained('programs')->nullOnDelete();
             }
-            if (!Schema::hasColumn('instruments', 'accreditation_id')) {
+            if (! Schema::hasColumn('instruments', 'accreditation_id')) {
                 $table->foreignId('accreditation_id')->nullable()->after('program_id')->constrained('accreditations')->nullOnDelete();
             }
-            if (!Schema::hasColumn('instruments', 'is_template')) {
+            if (! Schema::hasColumn('instruments', 'is_template')) {
                 $table->boolean('is_template')->default(true)->after('accreditation_id');
             }
-            if (!Schema::hasColumn('instruments', 'version')) {
+            if (! Schema::hasColumn('instruments', 'version')) {
                 $table->string('version')->default('2026.1')->after('level');
             }
-            if (!Schema::hasColumn('instruments', 'status')) {
+            if (! Schema::hasColumn('instruments', 'status')) {
                 $table->string('status')->default('active')->after('version'); // draft, active, archived
             }
-            if (!Schema::hasColumn('instruments', 'created_by')) {
+            if (! Schema::hasColumn('instruments', 'created_by')) {
                 $table->foreignId('created_by')->nullable()->after('status')->constrained('users')->nullOnDelete();
             }
         });
 
         // 2. Add order, weight, description to instrument_areas
         Schema::table('instrument_areas', function (Blueprint $table) {
-            if (!Schema::hasColumn('instrument_areas', 'order')) {
+            if (! Schema::hasColumn('instrument_areas', 'order')) {
                 $table->integer('order')->default(1)->after('code');
             }
-            if (!Schema::hasColumn('instrument_areas', 'weight')) {
+            if (! Schema::hasColumn('instrument_areas', 'weight')) {
                 $table->decimal('weight', 5, 2)->nullable()->after('order');
             }
-            if (!Schema::hasColumn('instrument_areas', 'description')) {
+            if (! Schema::hasColumn('instrument_areas', 'description')) {
                 $table->text('description')->nullable()->after('name');
             }
         });
 
         // 3. Create instrument_parameters table
-        if (!Schema::hasTable('instrument_parameters')) {
+        if (! Schema::hasTable('instrument_parameters')) {
             Schema::create('instrument_parameters', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('instrument_area_id')->constrained('instrument_areas')->cascadeOnDelete();
@@ -64,7 +64,7 @@ return new class extends Migration
         }
 
         // 4. Create instrument_criteria table (Checklist criteria with 4 standard sections and required tags)
-        if (!Schema::hasTable('instrument_criteria')) {
+        if (! Schema::hasTable('instrument_criteria')) {
             Schema::create('instrument_criteria', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('instrument_parameter_id')->constrained('instrument_parameters')->cascadeOnDelete();
@@ -80,10 +80,10 @@ return new class extends Migration
 
         // 5. Enhance compliance_requirements to link with instrument_criterion_id & accreditation_id
         Schema::table('compliance_requirements', function (Blueprint $table) {
-            if (!Schema::hasColumn('compliance_requirements', 'accreditation_id')) {
+            if (! Schema::hasColumn('compliance_requirements', 'accreditation_id')) {
                 $table->foreignId('accreditation_id')->nullable()->after('program_id')->constrained('accreditations')->cascadeOnDelete();
             }
-            if (!Schema::hasColumn('compliance_requirements', 'instrument_criterion_id')) {
+            if (! Schema::hasColumn('compliance_requirements', 'instrument_criterion_id')) {
                 $table->foreignId('instrument_criterion_id')->nullable()->after('instrument_id')->constrained('instrument_criteria')->nullOnDelete();
             }
         });

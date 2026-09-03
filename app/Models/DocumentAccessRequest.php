@@ -16,12 +16,12 @@ class DocumentAccessRequest extends Model
         'remarks',
         'approved_by',
         'approved_at',
-        'expires_at'
+        'expires_at',
     ];
 
     protected $casts = [
         'approved_at' => 'datetime',
-        'expires_at' => 'datetime'
+        'expires_at' => 'datetime',
     ];
 
     public function document()

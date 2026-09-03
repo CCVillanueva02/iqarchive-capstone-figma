@@ -30,7 +30,7 @@ class AccreditationEvidenceController extends Controller
         /** @var User|null $user */
         $user = Auth::user();
 
-        if (!$user) {
+        if (! $user) {
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
 
@@ -52,7 +52,7 @@ class AccreditationEvidenceController extends Controller
         $isUnrestricted = $user->hasAnyRole(['iqa-staff', 'iqa-admin', 'system-administrator']) ||
                           in_array($user->role, ['iqa-staff', 'iqa-admin', 'system-administrator']);
 
-        if (!$isUnrestricted) {
+        if (! $isUnrestricted) {
             if ($user->hasRole('college-head') || $user->role === 'college-head') {
                 if ($user->college_id && $program->college_id !== $user->college_id) {
                     return response()->json(['error' => 'Unauthorized for this college program.'], 403);
@@ -63,7 +63,7 @@ class AccreditationEvidenceController extends Controller
                               ($user->college_id === $program->college_id) ||
                               $user->taskForces()->where('program_id', $program->id)->exists();
 
-                if (!$isAssigned) {
+                if (! $isAssigned) {
                     return response()->json(['error' => 'Unauthorized. You are not a member of this program Task Force.'], 403);
                 }
 
@@ -74,7 +74,7 @@ class AccreditationEvidenceController extends Controller
 
                 if ($accreditation) {
                     $allowedStatuses = ['document_preparation', 'uploading', 'dean_verification', 'submitted', 'completed'];
-                    if (!in_array($accreditation->status, $allowedStatuses)) {
+                    if (! in_array($accreditation->status, $allowedStatuses)) {
                         return response()->json([
                             'error' => 'Uploads are locked. The College Dean has not yet verified the accreditation instrument for this program.',
                             'accreditation_status' => $accreditation->status,
@@ -86,7 +86,7 @@ class AccreditationEvidenceController extends Controller
 
         // Store file on public disk under evidence/{program_id}
         $uploadedFile = $request->file('file');
-        $fileName = time() . '_' . preg_replace('/[^a-zA-Z0-9._-]/', '_', $uploadedFile->getClientOriginalName());
+        $fileName = time().'_'.preg_replace('/[^a-zA-Z0-9._-]/', '_', $uploadedFile->getClientOriginalName());
         $filePath = $uploadedFile->storeAs("documents/evidence/{$program->id}", $fileName, 'public');
 
         // Resolve or create category for Accreditation Supporting Evidence
@@ -111,15 +111,15 @@ class AccreditationEvidenceController extends Controller
 
         // Resolve or create Compliance Requirement
         $criterionId = $validated['instrument_criterion_id'] ?? null;
-        if (!$criterionId && !empty($validated['criterion_code'])) {
+        if (! $criterionId && ! empty($validated['criterion_code'])) {
             $criterionQuery = InstrumentCriterion::where('code', $validated['criterion_code']);
-            if (!empty($validated['area_code'])) {
+            if (! empty($validated['area_code'])) {
                 $criterionQuery->whereHas('parameter.area', function ($q) use ($validated) {
                     $q->where('name', $validated['area_code'])->orWhere('code', $validated['area_code']);
                 });
             }
             $criterion = $criterionQuery->first();
-            if (!$criterion) {
+            if (! $criterion) {
                 $criterion = InstrumentCriterion::where('code', $validated['criterion_code'])->first();
             }
             $criterionId = $criterion?->id;
@@ -134,16 +134,16 @@ class AccreditationEvidenceController extends Controller
             $complianceRequirement = ComplianceRequirement::where('instrument_criterion_id', $criterionId)->first();
         }
 
-        if (!$complianceRequirement) {
+        if (! $complianceRequirement) {
             $resolvedInstrumentId = null;
             if ($criterionId) {
                 $crit = InstrumentCriterion::with('parameter.area')->find($criterionId);
                 $resolvedInstrumentId = $crit?->parameter?->area?->instrument_id;
             }
-            if (!$resolvedInstrumentId && $accreditationId) {
+            if (! $resolvedInstrumentId && $accreditationId) {
                 $resolvedInstrumentId = Instrument::where('accreditation_id', $accreditationId)->value('id');
             }
-            if (!$resolvedInstrumentId) {
+            if (! $resolvedInstrumentId) {
                 $resolvedInstrumentId = Instrument::where('program_id', $program->id)->value('id')
                     ?? Instrument::where('is_template', true)->value('id')
                     ?? Instrument::value('id');
@@ -155,9 +155,15 @@ class AccreditationEvidenceController extends Controller
                 $paramCode = $validated['parameter_code'] ?? ($criterion?->parameter?->name ?? ($criterion?->parameter?->code ?? ''));
 
                 $descParts = [];
-                if ($areaCode) $descParts[] = "[Area: {$areaCode}]";
-                if ($paramCode) $descParts[] = "[Parameter: {$paramCode}]";
-                if ($critCode) $descParts[] = "[Criterion: {$critCode}]";
+                if ($areaCode) {
+                    $descParts[] = "[Area: {$areaCode}]";
+                }
+                if ($paramCode) {
+                    $descParts[] = "[Parameter: {$paramCode}]";
+                }
+                if ($critCode) {
+                    $descParts[] = "[Criterion: {$critCode}]";
+                }
                 $prefix = implode(' ', $descParts);
 
                 $complianceRequirement = ComplianceRequirement::create([
@@ -165,7 +171,7 @@ class AccreditationEvidenceController extends Controller
                     'accreditation_id' => $accreditationId,
                     'program_id' => $program->id,
                     'instrument_criterion_id' => $criterionId,
-                    'description' => trim("{$prefix} " . ($validated['description'] ?? ($validated['title'] ?? 'Accreditation Evidence'))),
+                    'description' => trim("{$prefix} ".($validated['description'] ?? ($validated['title'] ?? 'Accreditation Evidence'))),
                     'status' => 'pending',
                 ]);
             }
@@ -189,7 +195,7 @@ class AccreditationEvidenceController extends Controller
             'timestamp' => now(),
         ]);
 
-        $fileSizeFormatted = $uploadedFile->getSize() ? round($uploadedFile->getSize() / 1048576, 2) . ' MB' : '1.0 MB';
+        $fileSizeFormatted = $uploadedFile->getSize() ? round($uploadedFile->getSize() / 1048576, 2).' MB' : '1.0 MB';
 
         return response()->json([
             'message' => 'Evidence document uploaded and linked successfully.',
@@ -206,7 +212,7 @@ class AccreditationEvidenceController extends Controller
                 'criterion_code' => $validated['criterion_code'] ?? null,
                 'criterion_id' => $criterionId,
                 'file_url' => Storage::url($filePath),
-            ]
+            ],
         ], 201);
     }
 
@@ -228,24 +234,24 @@ class AccreditationEvidenceController extends Controller
             $criterion = $req?->criterion;
 
             $criterionCode = $criterion?->code;
-            if (!$criterionCode && $req && preg_match('/\[Criterion:\s*([^\]]+)\]/', $req->description, $matches)) {
+            if (! $criterionCode && $req && preg_match('/\[Criterion:\s*([^\]]+)\]/', $req->description, $matches)) {
                 $criterionCode = trim($matches[1]);
             }
 
             $areaCode = $criterion?->parameter?->area?->name ?? $criterion?->parameter?->area?->code;
-            if (!$areaCode && $req && preg_match('/\[Area:\s*([^\]]+)\]/', $req->description, $matches)) {
+            if (! $areaCode && $req && preg_match('/\[Area:\s*([^\]]+)\]/', $req->description, $matches)) {
                 $areaCode = trim($matches[1]);
             }
 
             $paramCode = $criterion?->parameter?->name ?? $criterion?->parameter?->code;
-            if (!$paramCode && $req && preg_match('/\[Parameter:\s*([^\]]+)\]/', $req->description, $matches)) {
+            if (! $paramCode && $req && preg_match('/\[Parameter:\s*([^\]]+)\]/', $req->description, $matches)) {
                 $paramCode = trim($matches[1]);
             }
 
             $fileSizeFormatted = '1.0 MB';
             if ($doc->file_path && Storage::disk('public')->exists($doc->file_path)) {
                 $bytes = Storage::disk('public')->size($doc->file_path);
-                $fileSizeFormatted = $bytes ? round($bytes / 1048576, 2) . ' MB' : '1.0 MB';
+                $fileSizeFormatted = $bytes ? round($bytes / 1048576, 2).' MB' : '1.0 MB';
             }
 
             return [
@@ -279,7 +285,7 @@ class AccreditationEvidenceController extends Controller
         /** @var User|null $user */
         $user = Auth::user();
 
-        if (!$user) {
+        if (! $user) {
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
 
@@ -295,7 +301,7 @@ class AccreditationEvidenceController extends Controller
             ? Accreditation::find($validated['accreditation_id'])
             : $program->accreditations()->latest()->first();
 
-        if (!$accreditation) {
+        if (! $accreditation) {
             return response()->json(['error' => 'No active accreditation cycle found for this program.'], 404);
         }
 
@@ -309,7 +315,7 @@ class AccreditationEvidenceController extends Controller
         if ($deanRole && $program->college_id) {
             $deans = User::where(function ($q) use ($deanRole) {
                 $q->where('role_id', $deanRole->id)
-                  ->orWhereHas('roles', fn ($rq) => $rq->where('role_name', 'college-head'));
+                    ->orWhereHas('roles', fn ($rq) => $rq->where('role_name', 'college-head'));
             })->where('college_id', $program->college_id)->get();
 
             foreach ($deans as $dean) {

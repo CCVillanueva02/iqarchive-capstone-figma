@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (Schema::hasTable('colleges') && !Schema::hasColumn('colleges', 'campus')) {
+        if (Schema::hasTable('colleges') && ! Schema::hasColumn('colleges', 'campus')) {
             Schema::table('colleges', function (Blueprint $table) {
                 $table->string('campus')->default('Main Campus')->after('code');
             });

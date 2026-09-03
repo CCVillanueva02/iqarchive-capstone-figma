@@ -2,13 +2,13 @@
 
 namespace Tests\Feature;
 
+use App\Livewire\CollegeHead\InstrumentCustomization;
+use App\Livewire\Configuration\Instruments;
 use App\Models\Accreditation;
-use App\Models\AuditLog;
 use App\Models\College;
 use App\Models\Instrument;
 use App\Models\InstrumentArea;
 use App\Models\InstrumentParameter;
-use App\Models\InstrumentCriterion;
 use App\Models\Program;
 use App\Models\Role;
 use App\Models\TaskForce;
@@ -22,9 +22,13 @@ class InstrumentBuilderTest extends TestCase
     use RefreshDatabase;
 
     protected $iqaUser;
+
     protected $deanUser;
+
     protected $college;
+
     protected $program;
+
     protected $accreditation;
 
     protected function setUp(): void
@@ -96,7 +100,7 @@ class InstrumentBuilderTest extends TestCase
     {
         $this->actingAs($this->iqaUser);
 
-        Livewire::test(\App\Livewire\Configuration\Instruments::class)
+        Livewire::test(Instruments::class)
             ->set('templateName', 'AACCUP Test Master 2026')
             ->set('templateCode', 'INST-TEST-2026')
             ->set('templateLevel', 'Level III')
@@ -130,7 +134,7 @@ class InstrumentBuilderTest extends TestCase
             'status' => 'active',
         ]);
 
-        $component = Livewire::test(\App\Livewire\Configuration\Instruments::class)
+        $component = Livewire::test(Instruments::class)
             ->call('selectInstrument', $instrument->id)
             ->set('areaCode', 'Area I')
             ->set('areaName', 'Vision, Mission, Goals, and Objectives')
@@ -206,7 +210,7 @@ class InstrumentBuilderTest extends TestCase
             'order' => 1,
         ]);
 
-        $test = Livewire::test(\App\Livewire\CollegeHead\InstrumentCustomization::class, [
+        $test = Livewire::test(InstrumentCustomization::class, [
             'accreditation' => $this->accreditation->id,
         ]);
 
@@ -260,7 +264,7 @@ class InstrumentBuilderTest extends TestCase
             'status' => 'active',
         ]);
 
-        Livewire::test(\App\Livewire\Configuration\Instruments::class)
+        Livewire::test(Instruments::class)
             ->assertSet('accreditationScope', 'program')
             ->call('switchScope', 'institutional')
             ->assertSet('accreditationScope', 'institutional')
@@ -287,7 +291,7 @@ class InstrumentBuilderTest extends TestCase
         ]);
 
         // 1. Inspect program without custom instrument -> shows empty state
-        $test = Livewire::test(\App\Livewire\Configuration\Instruments::class)
+        $test = Livewire::test(Instruments::class)
             ->call('selectProgram', $this->program->id)
             ->assertSet('selectedProgramId', $this->program->id)
             ->assertSee('No Custom Instrument for')
@@ -316,7 +320,7 @@ class InstrumentBuilderTest extends TestCase
             'status' => 'active',
         ]);
 
-        Livewire::test(\App\Livewire\Configuration\Instruments::class)
+        Livewire::test(Instruments::class)
             ->call('openCloneModal', $master->id)
             ->set('cloneTargetProgramId', $this->program->id)
             ->set('templateName', 'BSCS Custom Supporting Docs')
@@ -355,7 +359,7 @@ class InstrumentBuilderTest extends TestCase
         $response->assertStatus(200);
 
         // Dean can clone master and add criteria for their college program
-        $test = Livewire::test(\App\Livewire\Configuration\Instruments::class)
+        $test = Livewire::test(Instruments::class)
             ->assertSet('selectedProgramId', null)
             ->call('selectProgram', $this->program->id)
             ->call('cloneMasterForProgram');

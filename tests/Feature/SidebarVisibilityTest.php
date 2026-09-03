@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\User;
 use App\Models\Role;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -19,6 +19,7 @@ beforeEach(function () {
 function createUserWithRole(string $roleName): User
 {
     $role = Role::where('role_name', $roleName)->first();
+
     return User::factory()->create([
         'role_id' => $role->id,
     ]);

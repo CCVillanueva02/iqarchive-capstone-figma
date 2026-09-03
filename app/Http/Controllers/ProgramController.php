@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Program;
 use App\Models\College;
+use App\Models\Program;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -23,10 +23,10 @@ class ProgramController extends Controller
         }, 'accreditations.instrument'])->orderBy('name');
 
         if ($user) {
-            $isUnrestricted = $user->hasAnyRole(['iqa-staff', 'iqa-admin', 'system-administrator']) || 
+            $isUnrestricted = $user->hasAnyRole(['iqa-staff', 'iqa-admin', 'system-administrator']) ||
                               in_array($user->role, ['iqa-staff', 'iqa-admin', 'system-administrator']);
 
-            if (!$isUnrestricted) {
+            if (! $isUnrestricted) {
                 // College Head: all programs under their assigned college
                 if ($user->hasRole('college-head') || $user->role === 'college-head') {
                     $collegeId = $user->college_id;
@@ -37,7 +37,7 @@ class ProgramController extends Controller
                     $programIds = array_filter([$user->program_id]);
                     $tfProgramIds = $user->taskForces()->whereNotNull('program_id')->pluck('program_id')->toArray();
                     $allProgramIds = array_unique(array_merge($programIds, $tfProgramIds));
-                    if (!empty($allProgramIds)) {
+                    if (! empty($allProgramIds)) {
                         $query->whereIn('id', $allProgramIds);
                     } elseif ($user->college_id) {
                         $query->where('college_id', $user->college_id);
@@ -116,15 +116,15 @@ class ProgramController extends Controller
         /** @var User|null $user */
         $user = Auth::user();
 
-        if (!$user) {
+        if (! $user) {
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
 
         // Allow IQA Staff and System Administrator
-        $isAllowed = $user->hasRole(['iqa-staff', 'iqa-admin', 'system-administrator']) || 
+        $isAllowed = $user->hasRole(['iqa-staff', 'iqa-admin', 'system-administrator']) ||
                      in_array($user->role, ['iqa-staff', 'iqa-admin', 'system-administrator']);
 
-        if (!$isAllowed) {
+        if (! $isAllowed) {
             return response()->json(['error' => 'Unauthorized. Only IQA Staff and System Administrator can create programs.'], 403);
         }
 
@@ -160,7 +160,7 @@ class ProgramController extends Controller
                 'college_id' => $program->college_id,
                 'level' => $program->accreditation_level ?: 'Candidate Status',
                 'iconBg' => $iconBg,
-            ]
+            ],
         ], 201);
     }
 
@@ -171,10 +171,10 @@ class ProgramController extends Controller
         $query = College::withCount('programs')->orderBy('campus', 'asc')->orderBy('name', 'asc');
 
         if ($user) {
-            $isUnrestricted = $user->hasAnyRole(['iqa-staff', 'iqa-admin', 'system-administrator']) || 
+            $isUnrestricted = $user->hasAnyRole(['iqa-staff', 'iqa-admin', 'system-administrator']) ||
                               in_array($user->role, ['iqa-staff', 'iqa-admin', 'system-administrator']);
 
-            if (!$isUnrestricted) {
+            if (! $isUnrestricted) {
                 // College Head: only their assigned college
                 if ($user->hasRole('college-head') || $user->role === 'college-head') {
                     $collegeId = $user->college_id;
@@ -185,7 +185,7 @@ class ProgramController extends Controller
                     $collegeIds = array_filter([$user->college_id]);
                     $tfCollegeIds = $user->taskForces()->whereNotNull('college_id')->pluck('college_id')->toArray();
                     $allCollegeIds = array_unique(array_merge($collegeIds, $tfCollegeIds));
-                    if (!empty($allCollegeIds)) {
+                    if (! empty($allCollegeIds)) {
                         $query->whereIn('id', $allCollegeIds);
                     } else {
                         $query->where('id', 0);
@@ -246,10 +246,10 @@ class ProgramController extends Controller
     public function update(Request $request, $id)
     {
         $program = Program::findOrFail($id);
-        
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'code' => 'required|string|max:50|unique:programs,code,' . $program->id,
+            'code' => 'required|string|max:50|unique:programs,code,'.$program->id,
             'college_id' => 'required|exists:colleges,id',
             'accreditation_level' => 'required|string|max:255',
         ]);
@@ -266,12 +266,13 @@ class ProgramController extends Controller
     public function destroy($id)
     {
         $program = Program::findOrFail($id);
-        
+
         if ($program->documents()->exists()) {
             return response()->json(['error' => 'Cannot delete program with existing documents.'], 400);
         }
 
         $program->delete();
+
         return response()->json(['success' => true]);
     }
 }

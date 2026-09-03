@@ -2,9 +2,9 @@
 
 namespace App\Livewire\Configuration;
 
+use App\Models\AuditLog;
 use App\Models\College;
 use App\Models\Program;
-use App\Models\AuditLog;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Attributes\Title;
@@ -18,8 +18,11 @@ class CollegesPrograms extends Component
 
     // Search and filter state
     public $search = '';
+
     public $campusFilter = '';
+
     public $collegeFilter = '';
+
     public $levelFilter = '';
 
     // Authorization property
@@ -27,27 +30,40 @@ class CollegesPrograms extends Component
 
     // College Modals State
     public bool $showCreateCollegeModal = false;
+
     public bool $showEditCollegeModal = false;
+
     public bool $showDeleteCollegeModal = false;
 
     // Program Modals State
     public bool $showCreateProgramModal = false;
+
     public bool $showEditProgramModal = false;
+
     public bool $showDeleteProgramModal = false;
 
     // College Form Data
     public $collegeId = null;
+
     public $college_name = '';
+
     public $college_code = '';
+
     public $college_campus = 'LEGAZPI WEST CAMPUS';
+
     public $targetCollegeName = '';
 
     // Program Form Data
     public $programId = null;
+
     public $program_college_id = '';
+
     public $program_name = '';
+
     public $program_code = '';
+
     public $program_accreditation_level = 'Candidate Status';
+
     public $targetProgramName = '';
 
     // Expanded College Accordions Tracking
@@ -63,7 +79,7 @@ class CollegesPrograms extends Component
     public function mount()
     {
         $user = auth()->user();
-        if (!$user || !Gate::allows('viewCollegesAndPrograms')) {
+        if (! $user || ! Gate::allows('viewCollegesAndPrograms')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -108,7 +124,9 @@ class CollegesPrograms extends Component
 
     public function openCreateCollegeModal()
     {
-        if (!$this->canManage) abort(403);
+        if (! $this->canManage) {
+            abort(403);
+        }
         $this->resetCollegeForm();
         $this->showCreateCollegeModal = true;
     }
@@ -121,7 +139,9 @@ class CollegesPrograms extends Component
 
     public function createCollege()
     {
-        if (!$this->canManage) abort(403);
+        if (! $this->canManage) {
+            abort(403);
+        }
 
         $validated = $this->validate([
             'college_name' => ['required', 'string', 'max:255'],
@@ -149,7 +169,7 @@ class CollegesPrograms extends Component
                 'timestamp' => now(),
             ]);
 
-            if (!in_array($college->id, $this->expandedCollegeIds)) {
+            if (! in_array($college->id, $this->expandedCollegeIds)) {
                 $this->expandedCollegeIds[] = $college->id;
             }
         });
@@ -165,7 +185,9 @@ class CollegesPrograms extends Component
 
     public function openEditCollegeModal($id)
     {
-        if (!$this->canManage) abort(403);
+        if (! $this->canManage) {
+            abort(403);
+        }
         $this->resetCollegeForm();
         $college = College::findOrFail($id);
 
@@ -185,13 +207,15 @@ class CollegesPrograms extends Component
 
     public function updateCollege()
     {
-        if (!$this->canManage) abort(403);
+        if (! $this->canManage) {
+            abort(403);
+        }
 
         $college = College::findOrFail($this->collegeId);
 
         $validated = $this->validate([
             'college_name' => ['required', 'string', 'max:255'],
-            'college_code' => ['required', 'string', 'max:50', 'unique:colleges,code,' . $this->collegeId],
+            'college_code' => ['required', 'string', 'max:50', 'unique:colleges,code,'.$this->collegeId],
             'college_campus' => ['required', 'string', 'max:255'],
         ], [
             'college_name.required' => 'Please enter the college/academic unit name.',
@@ -227,10 +251,12 @@ class CollegesPrograms extends Component
 
     public function openDeleteCollegeModal($id)
     {
-        if (!$this->canManage) abort(403);
+        if (! $this->canManage) {
+            abort(403);
+        }
         $college = College::withCount('programs')->findOrFail($id);
         $this->collegeId = $college->id;
-        $this->targetCollegeName = $college->name . ' (' . $college->code . ')';
+        $this->targetCollegeName = $college->name.' ('.$college->code.')';
         $this->showDeleteCollegeModal = true;
     }
 
@@ -243,7 +269,9 @@ class CollegesPrograms extends Component
 
     public function deleteCollege()
     {
-        if (!$this->canManage) abort(403);
+        if (! $this->canManage) {
+            abort(403);
+        }
 
         $college = College::findOrFail($this->collegeId);
 
@@ -286,7 +314,9 @@ class CollegesPrograms extends Component
 
     public function openCreateProgramModal(?int $presetCollegeId = null)
     {
-        if (!$this->canManage) abort(403);
+        if (! $this->canManage) {
+            abort(403);
+        }
         $this->resetProgramForm();
         if ($presetCollegeId) {
             $this->program_college_id = $presetCollegeId;
@@ -302,7 +332,9 @@ class CollegesPrograms extends Component
 
     public function createProgram()
     {
-        if (!$this->canManage) abort(403);
+        if (! $this->canManage) {
+            abort(403);
+        }
 
         $validated = $this->validate([
             'program_college_id' => ['required', 'exists:colleges,id'],
@@ -333,7 +365,7 @@ class CollegesPrograms extends Component
                 'timestamp' => now(),
             ]);
 
-            if (!in_array($validated['program_college_id'], $this->expandedCollegeIds)) {
+            if (! in_array($validated['program_college_id'], $this->expandedCollegeIds)) {
                 $this->expandedCollegeIds[] = $validated['program_college_id'];
             }
         });
@@ -349,7 +381,9 @@ class CollegesPrograms extends Component
 
     public function openEditProgramModal($id)
     {
-        if (!$this->canManage) abort(403);
+        if (! $this->canManage) {
+            abort(403);
+        }
         $this->resetProgramForm();
         $program = Program::findOrFail($id);
 
@@ -370,14 +404,16 @@ class CollegesPrograms extends Component
 
     public function updateProgram()
     {
-        if (!$this->canManage) abort(403);
+        if (! $this->canManage) {
+            abort(403);
+        }
 
         $program = Program::findOrFail($this->programId);
 
         $validated = $this->validate([
             'program_college_id' => ['required', 'exists:colleges,id'],
             'program_name' => ['required', 'string', 'max:255'],
-            'program_code' => ['required', 'string', 'max:50', 'unique:programs,code,' . $this->programId],
+            'program_code' => ['required', 'string', 'max:50', 'unique:programs,code,'.$this->programId],
             'program_accreditation_level' => ['required', 'string', 'max:255'],
         ], [
             'program_college_id.required' => 'Please select the parent college/department.',
@@ -415,10 +451,12 @@ class CollegesPrograms extends Component
 
     public function openDeleteProgramModal($id)
     {
-        if (!$this->canManage) abort(403);
+        if (! $this->canManage) {
+            abort(403);
+        }
         $program = Program::findOrFail($id);
         $this->programId = $program->id;
-        $this->targetProgramName = $program->name . ' (' . $program->code . ')';
+        $this->targetProgramName = $program->name.' ('.$program->code.')';
         $this->showDeleteProgramModal = true;
     }
 
@@ -431,7 +469,9 @@ class CollegesPrograms extends Component
 
     public function deleteProgram()
     {
-        if (!$this->canManage) abort(403);
+        if (! $this->canManage) {
+            abort(403);
+        }
 
         $program = Program::findOrFail($this->programId);
 
@@ -474,35 +514,35 @@ class CollegesPrograms extends Component
     public function render()
     {
         $collegesQuery = College::with(['programs' => function ($pq) {
-            if (!empty($this->levelFilter)) {
+            if (! empty($this->levelFilter)) {
                 $pq->where('accreditation_level', $this->levelFilter);
             }
-            if (!empty($this->search)) {
+            if (! empty($this->search)) {
                 $pq->where(function ($q) {
-                    $q->where('name', 'like', '%' . $this->search . '%')
-                        ->orWhere('code', 'like', '%' . $this->search . '%');
+                    $q->where('name', 'like', '%'.$this->search.'%')
+                        ->orWhere('code', 'like', '%'.$this->search.'%');
                 });
             }
             $pq->orderBy('name', 'asc');
         }])
-        ->withCount('programs');
+            ->withCount('programs');
 
-        if (!empty($this->campusFilter)) {
+        if (! empty($this->campusFilter)) {
             $collegesQuery->where('campus', $this->campusFilter);
         }
 
-        if (!empty($this->collegeFilter)) {
+        if (! empty($this->collegeFilter)) {
             $collegesQuery->where('id', $this->collegeFilter);
         }
 
-        if (!empty($this->search)) {
+        if (! empty($this->search)) {
             $collegesQuery->where(function ($q) {
-                $q->where('name', 'like', '%' . $this->search . '%')
-                    ->orWhere('code', 'like', '%' . $this->search . '%')
-                    ->orWhere('campus', 'like', '%' . $this->search . '%')
+                $q->where('name', 'like', '%'.$this->search.'%')
+                    ->orWhere('code', 'like', '%'.$this->search.'%')
+                    ->orWhere('campus', 'like', '%'.$this->search.'%')
                     ->orWhereHas('programs', function ($pq) {
-                        $pq->where('name', 'like', '%' . $this->search . '%')
-                            ->orWhere('code', 'like', '%' . $this->search . '%');
+                        $pq->where('name', 'like', '%'.$this->search.'%')
+                            ->orWhere('code', 'like', '%'.$this->search.'%');
                     });
             });
         }

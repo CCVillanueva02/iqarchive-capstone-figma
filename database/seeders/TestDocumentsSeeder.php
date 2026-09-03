@@ -16,8 +16,9 @@ class TestDocumentsSeeder extends Seeder
     {
         $sysUser = User::where('email', 'sysadmin@example.com')->first() ?: User::first();
 
-        if (!$sysUser) {
+        if (! $sysUser) {
             $this->command->error('No user found to assign documents to.');
+
             return;
         }
 
@@ -33,7 +34,7 @@ class TestDocumentsSeeder extends Seeder
         foreach ($categoriesToSeedDocs as $catName => $docTitle) {
             $category = DocumentCategory::firstOrCreate(
                 ['name' => $catName],
-                ['description' => 'General documents for ' . $catName]
+                ['description' => 'General documents for '.$catName]
             );
 
             $fileName = "test{$index}.pdf";
@@ -41,7 +42,7 @@ class TestDocumentsSeeder extends Seeder
             $fullPath = storage_path("app/public/{$relativeFilePath}");
             $dir = dirname($fullPath);
 
-            if (!file_exists($dir)) {
+            if (! file_exists($dir)) {
                 mkdir($dir, 0755, true);
             }
 

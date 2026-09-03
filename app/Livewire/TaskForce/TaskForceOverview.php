@@ -7,10 +7,10 @@ use App\Models\AuditLog;
 use App\Models\College;
 use App\Models\Notification;
 use App\Models\Program;
+use App\Models\Role;
 use App\Models\TaskForce;
 use App\Models\TaskForceMember;
 use App\Models\User;
-use App\Models\Role;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Computed;
@@ -25,21 +25,31 @@ class TaskForceOverview extends Component
 
     // Search and filter state
     public $search = '';
+
     public $collegeFilter = '';
+
     public $statusFilter = '';
 
     // Modal state for Create Task Force (6.1 Input Screen)
     public bool $showCreateModal = false;
+
     public string $name = '';
+
     public string $college_id = '';
+
     public string $program_id = '';
+
     public array $proposedMembers = [];
+
     public string $newName = '';
+
     public string $newEmail = '';
+
     public string $newPhone = '';
 
     // Modal state for Member Roster / Detail view (6.2 Output Screen)
     public bool $showRosterModal = false;
+
     public ?TaskForce $selectedTaskForce = null;
 
     protected $queryString = [
@@ -77,6 +87,7 @@ class TaskForceOverview extends Component
     public function canCreate(): bool
     {
         $user = auth()->user();
+
         return $user && $user->hasRole(['iqa-staff', 'iqa-admin', 'university-administrator', 'college-head', 'system-administrator']);
     }
 
@@ -87,17 +98,19 @@ class TaskForceOverview extends Component
     public function canManage(): bool
     {
         $user = auth()->user();
+
         return $user && $user->hasRole(['iqa-staff', 'iqa-admin', 'university-administrator', 'system-administrator']);
     }
 
     public function openCreateModal()
     {
-        if (!$this->canCreate) {
+        if (! $this->canCreate) {
             $this->dispatch('swal', [
                 'icon' => 'error',
                 'title' => 'Unauthorized Action',
-                'text' => 'You do not have permission to create a task force.'
+                'text' => 'You do not have permission to create a task force.',
             ]);
+
             return;
         }
 
@@ -106,14 +119,14 @@ class TaskForceOverview extends Component
         // Pre-define assigned college based on logged in user or default college
         $user = auth()->user();
         if ($user->college_id) {
-            $this->college_id = (string)$user->college_id;
+            $this->college_id = (string) $user->college_id;
         } else {
             $firstCollege = College::first();
-            $this->college_id = $firstCollege ? (string)$firstCollege->id : '';
+            $this->college_id = $firstCollege ? (string) $firstCollege->id : '';
         }
 
         if ($user->program_id) {
-            $this->program_id = (string)$user->program_id;
+            $this->program_id = (string) $user->program_id;
         }
 
         $this->showCreateModal = true;
@@ -167,7 +180,7 @@ class TaskForceOverview extends Component
      */
     public function createTaskForce()
     {
-        if (!$this->canCreate) {
+        if (! $this->canCreate) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -193,6 +206,7 @@ class TaskForceOverview extends Component
 
         if (empty($this->proposedMembers)) {
             $this->addError('proposedMembers', 'Add at least one proposed member.');
+
             return;
         }
 
@@ -221,7 +235,7 @@ class TaskForceOverview extends Component
                 if ($isCollegeHeadProposal) {
                     $iqaStaffRoleIds = Role::whereIn('role_name', ['iqa-staff', 'iqa-admin'])->pluck('id');
                     $iqaStaffUsers = User::whereIn('role_id', $iqaStaffRoleIds)->get();
-                    
+
                     foreach ($iqaStaffUsers as $staff) {
                         Notification::create([
                             'user_id' => $staff->id,
@@ -248,20 +262,20 @@ class TaskForceOverview extends Component
                 $this->dispatch('swal', [
                     'icon' => 'success',
                     'title' => 'Task Force Submitted for Approval!',
-                    'text' => 'Your task force proposal has been sent to the IQA Admin. They will review and approve the member list.'
+                    'text' => 'Your task force proposal has been sent to the IQA Admin. They will review and approve the member list.',
                 ]);
             } else {
                 $this->dispatch('swal', [
                     'icon' => 'success',
                     'title' => 'Task Force Created!',
-                    'text' => 'The task force was successfully assembled and notifications sent to assigned members.'
+                    'text' => 'The task force was successfully assembled and notifications sent to assigned members.',
                 ]);
             }
         } catch (\Exception $e) {
             $this->dispatch('swal', [
                 'icon' => 'error',
                 'title' => 'Creation Failed',
-                'text' => 'An error occurred while creating the task force: ' . $e->getMessage()
+                'text' => 'An error occurred while creating the task force: '.$e->getMessage(),
             ]);
         }
     }
@@ -317,7 +331,7 @@ class TaskForceOverview extends Component
      * IQA Admin approves pending task force proposal and member roster.
      * Pre-registers unlisted accounts as pending_activation, reactivates existing/inactive accounts,
      * auto-assigns the Dean as Task Force Lead, and advances linked Accreditation to task_force_approved.
-     * 
+     *
      * Security Reasoning: Centralized IQA verification ensures institutional legitimacy of accreditation
      * task force memberships while enforcing OAuth-only authentication, role-based access control, and complete audit trails.
      */
@@ -472,18 +486,18 @@ class TaskForceOverview extends Component
             if ($reactivatedCount > 0) {
                 $msgParts[] = "{$reactivatedCount} account(s) reactivated";
             }
-            $summaryText = ! empty($msgParts) ? ' (' . implode(', ', $msgParts) . ')' : '';
+            $summaryText = ! empty($msgParts) ? ' ('.implode(', ', $msgParts).')' : '';
 
             $this->dispatch('swal', [
                 'icon' => 'success',
                 'title' => 'Task Force Approved & Activated!',
-                'text' => "Task force '{$taskForce->name}' has been formalized{$summaryText}. Dean auto-assigned as Lead."
+                'text' => "Task force '{$taskForce->name}' has been formalized{$summaryText}. Dean auto-assigned as Lead.",
             ]);
         } catch (\Exception $e) {
             $this->dispatch('swal', [
                 'icon' => 'error',
                 'title' => 'Approval Failed',
-                'text' => $e->getMessage()
+                'text' => $e->getMessage(),
             ]);
         }
     }
@@ -504,7 +518,7 @@ class TaskForceOverview extends Component
 
     public function updateTaskForceStatus($taskForceId, $newStatus)
     {
-        if (!$this->canManage) {
+        if (! $this->canManage) {
             abort(403);
         }
 
@@ -527,7 +541,7 @@ class TaskForceOverview extends Component
         $this->dispatch('swal', [
             'icon' => 'success',
             'title' => 'Status Updated',
-            'text' => "Task force status updated to " . ucfirst(str_replace('_', ' ', $newStatus)) . "."
+            'text' => 'Task force status updated to '.ucfirst(str_replace('_', ' ', $newStatus)).'.',
         ]);
     }
 
@@ -543,19 +557,19 @@ class TaskForceOverview extends Component
             ->with(['roleRelation', 'college', 'program']);
 
         // Filter active members by defined college if college_id is set
-        if (!empty($this->college_id)) {
-            $targetCollegeId = (int)$this->college_id;
+        if (! empty($this->college_id)) {
+            $targetCollegeId = (int) $this->college_id;
             $activeUsersQuery->where(function ($q) use ($targetCollegeId) {
                 $q->where('college_id', $targetCollegeId)
-                  ->orWhereNull('college_id'); // Include university-wide IQA members & accreditors
+                    ->orWhereNull('college_id'); // Include university-wide IQA members & accreditors
             });
         }
 
-        if (!empty($this->memberSearch)) {
+        if (! empty($this->memberSearch)) {
             $activeUsersQuery->where(function ($q) {
-                $q->where('first_name', 'like', '%' . $this->memberSearch . '%')
-                    ->orWhere('last_name', 'like', '%' . $this->memberSearch . '%')
-                    ->orWhere('email', 'like', '%' . $this->memberSearch . '%');
+                $q->where('first_name', 'like', '%'.$this->memberSearch.'%')
+                    ->orWhere('last_name', 'like', '%'.$this->memberSearch.'%')
+                    ->orWhere('email', 'like', '%'.$this->memberSearch.'%');
             });
         }
 
@@ -563,27 +577,27 @@ class TaskForceOverview extends Component
 
         // Query task forces for Overview dashboard cards
         $taskForcesQuery = TaskForce::with(['college', 'program', 'members', 'creator']);
-        
+
         $currentUser = auth()->user();
         if ($currentUser->role === 'college-head') {
             $taskForcesQuery->where(function ($q) use ($currentUser) {
                 $q->where('college_id', $currentUser->college_id)
-                  ->orWhere('created_by', $currentUser->id);
+                    ->orWhere('created_by', $currentUser->id);
             });
         }
 
-        if (!empty($this->search)) {
+        if (! empty($this->search)) {
             $taskForcesQuery->where(function ($q) {
-                $q->where('name', 'like', '%' . $this->search . '%')
-                    ->orWhere('purpose', 'like', '%' . $this->search . '%');
+                $q->where('name', 'like', '%'.$this->search.'%')
+                    ->orWhere('purpose', 'like', '%'.$this->search.'%');
             });
         }
 
-        if (!empty($this->collegeFilter)) {
+        if (! empty($this->collegeFilter)) {
             $taskForcesQuery->where('college_id', $this->collegeFilter);
         }
 
-        if (!empty($this->statusFilter)) {
+        if (! empty($this->statusFilter)) {
             $taskForcesQuery->where('status', $this->statusFilter);
         }
 
@@ -591,8 +605,8 @@ class TaskForceOverview extends Component
 
         // Fetch colleges and programs for select dropdowns
         $colleges = College::orderBy('name', 'asc')->get();
-        $definedCollege = !empty($this->college_id) ? College::find($this->college_id) : null;
-        $availablePrograms = !empty($this->college_id)
+        $definedCollege = ! empty($this->college_id) ? College::find($this->college_id) : null;
+        $availablePrograms = ! empty($this->college_id)
             ? Program::where('college_id', $this->college_id)->orderBy('name', 'asc')->get()
             : collect();
 

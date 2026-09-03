@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (Schema::hasTable('users') && !Schema::hasColumn('users', 'google_avatar')) {
+        if (Schema::hasTable('users') && ! Schema::hasColumn('users', 'google_avatar')) {
             Schema::table('users', function (Blueprint $table) {
                 $table->string('google_avatar')->nullable()->after('google_id');
             });

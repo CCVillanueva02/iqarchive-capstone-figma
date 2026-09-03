@@ -19,13 +19,15 @@ class InstrumentSeeder extends Seeder
 
         $seedAccreditation = function ($levelName, $count) use (&$progIndex, $allPrograms) {
             for ($i = 1; $i <= $count; $i++) {
-                if ($progIndex >= $allPrograms->count()) break;
+                if ($progIndex >= $allPrograms->count()) {
+                    break;
+                }
 
                 $program = $allPrograms[$progIndex++];
 
                 $inst = Instrument::create([
                     'name' => "AACCUP {$levelName} Criteria for {$program->name}",
-                    'code' => "INST-{$program->code}-" . strtoupper(str_replace(' ', '', $levelName)),
+                    'code' => "INST-{$program->code}-".strtoupper(str_replace(' ', '', $levelName)),
                     'level' => $levelName,
                     'description' => "Accreditation guidelines and evaluation areas for {$program->name} level {$levelName}.",
                 ]);

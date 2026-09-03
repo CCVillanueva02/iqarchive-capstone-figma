@@ -8,17 +8,21 @@ use App\Models\College;
 use App\Models\Notification;
 use App\Models\Program;
 use App\Models\Role;
-use App\Models\TaskForce;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
 class ScheduleAccreditation extends Component
 {
     public $college_id = '';
+
     public $program_id = '';
+
     public $target_date = '';
+
     public $survey_end_date = '';
+
     public $showModal = false;
 
     public function rules()
@@ -64,6 +68,7 @@ class ScheduleAccreditation extends Component
         if (! $this->program_id) {
             return null;
         }
+
         return Program::with(['college'])->find($this->program_id);
     }
 
@@ -86,7 +91,7 @@ class ScheduleAccreditation extends Component
 
     /**
      * Record and schedule a new accreditation visit.
-     * 
+     *
      * Security Reasoning: Only authorized IQA Staff, IQA Admin, and System Administrators
      * are permitted to initiate official university accreditation surveys and instantiate
      * Task Force workspaces to prevent unverified compliance cycles and maintain institutional integrity.
@@ -112,7 +117,7 @@ class ScheduleAccreditation extends Component
         ]);
 
         // 4. Create Audit Log entry
-        $formattedDate = \Carbon\Carbon::parse($this->target_date)->format('M d, Y');
+        $formattedDate = Carbon::parse($this->target_date)->format('M d, Y');
         AuditLog::create([
             'user_id' => $user->id,
             'action' => "Recorded accreditation visit for {$program->name} targeted for {$formattedDate}",

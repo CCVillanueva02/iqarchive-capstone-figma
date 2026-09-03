@@ -2,11 +2,11 @@
 
 namespace App\Livewire\SystemAdministrator;
 
-use App\Models\User;
-use App\Models\Role;
+use App\Models\AuditLog;
 use App\Models\College;
 use App\Models\Program;
-use App\Models\AuditLog;
+use App\Models\Role;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Title;
@@ -20,31 +20,48 @@ class Accounts extends Component
 
     // Search and filtering state
     public $search = '';
+
     public $roleFilter = '';
+
     public $statusFilter = '';
 
     // Modal view states
     public bool $showCreateModal = false;
+
     public bool $showQuickTfModal = false;
+
     public bool $showEditModal = false;
+
     public bool $showDeleteModal = false;
 
     // Form inputs state
     public $userId;
+
     public $userStatus = '';
+
     public $userName = '';
+
     public $first_name = '';
+
     public $middle_name = '';
+
     public $last_name = '';
+
     public $email = '';
+
     public $role_id = '';
+
     public $selected_role_ids = [];
+
     public $college_id = '';
+
     public $program_id = '';
 
     // Quick Task Force Pre-Registration State
     public $quick_tf_college_id = '';
+
     public $quick_tf_program_id = '';
+
     public $quick_tf_emails = '';
 
     // Deactivation target status ('active', 'pending_activation', or 'inactive')
@@ -122,8 +139,8 @@ class Accounts extends Component
 
     /**
      * Quick Pre-Register multiple Task Force members for a college/program.
-     * 
-     * Security Reasoning: Scopes role strictly to task-force-member and defaults accounts 
+     *
+     * Security Reasoning: Scopes role strictly to task-force-member and defaults accounts
      * to pending_activation status until verified via Google Workspace OAuth authentication.
      */
     public function quickRegisterTaskForce()
@@ -143,18 +160,20 @@ class Accounts extends Component
 
         if (empty($cleanEmails)) {
             $this->addError('quick_tf_emails', 'Please enter at least one valid email address.');
+
             return;
         }
 
         $invalidEmails = [];
         foreach ($cleanEmails as $em) {
-            if (!filter_var($em, FILTER_VALIDATE_EMAIL)) {
+            if (! filter_var($em, FILTER_VALIDATE_EMAIL)) {
                 $invalidEmails[] = $em;
             }
         }
 
-        if (!empty($invalidEmails)) {
-            $this->addError('quick_tf_emails', 'Invalid email format: ' . implode(', ', array_slice($invalidEmails, 0, 3)));
+        if (! empty($invalidEmails)) {
+            $this->addError('quick_tf_emails', 'Invalid email format: '.implode(', ', array_slice($invalidEmails, 0, 3)));
+
             return;
         }
 
@@ -169,14 +188,15 @@ class Accounts extends Component
                 $existing = User::where('email', $email)->first();
 
                 if ($existing) {
-                    if (!$existing->hasRole('task-force-member')) {
+                    if (! $existing->hasRole('task-force-member')) {
                         $existing->roles()->syncWithoutDetaching([$tfRole->id]);
                     }
-                    if (!$existing->college_id && $this->quick_tf_college_id) {
+                    if (! $existing->college_id && $this->quick_tf_college_id) {
                         $existing->college_id = $this->quick_tf_college_id;
                         $existing->save();
                     }
                     $skippedCount++;
+
                     continue;
                 }
 
@@ -208,7 +228,7 @@ class Accounts extends Component
 
         $this->closeQuickTfModal();
 
-        $message = "Pre-registered {$createdCount} Task Force " . Str::plural('member', $createdCount) . " successfully.";
+        $message = "Pre-registered {$createdCount} Task Force ".Str::plural('member', $createdCount).' successfully.';
         if ($skippedCount > 0) {
             $message .= " ({$skippedCount} existing account(s) updated).";
         }
@@ -250,7 +270,8 @@ class Accounts extends Component
         }
 
         $roleNames = Role::whereIn('id', $allRoleIds)->pluck('role_name')->toArray();
-        return !empty(array_intersect($roleNames, ['college-head', 'program-chair', 'iqa-member']));
+
+        return ! empty(array_intersect($roleNames, ['college-head', 'program-chair', 'iqa-member']));
     }
 
     /**
@@ -301,7 +322,7 @@ class Accounts extends Component
                     'status' => 'pending_activation',
                 ]);
 
-                $rolesToSync = array_values(array_unique(array_filter(array_merge([(int)$this->role_id], array_map('intval', $this->selected_role_ids)))));
+                $rolesToSync = array_values(array_unique(array_filter(array_merge([(int) $this->role_id], array_map('intval', $this->selected_role_ids)))));
                 $newUser->roles()->sync($rolesToSync);
 
                 AuditLog::create([
@@ -368,7 +389,7 @@ class Accounts extends Component
             'first_name' => ['nullable', 'string', 'max:255'],
             'middle_name' => ['nullable', 'string', 'max:255'],
             'last_name' => ['nullable', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:users,email,' . $this->userId],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email,'.$this->userId],
             'role_id' => ['required', 'exists:roles,id'],
             'college_id' => $requiresCollege ? ['required', 'exists:colleges,id'] : ['nullable', 'exists:colleges,id'],
             'program_id' => ['nullable', 'exists:programs,id'],
@@ -397,7 +418,7 @@ class Accounts extends Component
                 'program_id' => $this->program_id ?: null,
             ]);
 
-            $rolesToSync = array_values(array_unique(array_filter(array_merge([(int)$this->role_id], array_map('intval', $this->selected_role_ids)))));
+            $rolesToSync = array_values(array_unique(array_filter(array_merge([(int) $this->role_id], array_map('intval', $this->selected_role_ids)))));
             $user->roles()->sync($rolesToSync);
 
             AuditLog::create([
@@ -469,21 +490,21 @@ class Accounts extends Component
         $usersQuery = User::where('id', '!=', auth()->id())
             ->with(['roleRelation', 'college', 'program']);
 
-        if (!empty($this->search)) {
+        if (! empty($this->search)) {
             $usersQuery->where(function ($q) {
-                $q->where('first_name', 'like', '%' . $this->search . '%')
-                    ->orWhere('last_name', 'like', '%' . $this->search . '%')
-                    ->orWhere('email', 'like', '%' . $this->search . '%');
+                $q->where('first_name', 'like', '%'.$this->search.'%')
+                    ->orWhere('last_name', 'like', '%'.$this->search.'%')
+                    ->orWhere('email', 'like', '%'.$this->search.'%');
             });
         }
 
-        if (!empty($this->roleFilter)) {
+        if (! empty($this->roleFilter)) {
             $usersQuery->whereHas('roleRelation', function ($q) {
                 $q->where('role_name', $this->roleFilter);
             });
         }
 
-        if (!empty($this->statusFilter)) {
+        if (! empty($this->statusFilter)) {
             $usersQuery->where('status', $this->statusFilter);
         }
 
@@ -491,11 +512,11 @@ class Accounts extends Component
 
         $roles = Role::all();
         $colleges = College::orderBy('name', 'asc')->get();
-        $programs = !empty($this->college_id)
+        $programs = ! empty($this->college_id)
             ? Program::where('college_id', $this->college_id)->orderBy('name', 'asc')->get()
             : collect();
 
-        $quickTfPrograms = !empty($this->quick_tf_college_id)
+        $quickTfPrograms = ! empty($this->quick_tf_college_id)
             ? Program::where('college_id', $this->quick_tf_college_id)->orderBy('name', 'asc')->get()
             : collect();
 

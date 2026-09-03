@@ -62,7 +62,6 @@ class User extends Authenticatable implements PasskeyUser
     /**
      * Relationships
      */
-    
     public function roleRelation()
     {
         return $this->belongsTo(Role::class, 'role_id');
@@ -82,6 +81,7 @@ class User extends Authenticatable implements PasskeyUser
         if ($assigned->isEmpty() && $this->roleRelation) {
             return collect([$this->roleRelation]);
         }
+
         return $assigned;
     }
 
@@ -103,6 +103,7 @@ class User extends Authenticatable implements PasskeyUser
                     return true;
                 }
             }
+
             return false;
         }
 
@@ -151,7 +152,7 @@ class User extends Authenticatable implements PasskeyUser
     public function syncRoles(array $roleIds): void
     {
         $this->roles()->sync($roleIds);
-        if (!empty($roleIds) && (!in_array($this->role_id, $roleIds))) {
+        if (! empty($roleIds) && (! in_array($this->role_id, $roleIds))) {
             $this->role_id = $roleIds[0];
             $this->save();
         }
@@ -159,7 +160,7 @@ class User extends Authenticatable implements PasskeyUser
 
     public function getNameAttribute(): string
     {
-        return trim($this->first_name . ' ' . $this->last_name);
+        return trim($this->first_name.' '.$this->last_name);
     }
 
     public function setNameAttribute($value): void
@@ -236,7 +237,7 @@ class User extends Authenticatable implements PasskeyUser
      */
     public function initials(): string
     {
-        $fullName = trim($this->first_name . ' ' . $this->last_name);
+        $fullName = trim($this->first_name.' '.$this->last_name);
         $initials = Str::initials($fullName, true);
 
         return Str::length($initials) > 1

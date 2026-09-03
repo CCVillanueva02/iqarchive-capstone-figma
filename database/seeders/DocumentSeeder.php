@@ -48,7 +48,7 @@ class DocumentSeeder extends Seeder
                 'uploaded_by' => $uploader->id,
                 'program_id' => $program->id,
                 'category_id' => $category->id,
-                'title' => "Accreditation Portfolio Item " . $i,
+                'title' => 'Accreditation Portfolio Item '.$i,
                 'file_path' => "documents/mock_doc_{$i}.pdf",
                 'status' => $status,
                 'visibility' => $i % 4 === 0 ? 'public' : 'restricted',

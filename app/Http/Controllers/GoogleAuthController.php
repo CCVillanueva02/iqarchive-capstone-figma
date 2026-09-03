@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\AuditLog;
-use App\Models\Role;
 use App\Models\User;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -20,7 +20,7 @@ class GoogleAuthController extends Controller
         $driver = Socialite::driver('google');
 
         if (app()->environment('local')) {
-            $driver->setHttpClient(new \GuzzleHttp\Client([
+            $driver->setHttpClient(new Client([
                 'verify' => false,
                 'timeout' => 15,
             ]));
@@ -56,13 +56,13 @@ class GoogleAuthController extends Controller
             try {
                 $googleUser = $this->getGoogleDriver()->stateless()->user();
             } catch (\Exception $ex) {
-                \Illuminate\Support\Facades\Log::error('Google Auth Exception', [
+                Log::error('Google Auth Exception', [
                     'message' => $ex->getMessage(),
                     'trace' => $ex->getTraceAsString(),
                 ]);
 
                 $errorMessage = config('app.debug')
-                    ? 'Failed to authenticate with Google: ' . $ex->getMessage()
+                    ? 'Failed to authenticate with Google: '.$ex->getMessage()
                     : 'Failed to authenticate with Google. Please try again.';
 
                 return redirect()->route('login')->withErrors([
@@ -79,10 +79,11 @@ class GoogleAuthController extends Controller
             $allowedDomains = array_filter(array_map('trim', explode(',', $allowedDomainsSetting)));
             $userDomain = Str::after($email, '@');
 
-            if (!in_array($userDomain, $allowedDomains, true)) {
+            if (! in_array($userDomain, $allowedDomains, true)) {
                 $domainMessage = count($allowedDomains) > 1
-                    ? 'official @' . implode(' or @', $allowedDomains)
+                    ? 'official @'.implode(' or @', $allowedDomains)
                     : "@{$allowedDomainsSetting}";
+
                 return redirect()->route('login')->withErrors([
                     'email' => "Access is restricted to {$domainMessage} email accounts.",
                 ]);
@@ -94,7 +95,7 @@ class GoogleAuthController extends Controller
             ->orWhere('email', $email)
             ->first();
 
-        if (!$user) {
+        if (! $user) {
             return redirect()->route('login')->withErrors([
                 'email' => 'Your account has not been pre-registered. Please contact the Internal Quality Assurance Office (bu-iqao@bicol-u.edu.ph) for access.',
             ]);
@@ -108,7 +109,7 @@ class GoogleAuthController extends Controller
         }
 
         $updates = [];
-        if (!$user->google_id) {
+        if (! $user->google_id) {
             $updates['google_id'] = $googleUser->getId();
         }
 
@@ -116,7 +117,7 @@ class GoogleAuthController extends Controller
         if ($googleAvatar) {
             $updates['google_avatar'] = $googleAvatar;
             // If user has no custom local avatar, or already uses a google avatar URL, update avatar column with latest Google profile picture
-            if (!$user->avatar || Str::startsWith($user->avatar, ['http://', 'https://'])) {
+            if (! $user->avatar || Str::startsWith($user->avatar, ['http://', 'https://'])) {
                 $updates['avatar'] = $googleAvatar;
             }
         }
@@ -124,7 +125,7 @@ class GoogleAuthController extends Controller
         $rawGiven = $googleUser->user['given_name'] ?? null;
         $rawFamily = $googleUser->user['family_name'] ?? null;
 
-        if (!$rawGiven || !$rawFamily) {
+        if (! $rawGiven || ! $rawFamily) {
             $fullName = trim($googleUser->getName() ?? '');
             $parts = explode(' ', $fullName, 2);
             $rawGiven = $rawGiven ?: ($parts[0] ?? '');
@@ -134,8 +135,9 @@ class GoogleAuthController extends Controller
         // Clean name helper: remove student/employee ID tokens containing digits (e.g. Jcmm2023, 4700, 61428)
         $cleanNameToken = function (string $nameStr): string {
             $tokens = preg_split('/\s+/', trim($nameStr));
-            $filtered = array_filter($tokens, fn($t) => !preg_match('/\d/', $t));
-            return !empty($filtered) ? implode(' ', $filtered) : $nameStr;
+            $filtered = array_filter($tokens, fn ($t) => ! preg_match('/\d/', $t));
+
+            return ! empty($filtered) ? implode(' ', $filtered) : $nameStr;
         };
 
         $googleFirstName = $cleanNameToken($rawGiven ?: '');
@@ -154,7 +156,7 @@ class GoogleAuthController extends Controller
             $updates['last_name'] = $googleLastName;
         }
 
-        if (!empty($updates)) {
+        if (! empty($updates)) {
             $user->update($updates);
         }
 

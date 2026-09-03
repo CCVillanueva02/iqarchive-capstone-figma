@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Office;
 use Illuminate\Database\Seeder;
 
 class OfficeSeeder extends Seeder
@@ -22,7 +22,7 @@ class OfficeSeeder extends Seeder
         ];
 
         foreach ($offices as $name => $desc) {
-            \App\Models\Office::firstOrCreate(
+            Office::firstOrCreate(
                 ['name' => $name],
                 ['description' => $desc]
             );

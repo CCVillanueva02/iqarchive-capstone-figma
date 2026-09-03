@@ -5,13 +5,14 @@ use App\Models\Role;
 use App\Models\TaskForce;
 use App\Models\TaskForceMember;
 use App\Models\User;
+use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Gate;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    $this->seed(\Database\Seeders\DatabaseSeeder::class);
+    $this->seed(DatabaseSeeder::class);
 });
 
 test('roles table contains exactly 6 target roles', function () {

@@ -1,11 +1,11 @@
 <?php
 
-use App\Livewire\SystemAdministrator\Accounts as SysAdminAccounts;
 use App\Livewire\IqaAdmin\Accounts as IqaAccounts;
-use App\Models\User;
-use App\Models\Role;
+use App\Livewire\SystemAdministrator\Accounts as SysAdminAccounts;
 use App\Models\College;
 use App\Models\Program;
+use App\Models\Role;
+use App\Models\User;
 use Livewire\Livewire;
 
 beforeEach(function () {

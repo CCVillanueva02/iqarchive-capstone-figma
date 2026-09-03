@@ -3,10 +3,11 @@
 namespace App\Livewire\Configuration;
 
 use App\Models\AuditLog;
+use App\Models\College;
 use App\Models\Instrument;
 use App\Models\InstrumentArea;
-use App\Models\InstrumentParameter;
 use App\Models\InstrumentCriterion;
+use App\Models\InstrumentParameter;
 use App\Models\Program;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -30,55 +31,87 @@ class Instruments extends Component
 
     // Selected Active Instrument for the Builder
     public ?int $selectedInstrumentId = null;
+
     public ?int $activeAreaId = null;
+
     public ?int $activeParameterId = null;
+
     public string $activeSection = 'systems'; // systems, implementation, outcomes, best_practices
 
     // Modals Visibility
     public bool $showCreateTemplateModal = false;
+
     public bool $showCloneTemplateModal = false;
+
     public bool $showAreaModal = false;
+
     public bool $showParameterModal = false;
+
     public bool $showCriterionModal = false;
+
     public bool $showDeleteModal = false;
 
     // Form State: Template Creation / Cloning
     public string $templateName = '';
+
     public string $templateCode = '';
+
     public string $templateLevel = 'Level III';
+
     public string $templateType = 'program';
+
     public string $templateVersion = '2026.1';
+
     public string $templateDescription = '';
+
     public ?int $sourceTemplateId = null;
+
     public ?int $cloneTargetProgramId = null;
 
     // Form State: Area
     public ?int $editingAreaId = null;
+
     public string $areaCode = '';
+
     public string $areaName = '';
+
     public int $areaOrder = 1;
+
     public ?float $areaWeight = null;
+
     public string $areaDescription = '';
 
     // Form State: Parameter
     public ?int $editingParameterId = null;
+
     public string $parameterCode = '';
+
     public string $parameterName = '';
+
     public int $parameterOrder = 1;
+
     public string $parameterDescription = '';
 
     // Form State: Criterion / Item
     public ?int $editingCriterionId = null;
+
     public string $criterionCode = '';
+
     public string $criterionStatement = '';
+
     public string $criterionDescription = '';
+
     public array $criterionTags = [];
+
     public string $newTagInput = '';
+
     public int $criterionOrder = 1;
 
     // Delete Target State
     public string $deleteType = ''; // template, area, parameter, criterion
+
     public ?int $deleteTargetId = null;
+
     public string $deleteTargetTitle = '';
 
     protected $queryString = [
@@ -118,7 +151,7 @@ class Instruments extends Component
 
     public function selectProgram($programId = null)
     {
-        $this->selectedProgramId = !empty($programId) ? (int) $programId : null;
+        $this->selectedProgramId = ! empty($programId) ? (int) $programId : null;
         $this->resolveActiveInstrument();
     }
 
@@ -138,7 +171,7 @@ class Instruments extends Component
     {
         // 1. If Institutional Scope
         if ($this->accreditationScope === 'institutional') {
-            $targetCode = match($this->activeCategory) {
+            $targetCode = match ($this->activeCategory) {
                 'supporting-docs' => 'INST-INST-SUPPORTING-DOCS',
                 'self-survey' => 'INST-INST-SELF-SURVEY',
                 'compliance-reports' => 'INST-INST-COMPLIANCE-REPORT',
@@ -151,15 +184,16 @@ class Instruments extends Component
             if ($inst) {
                 $this->selectInstrument($inst->id);
             }
+
             return;
         }
 
         // 2. If Program Scope with a Specific Program Selected
         if ($this->selectedProgramId) {
-            $program = \App\Models\Program::find($this->selectedProgramId);
+            $program = Program::find($this->selectedProgramId);
             if ($program) {
                 // Check if program has a custom instrument for this category
-                $targetMasterCode = match($this->activeCategory) {
+                $targetMasterCode = match ($this->activeCategory) {
                     'supporting-docs' => 'INST-PROG-SUPPORTING-DOCS',
                     'self-survey' => 'INST-PROG-SELF-SURVEY',
                     'compliance-reports' => 'INST-PROG-COMPLIANCE-REPORT',
@@ -179,12 +213,13 @@ class Instruments extends Component
                     $this->activeAreaId = null;
                     $this->activeParameterId = null;
                 }
+
                 return;
             }
         }
 
         // 3. Program Scope Default Master Template
-        $targetCode = match($this->activeCategory) {
+        $targetCode = match ($this->activeCategory) {
             'supporting-docs' => 'INST-PROG-SUPPORTING-DOCS',
             'self-survey' => 'INST-PROG-SELF-SURVEY',
             'compliance-reports' => 'INST-PROG-COMPLIANCE-REPORT',
@@ -205,8 +240,8 @@ class Instruments extends Component
             return;
         }
 
-        $program = \App\Models\Program::findOrFail($this->selectedProgramId);
-        $masterCode = match($this->activeCategory) {
+        $program = Program::findOrFail($this->selectedProgramId);
+        $masterCode = match ($this->activeCategory) {
             'supporting-docs' => 'INST-PROG-SUPPORTING-DOCS',
             'self-survey' => 'INST-PROG-SELF-SURVEY',
             'compliance-reports' => 'INST-PROG-COMPLIANCE-REPORT',
@@ -218,6 +253,7 @@ class Instruments extends Component
 
         if (! $master) {
             $this->dispatch('swal', ['icon' => 'error', 'title' => 'Error', 'text' => 'Master Template not found.']);
+
             return;
         }
 
@@ -236,7 +272,7 @@ class Instruments extends Component
         $this->dispatch('swal', [
             'icon' => 'success',
             'title' => 'Instrument Cloned!',
-            'text' => "Master Template successfully cloned for {$program->name}. You can now customize program-specific criteria."
+            'text' => "Master Template successfully cloned for {$program->name}. You can now customize program-specific criteria.",
         ]);
     }
 
@@ -338,7 +374,7 @@ class Instruments extends Component
         $this->dispatch('swal', [
             'icon' => 'success',
             'title' => 'Master Template Created!',
-            'text' => "Template '{$instrument->name}' is ready for area and parameter definition."
+            'text' => "Template '{$instrument->name}' is ready for area and parameter definition.",
         ]);
     }
 
@@ -349,12 +385,12 @@ class Instruments extends Component
         $this->cloneTargetProgramId = $this->selectedProgramId;
 
         if ($this->cloneTargetProgramId) {
-            $prog = \App\Models\Program::find($this->cloneTargetProgramId);
-            $this->templateName = "{$source->name} - " . ($prog ? $prog->name : 'Program');
-            $this->templateCode = ($prog ? "INST-{$prog->code}-" : "{$source->code}-") . strtoupper(str_replace(' ', '', $source->level ?? 'LVL')) . '-' . now()->year;
+            $prog = Program::find($this->cloneTargetProgramId);
+            $this->templateName = "{$source->name} - ".($prog ? $prog->name : 'Program');
+            $this->templateCode = ($prog ? "INST-{$prog->code}-" : "{$source->code}-").strtoupper(str_replace(' ', '', $source->level ?? 'LVL')).'-'.now()->year;
         } else {
             $this->templateName = "Copy of {$source->name}";
-            $this->templateCode = "{$source->code}-COPY-" . rand(10, 99);
+            $this->templateCode = "{$source->code}-COPY-".rand(10, 99);
         }
 
         $this->templateLevel = $source->level ?? 'Level III';
@@ -379,7 +415,7 @@ class Instruments extends Component
         ]);
 
         $source = Instrument::with(['areas.parameters.criteria'])->findOrFail($this->sourceTemplateId);
-        $targetProgram = $this->cloneTargetProgramId ? \App\Models\Program::find($this->cloneTargetProgramId) : null;
+        $targetProgram = $this->cloneTargetProgramId ? Program::find($this->cloneTargetProgramId) : null;
 
         $newInstrument = DB::transaction(function () use ($source, $targetProgram) {
             $cloned = Instrument::create([
@@ -434,7 +470,7 @@ class Instruments extends Component
 
         AuditLog::create([
             'user_id' => Auth::id(),
-            'action' => $targetProgram 
+            'action' => $targetProgram
                 ? "Duplicated Instrument from {$source->name} to Program {$targetProgram->name}: {$newInstrument->name}"
                 : "Duplicated Master Template from {$source->name} to {$newInstrument->name}",
             'target_type' => 'Instrument',
@@ -452,9 +488,9 @@ class Instruments extends Component
         $this->dispatch('swal', [
             'icon' => 'success',
             'title' => 'Instrument Duplicated!',
-            'text' => $targetProgram 
-                ? "Instrument duplicated specifically for {$targetProgram->name}." 
-                : "Template '{$newInstrument->name}' created successfully."
+            'text' => $targetProgram
+                ? "Instrument duplicated specifically for {$targetProgram->name}."
+                : "Template '{$newInstrument->name}' created successfully.",
         ]);
     }
 
@@ -468,12 +504,12 @@ class Instruments extends Component
             $this->areaCode = $area->code;
             $this->areaName = $area->name;
             $this->areaOrder = $area->order;
-            $this->areaWeight = $area->weight ? (float)$area->weight : null;
+            $this->areaWeight = $area->weight ? (float) $area->weight : null;
             $this->areaDescription = $area->description ?? '';
         } else {
             $instrument = Instrument::with('areas')->find($this->selectedInstrumentId);
             $nextOrder = $instrument ? ($instrument->areas->count() + 1) : 1;
-            $this->areaCode = "Area " . $this->toRoman($nextOrder);
+            $this->areaCode = 'Area '.$this->toRoman($nextOrder);
             $this->areaName = '';
             $this->areaOrder = $nextOrder;
             $this->areaWeight = 10.00;
@@ -616,7 +652,7 @@ class Instruments extends Component
             $this->criterionTags = is_array($crit->required_tags) ? $crit->required_tags : [];
             $this->criterionOrder = $crit->order;
         } else {
-            $prefix = match($this->activeSection) {
+            $prefix = match ($this->activeSection) {
                 'systems' => 'S',
                 'implementation' => 'I',
                 'outcomes' => 'O',
@@ -627,7 +663,7 @@ class Instruments extends Component
                 ->where('section', $this->activeSection)
                 ->count();
 
-            $this->criterionCode = "{$prefix}." . ($existingCount + 1);
+            $this->criterionCode = "{$prefix}.".($existingCount + 1);
             $this->criterionStatement = '';
             $this->criterionDescription = '';
             $this->criterionTags = [];
@@ -648,7 +684,9 @@ class Instruments extends Component
     public function addTag()
     {
         $raw = trim($this->newTagInput);
-        if (empty($raw)) return;
+        if (empty($raw)) {
+            return;
+        }
 
         $tag = str_starts_with($raw, '#') ? $raw : "#{$raw}";
         $tag = preg_replace('/\s+/', '_', $tag);
@@ -773,7 +811,7 @@ class Instruments extends Component
     private function toRoman(int $num): string
     {
         $map = [
-            10 => 'X', 9 => 'IX', 5 => 'V', 4 => 'IV', 1 => 'I'
+            10 => 'X', 9 => 'IX', 5 => 'V', 4 => 'IV', 1 => 'I',
         ];
         $result = '';
         foreach ($map as $value => $roman) {
@@ -782,6 +820,7 @@ class Instruments extends Component
                 $num -= $value;
             }
         }
+
         return $result ?: 'I';
     }
 
@@ -809,16 +848,16 @@ class Instruments extends Component
 
         $user = Auth::user();
         if ($user && $user->hasRole('college-head') && $user->college_id) {
-            $colleges = \App\Models\College::where('id', $user->college_id)
+            $colleges = College::where('id', $user->college_id)
                 ->with(['programs' => fn ($q) => $q->orderBy('name')])
                 ->get();
         } else {
-            $colleges = \App\Models\College::with(['programs' => fn ($q) => $q->orderBy('name')])
+            $colleges = College::with(['programs' => fn ($q) => $q->orderBy('name')])
                 ->orderBy('name')
                 ->get();
         }
 
-        $selectedProgram = $this->selectedProgramId ? \App\Models\Program::with('college')->find($this->selectedProgramId) : null;
+        $selectedProgram = $this->selectedProgramId ? Program::with('college')->find($this->selectedProgramId) : null;
 
         return view('livewire.configuration.instruments', [
             'accreditationScope' => $this->accreditationScope,

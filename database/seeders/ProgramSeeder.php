@@ -226,7 +226,9 @@ class ProgramSeeder extends Seeder
 
         foreach ($programsData as $collegeCode => $collegePrograms) {
             $college = $colleges->get($collegeCode);
-            if (!$college) continue;
+            if (! $college) {
+                continue;
+            }
 
             foreach ($collegePrograms as $code => $name) {
                 Program::updateOrCreate(

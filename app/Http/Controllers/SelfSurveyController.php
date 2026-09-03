@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\SelfSurveyArea;
 use App\Models\SelfSurveyRating;
-use App\Models\SelfSurveyIndicator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -37,19 +36,19 @@ class SelfSurveyController extends Controller
      */
     public function getRatings(Request $request)
     {
-        $areaId  = $request->get('area_id');
-        $userId  = Auth::id();
+        $areaId = $request->get('area_id');
+        $userId = Auth::id();
 
-        if (!$areaId) {
+        if (! $areaId) {
             return response()->json(['error' => 'area_id required'], 422);
         }
 
         $area = SelfSurveyArea::with(['parameters.indicators'])->find($areaId);
-        if (!$area) {
+        if (! $area) {
             return response()->json(['error' => 'Area not found'], 404);
         }
 
-        $indicatorIds = $area->parameters->flatMap(fn($p) => $p->indicators->pluck('id'));
+        $indicatorIds = $area->parameters->flatMap(fn ($p) => $p->indicators->pluck('id'));
 
         $ratings = SelfSurveyRating::whereIn('indicator_id', $indicatorIds)
             ->where('rated_by', $userId)
@@ -65,14 +64,14 @@ class SelfSurveyController extends Controller
     {
         $request->validate([
             'indicator_id' => 'required|exists:self_survey_indicators,id',
-            'rating'       => 'nullable|integer|min:0|max:5',
+            'rating' => 'nullable|integer|min:0|max:5',
         ]);
 
         $userId = Auth::id();
 
         $record = SelfSurveyRating::updateOrCreate(
             ['indicator_id' => $request->indicator_id, 'rated_by' => $userId],
-            ['rating'       => $request->rating]
+            ['rating' => $request->rating]
         );
 
         return response()->json(['success' => true, 'rating' => $record]);

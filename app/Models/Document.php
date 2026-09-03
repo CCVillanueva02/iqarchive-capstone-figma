@@ -19,11 +19,11 @@ class Document extends Model
         'title',
         'file_path',
         'status',
-        'visibility'
+        'visibility',
     ];
 
     protected $casts = [
-        'confirmed_at' => 'datetime'
+        'confirmed_at' => 'datetime',
     ];
 
     public function uploader()

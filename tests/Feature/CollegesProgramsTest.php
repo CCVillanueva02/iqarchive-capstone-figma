@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Configuration\CollegesPrograms;
 use App\Models\College;
 use App\Models\Program;
 use App\Models\Role;
@@ -19,6 +20,7 @@ beforeEach(function () {
 function createTestUser(string $roleName): User
 {
     $role = Role::where('role_name', $roleName)->first();
+
     return User::factory()->create([
         'role_id' => $role->id,
     ]);
@@ -59,7 +61,7 @@ test('iqa staff can create a college and program via livewire', function () {
     $user = createTestUser('iqa-staff');
 
     Livewire::actingAs($user)
-        ->test(\App\Livewire\Configuration\CollegesPrograms::class)
+        ->test(CollegesPrograms::class)
         ->set('college_name', 'College of Information Technology')
         ->set('college_code', 'CIT')
         ->set('college_campus', 'Main Campus (Legazpi)')
@@ -74,7 +76,7 @@ test('iqa staff can create a college and program via livewire', function () {
     $college = College::where('code', 'CIT')->first();
 
     Livewire::actingAs($user)
-        ->test(\App\Livewire\Configuration\CollegesPrograms::class)
+        ->test(CollegesPrograms::class)
         ->set('program_college_id', $college->id)
         ->set('program_name', 'Bachelor of Science in Information Technology')
         ->set('program_code', 'BSIT')
@@ -94,7 +96,7 @@ test('college head cannot create college via livewire', function () {
     $user = createTestUser('college-head');
 
     Livewire::actingAs($user)
-        ->test(\App\Livewire\Configuration\CollegesPrograms::class)
+        ->test(CollegesPrograms::class)
         ->set('college_name', 'Unauthorized College')
         ->set('college_code', 'UC')
         ->call('createCollege')
@@ -113,7 +115,7 @@ test('iqa staff can soft delete college and program', function () {
     ]);
 
     Livewire::actingAs($user)
-        ->test(\App\Livewire\Configuration\CollegesPrograms::class)
+        ->test(CollegesPrograms::class)
         ->set('programId', $program->id)
         ->call('deleteProgram')
         ->assertHasNoErrors();
@@ -121,7 +123,7 @@ test('iqa staff can soft delete college and program', function () {
     $this->assertSoftDeleted('programs', ['id' => $program->id]);
 
     Livewire::actingAs($user)
-        ->test(\App\Livewire\Configuration\CollegesPrograms::class)
+        ->test(CollegesPrograms::class)
         ->set('collegeId', $college->id)
         ->call('deleteCollege')
         ->assertHasNoErrors();

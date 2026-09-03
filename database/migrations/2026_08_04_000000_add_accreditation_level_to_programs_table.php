@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (Schema::hasTable('programs') && !Schema::hasColumn('programs', 'accreditation_level')) {
+        if (Schema::hasTable('programs') && ! Schema::hasColumn('programs', 'accreditation_level')) {
             Schema::table('programs', function (Blueprint $table) {
                 $table->string('accreditation_level')->default('Candidate Status')->after('code');
             });

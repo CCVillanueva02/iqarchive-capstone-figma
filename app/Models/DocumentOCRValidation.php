@@ -16,11 +16,11 @@ class DocumentOCRValidation extends Model
         'validated_by',
         'extracted_data',
         'validated_at',
-        'validation_status'
+        'validation_status',
     ];
 
     protected $casts = [
-        'validated_at' => 'datetime'
+        'validated_at' => 'datetime',
     ];
 
     public function document()

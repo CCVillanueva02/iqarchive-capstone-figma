@@ -7,6 +7,7 @@ use App\Models\AuditLog;
 use App\Models\College;
 use App\Models\ComplianceRequirement;
 use App\Models\Document;
+use App\Models\DocumentCategory;
 use App\Models\DocumentReview;
 use App\Models\Instrument;
 use App\Models\InstrumentArea;
@@ -118,7 +119,7 @@ test('college dean can view verification workspace and verify a document', funct
         'order' => 1,
     ]);
 
-    $category = \App\Models\DocumentCategory::create(['name' => 'Accreditation Evidence']);
+    $category = DocumentCategory::create(['name' => 'Accreditation Evidence']);
 
     $doc = Document::create([
         'title' => 'BOR Resolution 2026',
@@ -188,7 +189,7 @@ test('dean can flag document for revisions with inline feedback', function () {
         'created_by' => $tfUser->id,
     ]);
 
-    $category = \App\Models\DocumentCategory::create(['name' => 'Accreditation Evidence']);
+    $category = DocumentCategory::create(['name' => 'Accreditation Evidence']);
 
     $doc = Document::create([
         'title' => 'Curriculum Matrix Draft',

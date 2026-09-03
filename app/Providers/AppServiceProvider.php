@@ -2,9 +2,19 @@
 
 namespace App\Providers;
 
+use App\Models\AuditLog;
+use App\Models\Document;
+use App\Models\Role;
+use App\Models\TaskForce;
+use App\Models\TaskForceMember;
+use App\Models\User;
 use Carbon\CarbonImmutable;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Auth\Events\Logout;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
@@ -35,13 +45,13 @@ class AppServiceProvider extends ServiceProvider
     protected function configureAuditTrails(): void
     {
         // 1. Successful Authentication Logins
-        \Illuminate\Support\Facades\Event::listen(
-            \Illuminate\Auth\Events\Login::class,
-            function (\Illuminate\Auth\Events\Login $event) {
-                \App\Models\AuditLog::create([
+        Event::listen(
+            Login::class,
+            function (Login $event) {
+                AuditLog::create([
                     'user_id' => $event->user->id,
                     'action' => 'login',
-                    'target_type' => \App\Models\User::class,
+                    'target_type' => User::class,
                     'target_id' => $event->user->id,
                     'timestamp' => now(),
                 ]);
@@ -49,14 +59,14 @@ class AppServiceProvider extends ServiceProvider
         );
 
         // 2. Authentication Logouts
-        \Illuminate\Support\Facades\Event::listen(
-            \Illuminate\Auth\Events\Logout::class,
-            function (\Illuminate\Auth\Events\Logout $event) {
+        Event::listen(
+            Logout::class,
+            function (Logout $event) {
                 if ($event->user) {
-                    \App\Models\AuditLog::create([
+                    AuditLog::create([
                         'user_id' => $event->user->id,
                         'action' => 'logout',
-                        'target_type' => \App\Models\User::class,
+                        'target_type' => User::class,
                         'target_id' => $event->user->id,
                         'timestamp' => now(),
                     ]);
@@ -65,13 +75,13 @@ class AppServiceProvider extends ServiceProvider
         );
 
         // 3. Password Resets
-        \Illuminate\Support\Facades\Event::listen(
-            \Illuminate\Auth\Events\PasswordReset::class,
-            function (\Illuminate\Auth\Events\PasswordReset $event) {
-                \App\Models\AuditLog::create([
+        Event::listen(
+            PasswordReset::class,
+            function (PasswordReset $event) {
+                AuditLog::create([
                     'user_id' => $event->user->id,
                     'action' => 'password_reset',
-                    'target_type' => \App\Models\User::class,
+                    'target_type' => User::class,
                     'target_id' => $event->user->id,
                     'timestamp' => now(),
                 ]);
@@ -79,17 +89,17 @@ class AppServiceProvider extends ServiceProvider
         );
 
         // 4. Document Eloquent Observers
-        \App\Models\Document::created(function (\App\Models\Document $document) {
-            \App\Models\AuditLog::create([
+        Document::created(function (Document $document) {
+            AuditLog::create([
                 'user_id' => auth()->id() ?? $document->uploaded_by,
                 'action' => 'document_upload',
-                'target_type' => \App\Models\Document::class,
+                'target_type' => Document::class,
                 'target_id' => $document->id,
                 'timestamp' => now(),
             ]);
         });
 
-        \App\Models\Document::updated(function (\App\Models\Document $document) {
+        Document::updated(function (Document $document) {
             $action = 'document_update';
 
             if ($document->isDirty('status')) {
@@ -101,20 +111,20 @@ class AppServiceProvider extends ServiceProvider
                 }
             }
 
-            \App\Models\AuditLog::create([
+            AuditLog::create([
                 'user_id' => auth()->id() ?? $document->confirmed_by ?? $document->uploaded_by,
                 'action' => $action,
-                'target_type' => \App\Models\Document::class,
+                'target_type' => Document::class,
                 'target_id' => $document->id,
                 'timestamp' => now(),
             ]);
         });
 
-        \App\Models\Document::deleted(function (\App\Models\Document $document) {
-            \App\Models\AuditLog::create([
+        Document::deleted(function (Document $document) {
+            AuditLog::create([
                 'user_id' => auth()->id() ?? $document->uploaded_by,
                 'action' => 'document_delete',
-                'target_type' => \App\Models\Document::class,
+                'target_type' => Document::class,
                 'target_id' => $document->id,
                 'timestamp' => now(),
             ]);
@@ -127,37 +137,38 @@ class AppServiceProvider extends ServiceProvider
     protected function configureAuthorization(): void
     {
         // Only IQA Staff (and System Administrator) can manage (add/edit/soft-delete) Colleges & Programs
-        Gate::define('manageCollegesAndPrograms', function (\App\Models\User $user) {
+        Gate::define('manageCollegesAndPrograms', function (User $user) {
             return $user->hasRole(['iqa-staff', 'system-administrator']);
         });
 
         // Authorized roles can view Colleges & Programs configuration
-        Gate::define('viewCollegesAndPrograms', function (\App\Models\User $user) {
+        Gate::define('viewCollegesAndPrograms', function (User $user) {
             return $user->hasRole(['iqa-staff', 'system-administrator', 'university-administrator', 'college-head', 'task-force-member']);
         });
 
         // Only IQA Staff (and System Administrator) can manage (add/remove) Task Force members
-        Gate::define('manageTaskForceMembers', function (\App\Models\User $user) {
+        Gate::define('manageTaskForceMembers', function (User $user) {
             return $user->hasRole(['iqa-staff', 'system-administrator']);
         });
 
         // Deans, IQA Staff, University Admins, System Admins, and assigned members can view Task Force roster
-        Gate::define('viewTaskForceRoster', function (\App\Models\User $user, \App\Models\TaskForce $taskForce) {
+        Gate::define('viewTaskForceRoster', function (User $user, TaskForce $taskForce) {
             if ($user->hasRole(['iqa-staff', 'system-administrator', 'university-administrator'])) {
                 return true;
             }
             if ($user->hasRole('college-head') && $user->college_id === $taskForce->college_id) {
                 return true;
             }
+
             return $taskForce->members()->where('users.id', $user->id)->exists();
         });
 
         // TaskForce Created Observer: Automatically assign college Dean as Task Force Lead
-        \App\Models\TaskForce::created(function (\App\Models\TaskForce $taskForce) {
+        TaskForce::created(function (TaskForce $taskForce) {
             if ($taskForce->college_id) {
-                $collegeHeadRoleId = \App\Models\Role::where('role_name', 'college-head')->value('id');
+                $collegeHeadRoleId = Role::where('role_name', 'college-head')->value('id');
                 if ($collegeHeadRoleId) {
-                    $deans = \App\Models\User::where('college_id', $taskForce->college_id)
+                    $deans = User::where('college_id', $taskForce->college_id)
                         ->where(function ($query) use ($collegeHeadRoleId) {
                             $query->where('role_id', $collegeHeadRoleId)
                                 ->orWhereHas('roles', function ($q) use ($collegeHeadRoleId) {
@@ -166,7 +177,7 @@ class AppServiceProvider extends ServiceProvider
                         })->get();
 
                     foreach ($deans as $dean) {
-                        \App\Models\TaskForceMember::firstOrCreate(
+                        TaskForceMember::firstOrCreate(
                             ['task_force_id' => $taskForce->id, 'user_id' => $dean->id],
                             ['role_in_team' => 'lead', 'assigned_at' => now()]
                         );

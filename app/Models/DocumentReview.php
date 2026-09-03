@@ -14,11 +14,11 @@ class DocumentReview extends Model
         'reviewed_by',
         'decision',
         'remarks',
-        'reviewed_at'
+        'reviewed_at',
     ];
 
     protected $casts = [
-        'reviewed_at' => 'datetime'
+        'reviewed_at' => 'datetime',
     ];
 
     public function document()

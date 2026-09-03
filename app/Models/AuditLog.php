@@ -14,7 +14,7 @@ class AuditLog extends Model
     protected $fillable = ['user_id', 'action', 'target_type', 'target_id', 'timestamp'];
 
     protected $casts = [
-        'timestamp' => 'datetime'
+        'timestamp' => 'datetime',
     ];
 
     public function user()

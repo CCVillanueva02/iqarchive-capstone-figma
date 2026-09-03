@@ -2,7 +2,6 @@
 
 use App\Livewire\CollegeHead\Dashboard;
 use App\Models\Accreditation;
-use App\Models\AuditLog;
 use App\Models\College;
 use App\Models\Notification;
 use App\Models\Program;

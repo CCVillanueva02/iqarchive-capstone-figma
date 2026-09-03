@@ -3,7 +3,6 @@
 namespace App\Livewire\SystemAdministrator;
 
 use App\Models\AuditLog;
-use App\Models\User;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -12,7 +11,9 @@ class AuditTrail extends Component
     use WithPagination;
 
     public $tab = 'sessions'; // sessions, accounts, files
+
     public $search = '';
+
     public $actionType = '';
 
     protected $queryString = [
@@ -50,9 +51,9 @@ class AuditTrail extends Component
                 ->with('user')
                 ->when($this->search, function ($query) {
                     $query->whereHas('user', function ($q) {
-                        $q->where('first_name', 'like', '%' . $this->search . '%')
-                          ->orWhere('last_name', 'like', '%' . $this->search . '%')
-                          ->orWhere('email', 'like', '%' . $this->search . '%');
+                        $q->where('first_name', 'like', '%'.$this->search.'%')
+                            ->orWhere('last_name', 'like', '%'.$this->search.'%')
+                            ->orWhere('email', 'like', '%'.$this->search.'%');
                     });
                 })
                 ->orderBy('timestamp', 'desc');
@@ -82,12 +83,12 @@ class AuditTrail extends Component
                 ->whereIn('action', ['CREATE_USER', 'UPDATE_USER', 'DEACTIVATE_USER', 'ACTIVATE_USER', 'account_create', 'account_update', 'password_reset'])
                 ->when($this->search, function ($query) {
                     $query->where(function ($q) {
-                        $q->where('action', 'like', '%' . $this->search . '%')
-                          ->orWhereHas('user', function ($u) {
-                              $u->where('first_name', 'like', '%' . $this->search . '%')
-                                ->orWhere('last_name', 'like', '%' . $this->search . '%')
-                                ->orWhere('email', 'like', '%' . $this->search . '%');
-                          });
+                        $q->where('action', 'like', '%'.$this->search.'%')
+                            ->orWhereHas('user', function ($u) {
+                                $u->where('first_name', 'like', '%'.$this->search.'%')
+                                    ->orWhere('last_name', 'like', '%'.$this->search.'%')
+                                    ->orWhere('email', 'like', '%'.$this->search.'%');
+                            });
                     });
                 })
                 ->when($this->actionType, function ($query) {
@@ -101,12 +102,12 @@ class AuditTrail extends Component
                 ->where('action', 'like', 'document_%')
                 ->when($this->search, function ($query) {
                     $query->where(function ($q) {
-                        $q->where('action', 'like', '%' . $this->search . '%')
-                          ->orWhereHas('user', function ($u) {
-                              $u->where('first_name', 'like', '%' . $this->search . '%')
-                                ->orWhere('last_name', 'like', '%' . $this->search . '%')
-                                ->orWhere('email', 'like', '%' . $this->search . '%');
-                          });
+                        $q->where('action', 'like', '%'.$this->search.'%')
+                            ->orWhereHas('user', function ($u) {
+                                $u->where('first_name', 'like', '%'.$this->search.'%')
+                                    ->orWhere('last_name', 'like', '%'.$this->search.'%')
+                                    ->orWhere('email', 'like', '%'.$this->search.'%');
+                            });
                     });
                 })
                 ->when($this->actionType, function ($query) {
@@ -116,7 +117,6 @@ class AuditTrail extends Component
                 ->paginate(10);
         }
 
-        
         $actionsQuery = AuditLog::select('action')->distinct()->orderBy('action');
         if ($this->tab === 'sessions') {
             $actionsQuery->whereIn('action', ['login', 'logout']);

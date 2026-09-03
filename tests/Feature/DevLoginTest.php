@@ -1,21 +1,22 @@
 <?php
 
 use App\Models\User;
+use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    $this->seed(\Database\Seeders\DatabaseSeeder::class);
+    $this->seed(DatabaseSeeder::class);
 });
 
 dataset('dev_login_roles', [
-    'System Administrator'   => ['system-administrator', 'dashboard.system-administrator'],
-    'IQA Staff'              => ['iqa-staff', 'dashboard.iqa-staff'],
-    'Accreditor'             => ['accreditor', 'submissions.accreditor'],
-    'BU Executive'           => ['university-administrator', 'analytics.university-administrator'],
-    'College Head (Dean)'    => ['college-head', 'dashboard.college-head'],
-    'Task Force Member'      => ['task-force-member', 'dashboard.task-force-member'],
+    'System Administrator' => ['system-administrator', 'dashboard.system-administrator'],
+    'IQA Staff' => ['iqa-staff', 'dashboard.iqa-staff'],
+    'Accreditor' => ['accreditor', 'submissions.accreditor'],
+    'BU Executive' => ['university-administrator', 'analytics.university-administrator'],
+    'College Head (Dean)' => ['college-head', 'dashboard.college-head'],
+    'Task Force Member' => ['task-force-member', 'dashboard.task-force-member'],
 ]);
 
 test('dev login route successfully authenticates user and redirects to correct landing page', function (string $roleSlug, string $expectedRouteName) {

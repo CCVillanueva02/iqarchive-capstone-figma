@@ -3,8 +3,6 @@
 use App\Livewire\TaskForce\TaskForceDashboard;
 use App\Models\Accreditation;
 use App\Models\College;
-use App\Models\Document;
-use App\Models\DocumentCategory;
 use App\Models\Instrument;
 use App\Models\InstrumentArea;
 use App\Models\InstrumentCriterion;

@@ -1,14 +1,31 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\AccreditationEvidenceController;
+use App\Http\Controllers\CollegeController;
+use App\Http\Controllers\DocumentCategoryController;
 use App\Http\Controllers\GoogleAuthController;
+use App\Http\Controllers\ProgramController;
+use App\Http\Controllers\SelfSurveyController;
 use App\Http\Controllers\SubmissionController;
+use App\Livewire\Accreditation\VisitsIndex;
+use App\Livewire\CollegeHead\DeanVerification;
+use App\Livewire\CollegeHead\InstrumentCustomization;
+use App\Livewire\Configuration\CollegesPrograms;
+use App\Livewire\Configuration\Instruments;
+use App\Livewire\IqaAdmin\Accounts;
+use App\Livewire\Monitoring\MonitoringOverview;
+use App\Livewire\TaskForce\TaskForceOverview;
+use App\Models\Program;
+use App\Models\Role;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    $totalPrograms = \App\Models\Program::count();
+    $totalPrograms = Program::count();
 
-    $levelCounts = \App\Models\Program::selectRaw('accreditation_level, count(*) as count')
+    $levelCounts = Program::selectRaw('accreditation_level, count(*) as count')
         ->groupBy('accreditation_level')
         ->pluck('count', 'accreditation_level')
         ->toArray();
@@ -20,7 +37,7 @@ Route::get('/', function () {
     $candidate = 0;
 
     foreach ($levelCounts as $level => $count) {
-        $normalized = strtolower(trim((string)$level));
+        $normalized = strtolower(trim((string) $level));
         if (str_contains($normalized, 'iv')) {
             $levelIV += $count;
         } elseif (str_contains($normalized, 'iii')) {
@@ -67,7 +84,7 @@ Route::middleware('guest')->group(function () {
 });
 
 // Accreditation Monitoring (Overview, Summary Report, Master Programs Directory)
-Route::get('/monitoring', \App\Livewire\Monitoring\MonitoringOverview::class)->name('monitoring.index');
+Route::get('/monitoring', MonitoringOverview::class)->name('monitoring.index');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     // Landing gateway: redirects to the appropriate role-specific homepage
@@ -86,68 +103,75 @@ Route::middleware(['auth', 'verified'])->group(function () {
         if ($role === 'university-administrator') {
             return redirect()->route('analytics.university-administrator');
         }
-        return redirect()->route('dashboard.' . $role);
+
+        return redirect()->route('dashboard.'.$role);
     })->name('dashboard');
 
     // Accreditor explicit route mapping (no sidebar, no header/footer, loads submission view)
-    Route::get("roles/accreditor/submission", function () {
+    Route::get('roles/accreditor/submission', function () {
         $user = Auth::user();
-        if (!$user || $user->role !== 'accreditor') {
+        if (! $user || $user->role !== 'accreditor') {
             abort(403, 'Unauthorized action.');
         }
-        if (!view()->exists("pages.roles.accreditor.submission")) {
+        if (! view()->exists('pages.roles.accreditor.submission')) {
             return view('pages.workspace.placeholder', [
                 'title' => 'Accreditor Evaluation Submissions',
                 'roleName' => 'AACCUP Accreditor',
             ]);
         }
-        return view("pages.roles.accreditor.submission");
-    })->name("submissions.accreditor");
 
-    Route::get("roles/accreditor/dashboard", function () {
+        return view('pages.roles.accreditor.submission');
+    })->name('submissions.accreditor');
+
+    Route::get('roles/accreditor/dashboard', function () {
         $user = Auth::user();
-        if (!$user || $user->role !== 'accreditor') {
+        if (! $user || $user->role !== 'accreditor') {
             abort(403, 'Unauthorized action.');
         }
+
         return redirect()->route('submissions.accreditor');
-    })->name("dashboard.accreditor");
+    })->name('dashboard.accreditor');
 
     // University Administrator explicit route mapping (analytics as landing page)
-    Route::get("roles/university-administrator/analytics", function () {
+    Route::get('roles/university-administrator/analytics', function () {
         $user = Auth::user();
-        if (!$user || !$user->hasRole(['university-administrator', 'system-administrator', 'iqa-staff'])) {
+        if (! $user || ! $user->hasRole(['university-administrator', 'system-administrator', 'iqa-staff'])) {
             abort(403, 'Unauthorized action.');
         }
-        return view("pages.roles.university-administrator.analytics");
-    })->name("analytics.university-administrator");
 
-    Route::get("roles/university-administrator/dashboard", function () {
+        return view('pages.roles.university-administrator.analytics');
+    })->name('analytics.university-administrator');
+
+    Route::get('roles/university-administrator/dashboard', function () {
         $user = Auth::user();
-        if (!$user || !$user->hasRole(['university-administrator', 'system-administrator', 'iqa-staff'])) {
+        if (! $user || ! $user->hasRole(['university-administrator', 'system-administrator', 'iqa-staff'])) {
             abort(403, 'Unauthorized action.');
         }
+
         return redirect()->route('analytics.university-administrator');
-    })->name("dashboard.university-administrator");
+    })->name('dashboard.university-administrator');
 
-    Route::get("roles/university-administrator/reports", function () {
+    Route::get('roles/university-administrator/reports', function () {
         $user = Auth::user();
-        if (!$user || !$user->hasRole(['university-administrator', 'system-administrator', 'iqa-staff'])) {
+        if (! $user || ! $user->hasRole(['university-administrator', 'system-administrator', 'iqa-staff'])) {
             abort(403, 'Unauthorized action.');
         }
+
         return view('pages.workspace.placeholder', [
             'title' => 'Reports',
             'roleName' => 'BU Executive',
         ]);
-    })->name("reports.university-administrator");
+    })->name('reports.university-administrator');
 
     // Active role switcher route for multi-role users
-    Route::post('switch-role', function (\Illuminate\Http\Request $request) {
+    Route::post('switch-role', function (Request $request) {
         $role = $request->input('role');
         $user = Auth::user();
 
         if ($user && $user->hasRole($role)) {
             session(['active_role' => $role]);
-            return redirect()->route('dashboard')->with('status', 'Switched active role to ' . ucwords(str_replace('-', ' ', $role)));
+
+            return redirect()->route('dashboard')->with('status', 'Switched active role to '.ucwords(str_replace('-', ' ', $role)));
         }
 
         return back()->with('error', 'Unauthorized role switch request.');
@@ -163,37 +187,40 @@ Route::middleware(['auth', 'verified'])->group(function () {
     foreach ($roles as $role) {
         Route::get("roles/{$role}/dashboard", function () use ($role) {
             $user = Auth::user();
-            if (!$user || (!$user->hasRole($role) && !($user->hasRole(['iqa-staff']) && $role === 'iqa-staff'))) {
+            if (! $user || (! $user->hasRole($role) && ! ($user->hasRole(['iqa-staff']) && $role === 'iqa-staff'))) {
                 abort(403, 'Unauthorized action.');
             }
             if ($user->hasRole($role)) {
                 session(['active_role' => $role]);
             }
-            if (!view()->exists("pages.roles.{$role}.dashboard")) {
-                return view("pages.roles.iqa-staff.dashboard");
+            if (! view()->exists("pages.roles.{$role}.dashboard")) {
+                return view('pages.roles.iqa-staff.dashboard');
             }
+
             return view("pages.roles.{$role}.dashboard");
         })->name("dashboard.{$role}");
 
         Route::get("roles/{$role}/documents", function () use ($role) {
             $user = Auth::user();
-            if (!$user || (!$user->hasRole($role) && !($user->hasRole(['iqa-staff']) && $role === 'iqa-staff'))) {
+            if (! $user || (! $user->hasRole($role) && ! ($user->hasRole(['iqa-staff']) && $role === 'iqa-staff'))) {
                 abort(403, 'Unauthorized action.');
             }
             if ($user->hasRole($role)) {
                 session(['active_role' => $role]);
             }
+
             return view('pages.documents.index');
         })->name("documents.{$role}");
 
         Route::get("roles/{$role}/submissions", function () use ($role) {
             $user = Auth::user();
-            if (!$user || (!$user->hasRole($role) && !($user->hasRole(['iqa-staff']) && $role === 'iqa-staff'))) {
+            if (! $user || (! $user->hasRole($role) && ! ($user->hasRole(['iqa-staff']) && $role === 'iqa-staff'))) {
                 abort(403, 'Unauthorized action.');
             }
             if ($user->hasRole($role)) {
                 session(['active_role' => $role]);
             }
+
             return view('pages.workspace.placeholder', [
                 'title' => 'Submissions',
                 'roleName' => ucwords(str_replace('-', ' ', $role)),
@@ -202,12 +229,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::get("roles/{$role}/reports", function () use ($role) {
             $user = Auth::user();
-            if (!$user || (!$user->hasRole($role) && !($user->hasRole(['iqa-staff']) && $role === 'iqa-staff'))) {
+            if (! $user || (! $user->hasRole($role) && ! ($user->hasRole(['iqa-staff']) && $role === 'iqa-staff'))) {
                 abort(403, 'Unauthorized action.');
             }
             if ($user->hasRole($role)) {
                 session(['active_role' => $role]);
             }
+
             return view('pages.workspace.placeholder', [
                 'title' => 'Reports',
                 'roleName' => ucwords(str_replace('-', ' ', $role)),
@@ -216,12 +244,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::get("roles/{$role}/settings", function () use ($role) {
             $user = Auth::user();
-            if (!$user || (!$user->hasRole($role) && !($user->hasRole(['iqa-staff']) && $role === 'iqa-staff'))) {
+            if (! $user || (! $user->hasRole($role) && ! ($user->hasRole(['iqa-staff']) && $role === 'iqa-staff'))) {
                 abort(403, 'Unauthorized action.');
             }
             if ($user->hasRole($role)) {
                 session(['active_role' => $role]);
             }
+
             return view('pages.workspace.placeholder', [
                 'title' => 'Settings',
                 'roleName' => ucwords(str_replace('-', ' ', $role)),
@@ -231,9 +260,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('roles/iqa-staff/audit-trail', function () {
         $user = Auth::user();
-        if (!$user || !$user->hasRole(['iqa-staff', 'system-administrator'])) {
+        if (! $user || ! $user->hasRole(['iqa-staff', 'system-administrator'])) {
             abort(403, 'Unauthorized action.');
         }
+
         return view('pages.roles.iqa-staff.audit-trail');
     })->name('audit-trail.iqa-staff');
 
@@ -241,38 +271,38 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return redirect()->route('audit-trail.iqa-staff');
     })->name('audit-trail.iqa-admin');
 
-    Route::get('roles/iqa-staff/accounts', \App\Livewire\IqaAdmin\Accounts::class)
+    Route::get('roles/iqa-staff/accounts', Accounts::class)
         ->name('accounts.iqa-staff');
 
     Route::get('roles/iqa-admin/accounts', function () {
         return redirect()->route('accounts.iqa-staff');
     })->name('accounts.iqa-admin');
 
-    Route::get('roles/system-administrator/accounts', \App\Livewire\SystemAdministrator\Accounts::class)
+    Route::get('roles/system-administrator/accounts', App\Livewire\SystemAdministrator\Accounts::class)
         ->name('accounts.system-administrator');
 
     // Accreditation Visits (Record a Visit)
-    Route::get('visits', \App\Livewire\Accreditation\VisitsIndex::class)
+    Route::get('visits', VisitsIndex::class)
         ->name('visits.index');
 
     // Task Force Management Overview & Create Modal (Accessible to authenticated roles)
-    Route::get('task-forces', \App\Livewire\TaskForce\TaskForceOverview::class)
+    Route::get('task-forces', TaskForceOverview::class)
         ->name('task-forces.index');
 
     // Colleges & Programs Configuration Management
-    Route::get('configuration/colleges-programs', \App\Livewire\Configuration\CollegesPrograms::class)
+    Route::get('configuration/colleges-programs', CollegesPrograms::class)
         ->name('configuration.colleges-programs');
 
     // Accreditation Instruments Configuration Management (Module 4)
-    Route::get('configuration/instruments', \App\Livewire\Configuration\Instruments::class)
+    Route::get('configuration/instruments', Instruments::class)
         ->name('configuration.instruments');
 
     // Program-Specific Accreditation Instrument Customization (Dean Stage 4)
-    Route::get('accreditation/{accreditation}/instrument', \App\Livewire\CollegeHead\InstrumentCustomization::class)
+    Route::get('accreditation/{accreditation}/instrument', InstrumentCustomization::class)
         ->name('accreditation.instrument');
 
     // Dean Evidence Verification & Quality Control Portal (Step 6)
-    Route::get('accreditation/{accreditation}/verify', \App\Livewire\CollegeHead\DeanVerification::class)
+    Route::get('accreditation/{accreditation}/verify', DeanVerification::class)
         ->name('accreditation.verify');
 
     // Document Submission Store (Program Chair / College Head / Task Force / IQA Member)
@@ -281,36 +311,36 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('documents/{id}/serve', [SubmissionController::class, 'serveDocument'])->name('documents.serve');
 
     // Program Management & Accreditation API routes
-    Route::get('api/programs', [\App\Http\Controllers\ProgramController::class, 'index'])->name('api.programs.index');
-    Route::post('api/programs', [\App\Http\Controllers\ProgramController::class, 'store'])->name('api.programs.store');
-    Route::put('api/programs/{id}', [\App\Http\Controllers\ProgramController::class, 'update'])->name('api.programs.update');
-    Route::delete('api/programs/{id}', [\App\Http\Controllers\ProgramController::class, 'destroy'])->name('api.programs.destroy');
+    Route::get('api/programs', [ProgramController::class, 'index'])->name('api.programs.index');
+    Route::post('api/programs', [ProgramController::class, 'store'])->name('api.programs.store');
+    Route::put('api/programs/{id}', [ProgramController::class, 'update'])->name('api.programs.update');
+    Route::delete('api/programs/{id}', [ProgramController::class, 'destroy'])->name('api.programs.destroy');
 
-    Route::get('api/colleges', [\App\Http\Controllers\ProgramController::class, 'getColleges'])->name('api.colleges.index');
-    Route::post('api/colleges', [\App\Http\Controllers\CollegeController::class, 'store'])->name('api.colleges.store');
-    Route::put('api/colleges/{id}', [\App\Http\Controllers\CollegeController::class, 'update'])->name('api.colleges.update');
-    Route::delete('api/colleges/{id}', [\App\Http\Controllers\CollegeController::class, 'destroy'])->name('api.colleges.destroy');
+    Route::get('api/colleges', [ProgramController::class, 'getColleges'])->name('api.colleges.index');
+    Route::post('api/colleges', [CollegeController::class, 'store'])->name('api.colleges.store');
+    Route::put('api/colleges/{id}', [CollegeController::class, 'update'])->name('api.colleges.update');
+    Route::delete('api/colleges/{id}', [CollegeController::class, 'destroy'])->name('api.colleges.destroy');
 
     // Document Categories & Common Documents API routes
-    Route::get('api/offices', [\App\Http\Controllers\DocumentCategoryController::class, 'getOffices'])->name('api.offices.index');
-    Route::get('api/categories', [\App\Http\Controllers\DocumentCategoryController::class, 'index'])->name('api.categories.index');
-    Route::post('api/categories', [\App\Http\Controllers\DocumentCategoryController::class, 'store'])->name('api.categories.store');
-    Route::get('api/common-documents', [\App\Http\Controllers\DocumentCategoryController::class, 'getDocuments'])->name('api.common-documents.index');
-    Route::post('api/common-documents', [\App\Http\Controllers\DocumentCategoryController::class, 'storeDocument'])->name('api.common-documents.store');
-    Route::post('api/common-documents/{id}/status', [\App\Http\Controllers\DocumentCategoryController::class, 'updateStatus'])->name('api.common-documents.update-status');
-    Route::delete('api/common-documents/{id}', [\App\Http\Controllers\DocumentCategoryController::class, 'destroyDocument'])->name('api.common-documents.destroy');
-    Route::get('documents/{id}/view', [\App\Http\Controllers\DocumentCategoryController::class, 'serveDocument'])->name('documents.serve');
+    Route::get('api/offices', [DocumentCategoryController::class, 'getOffices'])->name('api.offices.index');
+    Route::get('api/categories', [DocumentCategoryController::class, 'index'])->name('api.categories.index');
+    Route::post('api/categories', [DocumentCategoryController::class, 'store'])->name('api.categories.store');
+    Route::get('api/common-documents', [DocumentCategoryController::class, 'getDocuments'])->name('api.common-documents.index');
+    Route::post('api/common-documents', [DocumentCategoryController::class, 'storeDocument'])->name('api.common-documents.store');
+    Route::post('api/common-documents/{id}/status', [DocumentCategoryController::class, 'updateStatus'])->name('api.common-documents.update-status');
+    Route::delete('api/common-documents/{id}', [DocumentCategoryController::class, 'destroyDocument'])->name('api.common-documents.destroy');
+    Route::get('documents/{id}/view', [DocumentCategoryController::class, 'serveDocument'])->name('documents.serve');
 
     // Self-Survey API routes (Institutional Accreditation)
-    Route::get('api/self-survey/areas', [\App\Http\Controllers\SelfSurveyController::class, 'getAreas'])->name('api.self-survey.areas');
-    Route::get('api/self-survey/ratings', [\App\Http\Controllers\SelfSurveyController::class, 'getRatings'])->name('api.self-survey.ratings');
-    Route::post('api/self-survey/ratings', [\App\Http\Controllers\SelfSurveyController::class, 'saveRating'])->name('api.self-survey.ratings.save');
-    Route::post('api/self-survey/best-practices', [\App\Http\Controllers\SelfSurveyController::class, 'saveBestPractices'])->name('api.self-survey.best-practices');
+    Route::get('api/self-survey/areas', [SelfSurveyController::class, 'getAreas'])->name('api.self-survey.areas');
+    Route::get('api/self-survey/ratings', [SelfSurveyController::class, 'getRatings'])->name('api.self-survey.ratings');
+    Route::post('api/self-survey/ratings', [SelfSurveyController::class, 'saveRating'])->name('api.self-survey.ratings.save');
+    Route::post('api/self-survey/best-practices', [SelfSurveyController::class, 'saveBestPractices'])->name('api.self-survey.best-practices');
 
     // Step 5: Area Workspace Evidence Upload & Submission API routes
-    Route::post('api/accreditation/evidence/upload', [\App\Http\Controllers\AccreditationEvidenceController::class, 'upload'])->name('api.accreditation.evidence.upload');
-    Route::get('api/accreditation/evidence/{programId}', [\App\Http\Controllers\AccreditationEvidenceController::class, 'getProgramEvidence'])->name('api.accreditation.evidence.index');
-    Route::post('api/accreditation/evidence/submit-to-dean', [\App\Http\Controllers\AccreditationEvidenceController::class, 'submitToDean'])->name('api.accreditation.evidence.submit-to-dean');
+    Route::post('api/accreditation/evidence/upload', [AccreditationEvidenceController::class, 'upload'])->name('api.accreditation.evidence.upload');
+    Route::get('api/accreditation/evidence/{programId}', [AccreditationEvidenceController::class, 'getProgramEvidence'])->name('api.accreditation.evidence.index');
+    Route::post('api/accreditation/evidence/submit-to-dean', [AccreditationEvidenceController::class, 'submitToDean'])->name('api.accreditation.evidence.submit-to-dean');
 });
 
 if (app()->environment(['local', 'testing'])) {
@@ -333,9 +363,9 @@ if (app()->environment(['local', 'testing'])) {
             default => 'sysadmin@example.com',
         };
 
-        $user = \App\Models\User::where('email', $email)->first();
+        $user = User::where('email', $email)->first();
 
-        if (!$user) {
+        if (! $user) {
             $roleCode = match ($role) {
                 'dean', 'college-head' => 'college-head',
                 'task-force', 'task-force-member' => 'task-force-member',
@@ -343,14 +373,14 @@ if (app()->environment(['local', 'testing'])) {
                 default => $role,
             };
 
-            $roleRecord = \App\Models\Role::firstOrCreate(
+            $roleRecord = Role::firstOrCreate(
                 ['role_name' => $roleCode],
                 ['description' => ucwords(str_replace('-', ' ', $roleCode))]
             );
 
             $nameParts = explode(' ', ucwords(str_replace('-', ' ', $role)), 2);
 
-            $user = \App\Models\User::create([
+            $user = User::create([
                 'first_name' => $nameParts[0],
                 'last_name' => $nameParts[1] ?? 'User',
                 'email' => $email,
@@ -371,8 +401,9 @@ if (app()->environment(['local', 'testing'])) {
     // Dev helper to switch user role in session
     Route::get('/dev/switch-role/{role}', function ($role) {
         session(['preview_role' => $role]);
+
         return back();
     })->name('dev.switch-role');
 }
 
-require __DIR__ . '/settings.php';
+require __DIR__.'/settings.php';

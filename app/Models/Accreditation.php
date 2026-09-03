@@ -15,7 +15,7 @@ class Accreditation extends Model
         'status',
         'proposed_members',
         'target_date',
-        'created_by'
+        'created_by',
     ];
 
     protected $casts = [

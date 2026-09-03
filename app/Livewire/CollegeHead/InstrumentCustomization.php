@@ -6,10 +6,9 @@ use App\Models\Accreditation;
 use App\Models\AuditLog;
 use App\Models\Instrument;
 use App\Models\InstrumentArea;
-use App\Models\InstrumentParameter;
 use App\Models\InstrumentCriterion;
+use App\Models\InstrumentParameter;
 use App\Models\Notification;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -18,47 +17,72 @@ use Livewire\Component;
 class InstrumentCustomization extends Component
 {
     public int $accreditationId;
+
     public string $activeCategory = 'supporting-docs';
 
     public ?int $selectedInstrumentId = null;
+
     public ?int $activeAreaId = null;
+
     public ?int $activeParameterId = null;
+
     public string $activeSection = 'systems';
 
     // Modals State
     public bool $showAreaModal = false;
+
     public bool $showParameterModal = false;
+
     public bool $showCriterionModal = false;
+
     public bool $showFinalizeModal = false;
+
     public bool $showDeleteModal = false;
 
     // Form: Add/Edit Area
     public ?int $editingAreaId = null;
+
     public string $areaCode = '';
+
     public string $areaName = '';
+
     public float $areaWeight = 10.00;
+
     public int $areaOrder = 1;
+
     public string $areaDescription = '';
 
     // Form: Add/Edit Parameter
     public ?int $editingParameterId = null;
+
     public string $paramCode = '';
+
     public string $paramName = '';
+
     public int $paramOrder = 1;
+
     public string $paramDescription = '';
 
     // Form: Add/Edit Criterion
     public ?int $editingCriterionId = null;
+
     public string $criterionCode = '';
+
     public string $criterionStatement = '';
+
     public string $criterionDescription = '';
+
     public array $criterionTags = [];
+
     public string $newTagInput = '';
+
     public int $criterionOrder = 1;
 
     // Form: Delete Confirmation
     public string $deleteType = '';
+
     public ?int $deleteTargetId = null;
+
     public string $deleteTargetTitle = '';
 
     public function mount(int $accreditation)
@@ -87,14 +111,14 @@ class InstrumentCustomization extends Component
         $acc = Accreditation::with(['program.college'])->findOrFail($this->accreditationId);
         $user = Auth::user();
 
-        $masterCode = match($this->activeCategory) {
+        $masterCode = match ($this->activeCategory) {
             'supporting-docs' => 'INST-PROG-SUPPORTING-DOCS',
             'self-survey' => 'INST-PROG-SELF-SURVEY',
             'compliance-reports' => 'INST-PROG-COMPLIANCE-REPORT',
             default => 'INST-PROG-SUPPORTING-DOCS',
         };
 
-        $categoryPattern = match($this->activeCategory) {
+        $categoryPattern = match ($this->activeCategory) {
             'supporting-docs' => 'SUPP',
             'self-survey' => 'SURVEY',
             'compliance-reports' => 'COMPLIANCE',
@@ -106,11 +130,11 @@ class InstrumentCustomization extends Component
             ->where('accreditation_id', $acc->id)
             ->where(function ($q) use ($categoryPattern) {
                 $q->where('code', 'like', "%{$categoryPattern}%")
-                  ->orWhere('name', 'like', "%" . match($categoryPattern) {
-                      'SURVEY' => 'Self-Survey',
-                      'COMPLIANCE' => 'Compliance',
-                      default => 'Supporting',
-                  } . "%");
+                    ->orWhere('name', 'like', '%'.match ($categoryPattern) {
+                        'SURVEY' => 'Self-Survey',
+                        'COMPLIANCE' => 'Compliance',
+                        default => 'Supporting',
+                    }.'%');
             })
             ->first();
 
@@ -200,7 +224,7 @@ class InstrumentCustomization extends Component
         } else {
             $inst = Instrument::with('areas')->find($this->selectedInstrumentId);
             $nextNum = ($inst ? $inst->areas->count() : 0) + 1;
-            $this->areaCode = "Area " . $this->toRoman($nextNum);
+            $this->areaCode = 'Area '.$this->toRoman($nextNum);
             $this->areaName = '';
             $this->areaWeight = 10.00;
             $this->areaOrder = $nextNum;
@@ -348,7 +372,7 @@ class InstrumentCustomization extends Component
             $this->criterionTags = is_array($crit->required_tags) ? $crit->required_tags : [];
             $this->criterionOrder = $crit->order;
         } else {
-            $prefix = match($this->activeSection) {
+            $prefix = match ($this->activeSection) {
                 'systems' => 'S',
                 'implementation' => 'I',
                 'outcomes' => 'O',
@@ -359,7 +383,7 @@ class InstrumentCustomization extends Component
                 ->where('section', $this->activeSection)
                 ->count();
 
-            $this->criterionCode = "{$prefix}." . ($count + 1);
+            $this->criterionCode = "{$prefix}.".($count + 1);
             $this->criterionStatement = '';
             $this->criterionDescription = '';
             $this->criterionTags = [];
@@ -380,7 +404,9 @@ class InstrumentCustomization extends Component
     public function addTag()
     {
         $raw = trim($this->newTagInput);
-        if (empty($raw)) return;
+        if (empty($raw)) {
+            return;
+        }
 
         $tag = str_starts_with($raw, '#') ? $raw : "#{$raw}";
         $tag = preg_replace('/\s+/', '_', $tag);
@@ -509,7 +535,7 @@ class InstrumentCustomization extends Component
         }
 
         $this->closeDeleteModal();
-        $this->dispatch('swal', ['icon' => 'success', 'title' => 'Deleted Successfully', 'text' => "Item removed."]);
+        $this->dispatch('swal', ['icon' => 'success', 'title' => 'Deleted Successfully', 'text' => 'Item removed.']);
     }
 
     // ── Finalize & Unlock Evidence Repository (Advance to Stage 5) ───
@@ -558,6 +584,7 @@ class InstrumentCustomization extends Component
         $this->closeFinalizeModal();
 
         session()->flash('status', "Instrument setup completed for {$acc->program->name}! Evidence repository is now unlocked for the Task Force.");
+
         return redirect()->route('dashboard.college-head');
     }
 
@@ -567,7 +594,7 @@ class InstrumentCustomization extends Component
             'program.college',
             'taskForce.members',
             'instrument.areas.parameters.criteria',
-            'instrument.complianceRequirements'
+            'instrument.complianceRequirements',
         ])->find($this->accreditationId);
     }
 
@@ -576,7 +603,7 @@ class InstrumentCustomization extends Component
         $map = [
             'M' => 1000, 'CM' => 900, 'D' => 500, 'CD' => 400,
             'C' => 100, 'XC' => 90, 'L' => 50, 'XL' => 40,
-            'X' => 10, 'IX' => 9, 'V' => 5, 'IV' => 4, 'I' => 1
+            'X' => 10, 'IX' => 9, 'V' => 5, 'IV' => 4, 'I' => 1,
         ];
         $result = '';
         foreach ($map as $roman => $value) {
@@ -585,6 +612,7 @@ class InstrumentCustomization extends Component
                 $num -= $value;
             }
         }
+
         return $result ?: 'I';
     }
 

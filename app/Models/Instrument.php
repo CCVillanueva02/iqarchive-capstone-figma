@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -65,14 +66,14 @@ class Instrument extends Model
     public function cloneForProgram(Program $program, ?Accreditation $accreditation = null, ?User $actor = null): self
     {
         return DB::transaction(function () use ($program, $accreditation, $actor) {
-            $categorySuffix = match(true) {
+            $categorySuffix = match (true) {
                 str_contains($this->code, 'SELF-SURVEY') || str_contains($this->name, 'Self-Survey') => '-SURVEY',
                 str_contains($this->code, 'COMPLIANCE') || str_contains($this->name, 'Compliance') => '-COMPLIANCE',
                 str_contains($this->code, 'SUPPORTING') || str_contains($this->name, 'Supporting') => '-SUPP',
                 default => '',
             };
 
-            $baseCode = "INST-{$program->code}" . $categorySuffix . '-' . strtoupper(str_replace(' ', '', $this->level ?? 'LVL')) . '-' . now()->year;
+            $baseCode = "INST-{$program->code}".$categorySuffix.'-'.strtoupper(str_replace(' ', '', $this->level ?? 'LVL')).'-'.now()->year;
             $code = $baseCode;
             $counter = 1;
             while (self::where('code', $code)->exists()) {
@@ -135,7 +136,7 @@ class Instrument extends Model
                             'accreditation_id' => $accreditation->id,
                             'instrument_criterion_id' => $clonedCriterion->id,
                             'description' => $criterion->statement,
-                            'due_date' => $accreditation->target_date ? \Carbon\Carbon::parse($accreditation->target_date)->subDays(15) : now()->addMonths(3),
+                            'due_date' => $accreditation->target_date ? Carbon::parse($accreditation->target_date)->subDays(15) : now()->addMonths(3),
                             'status' => 'pending',
                         ]);
                     }

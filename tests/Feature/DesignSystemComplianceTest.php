@@ -38,8 +38,8 @@ function stripNonScannableBlocks(string $content): string
     // JS color strings (Chart.js) and SVG fill attributes (OAuth logos,
     // filetype icons) aren't Tailwind classes — strip before scanning so
     // they're never mistaken for class-based violations, while preserving line numbers.
-    $content = preg_replace_callback('/<script\b[^>]*>.*?<\/script>/is', fn($m) => str_repeat("\n", substr_count($m[0], "\n")), $content);
-    $content = preg_replace_callback('/<svg\b[^>]*>.*?<\/svg>/is', fn($m) => str_repeat("\n", substr_count($m[0], "\n")), $content);
+    $content = preg_replace_callback('/<script\b[^>]*>.*?<\/script>/is', fn ($m) => str_repeat("\n", substr_count($m[0], "\n")), $content);
+    $content = preg_replace_callback('/<svg\b[^>]*>.*?<\/svg>/is', fn ($m) => str_repeat("\n", substr_count($m[0], "\n")), $content);
 
     return $content;
 }
@@ -53,8 +53,8 @@ function findDesignTokenViolations(string $filePath, string $relativePath): arra
     $utilities = implode('|', FORBIDDEN_UTILITY_PREFIXES);
     $colors = implode('|', FORBIDDEN_COLOR_PREFIXES);
 
-    $colorPattern = '/\b(' . $utilities . ')-(' . $colors . ')-\d{2,3}\b/';
-    $hexPattern = '/\b(' . $utilities . ')-\[#[0-9a-fA-F]{3,6}\]/';
+    $colorPattern = '/\b('.$utilities.')-('.$colors.')-\d{2,3}\b/';
+    $hexPattern = '/\b('.$utilities.')-\[#[0-9a-fA-F]{3,6}\]/';
     $fontSizePattern = '/text-\[\d+px\]/';
 
     foreach ($lines as $i => $line) {
@@ -76,12 +76,12 @@ function findDesignTokenViolations(string $filePath, string $relativePath): arra
 
 it('has no untokenized Tailwind classes in Blade views', function () {
     $viewsPath = resource_path('views');
-    $finder = (new Finder())->files()->in($viewsPath)->name('*.blade.php');
+    $finder = (new Finder)->files()->in($viewsPath)->name('*.blade.php');
 
     $allViolations = [];
 
     foreach ($finder as $file) {
-        $relativePath = 'resources/views/' . str_replace('\\', '/', $file->getRelativePathname());
+        $relativePath = 'resources/views/'.str_replace('\\', '/', $file->getRelativePathname());
         $allViolations = array_merge(
             $allViolations,
             findDesignTokenViolations($file->getRealPath(), $relativePath)
@@ -90,6 +90,6 @@ it('has no untokenized Tailwind classes in Blade views', function () {
 
     expect($allViolations)->toBe(
         [],
-        "Design token violations found (see resources/css/token-mapping.md):\n" . implode("\n", $allViolations)
+        "Design token violations found (see resources/css/token-mapping.md):\n".implode("\n", $allViolations)
     );
 });

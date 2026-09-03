@@ -4,10 +4,9 @@ namespace Database\Seeders;
 
 use App\Models\Instrument;
 use App\Models\InstrumentArea;
-use App\Models\InstrumentParameter;
 use App\Models\InstrumentCriterion;
+use App\Models\InstrumentParameter;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class AaccupMasterInstrumentSeeder extends Seeder
 {
@@ -58,7 +57,7 @@ class AaccupMasterInstrumentSeeder extends Seeder
                             ['section' => 'implementation', 'code' => 'I.2', 'statement' => 'Faculty, staff, students, and external stakeholders participate in the formulation and review of the VMGO.', 'tags' => ['#StakeholderAssemblyMinutes', '#ConsultationLogs']],
                             ['section' => 'outcomes', 'code' => 'O.1', 'statement' => 'The VMGO are crafted and duly approved by the Board of Regents/Trustees.', 'tags' => ['#BoardResolutionCopy']],
                             ['section' => 'best_practices', 'code' => 'BP.1', 'statement' => 'Interactive digital portals and broadcast media continuously publish VMGO statements.', 'tags' => ['#DigitalSignage', '#PublicPortal']],
-                        ]
+                        ],
                     ],
                     [
                         'code' => 'Parameter B',
@@ -68,9 +67,9 @@ class AaccupMasterInstrumentSeeder extends Seeder
                             ['section' => 'systems', 'code' => 'S.1', 'statement' => 'The VMGO are available on bulletin boards, in catalogs/manuals, and in other communication media.', 'tags' => ['#StudentHandbook', '#CourseSyllabi', '#PhotoDocumentation']],
                             ['section' => 'implementation', 'code' => 'I.1', 'statement' => 'A structured system of dissemination and acceptability of the VMGO is enforced across all campuses.', 'tags' => ['#DisseminationPlan', '#FacultyHandbook']],
                             ['section' => 'outcomes', 'code' => 'O.1', 'statement' => 'Stakeholders demonstrate high awareness and understanding of the VMGO based on survey evaluations.', 'tags' => ['#StakeholderSurveyReport', '#AcceptabilitySurvey']],
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ],
             [
                 'code' => 'Area II',
@@ -87,7 +86,7 @@ class AaccupMasterInstrumentSeeder extends Seeder
                             ['section' => 'systems', 'code' => 'S.1', 'statement' => 'Faculty members teaching in the program possess masteral and doctoral degrees vertically articulated to the discipline.', 'tags' => ['#FacultyProfile', '#TranscriptOfRecords', '#DiplomaCopy']],
                             ['section' => 'implementation', 'code' => 'I.1', 'statement' => 'PRC professional licenses and board certifications are actively maintained by faculty members.', 'tags' => ['#PRC_License', '#CertificateOfGoodStanding']],
                             ['section' => 'outcomes', 'code' => 'O.1', 'statement' => 'At least 75% of full-time faculty hold relevant post-graduate degrees.', 'tags' => ['#FacultyMasterList', '#CHED_FormE']],
-                        ]
+                        ],
                     ],
                     [
                         'code' => 'Parameter B',
@@ -96,7 +95,7 @@ class AaccupMasterInstrumentSeeder extends Seeder
                         'criteria' => [
                             ['section' => 'systems', 'code' => 'S.1', 'statement' => 'A merit selection plan and transparent hiring guidelines govern faculty recruitment.', 'tags' => ['#HiringGuidelines', '#MeritSelectionPlan']],
                             ['section' => 'implementation', 'code' => 'I.1', 'statement' => 'Newly appointed faculty undergo comprehensive institutional orientation and mentoring.', 'tags' => ['#OnboardingLogs', '#FacultyMentoringReport']],
-                        ]
+                        ],
                     ],
                     [
                         'code' => 'Parameter C',
@@ -106,9 +105,9 @@ class AaccupMasterInstrumentSeeder extends Seeder
                             ['section' => 'systems', 'code' => 'S.1', 'statement' => 'The institution provides institutional funding and study leaves for continuous faculty development.', 'tags' => ['#FacultyDevPlan', '#ScholarshipPolicy']],
                             ['section' => 'implementation', 'code' => 'I.1', 'statement' => 'Faculty actively participate in national and international conferences, workshops, and research colloquia.', 'tags' => ['#TrainingCertificates', '#TravelOrders']],
                             ['section' => 'best_practices', 'code' => 'BP.1', 'statement' => 'Institutional incentives and deloading are awarded for SCOPUS/WoS peer-reviewed publications.', 'tags' => ['#PublicationIncentivePolicy', '#SCOPUS_Proof']],
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ],
             [
                 'code' => 'Area III',
@@ -125,7 +124,7 @@ class AaccupMasterInstrumentSeeder extends Seeder
                             ['section' => 'systems', 'code' => 'S.1', 'statement' => 'The program curriculum adheres strictly to latest CHED Policies, Standards, and Guidelines (PSG/CMO).', 'tags' => ['#CHED_CMO_Compliance', '#ProspectusCopy']],
                             ['section' => 'implementation', 'code' => 'I.1', 'statement' => 'OBE syllabus is prepared and distributed for every course with mapped student learning outcomes.', 'tags' => ['#OBE_Syllabi', '#CurriculumMap']],
                             ['section' => 'outcomes', 'code' => 'O.1', 'statement' => 'Program graduates demonstrate high passing rates in professional licensure examinations.', 'tags' => ['#PRC_PassingReport', '#BoardAnalytics']],
-                        ]
+                        ],
                     ],
                     [
                         'code' => 'Parameter B',
@@ -134,9 +133,9 @@ class AaccupMasterInstrumentSeeder extends Seeder
                         'criteria' => [
                             ['section' => 'systems', 'code' => 'S.1', 'statement' => 'Faculty-authored instructional modules and courseware undergo formal review and copyrighting.', 'tags' => ['#IM_EvaluationMatrix', '#CopyrightCertificates']],
                             ['section' => 'implementation', 'code' => 'I.1', 'statement' => 'Learning management systems (LMS) and multimedia resources are actively integrated into courses.', 'tags' => ['#LMS_AnalyticsReport', '#CoursewareAccessLogs']],
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ],
             [
                 'code' => 'Area IV',
@@ -152,9 +151,9 @@ class AaccupMasterInstrumentSeeder extends Seeder
                         'criteria' => [
                             ['section' => 'systems', 'code' => 'S.1', 'statement' => 'The institution has an active and comprehensive student counseling, guidance, and placement services center.', 'tags' => ['#StudentManual', '#GuidanceServicesLog']],
                             ['section' => 'implementation', 'code' => 'I.1', 'statement' => 'Career counseling, job placement fairs, and alumni tracer tracking services are systematically provided.', 'tags' => ['#CareerFairReport', '#AlumniTracerSurvey']],
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ],
             [
                 'code' => 'Area V',
@@ -171,9 +170,9 @@ class AaccupMasterInstrumentSeeder extends Seeder
                             ['section' => 'systems', 'code' => 'S.1', 'statement' => 'The program operates under an updated research agenda aligned with institutional priorities.', 'tags' => ['#ResearchAgenda', '#EthicsClearanceGuidelines']],
                             ['section' => 'implementation', 'code' => 'I.1', 'statement' => 'Faculty and students publish researches in indexed journals and present at conferences.', 'tags' => ['#PublishedArticles', '#ConferenceProceedings']],
                             ['section' => 'outcomes', 'code' => 'O.1', 'statement' => 'Research outputs produce commercialized technologies, patents, utility models, or policy briefs.', 'tags' => ['#PatentCopy', '#PolicyBriefs']],
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ],
             [
                 'code' => 'Area VI',
@@ -189,9 +188,9 @@ class AaccupMasterInstrumentSeeder extends Seeder
                         'criteria' => [
                             ['section' => 'systems', 'code' => 'S.1', 'statement' => 'Extension agenda addresses direct needs of adopted communities and industry sectors.', 'tags' => ['#ExtensionAgenda', '#NeedsAssessmentReport']],
                             ['section' => 'implementation', 'code' => 'I.1', 'statement' => 'Partnership agreements (MOA/MOU) are active with local government units and partner organizations.', 'tags' => ['#SignedMOA_Partnership', '#ExtensionActivityReports']],
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ],
             [
                 'code' => 'Area VII',
@@ -207,9 +206,9 @@ class AaccupMasterInstrumentSeeder extends Seeder
                         'criteria' => [
                             ['section' => 'systems', 'code' => 'S.1', 'statement' => 'Core titles, professional references, and peer-reviewed journals meet CHED standard volumes.', 'tags' => ['#LibraryHoldingsInventory', '#E-LibrarySubscriptions']],
                             ['section' => 'implementation', 'code' => 'I.1', 'statement' => 'Integrated library management systems (OPAC/Koha) support patron search and digital access.', 'tags' => ['#OPAC_Report', '#LibraryUtilizationLogs']],
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ],
             [
                 'code' => 'Area VIII',
@@ -225,9 +224,9 @@ class AaccupMasterInstrumentSeeder extends Seeder
                         'criteria' => [
                             ['section' => 'systems', 'code' => 'S.1', 'statement' => 'Adequate, well-ventilated, and digitally equipped classrooms are available for all classes.', 'tags' => ['#ClassroomInventory', '#FacilityInspectionReport']],
                             ['section' => 'implementation', 'code' => 'I.1', 'statement' => 'Fire safety certificates, earthquake drills, and PWD ramps comply with national building codes.', 'tags' => ['#FireSafetyCertificate', '#PWD_ComplianceProof']],
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ],
             [
                 'code' => 'Area IX',
@@ -244,9 +243,9 @@ class AaccupMasterInstrumentSeeder extends Seeder
                             ['section' => 'systems', 'code' => 'S.1', 'statement' => 'Laboratory apparatus, workstations, and software licenses satisfy class size requirements.', 'tags' => ['#LabInventoryList', '#SoftwareLicenses']],
                             ['section' => 'implementation', 'code' => 'I.1', 'statement' => 'Safety guidelines, emergency eye-wash, first aid kits, and hazardous waste disposal are maintained.', 'tags' => ['#LabSafetyManual', '#WasteDisposalCertificates']],
                             ['section' => 'outcomes', 'code' => 'O.1', 'statement' => 'Laboratory experiments produce hands-on competency and verified student project deliverables.', 'tags' => ['#StudentLabManuals', '#ProjectExhibits']],
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ],
             [
                 'code' => 'Area X',
@@ -263,10 +262,10 @@ class AaccupMasterInstrumentSeeder extends Seeder
                             ['section' => 'systems', 'code' => 'S.1', 'statement' => 'The organizational chart clearly outlines operational authority, responsibilities, and accountability.', 'tags' => ['#OrganizationalChart', '#AdministrativeManual']],
                             ['section' => 'implementation', 'code' => 'I.1', 'statement' => 'Internal Quality Assurance (IQA) audits and management reviews are conducted regularly.', 'tags' => ['#IQA_AuditReports', '#ManagementReviewMinutes']],
                             ['section' => 'outcomes', 'code' => 'O.1', 'statement' => 'Budget allocation supports program sustainability and physical development targets.', 'tags' => ['#FinancialAllocationStatement', '#PPMP_Copy']],
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         // Seed 3 Program Master Instruments
@@ -330,9 +329,9 @@ class AaccupMasterInstrumentSeeder extends Seeder
                         'criteria' => [
                             ['section' => 'systems', 'code' => 'S.1', 'statement' => 'The University operates under an approved 5-year Strategic Development Plan aligned with SUC levelling norms.', 'tags' => ['#StrategicPlan', '#BOR_Approval']],
                             ['section' => 'implementation', 'code' => 'I.1', 'statement' => 'Management committees and academic councils convene regularly with verified minutes and action logs.', 'tags' => ['#CouncilMinutes', '#PolicyResolutions']],
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ],
             [
                 'code' => 'Area II',
@@ -347,9 +346,9 @@ class AaccupMasterInstrumentSeeder extends Seeder
                         'order' => 1,
                         'criteria' => [
                             ['section' => 'systems', 'code' => 'S.1', 'statement' => 'University-wide grading systems, retention policies, and graduation guidelines are standardized.', 'tags' => ['#AcademicManual', '#RegistrarPolicy']],
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ],
             [
                 'code' => 'Area III',
@@ -364,9 +363,9 @@ class AaccupMasterInstrumentSeeder extends Seeder
                         'order' => 1,
                         'criteria' => [
                             ['section' => 'systems', 'code' => 'S.1', 'statement' => 'The University maintains a comprehensive Human Resource Development Master Plan.', 'tags' => ['#HR_MasterPlan', '#StaffingPattern']],
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ],
             [
                 'code' => 'Area IV',
@@ -381,9 +380,9 @@ class AaccupMasterInstrumentSeeder extends Seeder
                         'order' => 1,
                         'criteria' => [
                             ['section' => 'systems', 'code' => 'S.1', 'statement' => 'Central R&D Centers coordinate multidisciplinary projects funded by DOST, CHED, and international partners.', 'tags' => ['#R&D_AnnualReport', '#ExternalGrantsLog']],
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ],
             [
                 'code' => 'Area V',
@@ -398,9 +397,9 @@ class AaccupMasterInstrumentSeeder extends Seeder
                         'order' => 1,
                         'criteria' => [
                             ['section' => 'systems', 'code' => 'S.1', 'statement' => 'Active bilateral agreements and international consortia memberships expand institutional reach.', 'tags' => ['#International_MOA', '#GlobalConsortiaProof']],
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ],
             [
                 'code' => 'Area VI',
@@ -415,9 +414,9 @@ class AaccupMasterInstrumentSeeder extends Seeder
                         'order' => 1,
                         'criteria' => [
                             ['section' => 'systems', 'code' => 'S.1', 'statement' => 'University-wide health, scholarship, student housing, and psychological welfare services are operational.', 'tags' => ['#OSAS_AnnualReport', '#HealthClinicCertificates']],
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ],
             [
                 'code' => 'Area VII',
@@ -432,9 +431,9 @@ class AaccupMasterInstrumentSeeder extends Seeder
                         'order' => 1,
                         'criteria' => [
                             ['section' => 'systems', 'code' => 'S.1', 'statement' => 'The University Library System centralizes electronic resources and automated inter-library loans.', 'tags' => ['#UniversityLibraryMasterPlan', '#DatabaseSubscriptions']],
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ],
             [
                 'code' => 'Area VIII',
@@ -449,9 +448,9 @@ class AaccupMasterInstrumentSeeder extends Seeder
                         'order' => 1,
                         'criteria' => [
                             ['section' => 'systems', 'code' => 'S.1', 'statement' => 'Approved Land Use Development and Infrastructure Plan (LUDIP) guides physical expansion.', 'tags' => ['#LUDIP_Document', '#GreenCampusPolicy']],
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ],
             [
                 'code' => 'Area IX',
@@ -466,10 +465,10 @@ class AaccupMasterInstrumentSeeder extends Seeder
                         'order' => 1,
                         'criteria' => [
                             ['section' => 'systems', 'code' => 'S.1', 'statement' => 'The University maintains active ISO 9001:2015 Quality Management System certification across all campuses.', 'tags' => ['#ISO_Certificate', '#InternalAuditSummary']],
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         // Seed 3 Institutional Master Instruments

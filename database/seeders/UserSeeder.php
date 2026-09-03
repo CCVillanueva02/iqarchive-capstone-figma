@@ -136,13 +136,15 @@ class UserSeeder extends Seeder
 
         foreach ($usersToSeed as $userData) {
             $role = $roles->get($userData['role']);
-            if (!$role) continue;
+            if (! $role) {
+                continue;
+            }
 
-            $programId = $userData['program'] && $programs->has($userData['program']) 
-                ? $programs->get($userData['program'])->id 
+            $programId = $userData['program'] && $programs->has($userData['program'])
+                ? $programs->get($userData['program'])->id
                 : null;
-            $collegeId = $userData['college'] && $colleges->has($userData['college']) 
-                ? $colleges->get($userData['college'])->id 
+            $collegeId = $userData['college'] && $colleges->has($userData['college'])
+                ? $colleges->get($userData['college'])->id
                 : null;
 
             $user = User::firstOrCreate(
