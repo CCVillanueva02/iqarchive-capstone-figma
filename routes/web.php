@@ -2,10 +2,8 @@
 
 use App\Http\Controllers\AccreditationEvidenceController;
 use App\Http\Controllers\CollegeController;
-use App\Http\Controllers\DocumentCategoryController;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\ProgramController;
-use App\Http\Controllers\SelfSurveyController;
 use App\Http\Controllers\SubmissionController;
 use App\Livewire\Accreditation\VisitsIndex;
 use App\Livewire\CollegeHead\DeanVerification;
@@ -279,22 +277,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('api/colleges', [CollegeController::class, 'store'])->name('api.colleges.store');
     Route::put('api/colleges/{id}', [CollegeController::class, 'update'])->name('api.colleges.update');
     Route::delete('api/colleges/{id}', [CollegeController::class, 'destroy'])->name('api.colleges.destroy');
-
-    // Document Categories & Common Documents API routes
-    Route::get('api/offices', [DocumentCategoryController::class, 'getOffices'])->name('api.offices.index');
-    Route::get('api/categories', [DocumentCategoryController::class, 'index'])->name('api.categories.index');
-    Route::post('api/categories', [DocumentCategoryController::class, 'store'])->name('api.categories.store');
-    Route::get('api/common-documents', [DocumentCategoryController::class, 'getDocuments'])->name('api.common-documents.index');
-    Route::post('api/common-documents', [DocumentCategoryController::class, 'storeDocument'])->name('api.common-documents.store');
-    Route::post('api/common-documents/{id}/status', [DocumentCategoryController::class, 'updateStatus'])->name('api.common-documents.update-status');
-    Route::delete('api/common-documents/{id}', [DocumentCategoryController::class, 'destroyDocument'])->name('api.common-documents.destroy');
-    Route::get('documents/{id}/view', [DocumentCategoryController::class, 'serveDocument'])->name('documents.view');
-
-    // Self-Survey API routes (Institutional Accreditation)
-    Route::get('api/self-survey/areas', [SelfSurveyController::class, 'getAreas'])->name('api.self-survey.areas');
-    Route::get('api/self-survey/ratings', [SelfSurveyController::class, 'getRatings'])->name('api.self-survey.ratings');
-    Route::post('api/self-survey/ratings', [SelfSurveyController::class, 'saveRating'])->name('api.self-survey.ratings.save');
-    Route::post('api/self-survey/best-practices', [SelfSurveyController::class, 'saveBestPractices'])->name('api.self-survey.best-practices');
 
     // Step 5: Area Workspace Evidence Upload & Submission API routes
     Route::post('api/accreditation/evidence/upload', [AccreditationEvidenceController::class, 'upload'])->name('api.accreditation.evidence.upload');
