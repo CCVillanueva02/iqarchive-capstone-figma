@@ -89,6 +89,12 @@ class AccreditationEvidenceController extends Controller
         $fileName = time().'_'.preg_replace('/[^a-zA-Z0-9._-]/', '_', $uploadedFile->getClientOriginalName());
         $filePath = $uploadedFile->storeAs("documents/evidence/{$program->id}", $fileName, 'public');
 
+        if (! $filePath) {
+            return response()->json([
+                'error' => 'Storage failure: unable to store uploaded file on disk.',
+            ], 500);
+        }
+
         // Resolve or create category for Accreditation Supporting Evidence
         $category = DocumentCategory::firstOrCreate(
             ['name' => 'Supporting Documents'],
@@ -257,8 +263,8 @@ class AccreditationEvidenceController extends Controller
             return [
                 'id' => $doc->id,
                 'name' => $doc->title,
-                'fileName' => basename($doc->file_path),
-                'type' => strtoupper(pathinfo($doc->file_path, PATHINFO_EXTENSION)),
+                'fileName' => ! empty($doc->file_path) ? basename($doc->file_path) : null,
+                'type' => ! empty($doc->file_path) ? strtoupper(pathinfo($doc->file_path, PATHINFO_EXTENSION)) : 'PDF',
                 'size' => $fileSizeFormatted,
                 'date' => $doc->created_at ? $doc->created_at->format('Y-m-d') : now()->format('Y-m-d'),
                 'uploader' => $doc->uploader ? $doc->uploader->name : 'Task Force Member',

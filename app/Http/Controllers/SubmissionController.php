@@ -105,8 +105,13 @@ class SubmissionController extends Controller
 
         $document = Document::findOrFail($id);
 
-        if (! $document->file_path) {
+        if (empty($document->file_path)) {
             abort(404, 'File path not recorded for this document.');
+        }
+
+        $fileName = basename($document->file_path);
+        if (empty($fileName)) {
+            abort(404, 'Invalid file name for this document.');
         }
 
         // Check file on public disk
@@ -116,7 +121,7 @@ class SubmissionController extends Controller
 
             return response()->file($fullPath, [
                 'Content-Type' => $mimeType,
-                'Content-Disposition' => 'inline; filename="'.basename($document->file_path).'"',
+                'Content-Disposition' => 'inline; filename="'.$fileName.'"',
             ]);
         }
 
@@ -124,10 +129,11 @@ class SubmissionController extends Controller
         $altPath = storage_path('app/public/'.$document->file_path);
         if (file_exists($altPath)) {
             $mimeType = mime_content_type($altPath) ?: 'application/pdf';
+            $altFileName = basename($altPath);
 
             return response()->file($altPath, [
                 'Content-Type' => $mimeType,
-                'Content-Disposition' => 'inline; filename="'.basename($altPath).'"',
+                'Content-Disposition' => 'inline; filename="'.$altFileName.'"',
             ]);
         }
 
