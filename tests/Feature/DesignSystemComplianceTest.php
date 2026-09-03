@@ -24,8 +24,6 @@ const FORBIDDEN_UTILITY_PREFIXES = [
 
 // relative path (from project root) => [line numbers] deliberately exempt
 const EXEMPTIONS = [
-    'resources/views/pages/documents/partials/institutional-accreditation/self-survey-matrix.blade.php' => [141],
-    'resources/views/pages/documents/partials/program-accreditation/self-survey-matrix.blade.php' => [141],
     'resources/views/livewire/task-force/partials/dashboard/modals/submit-to-dean-modal.blade.php' => [18, 19, 20],
     'resources/views/livewire/task-force/partials/stats-row.blade.php' => [12],
     'resources/views/pages/roles/university-administrator/analytics.blade.php' => [213],
