@@ -5,3 +5,5 @@
 - Do NOT use arbitrary font size utilities (e.g. `text-[9px]`, `text-[10px]`, `text-[11px]`, `text-[20px]`).
 - Use canonical tokens: `bg-primary`, `bg-primary-dark`, `bg-brand-orange`, `bg-surface-subtle`, `bg-surface-card`, `text-label-xs`, `text-label`, `text-body-sm`, `text-body`, `text-heading-sm`, `text-heading`, `text-heading-lg`, `text-hero`.
 - Run `cmd /c npm run build` to verify asset compilation.
+- Commit every meaningful unit incrementally; do not accumulate bulky, monolithic commits.
+- For local browser testing and access, always use Dev Login (`/dev` or `/dev/login/{role}`).

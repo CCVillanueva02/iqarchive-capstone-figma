@@ -41,3 +41,25 @@ Prefer extending existing patterns over introducing new libraries or architectur
 Avoid generating or maintaining single files that are excessively long (e.g., > 150-200 lines for Blade templates/views).
  
 Always proactively splice large views, templates, and components into clean, dedicated partial files (e.g. `partials/stats-bar.blade.php`, `partials/filter-bar.blade.php`, `partials/modals.blade.php`). When creating new features or refactoring existing pages, break them into modular sub-files from the start.
+
+# Granular & Incremental Commits Policy (No Bulky Commits)
+
+Always commit incrementally after completing each meaningful part or logical milestone:
+1. **Never accumulate bulky commits:** Do not bundle large, unrelated multi-file changes into a single massive commit at the end of a session or task.
+2. **Commit every meaningful unit:** Commit each distinct logical change as soon as it is functional and verified (e.g., migration + model, controller/service logic, UI component/partial, bug fix, or test additions).
+3. **Atomic and bisectable:** Ensure the codebase remains buildable and testable at every commit (`cmd /c npm run build`, `cmd /c php artisan test`).
+4. **Conventional commit messages:** Use standard format: `type(scope): concise description` (e.g., `feat(auth): ...`, `fix(ui): ...`, `refactor(views): ...`, `test(documents): ...`).
+
+# Local Website Access & Testing (Dev Login Policy)
+
+When accessing, inspecting, or testing the running website locally (via browser subagent, Playwright, or manual verification):
+1. **Always use Dev Login:** Never attempt to fill out standard credentials or authenticate via the default `/login` form during local automated or manual testing.
+2. **Dev Sandbox Dashboard:** Navigate to `/dev` to view the interactive developer sandbox and switch between roles.
+3. **Instant Role Authentication:** Directly navigate to `/dev/login/{role}` for immediate one-click authentication without credentials:
+   - System Administrator: `/dev/login/system-administrator`
+   - IQA Staff / Member: `/dev/login/iqa-staff` (or `/dev/login/iqa-staff-multi`)
+   - College Head / Dean: `/dev/login/dean` (or `/dev/login/dean-multi`)
+   - Task Force Member: `/dev/login/task-force-member`
+   - Accreditor: `/dev/login/accreditor`
+   - University Administrator: `/dev/login/university-administrator`
+4. **Security Isolation:** Dev login routes are strictly gated to `local` and `testing` environments (`app()->environment(['local', 'testing'])`) in [`routes/web.php`](file:///c:/Users/janss/Herd/iqarchive/routes/web.php) to prevent privilege escalation outside development.
