@@ -217,3 +217,21 @@ ui-button[data-variant="primary"]:hover {
     background-color: var(--color-primary-hover) !important;
     border-color: var(--color-primary-hover) !important;
 }
+
+/* =========================================================
+   LIVEWIRE PERSIST & CSS GRID INTEGRATION
+   Livewire's @persist directive injects wrapper <div> elements
+   (<div x-persist="...">) without classes or styles. In CSS Grid
+   layouts (such as Flux's desktop workstation body grid), these
+   block-level divs become rogue grid items, breaking
+   grid-template-areas and displacing the main view by 900px+.
+   Setting display: contents removes the wrapper from the box tree
+   so child grid items ([grid-area:sidebar]) and fixed overlays
+   sit cleanly in their intended positions.
+   ========================================================= */
+[x-persist],
+[x-persist="sidebar"],
+[x-persist="sidebar-loader"],
+[x-persist="toast"] {
+    display: contents !important;
+}

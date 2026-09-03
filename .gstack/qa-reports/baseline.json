@@ -1,28 +1,17 @@
 {
-  "timestamp": "2026-09-03T16:05:00+08:00",
+  "timestamp": "2026-09-04T00:26:45+08:00",
   "branch": "v2",
-  "commit": "76d9fd1",
-  "health_score": 88,
-  "tested_urls": [
-    "http://127.0.0.1:8000/visits",
-    "http://127.0.0.1:8000/roles/system-administrator/accounts",
-    "http://127.0.0.1:8000/roles/system-administrator/reports",
-    "http://127.0.0.1:8000/accreditation/1/verify",
-    "http://127.0.0.1:8000/roles/task-force-member/dashboard",
-    "http://127.0.0.1:8000/configuration/instruments",
-    "http://127.0.0.1:8000/roles/system-administrator/documents"
-  ],
-  "categories": {
-    "functional": 85,
-    "visual": 95,
-    "accessibility": 88,
-    "performance": 92,
-    "console_cleanliness": 78
-  },
-  "issues_summary": {
-    "critical": 0,
-    "high": 1,
-    "medium": 2,
-    "low": 1
-  }
+  "commit": "48cc930",
+  "health_score": 100,
+  "tests_passed": 102,
+  "assertions_passed": 460,
+  "tests_failed": 0,
+  "issues_count": 0,
+  "modules_tested": [
+    "Sidebar Navigation Shell",
+    "Livewire State Persistence (@persist)",
+    "Workspace Subtabs (Documents & Monitoring)",
+    "Role-Based Access Control (IQA Staff, Dean, Task Force)",
+    "Design Token Compliance"
+  ]
 }
