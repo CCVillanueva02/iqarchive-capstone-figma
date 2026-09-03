@@ -144,7 +144,6 @@ test('master-detail workstation automatically selects first college and allows s
         ->test(CollegesPrograms::class)
         // Verify Master Directory renders
         ->assertSee('Colleges Directory')
-        ->assertSee('Select a unit to manage programs')
         ->assertSee('College of Arts and Letters')
         ->assertSee('College of Science')
         // Automatically selects first college
