@@ -37,6 +37,8 @@ class DocumentWorkspace extends Component
     public string $activeTab = 'common-documents'; // 'common-documents', 'program-accreditation', 'institutional-accreditation'
 
     #[Url(as: 'category')]
+    public ?string $institutionalCategory = null; // 'Self-Survey Documents', 'Compliance Reports', 'Supporting Documents', 'Narrative Profile', 'PPP'
+
     public string $programCategory = 'supporting-documents'; // 'supporting-documents', 'self-survey', 'compliance-reports', 'narrative-profile'
 
     // Role-based scoping flags
@@ -67,8 +69,16 @@ class DocumentWorkspace extends Component
 
     public ?int $selectedCategoryId = null;
 
+    public ?string $selectedCategoryName = null;
+
     // Search and filter state
     public string $searchQuery = '';
+
+    public string $collegeSearch = '';
+
+    public string $officeSearch = '';
+
+    public string $categorySearch = '';
 
     public string $statusFilter = 'all';
 
@@ -182,17 +192,16 @@ class DocumentWorkspace extends Component
                 $this->selectedProgramId = Program::where('college_id', $this->selectedCollegeId)->value('id');
             }
         } else {
-            // Unrestricted roles: default to first college & program if none selected
-            if (! $this->selectedCollegeId) {
-                $this->selectedCollegeId = College::orderBy('name')->value('id');
-            }
-            if (! $this->selectedProgramId && $this->selectedCollegeId) {
+            // Unrestricted roles: if college was provided via URL query or pre-selected, resolve program
+            if ($this->selectedCollegeId && ! $this->selectedProgramId) {
                 $this->selectedProgramId = Program::where('college_id', $this->selectedCollegeId)->orderBy('name')->value('id');
             }
         }
 
-        // Initialize active area & parameter for Program Accreditation
-        $this->initializeProgramAreaState();
+        // Initialize active area & parameter for Program Accreditation if program is selected
+        if ($this->selectedProgramId) {
+            $this->initializeProgramAreaState();
+        }
 
         // Initialize Institutional Self-Survey Area & Ratings
         $this->initializeSurveyState();
@@ -276,10 +285,21 @@ class DocumentWorkspace extends Component
         }
 
         $this->selectedCollegeId = $collegeId;
-        $this->selectedProgramId = Program::where('college_id', $collegeId)->orderBy('name')->value('id');
+        $this->selectedProgramId = null;
         $this->activeAreaId = null;
         $this->activeParameterId = null;
-        $this->initializeProgramAreaState();
+    }
+
+    public function clearCollege()
+    {
+        if ($this->isCollegeLocked) {
+            return;
+        }
+
+        $this->selectedCollegeId = null;
+        $this->selectedProgramId = null;
+        $this->activeAreaId = null;
+        $this->activeParameterId = null;
     }
 
     public function selectProgram(int $programId)
@@ -299,6 +319,61 @@ class DocumentWorkspace extends Component
         $this->activeAreaId = null;
         $this->activeParameterId = null;
         $this->initializeProgramAreaState();
+    }
+
+    public function clearProgram()
+    {
+        if ($this->isProgramLocked) {
+            return;
+        }
+
+        $this->selectedProgramId = null;
+        $this->activeAreaId = null;
+        $this->activeParameterId = null;
+    }
+
+    public function selectOffice(int $officeId)
+    {
+        $this->selectedOfficeId = $officeId;
+        $this->selectedCategoryId = null;
+        $this->selectedCategoryName = null;
+        $this->resetPage();
+    }
+
+    public function clearOffice()
+    {
+        $this->selectedOfficeId = null;
+        $this->selectedCategoryId = null;
+        $this->selectedCategoryName = null;
+        $this->resetPage();
+    }
+
+    public function selectCategory(string $categoryName)
+    {
+        $this->selectedCategoryName = $categoryName;
+        $cat = DocumentCategory::where('name', $categoryName)->first();
+        $this->selectedCategoryId = $cat?->id;
+        $this->resetPage();
+    }
+
+    public function clearCategory()
+    {
+        $this->selectedCategoryName = null;
+        $this->selectedCategoryId = null;
+        $this->resetPage();
+    }
+
+    public function selectInstitutionalCategory(?string $category)
+    {
+        $this->institutionalCategory = $category;
+        if ($category === 'Self-Survey Documents') {
+            $this->initializeSurveyState();
+        }
+    }
+
+    public function clearInstitutionalCategory()
+    {
+        $this->institutionalCategory = null;
     }
 
     public function selectArea(int $areaId)
@@ -321,6 +396,7 @@ class DocumentWorkspace extends Component
     public function selectSurveyArea(int $areaId)
     {
         $this->surveyActiveAreaId = $areaId;
+        $this->institutionalCategory = 'Self-Survey Documents';
     }
 
     // ─────────────────────────────────────────────────────────────
@@ -679,7 +755,46 @@ class DocumentWorkspace extends Component
         }
 
         // 2. Program Evidence Data
-        $colleges = College::with('programs')->orderBy('name')->get();
+        $collegesQuery = College::with('programs')->withCount('programs')->orderBy('name');
+        if (! empty($this->collegeSearch)) {
+            $cq = '%'.$this->collegeSearch.'%';
+            $collegesQuery->where(function ($sub) use ($cq) {
+                $sub->where('name', 'like', $cq)->orWhere('code', 'like', $cq);
+            });
+        }
+        $colleges = $collegesQuery->get();
+        $selectedCollege = $this->selectedCollegeId ? College::with('programs')->find($this->selectedCollegeId) : null;
+
+        // 3. Offices & Category Cards Data for Common Documents
+        $officesQuery = Office::withCount('documents')->orderBy('name');
+        if (! empty($this->officeSearch)) {
+            $oq = '%'.$this->officeSearch.'%';
+            $officesQuery->where(function ($sub) use ($oq) {
+                $sub->where('name', 'like', $oq)->orWhere('code', 'like', $oq);
+            });
+        }
+        $offices = $officesQuery->get();
+        $selectedOffice = $this->selectedOfficeId ? Office::find($this->selectedOfficeId) : null;
+
+        $categoriesQuery = DocumentCategory::orderBy('name');
+        if (! empty($this->categorySearch)) {
+            $categoriesQuery->where('name', 'like', '%'.$this->categorySearch.'%');
+        }
+        $categories = $categoriesQuery->get();
+
+        if ($this->selectedOfficeId) {
+            $docCounts = Document::where('office_id', $this->selectedOfficeId)
+                ->whereNull('program_id')
+                ->selectRaw('category_id, count(*) as count')
+                ->groupBy('category_id')
+                ->pluck('count', 'category_id')
+                ->all();
+
+            $categories->each(function ($cat) use ($docCounts) {
+                $cat->docCount = $docCounts[$cat->id] ?? 0;
+            });
+        }
+
         $selectedProgram = $this->selectedProgramId ? Program::with('college', 'accreditations')->find($this->selectedProgramId) : null;
         $instrument = $this->resolveActiveInstrument();
 
@@ -720,7 +835,7 @@ class DocumentWorkspace extends Component
             }
         }
 
-        // 3. Institutional Survey Data
+        // 4. Institutional Survey Data
         $surveyAreas = collect();
         $surveyActiveArea = null;
         if ($this->activeTab === 'institutional-accreditation' && $this->canAccessInstitutionalDocs) {
@@ -734,14 +849,16 @@ class DocumentWorkspace extends Component
             $surveyActiveArea = $surveyAreas->firstWhere('id', $this->surveyActiveAreaId) ?? $surveyAreas->first();
         }
 
-        // 4. Detail Drawer Document
+        // 5. Detail Drawer Document
         $drawerDocument = $this->drawerDocumentId ? Document::with(['uploader', 'office', 'category', 'program.college'])->find($this->drawerDocumentId) : null;
 
         return view('livewire.documents.document-workspace', [
             'colleges' => $colleges,
+            'selectedCollege' => $selectedCollege,
             'selectedProgram' => $selectedProgram,
-            'offices' => Office::orderBy('name')->get(),
-            'categories' => DocumentCategory::orderBy('name')->get(),
+            'offices' => $offices,
+            'selectedOffice' => $selectedOffice,
+            'categories' => $categories,
             'commonDocuments' => $commonDocuments,
             'instrument' => $instrument,
             'activeArea' => $activeArea,

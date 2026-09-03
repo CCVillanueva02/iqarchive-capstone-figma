@@ -49,7 +49,7 @@
             <div class="flex items-center gap-2 border-b border-zinc-200 pb-2">
                 @foreach(['systems' => 'Systems', 'implementation' => 'Implementation', 'outcomes' => 'Outcomes', 'best_practices' => 'Best Practices'] as $sKey => $sLabel)
                     <button wire:click="selectSection('{{ $sKey }}')"
-                        class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors {{ $activeSection === $sKey ? 'bg-zinc-900 text-white' : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100' }}">
+                        class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors {{ $activeSection === $sKey ? 'bg-primary text-white shadow-xs' : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100' }}">
                         {{ $sLabel }}
                     </button>
                 @endforeach

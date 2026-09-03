@@ -1,85 +1,122 @@
-<div class="bg-white border-b border-zinc-200 px-6 py-5">
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <!-- Title & Badges -->
+{{--
+    IQArchive Document Workspace Header & Breadcrumbs
+    Purpose: Displays the domain title, contextual subtitle, and hierarchical wayfinding breadcrumb bar.
+    Design: Adheres strictly to the single-line header and card-based navigation architecture from reference designs.
+--}}
+
+@php
+    // Determine dynamic title & subtitle based on active tab and drill-down state
+    if ($activeTab === 'common-documents') {
+        if ($selectedOffice && $selectedCategoryName) {
+            $pageTitle = $selectedCategoryName;
+            $pageSubtitle = 'Common documents under ' . $selectedOffice->name;
+        } elseif ($selectedOffice) {
+            $pageTitle = $selectedOffice->name;
+            $pageSubtitle = ($selectedOffice->categories_count ?? count($categories)) . ' categories • manage documents for this office';
+        } else {
+            $pageTitle = 'Common Institutional Documents';
+            $pageSubtitle = 'Centralized university-wide records, policies, and administrative issuances';
+        }
+    } elseif ($activeTab === 'program-accreditation') {
+        if ($selectedProgram) {
+            $pageTitle = $selectedProgram->name . ' (' . $selectedProgram->code . ')';
+            $pageSubtitle = ($selectedCollege?->name ?? 'Assigned College') . ' • Degree program accreditation workspace and evidence repository';
+        } elseif ($selectedCollege) {
+            $pageTitle = $selectedCollege->name . ' (' . $selectedCollege->code . ')';
+            $pageSubtitle = 'Select an academic degree program below to view compliance records and evidence';
+        } else {
+            $pageTitle = 'Program Accreditation Documents';
+            $pageSubtitle = 'Manage degree program accreditation files, faculty portfolios, and compliance reports';
+        }
+    } else {
+        if ($institutionalCategory) {
+            $pageTitle = $institutionalCategory;
+            $pageSubtitle = 'Institutional accreditation self-evaluation, diagnostic records, and compliance metrics';
+        } else {
+            $pageTitle = 'Institutional Accreditation Documents';
+            $pageSubtitle = 'Manage university-wide accreditation, governance, and self-survey compliance files';
+        }
+    }
+@endphp
+
+<div class="px-6 pt-6 pb-2 max-w-7xl w-full mx-auto flex flex-col gap-4">
+    <!-- Top Header Row: Section Title & Notification Indicator -->
+    <div class="flex items-start justify-between gap-4">
         <div>
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                    </svg>
-                </div>
-                <div>
-                    <h1 class="text-xl font-bold text-zinc-900 leading-tight">Document Repository & Accreditation Workspace</h1>
-                    <p class="text-xs text-zinc-500 mt-0.5">Centralized institutional documents, AACCUP program evidence, and self-survey metrics</p>
-                </div>
-            </div>
+            <h1 class="text-2xl font-bold text-primary tracking-tight leading-tight">{{ $pageTitle }}</h1>
+            <p class="text-sm text-zinc-500 mt-1">{{ $pageSubtitle }}</p>
         </div>
 
-        <!-- Action / Global Filters (e.g. Scoped College / Program Switcher) -->
-        <div class="flex items-center gap-3">
-            @if($activeTab === 'program-accreditation')
-                <!-- College Scoped Selector -->
-                <div class="flex items-center gap-2">
-                    <label class="text-xs font-semibold text-zinc-600 uppercase tracking-wider">College:</label>
-                    @if($isCollegeLocked)
-                        <span class="inline-flex items-center px-3 py-1.5 rounded-lg bg-zinc-100 border border-zinc-200 text-xs font-medium text-zinc-800">
-                            <svg class="w-3.5 h-3.5 mr-1.5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                            {{ $colleges->firstWhere('id', $selectedCollegeId)?->name ?? 'Assigned College' }}
-                        </span>
-                    @else
-                        <select wire:change="selectCollege($event.target.value)" class="text-xs border border-zinc-300 rounded-lg px-2.5 py-1.5 bg-white text-zinc-800 focus:ring-2 focus:ring-primary/20 focus:border-primary">
-                            @foreach($colleges as $c)
-                                <option value="{{ $c->id }}" @selected($selectedCollegeId == $c->id)>{{ $c->name }}</option>
-                            @endforeach
-                        </select>
-                    @endif
-                </div>
-
-                <!-- Program Scoped Selector -->
-                <div class="flex items-center gap-2">
-                    <label class="text-xs font-semibold text-zinc-600 uppercase tracking-wider">Program:</label>
-                    @if($isProgramLocked)
-                        <span class="inline-flex items-center px-3 py-1.5 rounded-lg bg-zinc-100 border border-zinc-200 text-xs font-medium text-zinc-800">
-                            <svg class="w-3.5 h-3.5 mr-1.5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-                            {{ $selectedProgram?->name ?? 'Assigned Program' }}
-                        </span>
-                    @else
-                        @php
-                            $availablePrograms = $colleges->firstWhere('id', $selectedCollegeId)?->programs ?? collect();
-                        @endphp
-                        <select wire:change="selectProgram($event.target.value)" class="text-xs border border-zinc-300 rounded-lg px-2.5 py-1.5 bg-white text-zinc-800 focus:ring-2 focus:ring-primary/20 focus:border-primary">
-                            @foreach($availablePrograms as $p)
-                                <option value="{{ $p->id }}" @selected($selectedProgramId == $p->id)>{{ $p->name }}</option>
-                            @endforeach
-                        </select>
-                    @endif
-                </div>
+        <!-- Right Side Utility Indicator / Notification -->
+        <div class="flex items-center gap-3 shrink-0 pt-1">
+            @if($isCollegeLocked && $userRole === 'college-head')
+                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-subtle border border-primary/15 text-xs font-semibold text-primary shadow-3xs">
+                    <svg class="w-3.5 h-3.5 text-primary/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                    <span>Scoped to {{ $selectedCollege?->code ?? 'Assigned College' }}</span>
+                </span>
+            @elseif($isProgramLocked && $userRole === 'task-force-member')
+                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 border border-emerald-200 text-xs font-semibold text-emerald-800 shadow-3xs">
+                    <svg class="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span>Scoped to {{ $selectedProgram?->code ?? 'Assigned Program' }}</span>
+                </span>
             @endif
         </div>
     </div>
 
-    <!-- Main Navigation Tabs -->
-    <div class="mt-6 flex items-center border-b border-zinc-200 -mb-5 gap-8">
-        @if($canAccessCommonDocs)
-            <button wire:click="switchTab('common-documents')"
-                class="pb-3 text-sm font-semibold transition-colors relative flex items-center gap-2 {{ $activeTab === 'common-documents' ? 'text-primary border-b-2 border-primary' : 'text-zinc-500 hover:text-zinc-800' }}">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
-                Common Documents
-            </button>
-        @endif
+    <!-- Breadcrumb Navigation Bar matching original design -->
+    <div class="bg-white border border-slate-200/60 rounded-xl px-4 py-3 shadow-3xs flex items-center gap-2 text-xs font-medium text-zinc-500 overflow-x-auto">
+        <span>Documents</span>
+        <span class="text-zinc-300">&gt;</span>
 
-        <button wire:click="switchTab('program-accreditation')"
-            class="pb-3 text-sm font-semibold transition-colors relative flex items-center gap-2 {{ $activeTab === 'program-accreditation' ? 'text-primary border-b-2 border-primary' : 'text-zinc-500 hover:text-zinc-800' }}">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            Program Accreditation
-        </button>
+        @if($activeTab === 'common-documents')
+            @if($selectedOffice)
+                <button type="button" wire:click="clearOffice" class="hover:text-primary transition font-medium cursor-pointer">Common Documents</button>
+                <span class="text-zinc-300">&gt;</span>
+                @if($selectedCategoryName)
+                    <button type="button" wire:click="clearCategory" class="hover:text-primary transition font-medium cursor-pointer">{{ $selectedOffice->name }}</button>
+                    <span class="text-zinc-300">&gt;</span>
+                    <span class="font-bold text-primary">{{ $selectedCategoryName }}</span>
+                @else
+                    <span class="font-bold text-primary">{{ $selectedOffice->name }}</span>
+                @endif
+            @else
+                <span class="font-bold text-primary">Common Documents</span>
+            @endif
 
-        @if($canAccessInstitutionalDocs)
-            <button wire:click="switchTab('institutional-accreditation')"
-                class="pb-3 text-sm font-semibold transition-colors relative flex items-center gap-2 {{ $activeTab === 'institutional-accreditation' ? 'text-primary border-b-2 border-primary' : 'text-zinc-500 hover:text-zinc-800' }}">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-                Institutional Accreditation
-            </button>
+        @elseif($activeTab === 'program-accreditation')
+            @if($selectedCollege)
+                @if(!$isCollegeLocked)
+                    <button type="button" wire:click="clearCollege" class="hover:text-primary transition font-medium cursor-pointer">Program Accreditation</button>
+                    <span class="text-zinc-300">&gt;</span>
+                @else
+                    <span>Program Accreditation</span>
+                    <span class="text-zinc-300">&gt;</span>
+                @endif
+
+                @if($selectedProgram)
+                    @if(!$isProgramLocked)
+                        <button type="button" wire:click="clearProgram" class="hover:text-primary transition font-medium cursor-pointer">{{ $selectedCollege->name }}</button>
+                        <span class="text-zinc-300">&gt;</span>
+                    @else
+                        <span>{{ $selectedCollege->name }}</span>
+                        <span class="text-zinc-300">&gt;</span>
+                    @endif
+                    <span class="font-bold text-primary">{{ $selectedProgram->name }} ({{ $selectedProgram->code }})</span>
+                @else
+                    <span class="font-bold text-primary">{{ $selectedCollege->name }}</span>
+                @endif
+            @else
+                <span class="font-bold text-primary">Program Accreditation</span>
+            @endif
+
+        @else
+            @if($institutionalCategory)
+                <button type="button" wire:click="clearInstitutionalCategory" class="hover:text-primary transition font-medium cursor-pointer">Institutional Accreditation</button>
+                <span class="text-zinc-300">&gt;</span>
+                <span class="font-bold text-primary">{{ $institutionalCategory }}</span>
+            @else
+                <span class="font-bold text-primary">Institutional Accreditation</span>
+            @endif
         @endif
     </div>
 </div>

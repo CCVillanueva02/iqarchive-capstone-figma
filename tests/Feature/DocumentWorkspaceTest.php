@@ -262,3 +262,100 @@ test('unauthorized role cannot access mismatched document workspace route', func
     $response = $this->actingAs($dean)->get(route('documents.system-administrator'));
     $response->assertStatus(403);
 });
+
+test('unrestricted user lands on 17-college card grid on program accreditation and can drill down and navigate back', function () {
+    $adminRole = Role::where('role_name', 'system-administrator')->first();
+    $admin = User::factory()->create(['role_id' => $adminRole->id]);
+
+    $college = College::create(['name' => 'College of Science', 'code' => 'CS', 'campus' => 'Main Campus']);
+    $program = Program::create(['name' => 'BS Computer Science', 'code' => 'BSCS', 'college_id' => $college->id]);
+
+    $this->actingAs($admin);
+
+    Livewire::test(DocumentWorkspace::class, ['activeTab' => 'program-accreditation'])
+        ->assertSet('selectedCollegeId', null)
+        ->assertSee('Select Academic College')
+        ->assertSee('College of Science')
+        ->assertSee('View Academic Programs')
+        // Drill down to College Programs
+        ->call('selectCollege', $college->id)
+        ->assertSet('selectedCollegeId', $college->id)
+        ->assertSet('selectedProgramId', null)
+        ->assertSee('Back to Colleges')
+        ->assertSee('BS Computer Science')
+        // Drill down to Program Workspace
+        ->call('selectProgram', $program->id)
+        ->assertSet('selectedProgramId', $program->id)
+        ->assertSee('Change Program')
+        ->assertSee('Supporting Documents')
+        // Navigate Back to Programs
+        ->call('clearProgram')
+        ->assertSet('selectedProgramId', null)
+        ->assertSee('Back to Colleges')
+        // Navigate Back to Colleges
+        ->call('clearCollege')
+        ->assertSet('selectedCollegeId', null)
+        ->assertSee('Select Academic College');
+});
+
+test('institutional accreditation renders 5 color-coded category cards and supports drill-down and back navigation', function () {
+    $adminRole = Role::where('role_name', 'system-administrator')->first();
+    $admin = User::factory()->create(['role_id' => $adminRole->id]);
+
+    $this->actingAs($admin);
+
+    Livewire::test(DocumentWorkspace::class, ['activeTab' => 'institutional-accreditation'])
+        ->assertSet('institutionalCategory', null)
+        ->assertSee('Self-Survey Documents')
+        ->assertSee('Compliance Reports')
+        ->assertSee('Supporting Documents')
+        ->assertSee('Narrative Profile')
+        ->assertSee('Performance Portfolio (PPP)')
+        ->assertSee('Open Self-Survey')
+        // Drill down to Self-Survey Documents
+        ->call('selectInstitutionalCategory', 'Self-Survey Documents')
+        ->assertSet('institutionalCategory', 'Self-Survey Documents')
+        ->assertSee('Back to Categories')
+        ->assertSee('Area Progress')
+        // Return to 5 Cards Landing Screen
+        ->call('clearInstitutionalCategory')
+        ->assertSet('institutionalCategory', null)
+        ->assertSee('Self-Survey Documents')
+        ->assertSee('Compliance Reports');
+});
+
+test('common documents renders office grid, category folder cards, and table drill down', function () {
+    $adminRole = Role::where('role_name', 'system-administrator')->first();
+    $admin = User::factory()->create(['role_id' => $adminRole->id]);
+
+    $office = Office::create(['name' => 'Office of the University Registrar', 'code' => 'OUR']);
+    $category = DocumentCategory::create(['name' => 'Enrollment Records', 'category_type' => 'common']);
+
+    $this->actingAs($admin);
+
+    Livewire::test(DocumentWorkspace::class, ['activeTab' => 'common-documents'])
+        ->assertSet('selectedOfficeId', null)
+        ->assertSee('Select Administrative Office')
+        ->assertSee('Office of the University Registrar')
+        ->assertSee('Browse Categories')
+        // Drill down to Office Category Folders
+        ->call('selectOffice', $office->id)
+        ->assertSet('selectedOfficeId', $office->id)
+        ->assertSet('selectedCategoryName', null)
+        ->assertSee('Back to Offices')
+        ->assertSee('Enrollment Records')
+        ->assertSee('Open folder')
+        // Drill down to Category Document Table
+        ->call('selectCategory', $category->name)
+        ->assertSet('selectedCategoryName', $category->name)
+        ->assertSee('Back to Categories')
+        ->assertSee('Upload Document')
+        // Navigate Back to Category Folders
+        ->call('clearCategory')
+        ->assertSet('selectedCategoryName', null)
+        ->assertSee('Back to Offices')
+        // Navigate Back to Offices Grid
+        ->call('clearOffice')
+        ->assertSet('selectedOfficeId', null)
+        ->assertSee('Select Administrative Office');
+});
