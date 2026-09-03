@@ -107,6 +107,17 @@ class ScheduleAccreditation extends Component
 
         $program = Program::with('college')->findOrFail($this->program_id);
 
+        // Security Reasoning & Invariant: Prevent scheduling a new accreditation cycle if an active one already exists.
+        $hasActiveAccreditation = Accreditation::where('program_id', $program->id)
+            ->whereNotIn('status', ['completed', 'cancelled'])
+            ->exists();
+
+        if ($hasActiveAccreditation) {
+            $this->addError('program_id', "An active accreditation cycle is already ongoing for {$program->name}. You cannot schedule another visit until the current cycle concludes or is cancelled.");
+
+            return;
+        }
+
         // 1. Create Accreditation Visit record in scheduled state
         $accreditation = Accreditation::create([
             'program_id' => $program->id,

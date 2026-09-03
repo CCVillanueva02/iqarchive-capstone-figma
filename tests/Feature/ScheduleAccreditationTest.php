@@ -113,3 +113,35 @@ test('unauthorized user cannot record an accreditation visit', function () {
         ->call('save')
         ->assertStatus(403);
 });
+
+test('cannot schedule duplicate active accreditation for the same program', function () {
+    $iqaRole = Role::where('role_name', 'iqa-staff')->first();
+    $iqaUser = User::factory()->create(['role_id' => $iqaRole->id]);
+
+    $college = College::create(['name' => 'College of Engineering', 'code' => 'CENG']);
+    $program = Program::create([
+        'college_id' => $college->id,
+        'name' => 'BS Civil Engineering',
+        'code' => 'BSCE',
+    ]);
+
+    // First active accreditation
+    Accreditation::create([
+        'program_id' => $program->id,
+        'status' => 'scheduled',
+        'target_date' => now()->addMonths(2),
+        'created_by' => $iqaUser->id,
+    ]);
+
+    // Attempt to schedule a second active accreditation for the same program
+    Livewire::actingAs($iqaUser)
+        ->test(ScheduleAccreditation::class)
+        ->set('program_id', $program->id)
+        ->set('target_date', now()->addMonths(3)->format('Y-m-d'))
+        ->call('save')
+        ->assertHasErrors(['program_id']);
+
+    // Only 1 accreditation in database
+    expect(Accreditation::where('program_id', $program->id)->count())->toBe(1);
+});
+
