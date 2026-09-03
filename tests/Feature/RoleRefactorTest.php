@@ -68,3 +68,29 @@ test('manageTaskForceMembers gate restricts member management to iqa-staff and s
     expect(Gate::forUser($sysAdmin)->allows('manageTaskForceMembers'))->toBeTrue();
     expect(Gate::forUser($dean)->allows('manageTaskForceMembers'))->toBeFalse();
 });
+
+test('ensure user has role middleware protects role routes and sets active_role session', function () {
+    $sysAdminRole = Role::where('role_name', 'system-administrator')->first();
+    $sysAdmin = User::factory()->create(['role_id' => $sysAdminRole->id]);
+
+    $deanRole = Role::where('role_name', 'college-head')->first();
+    $dean = User::factory()->create(['role_id' => $deanRole->id]);
+
+    // System administrator accessing sysadmin dashboard succeeds and sets active_role
+    $this->actingAs($sysAdmin)
+        ->get(route('dashboard.system-administrator'))
+        ->assertStatus(200)
+        ->assertSessionHas('active_role', 'system-administrator');
+
+    // Dean accessing system administrator dashboard gets 403 Forbidden
+    $this->actingAs($dean)
+        ->get(route('dashboard.system-administrator'))
+        ->assertStatus(403);
+
+    // Dean accessing college head dashboard succeeds
+    $this->actingAs($dean)
+        ->get(route('dashboard.college-head'))
+        ->assertStatus(200)
+        ->assertSessionHas('active_role', 'college-head');
+});
+

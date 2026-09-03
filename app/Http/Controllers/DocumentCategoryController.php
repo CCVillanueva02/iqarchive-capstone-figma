@@ -19,9 +19,7 @@ class DocumentCategoryController extends Controller
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
 
-        $userRole = $user->role;
-        $isAllowed = in_array($userRole, ['iqa-staff', 'iqa-admin', 'iqa-member', 'task-force', 'task-force-member', 'college-head', 'system-administrator'])
-            || $user->hasAnyRole(['iqa-staff', 'task-force-member', 'college-head', 'system-administrator']);
+        $isAllowed = $user->hasRole(['iqa-staff', 'iqa-admin', 'iqa-member', 'task-force', 'task-force-member', 'college-head', 'system-administrator']);
 
         if (! $isAllowed) {
             return response()->json(['error' => 'Unauthorized. Restricted role cannot access common documents.'], 403);
@@ -68,16 +66,14 @@ class DocumentCategoryController extends Controller
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
 
-        $userRole = $user->role;
-        $isAllowed = in_array($userRole, ['iqa-staff', 'iqa-admin', 'iqa-member', 'task-force', 'task-force-member', 'college-head', 'system-administrator'])
-            || $user->hasAnyRole(['iqa-staff', 'task-force-member', 'college-head', 'system-administrator']);
+        $isAllowed = $user->hasRole(['iqa-staff', 'iqa-admin', 'iqa-member', 'task-force', 'task-force-member', 'college-head', 'system-administrator']);
 
         if (! $isAllowed) {
             return response()->json(['error' => 'Unauthorized. Restricted role cannot access common documents.'], 403);
         }
 
         $officeId = $request->query('office_id');
-        $isIqaStaff = in_array($userRole, ['iqa-staff', 'iqa-admin', 'system-administrator']) || $user->hasAnyRole(['iqa-staff', 'system-administrator']);
+        $isIqaStaff = $user->hasRole(['iqa-staff', 'iqa-admin', 'system-administrator']);
 
         if ($isIqaStaff) {
             $categoriesQuery = DocumentCategory::withCount(['documents' => function ($q) use ($officeId) {
@@ -146,7 +142,7 @@ class DocumentCategoryController extends Controller
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
 
-        $isAllowed = in_array($user->role, ['iqa-staff', 'iqa-admin', 'system-administrator']) || $user->hasAnyRole(['iqa-staff', 'system-administrator']);
+        $isAllowed = $user->hasRole(['iqa-staff', 'iqa-admin', 'system-administrator']);
 
         if (! $isAllowed) {
             return response()->json(['error' => 'Unauthorized. Only IQA Staff can create new document categories.'], 403);
@@ -184,15 +180,13 @@ class DocumentCategoryController extends Controller
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
 
-        $userRole = $user->role;
-        $isAllowed = in_array($userRole, ['iqa-staff', 'iqa-admin', 'iqa-member', 'task-force', 'task-force-member', 'college-head', 'system-administrator'])
-            || $user->hasAnyRole(['iqa-staff', 'task-force-member', 'college-head', 'system-administrator']);
+        $isAllowed = $user->hasRole(['iqa-staff', 'iqa-admin', 'iqa-member', 'task-force', 'task-force-member', 'college-head', 'system-administrator']);
 
         if (! $isAllowed) {
             return response()->json(['error' => 'Unauthorized. Restricted role cannot view common documents.'], 403);
         }
 
-        $isIqaAdmin = in_array($userRole, ['iqa-staff', 'iqa-admin', 'system-administrator']) || $user->hasAnyRole(['iqa-staff', 'system-administrator']);
+        $isIqaAdmin = $user->hasRole(['iqa-staff', 'iqa-admin', 'system-administrator']);
 
         $query = Document::with(['category', 'uploader', 'office'])
             ->where(function ($q) {
@@ -249,9 +243,7 @@ class DocumentCategoryController extends Controller
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
 
-        $userRole = $user->role;
-        $isAllowed = in_array($userRole, ['iqa-staff', 'iqa-admin', 'iqa-member', 'task-force', 'task-force-member', 'college-head', 'system-administrator'])
-            || $user->hasAnyRole(['iqa-staff', 'task-force-member', 'college-head', 'system-administrator']);
+        $isAllowed = $user->hasRole(['iqa-staff', 'iqa-admin', 'iqa-member', 'task-force', 'task-force-member', 'college-head', 'system-administrator']);
 
         if (! $isAllowed) {
             return response()->json(['error' => 'Unauthorized. Restricted role cannot upload common documents.'], 403);
@@ -308,7 +300,7 @@ class DocumentCategoryController extends Controller
             $fileSizeStr = '1.8 MB';
         }
 
-        $isIqaAdmin = in_array($user->role, ['iqa-staff', 'iqa-admin', 'system-administrator']) || $user->hasAnyRole(['iqa-staff', 'system-administrator']);
+        $isIqaAdmin = $user->hasRole(['iqa-staff', 'iqa-admin', 'system-administrator']);
         $initialStatus = $isIqaAdmin ? 'Verified' : 'Pending';
 
         $doc = Document::create([
@@ -357,7 +349,7 @@ class DocumentCategoryController extends Controller
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
 
-        $isIqaStaff = in_array($user->role, ['iqa-staff', 'iqa-admin', 'system-administrator']) || $user->hasAnyRole(['iqa-staff', 'system-administrator']);
+        $isIqaStaff = $user->hasRole(['iqa-staff', 'iqa-admin', 'system-administrator']);
 
         if (! $isIqaStaff) {
             return response()->json(['error' => 'Unauthorized. Only IQA Staff can verify or flag common documents.'], 403);
@@ -391,7 +383,7 @@ class DocumentCategoryController extends Controller
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
 
-        $isIqaStaff = in_array($user->role, ['iqa-staff', 'iqa-admin', 'system-administrator']) || $user->hasAnyRole(['iqa-staff', 'system-administrator']);
+        $isIqaStaff = $user->hasRole(['iqa-staff', 'iqa-admin', 'system-administrator']);
 
         if (! $isIqaStaff) {
             return response()->json(['error' => 'Unauthorized. Only IQA Staff can delete common documents.'], 403);
@@ -409,5 +401,55 @@ class DocumentCategoryController extends Controller
         $doc->delete();
 
         return response()->json(['message' => 'Document deleted successfully.']);
+    }
+
+    /**
+     * Serve a common document file for inline viewing.
+     * Accessible by authorized institutional roles.
+     */
+    public function serveDocument($id)
+    {
+        $user = auth()->user();
+        if (! $user) {
+            abort(401);
+        }
+
+        $isAllowed = $user->hasRole(['iqa-staff', 'iqa-admin', 'iqa-member', 'task-force', 'task-force-member', 'college-head', 'system-administrator']);
+        if (! $isAllowed) {
+            abort(403, 'Unauthorized. Restricted role cannot view common documents.');
+        }
+
+        $document = Document::findOrFail($id);
+        if (empty($document->file_path)) {
+            abort(404, 'File path not recorded for this document.');
+        }
+
+        $fileName = basename($document->file_path);
+        if (empty($fileName)) {
+            abort(404, 'Invalid file name for this document.');
+        }
+
+        if (\Illuminate\Support\Facades\Storage::disk('public')->exists($document->file_path)) {
+            $fullPath = \Illuminate\Support\Facades\Storage::disk('public')->path($document->file_path);
+            $mimeType = \Illuminate\Support\Facades\Storage::disk('public')->mimeType($document->file_path) ?? 'application/pdf';
+
+            return response()->file($fullPath, [
+                'Content-Type' => $mimeType,
+                'Content-Disposition' => 'inline; filename="'.$fileName.'"',
+            ]);
+        }
+
+        $altPath = storage_path('app/public/'.$document->file_path);
+        if (file_exists($altPath)) {
+            $mimeType = mime_content_type($altPath) ?: 'application/pdf';
+            $altFileName = basename($altPath);
+
+            return response()->file($altPath, [
+                'Content-Type' => $mimeType,
+                'Content-Disposition' => 'inline; filename="'.$altFileName.'"',
+            ]);
+        }
+
+        abort(404, 'Document file not found on disk.');
     }
 }

@@ -213,7 +213,7 @@ class TaskForceOverview extends Component
         $this->validate($rules, $messages);
 
         $currentUser = auth()->user();
-        $isCollegeHeadProposal = ($currentUser->role === 'college-head');
+        $isCollegeHeadProposal = $currentUser->hasRole('college-head');
         $initialStatus = $isCollegeHeadProposal ? 'pending_approval' : 'active';
 
         try {
@@ -579,7 +579,7 @@ class TaskForceOverview extends Component
         $taskForcesQuery = TaskForce::with(['college', 'program', 'members', 'creator']);
 
         $currentUser = auth()->user();
-        if ($currentUser->role === 'college-head') {
+        if ($currentUser && $currentUser->hasRole('college-head')) {
             $taskForcesQuery->where(function ($q) use ($currentUser) {
                 $q->where('college_id', $currentUser->college_id)
                     ->orWhere('created_by', $currentUser->id);

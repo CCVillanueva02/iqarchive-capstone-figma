@@ -99,7 +99,7 @@ class ScheduleAccreditation extends Component
     public function save()
     {
         $user = Auth::user();
-        if (! $user || ! in_array($user->role, ['iqa-staff', 'iqa-admin', 'system-administrator'])) {
+        if (! $user || ! $user->hasRole(['iqa-staff', 'iqa-admin', 'system-administrator'])) {
             abort(403, 'Unauthorized to schedule an accreditation visit.');
         }
 

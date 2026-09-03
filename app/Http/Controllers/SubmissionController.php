@@ -26,16 +26,15 @@ class SubmissionController extends Controller
         // Allowed roles for submission
         $allowedRoles = [
             'task-force-member',
+            'task-force-lead',
             'iqa-staff',
+            'iqa-member',
+            'iqa-admin',
             'college-head',
             'system-administrator',
         ];
 
-        $isAllowed = in_array($user->role, $allowedRoles)
-            || $user->hasRole('college-head')
-            || $user->hasRole('task-force-member')
-            || $user->hasRole('iqa-staff')
-            || $user->hasRole('system-administrator')
+        $isAllowed = $user->hasRole($allowedRoles)
             || $user->isTaskForceLead()
             || $user->isTaskForceMember();
 
@@ -153,11 +152,8 @@ class SubmissionController extends Controller
             abort(401);
         }
 
-        $allowedReviewers = ['iqa-member', 'iqa-admin', 'system-administrator'];
-        $isAllowed = in_array($user->role, $allowedReviewers)
-            || $user->hasRole('iqa-member')
-            || $user->hasRole('iqa-admin')
-            || $user->hasRole('system-administrator');
+        $allowedReviewers = ['iqa-staff', 'iqa-member', 'iqa-admin', 'system-administrator'];
+        $isAllowed = $user->hasRole($allowedReviewers);
 
         if (! $isAllowed) {
             abort(403, 'Unauthorized. Only IQA Staff and Administrators can review document submissions.');

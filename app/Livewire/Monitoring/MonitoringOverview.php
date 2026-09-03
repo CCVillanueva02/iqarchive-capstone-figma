@@ -119,7 +119,7 @@ class MonitoringOverview extends Component
             $q->latest();
         }]);
 
-        if ($user && $user->role === 'college-head' && $user->college_id) {
+        if ($user && $user->hasRole('college-head') && $user->college_id) {
             $programsQuery->where('college_id', $user->college_id);
         }
 
@@ -140,7 +140,7 @@ class MonitoringOverview extends Component
         $activeAccreditationsQuery = Accreditation::with(['program.college', 'taskForce'])
             ->whereNotIn('status', ['submitted', 'completed', 'cancelled']);
 
-        if ($user && $user->role === 'college-head' && $user->college_id) {
+        if ($user && $user->hasRole('college-head') && $user->college_id) {
             $activeAccreditationsQuery->whereHas('program', function ($q) use ($user) {
                 $q->where('college_id', $user->college_id);
             });
@@ -163,7 +163,7 @@ class MonitoringOverview extends Component
             $pq->orderBy('name', 'asc');
         }]);
 
-        if ($user && $user->role === 'college-head' && $user->college_id) {
+        if ($user && $user->hasRole('college-head') && $user->college_id) {
             $collegesCardsQuery->where('id', $user->college_id);
         } elseif ($this->collegeFilter !== 'all') {
             $collegesCardsQuery->where('id', $this->collegeFilter);

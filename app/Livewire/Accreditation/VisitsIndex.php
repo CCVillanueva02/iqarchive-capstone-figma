@@ -59,7 +59,7 @@ class VisitsIndex extends Component
     public function cancelAccreditation($id)
     {
         $user = Auth::user();
-        if (! $user || ! in_array($user->role, ['iqa-staff', 'iqa-admin', 'system-administrator'])) {
+        if (! $user || ! $user->hasRole(['iqa-staff', 'iqa-admin', 'system-administrator'])) {
             abort(403, 'Unauthorized to cancel accreditation visit.');
         }
 
@@ -342,11 +342,11 @@ class VisitsIndex extends Component
 
         $baseQuery = Accreditation::with(['program.college', 'taskForce.members', 'creator']);
 
-        if ($user && $user->role === 'college-head') {
+        if ($user && $user->hasRole('college-head')) {
             $baseQuery->whereHas('program', function ($q) use ($user) {
                 $q->where('college_id', $user->college_id);
             });
-        } elseif (! $user || ! in_array($user->role, ['iqa-staff', 'iqa-admin', 'system-administrator', 'university-administrator', 'college-head'])) {
+        } elseif (! $user || ! $user->hasRole(['iqa-staff', 'iqa-admin', 'system-administrator', 'university-administrator', 'college-head'])) {
             $baseQuery->where('id', 0);
         }
 

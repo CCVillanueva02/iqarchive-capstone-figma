@@ -23,17 +23,16 @@ class ProgramController extends Controller
         }, 'accreditations.instrument'])->orderBy('name');
 
         if ($user) {
-            $isUnrestricted = $user->hasAnyRole(['iqa-staff', 'iqa-admin', 'system-administrator']) ||
-                              in_array($user->role, ['iqa-staff', 'iqa-admin', 'system-administrator']);
+            $isUnrestricted = $user->hasRole(['iqa-staff', 'iqa-admin', 'system-administrator']);
 
             if (! $isUnrestricted) {
                 // College Head: all programs under their assigned college
-                if ($user->hasRole('college-head') || $user->role === 'college-head') {
+                if ($user->hasRole('college-head')) {
                     $collegeId = $user->college_id;
                     $query->where('college_id', $collegeId);
                 }
                 // Task Force Member: only their specific assigned program(s)
-                elseif ($user->hasRole('task-force-member') || $user->role === 'task-force-member') {
+                elseif ($user->hasRole('task-force-member')) {
                     $programIds = array_filter([$user->program_id]);
                     $tfProgramIds = $user->taskForces()->whereNotNull('program_id')->pluck('program_id')->toArray();
                     $allProgramIds = array_unique(array_merge($programIds, $tfProgramIds));
@@ -46,7 +45,7 @@ class ProgramController extends Controller
                     }
                 }
                 // Accreditor: specific program or college
-                elseif ($user->hasRole('accreditor') || $user->role === 'accreditor') {
+                elseif ($user->hasRole('accreditor')) {
                     if ($user->program_id) {
                         $query->where('id', $user->program_id);
                     } elseif ($user->college_id) {
@@ -121,8 +120,7 @@ class ProgramController extends Controller
         }
 
         // Allow IQA Staff and System Administrator
-        $isAllowed = $user->hasRole(['iqa-staff', 'iqa-admin', 'system-administrator']) ||
-                     in_array($user->role, ['iqa-staff', 'iqa-admin', 'system-administrator']);
+        $isAllowed = $user->hasRole(['iqa-staff', 'iqa-admin', 'system-administrator']);
 
         if (! $isAllowed) {
             return response()->json(['error' => 'Unauthorized. Only IQA Staff and System Administrator can create programs.'], 403);
@@ -171,17 +169,16 @@ class ProgramController extends Controller
         $query = College::withCount('programs')->orderBy('campus', 'asc')->orderBy('name', 'asc');
 
         if ($user) {
-            $isUnrestricted = $user->hasAnyRole(['iqa-staff', 'iqa-admin', 'system-administrator']) ||
-                              in_array($user->role, ['iqa-staff', 'iqa-admin', 'system-administrator']);
+            $isUnrestricted = $user->hasRole(['iqa-staff', 'iqa-admin', 'system-administrator']);
 
             if (! $isUnrestricted) {
                 // College Head: only their assigned college
-                if ($user->hasRole('college-head') || $user->role === 'college-head') {
+                if ($user->hasRole('college-head')) {
                     $collegeId = $user->college_id;
                     $query->where('id', $collegeId);
                 }
                 // Task Force Member: only their assigned college
-                elseif ($user->hasRole('task-force-member') || $user->role === 'task-force-member') {
+                elseif ($user->hasRole('task-force-member')) {
                     $collegeIds = array_filter([$user->college_id]);
                     $tfCollegeIds = $user->taskForces()->whereNotNull('college_id')->pluck('college_id')->toArray();
                     $allCollegeIds = array_unique(array_merge($collegeIds, $tfCollegeIds));
@@ -192,7 +189,7 @@ class ProgramController extends Controller
                     }
                 }
                 // Accreditor: assigned college
-                elseif ($user->hasRole('accreditor') || $user->role === 'accreditor') {
+                elseif ($user->hasRole('accreditor')) {
                     if ($user->college_id) {
                         $query->where('id', $user->college_id);
                     }

@@ -75,7 +75,7 @@ class Accounts extends Component
 
     public function mount()
     {
-        if (auth()->user()->role !== 'system-administrator') {
+        if (! auth()->user() || ! auth()->user()->hasRole('system-administrator')) {
             abort(403, 'Unauthorized action.');
         }
     }

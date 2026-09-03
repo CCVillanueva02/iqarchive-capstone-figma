@@ -185,87 +185,47 @@ Route::middleware(['auth', 'verified'])->group(function () {
     ];
 
     foreach ($roles as $role) {
-        Route::get("roles/{$role}/dashboard", function () use ($role) {
-            $user = Auth::user();
-            if (! $user || (! $user->hasRole($role) && ! ($user->hasRole(['iqa-staff']) && $role === 'iqa-staff'))) {
-                abort(403, 'Unauthorized action.');
-            }
-            if ($user->hasRole($role)) {
-                session(['active_role' => $role]);
-            }
-            if (! view()->exists("pages.roles.{$role}.dashboard")) {
-                return view('pages.roles.iqa-staff.dashboard');
-            }
+        Route::middleware(["role:{$role}"])->group(function () use ($role) {
+            Route::get("roles/{$role}/dashboard", function () use ($role) {
+                if (! view()->exists("pages.roles.{$role}.dashboard")) {
+                    return view('pages.roles.iqa-staff.dashboard');
+                }
 
-            return view("pages.roles.{$role}.dashboard");
-        })->name("dashboard.{$role}");
+                return view("pages.roles.{$role}.dashboard");
+            })->name("dashboard.{$role}");
 
-        Route::get("roles/{$role}/documents", function () use ($role) {
-            $user = Auth::user();
-            if (! $user || (! $user->hasRole($role) && ! ($user->hasRole(['iqa-staff']) && $role === 'iqa-staff'))) {
-                abort(403, 'Unauthorized action.');
-            }
-            if ($user->hasRole($role)) {
-                session(['active_role' => $role]);
-            }
+            Route::get("roles/{$role}/documents", function () {
+                return view('pages.documents.index');
+            })->name("documents.{$role}");
 
-            return view('pages.documents.index');
-        })->name("documents.{$role}");
+            Route::get("roles/{$role}/submissions", function () use ($role) {
+                return view('pages.workspace.placeholder', [
+                    'title' => 'Submissions',
+                    'roleName' => ucwords(str_replace('-', ' ', $role)),
+                ]);
+            })->name("submissions.{$role}");
 
-        Route::get("roles/{$role}/submissions", function () use ($role) {
-            $user = Auth::user();
-            if (! $user || (! $user->hasRole($role) && ! ($user->hasRole(['iqa-staff']) && $role === 'iqa-staff'))) {
-                abort(403, 'Unauthorized action.');
-            }
-            if ($user->hasRole($role)) {
-                session(['active_role' => $role]);
-            }
+            Route::get("roles/{$role}/reports", function () use ($role) {
+                return view('pages.workspace.placeholder', [
+                    'title' => 'Reports',
+                    'roleName' => ucwords(str_replace('-', ' ', $role)),
+                ]);
+            })->name("reports.{$role}");
 
-            return view('pages.workspace.placeholder', [
-                'title' => 'Submissions',
-                'roleName' => ucwords(str_replace('-', ' ', $role)),
-            ]);
-        })->name("submissions.{$role}");
-
-        Route::get("roles/{$role}/reports", function () use ($role) {
-            $user = Auth::user();
-            if (! $user || (! $user->hasRole($role) && ! ($user->hasRole(['iqa-staff']) && $role === 'iqa-staff'))) {
-                abort(403, 'Unauthorized action.');
-            }
-            if ($user->hasRole($role)) {
-                session(['active_role' => $role]);
-            }
-
-            return view('pages.workspace.placeholder', [
-                'title' => 'Reports',
-                'roleName' => ucwords(str_replace('-', ' ', $role)),
-            ]);
-        })->name("reports.{$role}");
-
-        Route::get("roles/{$role}/settings", function () use ($role) {
-            $user = Auth::user();
-            if (! $user || (! $user->hasRole($role) && ! ($user->hasRole(['iqa-staff']) && $role === 'iqa-staff'))) {
-                abort(403, 'Unauthorized action.');
-            }
-            if ($user->hasRole($role)) {
-                session(['active_role' => $role]);
-            }
-
-            return view('pages.workspace.placeholder', [
-                'title' => 'Settings',
-                'roleName' => ucwords(str_replace('-', ' ', $role)),
-            ]);
-        })->name("settings.{$role}");
+            Route::get("roles/{$role}/settings", function () use ($role) {
+                return view('pages.workspace.placeholder', [
+                    'title' => 'Settings',
+                    'roleName' => ucwords(str_replace('-', ' ', $role)),
+                ]);
+            })->name("settings.{$role}");
+        });
     }
 
-    Route::get('roles/iqa-staff/audit-trail', function () {
-        $user = Auth::user();
-        if (! $user || ! $user->hasRole(['iqa-staff', 'system-administrator'])) {
-            abort(403, 'Unauthorized action.');
-        }
-
-        return view('pages.roles.iqa-staff.audit-trail');
-    })->name('audit-trail.iqa-staff');
+    Route::middleware(['role:iqa-staff,system-administrator'])->group(function () {
+        Route::get('roles/iqa-staff/audit-trail', function () {
+            return view('pages.roles.iqa-staff.audit-trail');
+        })->name('audit-trail.iqa-staff');
+    });
 
     Route::get('roles/iqa-admin/audit-trail', function () {
         return redirect()->route('audit-trail.iqa-staff');

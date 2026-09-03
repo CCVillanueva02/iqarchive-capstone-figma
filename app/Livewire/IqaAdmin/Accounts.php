@@ -367,7 +367,7 @@ class Accounts extends Component
         $this->resetForm();
         $user = User::findOrFail($id);
 
-        if ($user->role === 'system-administrator') {
+        if ($user->hasRole('system-administrator')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -399,7 +399,7 @@ class Accounts extends Component
     {
         $user = User::findOrFail($this->userId);
 
-        if ($user->role === 'system-administrator') {
+        if ($user->hasRole('system-administrator')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -463,7 +463,7 @@ class Accounts extends Component
     {
         $user = User::findOrFail($id);
 
-        if ($user->role === 'system-administrator') {
+        if ($user->hasRole('system-administrator')) {
             abort(403, 'Unauthorized action.');
         }
 
@@ -483,7 +483,7 @@ class Accounts extends Component
     {
         $user = User::findOrFail($this->userId);
 
-        if ($user->role === 'system-administrator') {
+        if ($user->hasRole('system-administrator')) {
             abort(403, 'Unauthorized action.');
         }
 

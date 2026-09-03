@@ -49,15 +49,14 @@ class AccreditationEvidenceController extends Controller
         $program = Program::with('college')->findOrFail($validated['program_id']);
 
         // Check if user is authorized to upload for this program
-        $isUnrestricted = $user->hasAnyRole(['iqa-staff', 'iqa-admin', 'system-administrator']) ||
-                          in_array($user->role, ['iqa-staff', 'iqa-admin', 'system-administrator']);
+        $isUnrestricted = $user->hasRole(['iqa-staff', 'iqa-admin', 'system-administrator']);
 
         if (! $isUnrestricted) {
-            if ($user->hasRole('college-head') || $user->role === 'college-head') {
+            if ($user->hasRole('college-head')) {
                 if ($user->college_id && $program->college_id !== $user->college_id) {
                     return response()->json(['error' => 'Unauthorized for this college program.'], 403);
                 }
-            } elseif ($user->hasRole('task-force-member') || $user->role === 'task-force-member') {
+            } elseif ($user->hasRole('task-force-member')) {
                 // Task force member must be assigned to this program/college
                 $isAssigned = ($user->program_id === $program->id) ||
                               ($user->college_id === $program->college_id) ||
