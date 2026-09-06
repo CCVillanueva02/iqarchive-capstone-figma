@@ -27,7 +27,7 @@ const EXEMPTIONS = [
     'resources/views/livewire/task-force/partials/dashboard/modals/submit-to-dean-modal.blade.php' => [18, 19, 20],
     'resources/views/livewire/task-force/partials/stats-row.blade.php' => [12],
     'resources/views/pages/roles/university-administrator/analytics.blade.php' => [213],
-    'resources/views/pages/settings/⚡profile.blade.php' => [208],
+    'resources/views/pages/settings/⚡profile.blade.php' => [204],
     'resources/views/welcome.blade.php' => [59],
 ];
 

@@ -1,9 +1,7 @@
 <?php
 
 use App\Concerns\ProfileValidationRules;
-/* @chisel-email-verification */
 use Illuminate\Contracts\Auth\MustVerifyEmail;
-/* @end-chisel-email-verification */
 use App\Models\User;
 use Flux\Flux;
 use Illuminate\Support\Facades\Auth;
@@ -141,7 +139,6 @@ new #[Title('Profile settings')] class extends Component {
         Flux::toast(variant: 'success', text: __('Profile photo removed.'));
     }
 
-    /* @chisel-email-verification */
     /**
      * Send an email verification notification to the current user.
      */
@@ -174,7 +171,6 @@ new #[Title('Profile settings')] class extends Component {
         return ! $user instanceof MustVerifyEmail
             || ($user instanceof MustVerifyEmail && $user->hasVerifiedEmail());
     }
-    /* @end-chisel-email-verification */
 }; ?>
 
 <section class="w-full space-y-6 antialiased">
@@ -347,7 +343,6 @@ new #[Title('Profile settings')] class extends Component {
                         <div>
                             <flux:input wire:model="email" :label="__('Email Address')" type="email" required autocomplete="email" />
 
-                            {{-- @chisel-email-verification --}}
                             @if ($this->hasUnverifiedEmail)
                             <div class="mt-3 p-3 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50">
                                 <flux:text class="text-xs font-medium text-amber-800 dark:text-amber-300">
@@ -365,7 +360,6 @@ new #[Title('Profile settings')] class extends Component {
                                 @endif
                             </div>
                             @endif
-                            {{-- @end-chisel-email-verification --}}
                         </div>
                     </div>
 
@@ -381,15 +375,11 @@ new #[Title('Profile settings')] class extends Component {
             </div>
 
             <!-- Delete User Account Danger Zone Card (Bordered / Outlined, De-emphasized) -->
-            {{-- @chisel-email-verification --}}
             @if ($this->showDeleteUser)
-            {{-- @end-chisel-email-verification --}}
             <div class="bg-transparent border border-red-500/30 dark:border-red-900/40 rounded-2xl p-6 transition-all duration-150">
                 <livewire:pages::settings.delete-user-form />
             </div>
-            {{-- @chisel-email-verification --}}
             @endif
-            {{-- @end-chisel-email-verification --}}
         </div>
 
     </x-pages::settings.layout>
