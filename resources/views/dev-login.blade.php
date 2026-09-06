@@ -40,7 +40,7 @@
         }
     </script>
 </head>
-<body class="bg-slate-950 bg-gradient-to-br from-slate-950 via-slate-900 to-zinc-950 min-h-screen flex flex-col justify-center items-center p-4 md:p-6 text-slate-100 font-sans antialiased selection:bg-amber-500/30 selection:text-amber-200">
+<body class="bg-slate-950 bg-linear-to-br from-slate-950 via-slate-900 to-zinc-950 min-h-screen flex flex-col justify-center items-center p-4 md:p-6 text-slate-100 font-sans antialiased selection:bg-amber-500/30 selection:text-amber-200">
     <div class="w-full max-w-xl bg-slate-900/80 backdrop-blur-2xl border border-slate-800/90 rounded-3xl shadow-2xl shadow-black/60 p-6 md:p-8 flex flex-col gap-6 my-auto">
         
         <!-- Header Section -->
@@ -54,7 +54,7 @@
             </div>
 
             <!-- Title -->
-            <h1 class="text-2xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-300 to-yellow-200 tracking-tight">
+            <h1 class="text-2xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-amber-400 via-amber-300 to-yellow-200 tracking-tight">
                 IQArchive Dev Switcher
             </h1>
             <p class="text-sm text-slate-400 mt-2 max-w-sm leading-relaxed">
