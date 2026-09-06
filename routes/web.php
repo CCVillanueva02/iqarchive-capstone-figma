@@ -137,6 +137,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // University Administrator explicit route mapping (analytics as landing page)
     Route::get('roles/university-administrator/analytics', function () {
+        /** @var User|null $user */
         $user = Auth::user();
         if (! $user || ! $user->hasRole(['university-administrator', 'system-administrator', 'iqa-staff'])) {
             abort(403, 'Unauthorized action.');
@@ -146,6 +147,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('analytics.university-administrator');
 
     Route::get('roles/university-administrator/dashboard', function () {
+        /** @var User|null $user */
         $user = Auth::user();
         if (! $user || ! $user->hasRole(['university-administrator', 'system-administrator', 'iqa-staff'])) {
             abort(403, 'Unauthorized action.');
@@ -155,6 +157,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard.university-administrator');
 
     Route::get('roles/university-administrator/reports', function () {
+        /** @var User|null $user */
         $user = Auth::user();
         if (! $user || ! $user->hasRole(['university-administrator', 'system-administrator', 'iqa-staff'])) {
             abort(403, 'Unauthorized action.');
@@ -169,6 +172,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Active role switcher route for multi-role users
     Route::post('switch-role', function (Request $request) {
         $role = $request->input('role');
+        /** @var User|null $user */
         $user = Auth::user();
 
         if ($user && $user->hasRole($role)) {
@@ -190,11 +194,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     foreach ($roles as $role) {
         Route::middleware(["role:{$role}"])->group(function () use ($role) {
             Route::get("roles/{$role}/dashboard", function () use ($role) {
-                if (! view()->exists("pages.roles.{$role}.dashboard")) {
-                    return view('pages.roles.iqa-staff.dashboard');
-                }
+                $dashboardView = match ($role) {
+                    'system-administrator' => 'pages.roles.system-administrator.dashboard',
+                    'task-force-member' => 'pages.roles.task-force-member.dashboard',
+                    'college-head' => 'pages.roles.college-head.dashboard',
+                    default => 'pages.roles.iqa-staff.dashboard',
+                };
 
-                return view("pages.roles.{$role}.dashboard");
+                return view($dashboardView);
             })->name("dashboard.{$role}");
 
             Route::get("roles/{$role}/documents", DocumentWorkspace::class)->name("documents.{$role}");
