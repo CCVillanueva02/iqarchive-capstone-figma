@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccreditationEvidenceController;
+use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\CollegeController;
 use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\ProgramController;
@@ -78,9 +79,12 @@ Route::get('/', function () {
 })->name('home');
 
 Route::middleware('guest')->group(function () {
+    Route::get('login', fn () => view('pages.auth.login'))->name('login');
     Route::get('auth/google', [GoogleAuthController::class, 'redirectToGoogle'])->name('auth.google');
     Route::get('auth/google/callback', [GoogleAuthController::class, 'handleGoogleCallback'])->name('auth.google.callback');
 });
+
+Route::post('logout', LogoutController::class)->name('logout');
 
 // Accreditation Monitoring (Overview, Summary Report, Master Programs Directory)
 Route::get('/monitoring', MonitoringOverview::class)->name('monitoring.index');
