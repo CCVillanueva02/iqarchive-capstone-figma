@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net">
+  <diagram name="Page-1" id="eFg8TBBKOSebLb2Tpcy1">
+    <mxGraphModel dx="2538" dy="276" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <UserObject label="" mermaidData="{&#xa;  &quot;data&quot;: &quot;%% IQArchive v2 — System Architecture Diagram\n%% Architectural Pattern: Modern Monolithic 3-Tier (Inertia.js Server-Driven SPA)\n%% Updated: MySQL 8, Sync OCR, Local Disk Storage\n\ngraph TD\n    User[\&quot;&lt;b&gt;User / Workstation Browser&lt;/b&gt;&lt;br/&gt;IQA Staff · College Dean · Task Force&lt;br/&gt;Accreditor · BU Executive · System Admin\&quot;]\n    \n    User --&gt;|HTTPS&lt;br/&gt;Desktop Browser ≥ 1024px| Tier1\n    \n    Tier1[\&quot;&lt;b&gt;Tier 1 — Frontend SPA&lt;/b&gt;&lt;br/&gt;&lt;b&gt;Inertia.js · Vue 3 · Tailwind CSS v4&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;• Role-scoped persistent layouts&lt;br/&gt;• Centralized Inertia shared props&lt;br/&gt;  (Auth user, roles, permissions, alerts)&lt;br/&gt;• Interactive workspaces: AACCUP Tree,&lt;br/&gt;  Document Linking, OCR Preview&lt;br/&gt;• Split-screen: PDF + Extracted Text\&quot;]\n    \n    Tier1 --&gt;|Cookie-Session Inertia Protocol&lt;br/&gt;JSON Props &amp; Partial Reloads| Tier2\n    \n    Tier2[\&quot;&lt;b&gt;Tier 2 — Backend Application Core&lt;/b&gt;&lt;br/&gt;&lt;b&gt;Laravel 13 MVC&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;• Controllers → Services → Eloquent Models &amp; Policies&lt;br/&gt;• Security &amp; RBAC: Multi-tenant college isolation,&lt;br/&gt;  7-role gatekeeper &amp; forced gates&lt;br/&gt;• Accreditation Engine: 9-stage pipeline&lt;br/&gt;• ProcessDocumentOcrService: Synchronous OCR\&quot;]\n    \n    Tier2 --&gt;|Eloquent ORM&lt;br/&gt;ACID Transactions| Tier3\n    \n    Tier2 --&gt;|HTTPS&lt;br/&gt;PDF Stream + OCR Sync| ExtServices\n    \n    Tier3[\&quot;&lt;b&gt;Tier 3 — Database &amp; Storage&lt;/b&gt;&lt;br/&gt;&lt;b&gt;MySQL 8 (InnoDB) + Protected Local Disk&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;• Strict 3NF Schema: Normalized task forces,&lt;br/&gt;  AACCUP instruments &amp; OCR results&lt;br/&gt;• JSON Columns: confidence_metrics, pages_data&lt;br/&gt;• Audit Trail: Immutable activity &amp; stage transitions&lt;br/&gt;• Protected Storage: /mnt/storage/iqarchive/protected/\&quot;]\n    \n    ExtServices[\&quot;&lt;b&gt;External &amp; Async Services&lt;/b&gt;&lt;br/&gt;&lt;b&gt;Identity &amp; OCR Engines&lt;/b&gt;&lt;br/&gt;&lt;br/&gt;• Google Workspace OAuth 2.0&lt;br/&gt;  (Gated to @bicol-u.edu.ph)&lt;br/&gt;• Tesseract 5.x (Sync Processing)&lt;br/&gt;  - PDF → TIFF conversion (ghostscript)&lt;br/&gt;  - Confidence scoring from hOCR output&lt;br/&gt;• Human-in-the-Loop Confidence Preview\&quot;]\n    \n    style User fill:#ffffff,stroke:#334155,stroke-width:2px,color:#0f172a\n    style Tier1 fill:#eff6ff,stroke:#2563eb,stroke-width:2.5px,color:#1e3a8a\n    style Tier2 fill:#f0fdf4,stroke:#16a34a,stroke-width:2.5px,color:#14532d\n    style Tier3 fill:#fffbeb,stroke:#d97706,stroke-width:2.5px,color:#78350f\n    style ExtServices fill:#faf5ff,stroke:#9333ea,stroke-width:2.5px,color:#581c87&quot;,&#xa;  &quot;config&quot;: null&#xa;}" id="2">
+          <mxCell connectable="0" parent="1" style="group;transparentBounds=1;editIcon=1;lockedGroup=0;groupPadding=10;" vertex="1">
+            <mxGeometry as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="&lt;b&gt;User / Workstation Browser&lt;/b&gt;&lt;br&gt;IQA Staff · College Dean · Task Force · External Accreditor · Internal Accreditor · BU Executive · System Admin" mermaidId="n:User" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=default;strokeColor=#334155;fontColor=#0f172a;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="&lt;b&gt;User / Workstation Browser&lt;/b&gt;&#xa;IQA Staff · College Dean · Task Force&#xa;Accreditor · BU Executive · System Admin" id="3">
+          <mxCell parent="2" style="html=1;whiteSpace=wrap;strokeWidth=2;fillColor=default;strokeColor=#334155;fontColor=#0f172a;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="93" width="826.5" x="155.75" y="900" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="&lt;b&gt;Tier 1 — Frontend SPA&lt;/b&gt;&#xa;&lt;b&gt;Inertia.js · Vue 3 · Tailwind CSS v4&lt;/b&gt;&#xa;&#xa;• Role-scoped persistent layouts&#xa;• Centralized Inertia shared props&#xa;(Auth user, roles, permissions, alerts)&#xa;• Interactive workspaces: AACCUP Tree,&#xa;Document Linking, OCR Preview&#xa;• Split-screen: PDF + Extracted Text" mermaidId="n:Tier1" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=2.5;fillColor=#eff6ff;strokeColor=#2563eb;fontColor=#1e3a8a;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="&lt;b&gt;Tier 1 — Frontend SPA&lt;/b&gt;&#xa;&lt;b&gt;Inertia.js · Vue 3 · Tailwind CSS v4&lt;/b&gt;&#xa;&#xa;• Role-scoped persistent layouts&#xa;• Centralized Inertia shared props&#xa;(Auth user, roles, permissions, alerts)&#xa;• Interactive workspaces: AACCUP Tree,&#xa;Document Linking, OCR Preview&#xa;• Split-screen: PDF + Extracted Text" id="4">
+          <mxCell parent="2" style="html=1;whiteSpace=wrap;strokeWidth=2.5;fillColor=#eff6ff;strokeColor=#2563eb;fontColor=#1e3a8a;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="208" width="348" x="395" y="1050" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="&lt;b&gt;Tier 2 — Backend Application Core&lt;/b&gt;&lt;br&gt;&lt;b&gt;Laravel 13 MVC&lt;/b&gt;&lt;br&gt;&lt;br&gt;• Controllers → Services → Eloquent Models &amp;amp; Policies&lt;br&gt;• Security &amp;amp; RBAC: Multi-tenant college isolation,&lt;br&gt;Role gatekeeper &amp;amp; forced gates&lt;br&gt;• Accreditation Engine: 9-stage pipeline&lt;br&gt;• ProcessDocumentOcrService: Synchronous OCR" mermaidId="n:Tier2" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=2.5;fillColor=#f0fdf4;strokeColor=#16a34a;fontColor=#14532d;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="&lt;b&gt;Tier 2 — Backend Application Core&lt;/b&gt;&#xa;&lt;b&gt;Laravel 13 MVC&lt;/b&gt;&#xa;&#xa;• Controllers → Services → Eloquent Models &amp; Policies&#xa;• Security &amp; RBAC: Multi-tenant college isolation,&#xa;7-role gatekeeper &amp; forced gates&#xa;• Accreditation Engine: 9-stage pipeline&#xa;• ProcessDocumentOcrService: Synchronous OCR" id="5">
+          <mxCell parent="2" style="html=1;whiteSpace=wrap;strokeWidth=2.5;fillColor=#f0fdf4;strokeColor=#16a34a;fontColor=#14532d;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="189" width="453" x="342.5" y="1320" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="&lt;b&gt;Tier 3 — Database &amp;amp; Storage&lt;/b&gt;&lt;br&gt;&lt;b&gt;MySQL 8 (InnoDB) + Protected Local Disk&lt;/b&gt;&lt;br&gt;&lt;br&gt;• Strict 3NF Schema: Normalized task forces,&lt;br&gt;AACCUP instruments &amp;amp; OCR results&lt;br&gt;• JSON Columns: confidence_metrics, pages_data&lt;br&gt;• Audit Trail: Immutable activity&lt;br&gt;• Protected Storage: /mnt/storage/iqarchive/protected/" mermaidId="n:Tier3" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=2.5;fillColor=#fffbeb;strokeColor=#d97706;fontColor=#78350f;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="&lt;b&gt;Tier 3 — Database &amp; Storage&lt;/b&gt;&#xa;&lt;b&gt;MySQL 8 (InnoDB) + Protected Local Disk&lt;/b&gt;&#xa;&#xa;• Strict 3NF Schema: Normalized task forces,&#xa;AACCUP instruments &amp; OCR results&#xa;• JSON Columns: confidence_metrics, pages_data&#xa;• Audit Trail: Immutable activity &amp; stage transitions&#xa;• Protected Storage: /mnt/storage/iqarchive/protected/" id="6">
+          <mxCell parent="2" style="html=1;whiteSpace=wrap;strokeWidth=2.5;fillColor=#fffbeb;strokeColor=#d97706;fontColor=#78350f;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="189" width="472" x="100" y="1634.5" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="&lt;b&gt;External &amp;amp; Async Services&lt;/b&gt;&lt;br&gt;&lt;b&gt;Identity &amp;amp; OCR Engines&lt;/b&gt;&lt;br&gt;&lt;br&gt;• Google Workspace OAuth 2.0&lt;br&gt;(Gated to @bicol-u.edu.ph)&lt;br&gt;&lt;div&gt;• Tesseract OCR&lt;/div&gt;• Human-in-the-Loop Confidence Preview" mermaidId="n:ExtServices" mermaidBaseStyle="html=1;whiteSpace=wrap;strokeWidth=2.5;fillColor=#faf5ff;strokeColor=#9333ea;fontColor=#581c87;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" mermaidBaseValue="&lt;b&gt;External &amp; Async Services&lt;/b&gt;&#xa;&lt;b&gt;Identity &amp; OCR Engines&lt;/b&gt;&#xa;&#xa;• Google Workspace OAuth 2.0&#xa;(Gated to @bicol-u.edu.ph)&#xa;• Tesseract 5.x (Sync Processing)&#xa;- PDF → TIFF conversion (ghostscript)&#xa;- Confidence scoring from hOCR output&#xa;• Human-in-the-Loop Confidence Preview" id="7">
+          <mxCell parent="2" style="html=1;whiteSpace=wrap;strokeWidth=2.5;fillColor=#faf5ff;strokeColor=#9333ea;fontColor=#581c87;fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontSize=16;" vertex="1">
+            <mxGeometry height="208" width="358" x="642" y="1634.5" as="geometry" />
+          </mxCell>
+        </UserObject>
+        <UserObject label="" mermaidId="e:User-&gt;Tier1#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="HTTPS&#xa;Desktop Browser ≥ 1024px" id="8">
+          <mxCell edge="1" parent="2" source="3" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="4">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="" mermaidId="e:Tier1-&gt;Tier2#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="Cookie-Session Inertia Protocol&#xa;JSON Props &amp; Partial Reloads" id="9">
+          <mxCell edge="1" parent="2" source="4" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.5;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="5">
+            <mxGeometry relative="1" x="-0.1516" y="1" as="geometry">
+              <mxPoint as="offset" />
+              <Array as="points" />
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="" mermaidId="e:Tier2-&gt;Tier3#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.15;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="Eloquent ORM&#xa;ACID Transactions" id="10">
+          <mxCell edge="1" parent="2" source="5" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.15;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="6">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="336" y="1590" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+        <UserObject label="" mermaidId="e:Tier2-&gt;ExtServices#0" mermaidBaseStyle="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.85;exitY=1;entryX=0.5;entryY=0;" mermaidBaseValue="HTTPS&#xa;PDF Stream + OCR Sync" id="11">
+          <mxCell edge="1" parent="2" source="5" style="curved=1;startArrow=none;endArrow=block;endSize=7;strokeColor=light-dark(#333333,#cccccc);html=1;fontSize=16;labelBackgroundColor=light-dark(#E8E8E88D,#2a2a2a8D);fontFamily=Trebuchet MS,Verdana,Arial,sans-serif;fontColor=light-dark(#333333,#cccccc);exitX=0.85;exitY=1;entryX=0.5;entryY=0;rounded=0;" target="7">
+            <mxGeometry relative="1" as="geometry">
+              <Array as="points">
+                <mxPoint x="801" y="1590" />
+              </Array>
+            </mxGeometry>
+          </mxCell>
+        </UserObject>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
