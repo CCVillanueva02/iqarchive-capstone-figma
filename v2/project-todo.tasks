@@ -1,0 +1,38 @@
+IQArchive Todo Tasks:
+
+Initialization Tasks:
+    ✔ Create an Architecture markdown file for the project.
+    ☐ Create a Design markdown file for the project.
+    ☐ Create a README.md file for the project.
+    ☐ Initialize the project repository with the needed files and packages for Laravel, Vue, Tailwind, and Inertia.
+    ☐ Initialize the project repository with the components and fonts such as Interfont, Shadcnvue, DaisyUI, and LucideIcons.
+    ☐ Initialize the project repository with a ghost file structure for the project.
+
+Frontend Views:
+    - Auth
+    ☐ login page (google oauth)
+    ☐ account settings page
+
+    - Dashboard
+    ☐ landing page
+    
+    - Siderbar
+    ☐ Create a sidebar component.
+
+    - Initial Views
+    ☐ System Admin
+    ☐ IQA Member
+    ☐ College Dean
+    ☐ Task Force Member
+    > under task force member is the Internal Accreditor this is for mock up accreditation
+    ☐ BU Executive
+    ☐ External Accreditor
+    
+
+    ☐ Customized Sidebar for each Roles (System Admin, IQA Member, College Dean, Task Force Member, BU Executive, External Accreditor, Internal Accreditor)
+
+
+    - Document Management
+    ☐ 
+
+
