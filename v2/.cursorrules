@@ -1,0 +1,3 @@
+# Cursor Rules for IQArchive Codebase
+
+- Always add comments to every file: a meaningful summary at the top (purpose, architecture, security context) and a clear comment per logical block of code.
