@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 780" width="100%" height="100%" style="background:#ffffff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <defs>
+    <style>
+      .title-text { font-size: 15px; font-weight: 700; fill: #0f172a; text-anchor: middle; }
+      .subtitle-text { font-size: 12.5px; fill: #334155; text-anchor: middle; }
+      .tier-header { font-size: 15px; font-weight: 700; }
+      .tier-body { font-size: 12px; line-height: 1.5; }
+      .arrow-text { font-size: 11.5px; font-weight: 600; fill: #475569; text-anchor: middle; }
+      .box-shadow { filter: drop-shadow(0 2px 4px rgba(0,0,0,0.04)); }
+    </style>
+    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#334155"/>
+    </marker>
+    <marker id="arrow-both" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#334155"/>
+    </marker>
+  </defs>
+
+  <!-- Top: User / Workstation Browser -->
+  <g transform="translate(190, 20)">
+    <rect width="620" height="58" rx="8" fill="#ffffff" stroke="#334155" stroke-width="1.75" class="box-shadow"/>
+    <text x="310" y="26" class="title-text">User / Workstation Browser</text>
+    <text x="310" y="46" class="subtitle-text">IQA Staff · College Dean · Task Force · Accreditor · BU Executive · System Admin</text>
+  </g>
+
+  <!-- Arrow 1: User to Tier 1 -->
+  <line x1="500" y1="78" x2="500" y2="128" stroke="#334155" stroke-width="1.75" marker-end="url(#arrow)"/>
+  <rect x="335" y="93" width="330" height="20" rx="4" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="500" y="107" class="arrow-text">HTTPS (Desktop Browser Session ≥ 1024px)</text>
+
+  <!-- Tier 1: Presentation & Interaction Layer -->
+  <g transform="translate(130, 130)">
+    <rect width="740" height="110" rx="10" fill="#f8faff" stroke="#2563eb" stroke-width="2" class="box-shadow"/>
+    <text x="370" y="28" class="tier-header" fill="#1e3a8a" text-anchor: middle;">Tier 1 — Presentation &amp; Interaction Layer: Livewire 4 · Alpine.js · Blade UI · Tailwind CSS v4</text>
+    <text x="370" y="52" class="tier-body" fill="#1e40af" text-anchor="middle">• Reactive UI components with real-time DOM</text>
+    <text x="370" y="72" class="tier-body" fill="#1e40af" text-anchor="middle">• In-place criteria document uploads, matrix drawers &amp; modal wizards</text>
+    <text x="370" y="92" class="tier-body" fill="#1e40af" text-anchor="middle">• Institutional design tokens (BU Navy &amp; Brand Orange) &amp; desktop viewport guard</text>
+  </g>
+
+  <!-- Arrow 2: Tier 1 to Tier 2 -->
+  <line x1="500" y1="240" x2="500" y2="288" stroke="#334155" stroke-width="1.75" marker-end="url(#arrow)"/>
+  <rect x="345" y="253" width="310" height="20" rx="4" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="500" y="267" class="arrow-text">Livewire RPC (Morph Diffs) / Internal Fetch</text>
+
+  <!-- Tier 2: Modular Monolith Application Core -->
+  <g transform="translate(170, 290)">
+    <rect width="660" height="175" rx="10" fill="#f6fef9" stroke="#16a34a" stroke-width="2" class="box-shadow"/>
+    <text x="330" y="26" class="tier-header" fill="#14532d" text-anchor="middle">Tier 2 — Modular Monolith Application Core: Laravel 13.x MVC Core</text>
+    <text x="330" y="49" class="tier-body" fill="#15803d" font-weight="600" text-anchor="middle">Security Gateway: Contextual RBAC, multi-tenant college isolation &amp; Gate middleware</text>
+    <text x="330" y="70" class="tier-body" fill="#166534" text-anchor="middle">• Module A (Documents): Multi-office taxonomy &amp; authorized streaming gates</text>
+    <text x="330" y="91" class="tier-body" fill="#166534" text-anchor="middle">• Module B (Accreditation): 10-Area AACCUP instrument tree &amp; criterion linking</text>
+    <text x="330" y="112" class="tier-body" fill="#166534" text-anchor="middle">• Module C (Task Force): Faculty roster setup &amp; 2-tier Dean verification QC</text>
+    <text x="330" y="133" class="tier-body" fill="#166534" text-anchor="middle">• Module D (Monitoring): Real-time analytics &amp; compliance progress aggregations</text>
+    <text x="330" y="154" class="tier-body" fill="#166534" text-anchor="middle">• Event Sinks: Automated Eloquent Observers piping to immutable audit trail</text>
+  </g>
+
+  <!-- Connectors from Tier 2 to Bottom Row -->
+  <!-- Left connector: Tier 2 to Database -->
+  <path d="M 270 465 L 270 510 L 160 510 L 160 540" fill="none" stroke="#334155" stroke-width="1.75" marker-end="url(#arrow)"/>
+  <rect x="55" y="500" width="210" height="18" rx="3" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="160" y="513" class="arrow-text" font-size="10.5">Eloquent ORM / ACID Transactions</text>
+
+  <!-- Center connector: Tier 2 to Storage (Bidirectional) -->
+  <line x1="500" y1="465" x2="500" y2="540" stroke="#334155" stroke-width="1.75" marker-end="url(#arrow)"/>
+  <rect x="375" y="493" width="250" height="18" rx="3" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="500" y="506" class="arrow-text" font-size="10.5">Streaming Authorization Gate (File Bytes)</text>
+
+  <!-- Right connector: Tier 2 to IdP (Bidirectional) -->
+  <path d="M 730 465 L 730 510 L 840 510 L 840 540" fill="none" stroke="#334155" stroke-width="1.75" marker-end="url(#arrow)"/>
+  <rect x="735" y="500" width="210" height="18" rx="3" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="840" y="513" class="arrow-text" font-size="10.5">OAuth 2.0 Handshake (HTTPS Server-side)</text>
+
+  <!-- Bottom Row: 3 Boxes -->
+  <!-- Box 1: Tier 3 Database -->
+  <g transform="translate(15, 545)">
+    <rect width="295" height="205" rx="8" fill="#fffdfa" stroke="#d97706" stroke-width="2" class="box-shadow"/>
+    <text x="147" y="26" class="title-text" fill="#78350f">Tier 3 — Relational Database</text>
+    <text x="147" y="46" class="title-text" fill="#b45309" font-size="13">MySQL 8 (InnoDB)</text>
+    <line x1="20" y1="56" x2="275" y2="56" stroke="#fde68a" stroke-width="1"/>
+    <text x="25" y="80" class="tier-body" fill="#92400e">• Strict 3NF normalized schema</text>
+    <text x="25" y="103" class="tier-body" fill="#92400e">• Foreign key cascades &amp; referential integrity</text>
+    <text x="25" y="126" class="tier-body" fill="#92400e">• ACID compliance &amp; atomic transactions</text>
+    <text x="25" y="149" class="tier-body" fill="#92400e">• Immutable append-only audit logs</text>
+    <text x="25" y="172" class="tier-body" fill="#92400e">• Authenticated user sessions &amp; tokens</text>
+  </g>
+
+  <!-- Box 2: Protected File Storage -->
+  <g transform="translate(330, 545)">
+    <rect width="340" height="205" rx="8" fill="#fffafa" stroke="#dc2626" stroke-width="2" class="box-shadow"/>
+    <text x="170" y="26" class="title-text" fill="#7f1d1d">Protected File Storage</text>
+    <text x="170" y="46" class="title-text" fill="#b91c1c" font-size="13">Isolated Physical Storage Disk</text>
+    <line x1="20" y1="56" x2="320" y2="56" stroke="#fecaca" stroke-width="1"/>
+    <text x="25" y="80" class="tier-body" fill="#991b1b">• Private accreditation evidence PDFs</text>
+    <text x="25" y="103" class="tier-body" fill="#991b1b">• Syllabi, faculty licenses &amp; institutional memos</text>
+    <text x="25" y="126" class="tier-body" fill="#991b1b">• Stored strictly outside public web root</text>
+    <text x="40" y="146" class="tier-body" fill="#b91c1c" font-style="italic">(storage/app/protected/)</text>
+    <text x="25" y="169" class="tier-body" fill="#991b1b">• Served ONLY via streaming authorization gates</text>
+    <text x="25" y="190" class="tier-body" fill="#991b1b">• Zero public URLs or symlink bypass</text>
+  </g>
+
+  <!-- Box 3: External IdP -->
+  <g transform="translate(690, 545)">
+    <rect width="295" height="205" rx="8" fill="#fdfaff" stroke="#9333ea" stroke-width="2" class="box-shadow"/>
+    <text x="147" y="26" class="title-text" fill="#581c87">External — Identity Provider</text>
+    <text x="147" y="46" class="title-text" fill="#7e22ce" font-size="13">Google Workspace OAuth 2.0</text>
+    <line x1="20" y1="56" x2="275" y2="56" stroke="#e9d5ff" stroke-width="1"/>
+    <text x="22" y="80" class="tier-body" fill="#6b21a8">• Centralized institutional authentication</text>
+    <text x="22" y="103" class="tier-body" fill="#6b21a8">• Domain-gated to @bicol-u.edu.ph</text>
+    <text x="35" y="123" class="tier-body" fill="#7e22ce" font-style="italic">(client hd hint + server-side validation)</text>
+    <text x="22" y="146" class="tier-body" fill="#6b21a8">• Pre-registration required (pending_activation)</text>
+    <text x="22" y="169" class="tier-body" fill="#6b21a8">• Automatic status elevation on first login</text>
+    <text x="22" y="190" class="tier-body" fill="#6b21a8">• Profile &amp; avatar sync with Google account</text>
+  </g>
+</svg>

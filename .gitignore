@@ -25,3 +25,4 @@ yarn-error.log
 .playwright-mcp
 /.agents/tmp/gstack-upstream
 /.antigravity/design-reports
+/backup
