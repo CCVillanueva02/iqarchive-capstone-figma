@@ -1,0 +1,1548 @@
+# ================================================================================
+# IQArchive v2 — Hierarchical Data Flow Catalog (DFD Levels 0, 1, 2)
+# ================================================================================
+# System: IQArchive — Document Management and Monitoring System
+# Client: Bicol University Internal Quality Assurance (IQA) Office
+# Compliance Benchmark: AACCUP (Accrediting Agency of Chartered Colleges and Universities in the Philippines)
+# Architecture: 3-Tier Monolithic SPA (Laravel 13 MVC + Inertia.js + Vue 3 + MySQL 8 3NF)
+# Specification Version: 2.0.0
+# Target Diagramming Platforms: Draw.io, Lucidchart, Miro, FigJam
+# ================================================================================
+
+metadata:
+  system_name: "IQArchive v2"
+  institution: "Bicol University"
+  office: "Internal Quality Assurance (IQA) Office"
+  scope: "126 Academic Programs across 7 Colleges"
+  specification_date: "2026-09-14"
+  author: "Antigravity Engineering / IQArchive Capstone Team"
+  conformance: "AACCUP 10-Area Survey Instrument Accreditation Pipeline"
+
+# ================================================================================
+# SECTION 1: EXTERNAL ENTITIES (BOUNDARIES & ACTORS)
+# ================================================================================
+external_entities:
+  - entity_id: "EXT_001"
+    name: "Standard Institutional User"
+    type: "external_entity"
+    description: "Faculty, Program Chairs, or University Employees with official @bicol-u.edu.ph Google accounts."
+    interaction: "Authenticates via Google Workspace OAuth; interacts with desktop browser interface."
+
+  - entity_id: "EXT_002"
+    name: "Google Workspace Identity Provider (IdP)"
+    type: "external_system"
+    description: "Institutional identity provider managing single sign-on (SSO) and account lifecycle for Bicol University."
+    interaction: "Exchanges OAuth 2.0 authorization codes for identity claims (google_id, email, name, avatar)."
+
+  - entity_id: "EXT_003"
+    name: "System Administrator"
+    type: "external_entity"
+    description: "IT / System Administrator responsible for global account provisioning, college/program setups, and audit log monitoring."
+    interaction: "Configures colleges, programs, user roles, and inspects immutable compliance audit logs."
+
+  - entity_id: "EXT_004"
+    name: "IQA Staff / IQA Member"
+    type: "external_entity"
+    description: "Central quality assurance officer who exclusively initiates and approves all 9 stage transitions and consolidates university evidence."
+    interaction: "Advances accreditation stages, conducts final consolidation review of evidence, and monitors macro timelines."
+
+  - entity_id: "EXT_005"
+    name: "College Dean"
+    type: "external_entity"
+    description: "Academic head of a college who acts as primary college-level evidence gatekeeper and is auto-elevated to Task Force Lead."
+    interaction: "Forms program task forces, approves/rejects college evidence submissions, and oversees college accreditation progress."
+
+  - entity_id: "EXT_006"
+    name: "Task Force Member"
+    type: "external_entity"
+    description: "Departmental faculty and subject-matter experts (SMEs) assigned to specific AACCUP areas (Areas 1 to 10)."
+    interaction: "Uploads evidence PDFs, validates OCR text extraction, and maps documents to AACCUP criteria benchmarks."
+
+  - entity_id: "EXT_007"
+    name: "Internal Accreditor"
+    type: "external_entity"
+    description: "Institutional mock/rehearsal evaluation panel member who simulates external review prior to formal submission."
+    interaction: "Browses compiled evidence packages during Stages 5 to 7 and leaves non-blocking advisory commentary and gap flags."
+
+  - entity_id: "EXT_008"
+    name: "BU Executive"
+    type: "external_entity"
+    description: "University leadership (President, VPs, Academic Deans) requiring university-wide visibility without editing authority."
+    interaction: "Views read-only macro dashboards, cross-college completion matrices, and institutional performance metrics."
+
+  - entity_id: "EXT_009"
+    name: "External Accreditor"
+    type: "external_entity"
+    description: "Formal AACCUP evaluation team member conducting official survey visits."
+    interaction: "Granted read-only access strictly upon Stage 8 (Submitted) to inspect verified evidence trees and stream authorized PDFs."
+
+  - entity_id: "EXT_010"
+    name: "Tesseract OCR Subsystem"
+    type: "external_process"
+    description: "Locally installed self-hosted Tesseract 5.x OCR engine executed synchronously via CLI wrapper."
+    interaction: "Accepts rasterized image pages, executes text recognition, and returns raw text plus bounding box confidence tokens."
+
+  - entity_id: "EXT_011"
+    name: "Protected Local Filesystem Storage"
+    type: "external_system"
+    description: "Host file storage mount residing outside public web root at /mnt/storage/iqarchive/protected/{college}/{program}/."
+    interaction: "Persists encrypted/protected raw PDF blobs and streams binary content via authorized PHP file handles."
+
+# ================================================================================
+# SECTION 2: DATA STORES CATALOG (23 SYSTEM DATA STORES)
+# ================================================================================
+data_stores:
+  - store_id: "DS_COLLEGES"
+    name: "colleges"
+    type: "database_table"
+    purpose: "Defines the multi-tenant isolation boundary for all academic units in Bicol University."
+    key_columns:
+      - "id (BIGINT UNSIGNED, PK)"
+      - "name (VARCHAR(255))"
+      - "code (VARCHAR(50), UNIQUE)"
+    access_patterns:
+      - "Queried on user login to resolve tenant isolation boundary"
+      - "Joined on all multi-tenant queries (documents, programs, users, audit_logs)"
+
+  - store_id: "DS_PROGRAMS"
+    name: "programs"
+    type: "database_table"
+    purpose: "Stores degree programs undergoing AACCUP accreditation, strictly scoped to a parent college."
+    key_columns:
+      - "id (BIGINT UNSIGNED, PK)"
+      - "college_id (BIGINT UNSIGNED, FK -> colleges.id)"
+      - "name (VARCHAR(255))"
+      - "code (VARCHAR(50), UNIQUE)"
+      - "current_level (VARCHAR(50))"
+    access_patterns:
+      - "Queried by college_id for Dean and Task Force navigation"
+      - "Referenced during task force formation and accreditation cycle launch"
+
+  - store_id: "DS_USERS"
+    name: "users"
+    type: "database_table"
+    purpose: "Maintains institutional identities authenticated via Google Workspace OAuth."
+    key_columns:
+      - "id (BIGINT UNSIGNED, PK)"
+      - "college_id (BIGINT UNSIGNED, FK -> colleges.id, NULLABLE)"
+      - "name (VARCHAR(255))"
+      - "email (VARCHAR(255), UNIQUE, @bicol-u.edu.ph)"
+      - "google_id (VARCHAR(255), UNIQUE)"
+      - "status (ENUM: active, inactive)"
+    access_patterns:
+      - "Lookup by google_id or email during OAuth callback"
+      - "Scoped by college_id for Dean and Task Force assignment rosters"
+
+  - store_id: "DS_ROLES"
+    name: "roles"
+    type: "database_table"
+    purpose: "Defines the 7 canonical institutional RBAC roles governing permissions across the platform."
+    key_columns:
+      - "id (BIGINT UNSIGNED, PK)"
+      - "name (VARCHAR(50), UNIQUE: system_admin, iqa_staff, college_dean, task_force_member, internal_accreditor, bu_executive, external_accreditor)"
+      - "display_name (VARCHAR(100))"
+    access_patterns:
+      - "Loaded on session initialization to populate Inertia auth.roles"
+
+  - store_id: "DS_USER_ROLES"
+    name: "user_roles"
+    type: "database_table"
+    purpose: "Junction table assigning roles to users, supporting Dean dual roles (Dean + Task Force Lead)."
+    key_columns:
+      - "id (BIGINT UNSIGNED, PK)"
+      - "user_id (BIGINT UNSIGNED, FK -> users.id)"
+      - "role_id (BIGINT UNSIGNED, FK -> roles.id)"
+    access_patterns:
+      - "Queried on authentication to resolve user capability sets"
+
+  - store_id: "DS_AUDIT_LOGS"
+    name: "audit_logs"
+    type: "database_table"
+    purpose: "Append-only, immutable regulatory audit trail recording all security and document events."
+    key_columns:
+      - "id (BIGINT UNSIGNED, PK)"
+      - "college_id (BIGINT UNSIGNED, FK -> colleges.id, NULLABLE)"
+      - "user_id (BIGINT UNSIGNED, FK -> users.id, NULLABLE)"
+      - "action (VARCHAR(100))"
+      - "target_type (VARCHAR(100))"
+      - "target_id (VARCHAR(50))"
+      - "details (JSON)"
+      - "created_at (TIMESTAMP)"
+    access_patterns:
+      - "Inserted synchronously on all mutating state actions"
+      - "Filtered by college_id, action, or date by System Admin and IQA Staff"
+
+  - store_id: "DS_NOTIFICATIONS"
+    name: "notifications"
+    type: "database_table"
+    purpose: "In-app alerts notifying users of assignments, approval requirements, and stage shifts."
+    key_columns:
+      - "id (BIGINT UNSIGNED, PK)"
+      - "user_id (BIGINT UNSIGNED, FK -> users.id)"
+      - "type (VARCHAR(100))"
+      - "title (VARCHAR(255))"
+      - "message (TEXT)"
+      - "link (VARCHAR(500))"
+      - "is_read (BOOLEAN)"
+    access_patterns:
+      - "Polled or fetched on Inertia layout render per authenticated user"
+      - "Updated to is_read=true upon user dismissal"
+
+  - store_id: "DS_INSTRUMENTS"
+    name: "instruments"
+    type: "database_table"
+    purpose: "AACCUP evaluation master templates (Undergraduate, Graduate, Institutional)."
+    key_columns:
+      - "id (BIGINT UNSIGNED, PK)"
+      - "name (VARCHAR(255))"
+      - "code (VARCHAR(50), UNIQUE)"
+      - "type (ENUM: ug, grad, inst)"
+      - "version (VARCHAR(20))"
+      - "is_active (BOOLEAN)"
+    access_patterns:
+      - "Selected during accreditation cycle creation to instantiate criteria trees"
+
+  - store_id: "DS_INSTRUMENT_AREAS"
+    name: "instrument_areas"
+    type: "database_table"
+    purpose: "The 10 standard AACCUP accreditation areas (VMGO, Faculty, Curriculum, etc.)."
+    key_columns:
+      - "id (BIGINT UNSIGNED, PK)"
+      - "instrument_id (BIGINT UNSIGNED, FK -> instruments.id)"
+      - "area_number (INT UNSIGNED, 1-10)"
+      - "name (VARCHAR(255))"
+    access_patterns:
+      - "Queried during task force SME assignment"
+      - "Hierarchically displayed in AACCUP Tree workspace"
+
+  - store_id: "DS_INSTRUMENT_PARAMETERS"
+    name: "instrument_parameters"
+    type: "database_table"
+    purpose: "Section subdivisions within an AACCUP Area (e.g., Parameter A, Parameter B)."
+    key_columns:
+      - "id (BIGINT UNSIGNED, PK)"
+      - "instrument_area_id (BIGINT UNSIGNED, FK -> instrument_areas.id)"
+      - "parameter_letter (VARCHAR(10))"
+      - "name (VARCHAR(255))"
+    access_patterns:
+      - "Hierarchical retrieval when building program compliance matrix"
+
+  - store_id: "DS_INSTRUMENT_CRITERIA"
+    name: "instrument_criteria"
+    type: "database_table"
+    purpose: "Evaluation benchmark statements (System, Implementation, Outcome: S.1, I.1, O.1)."
+    key_columns:
+      - "id (BIGINT UNSIGNED, PK)"
+      - "instrument_parameter_id (BIGINT UNSIGNED, FK -> instrument_parameters.id)"
+      - "benchmark_code (VARCHAR(50))"
+      - "title (TEXT)"
+      - "type (ENUM: system, impl, outcome)"
+    access_patterns:
+      - "Referenced when auto-generating compliance requirements for an accreditation survey"
+
+  - store_id: "DS_TASK_FORCES"
+    name: "task_forces"
+    type: "database_table"
+    purpose: "Accreditation steering committee established for a specific program cycle."
+    key_columns:
+      - "id (BIGINT UNSIGNED, PK)"
+      - "program_id (BIGINT UNSIGNED, FK -> programs.id)"
+      - "dean_lead_user_id (BIGINT UNSIGNED, FK -> users.id)"
+      - "academic_year (VARCHAR(20))"
+      - "status (ENUM: active, archived)"
+    access_patterns:
+      - "Queried by program_id to verify active committee membership"
+
+  - store_id: "DS_TASK_FORCE_MEMBERS"
+    name: "task_force_members"
+    type: "database_table"
+    purpose: "Authoritative RBAC source of truth linking faculty to program AACCUP areas."
+    key_columns:
+      - "id (BIGINT UNSIGNED, PK)"
+      - "task_force_id (BIGINT UNSIGNED, FK -> task_forces.id)"
+      - "user_id (BIGINT UNSIGNED, FK -> users.id)"
+      - "instrument_area_id (BIGINT UNSIGNED, FK -> instrument_areas.id, NULLABLE)"
+      - "role_in_team (ENUM: lead, area_chair, member)"
+      - "assigned_at (TIMESTAMP)"
+    access_patterns:
+      - "Checked by Policy on every document upload and criteria edit"
+      - "Auto-populated by Eloquent Observer on task force creation for Dean elevation"
+
+  - store_id: "DS_ACCREDITATIONS"
+    name: "accreditations"
+    type: "database_table"
+    purpose: "Formal accreditation survey instance tracking current stage (1 to 9) and progress."
+    key_columns:
+      - "id (BIGINT UNSIGNED, PK)"
+      - "program_id (BIGINT UNSIGNED, FK -> programs.id)"
+      - "task_force_id (BIGINT UNSIGNED, FK -> task_forces.id)"
+      - "applied_level (VARCHAR(50))"
+      - "current_stage (INT UNSIGNED, Default: 1)"
+      - "stage_status (ENUM: in_progress, done, revision)"
+      - "target_date (DATE)"
+    access_patterns:
+      - "Updated exclusively by IQA Staff during stage transitions"
+      - "Governs global feature and document visibility across the application"
+
+  - store_id: "DS_STAGE_HISTORIES"
+    name: "accreditation_stage_histories"
+    type: "database_table"
+    purpose: "State machine historical log recording every accreditation stage change."
+    key_columns:
+      - "id (BIGINT UNSIGNED, PK)"
+      - "accreditation_id (BIGINT UNSIGNED, FK -> accreditations.id)"
+      - "from_stage (INT UNSIGNED)"
+      - "to_stage (INT UNSIGNED)"
+      - "initiated_by (BIGINT UNSIGNED, FK -> users.id)"
+      - "approved_by (BIGINT UNSIGNED, FK -> users.id)"
+      - "remarks (TEXT)"
+      - "transitioned_at (TIMESTAMP)"
+    access_patterns:
+      - "Appended on each stage transition"
+      - "Queried to render the accreditation progress timeline"
+
+  - store_id: "DS_COMPLIANCE_REQUIREMENTS"
+    name: "compliance_requirements"
+    type: "database_table"
+    purpose: "Checklist tracking satisfaction of each individual criterion in an active survey."
+    key_columns:
+      - "id (BIGINT UNSIGNED, PK)"
+      - "accreditation_id (BIGINT UNSIGNED, FK -> accreditations.id)"
+      - "instrument_criteria_id (BIGINT UNSIGNED, FK -> instrument_criteria.id)"
+      - "status (ENUM: unassigned, in_progress, compliant)"
+      - "due_date (DATE)"
+      - "remarks (TEXT)"
+    access_patterns:
+      - "Loaded in AACCUP Tree view with linked evidence counts"
+      - "Updated when evidence documents are linked or unlinked"
+
+  - store_id: "DS_COMPLIANCE_COMMENTS"
+    name: "compliance_comments"
+    type: "database_table"
+    purpose: "Internal Accreditor advisory notes, gap alerts, and mock review findings on criteria."
+    key_columns:
+      - "id (BIGINT UNSIGNED, PK)"
+      - "compliance_requirement_id (BIGINT UNSIGNED, FK -> compliance_requirements.id)"
+      - "user_id (BIGINT UNSIGNED, FK -> users.id)"
+      - "comment_type (ENUM: advisory, gap, clarification)"
+      - "comment_text (TEXT)"
+      - "is_resolved (BOOLEAN, Default: false)"
+    access_patterns:
+      - "Inserted by Internal Accreditors during Stages 5 to 7"
+      - "Queried by Task Force members to address deficits and toggle is_resolved"
+
+  - store_id: "DS_DOCUMENT_CATEGORIES"
+    name: "document_categories"
+    type: "database_table"
+    purpose: "Taxonomic grouping for uploaded files (e.g., Syllabi, Faculty CVs, Minutes)."
+    key_columns:
+      - "id (BIGINT UNSIGNED, PK)"
+      - "name (VARCHAR(100))"
+      - "scope (ENUM: institutional, college, program)"
+      - "description (TEXT)"
+    access_patterns:
+      - "Populates dropdowns in the document upload modal"
+
+  - store_id: "DS_DOCUMENTS"
+    name: "documents"
+    type: "database_table"
+    purpose: "Master evidence metadata catalog recording file hashes, ownership, and approval status."
+    key_columns:
+      - "id (BIGINT UNSIGNED, PK)"
+      - "college_id (BIGINT UNSIGNED, FK -> colleges.id)"
+      - "program_id (BIGINT UNSIGNED, FK -> programs.id, NULLABLE)"
+      - "category_id (BIGINT UNSIGNED, FK -> document_categories.id)"
+      - "user_id (BIGINT UNSIGNED, FK -> users.id)"
+      - "title (VARCHAR(255))"
+      - "file_path (VARCHAR(500))"
+      - "file_hash (VARCHAR(64), SHA-256)"
+      - "file_size_bytes (BIGINT UNSIGNED)"
+      - "mime_type (VARCHAR(100))"
+      - "status (ENUM: draft, dean_appr, iqa_appr, rejected)"
+      - "visibility (ENUM: private, college, univ, accreditor)"
+    access_patterns:
+      - "Inserted during document upload"
+      - "Queried with strict college_id tenant scoping"
+      - "Status updated across two-tier approval gates"
+
+  - store_id: "DS_DOCUMENT_LINKS"
+    name: "accreditation_document_links"
+    type: "database_table"
+    purpose: "Many-to-many junction mapping evidence files to compliance criteria."
+    key_columns:
+      - "id (BIGINT UNSIGNED, PK)"
+      - "compliance_requirement_id (BIGINT UNSIGNED, FK -> compliance_requirements.id)"
+      - "document_id (BIGINT UNSIGNED, FK -> documents.id)"
+      - "relevance_notes (TEXT)"
+    access_patterns:
+      - "Inserted when user drags document into criterion workspace"
+      - "Cascade deleted when evidence link is removed"
+
+  - store_id: "DS_OCR_RESULTS"
+    name: "ocr_results"
+    type: "database_table"
+    purpose: "Tesseract OCR extraction output with per-word confidence metrics and human edits (1:1 with documents)."
+    key_columns:
+      - "id (BIGINT UNSIGNED, PK)"
+      - "document_id (BIGINT UNSIGNED, FK -> documents.id, UNIQUE)"
+      - "validated_by_user_id (BIGINT UNSIGNED, FK -> users.id, NULLABLE)"
+      - "raw_text (LONGTEXT)"
+      - "edited_text (LONGTEXT, NULLABLE)"
+      - "confidence_metrics (JSON)"
+      - "pages_data (JSON)"
+      - "average_confidence (DECIMAL(5,4))"
+      - "status (ENUM: processing, completed, validated)"
+      - "duration_ms (INT UNSIGNED)"
+    access_patterns:
+      - "Created synchronously during document upload"
+      - "Updated upon human-in-the-loop validation approval"
+      - "Queried by full-text search engine for evidence discovery"
+
+  - store_id: "DS_DOCUMENT_REVIEWS"
+    name: "document_reviews"
+    type: "database_table"
+    purpose: "Two-tier approval audit records capturing Dean and IQA review decisions."
+    key_columns:
+      - "id (BIGINT UNSIGNED, PK)"
+      - "document_id (BIGINT UNSIGNED, FK -> documents.id)"
+      - "user_id (BIGINT UNSIGNED, FK -> users.id)"
+      - "review_stage (ENUM: dean, iqa, internal_accreditor)"
+      - "decision (ENUM: approved, rejected, advisory)"
+      - "remarks (TEXT)"
+      - "reviewed_at (TIMESTAMP)"
+    access_patterns:
+      - "Appended when Dean or IQA approves or rejects an evidence document"
+
+  - store_id: "DS_FILE_STORAGE"
+    name: "file_storage"
+    type: "file_storage"
+    purpose: "On-disk filesystem hierarchy residing outside public web root for raw PDF evidence."
+    key_columns:
+      - "Physical Mount: /mnt/storage/iqarchive/protected/{college_id}/{program_id}/{file_hash}.pdf"
+      - "Permissions: 0640 (Web server read/write only, no public HTTP access)"
+    access_patterns:
+      - "Written synchronously during file upload"
+      - "Read and streamed via DocumentController following Policy authorization"
+
+# ================================================================================
+# SECTION 3: EXPLICIT ARCHITECTURAL ASSUMPTIONS
+# ================================================================================
+assumptions:
+  - id: "ASSUMPTION_NOTIFICATIONS"
+    label: "[ASSUMPTION: notification_delivery]"
+    description: "Notifications are primarily stored in the notifications MySQL table and retrieved via Inertia shared props upon page visits or periodic partial reload polling. Real-time WebSocket broadcasting (e.g., Pusher/Reverb) is an optional enhancement; the core data flow is pull-based."
+    impact: "Users see notifications on subsequent requests or UI refreshes rather than instant push popups."
+
+  - id: "ASSUMPTION_BULK_UPLOADS"
+    label: "[ASSUMPTION: bulk_uploads]"
+    description: "Document uploads are executed as single-file requests per HTTP POST to prevent server process starvation and request timeouts caused by synchronous Tesseract OCR processing."
+    impact: "Frontend upload UI queues files client-side and dispatches them sequentially rather than in a single multipart bulk payload."
+
+  - id: "ASSUMPTION_REJECTION_LIFECYCLE"
+    label: "[ASSUMPTION: rejection_lifecycle]"
+    description: "When an evidence document is rejected by either College Dean or IQA Staff, its status is updated to 'rejected' in documents and a review log is recorded in document_reviews with remarks. In-place file overwrites are forbidden to maintain audit integrity; the Task Force uploader must upload a revised document."
+    impact: "Historical rejected records remain visible to reviewers with explanatory remarks."
+
+  - id: "ASSUMPTION_COMMENT_RESOLUTION"
+    label: "[ASSUMPTION: comment_resolution_authority]"
+    description: "Both the assigned Task Force Member (Area Chair/Lead) and IQA Staff possess authorization to mark an Internal Accreditor's advisory comment as 'resolved' (is_resolved = true) after supplying corrective evidence or clarification."
+    impact: "Unresolved comments count toward stage readiness metrics during Stages 6 and 7."
+
+  - id: "ASSUMPTION_SEARCH_FILTER"
+    label: "[ASSUMPTION: search_and_discovery]"
+    description: "Document search combines indexed MySQL structured filters (college_id, program_id, status) with a LIKE / MATCH full-text search against ocr_results.raw_text and ocr_results.edited_text without requiring an external Elasticsearch daemon."
+    impact: "Search queries run within standard MySQL 8 InnoDB full-text index constraints."
+
+  - id: "ASSUMPTION_AUDIT_ACCESS"
+    label: "[ASSUMPTION: audit_query_access]"
+    description: "Audit logs are strictly queryable by System Administrators (global) and IQA Staff (accreditation-scoped) through dedicated administrative reporting screens. Logs are write-once/immutable with no deletion or modification API."
+    impact: "Satisfies AACCUP and university accreditation non-repudiation standards."
+
+  - id: "ASSUMPTION_DEAN_OBSERVER"
+    label: "[ASSUMPTION: dean_elevation_observer]"
+    description: "When a Task Force is created for a program, an Eloquent Model Observer on TaskForce automatically creates a record in task_force_members designating the College Dean as 'lead', resolving both standard and contextual roles simultaneously."
+    impact: "Deans automatically possess Task Force Lead privileges without manual reassignment."
+
+# ================================================================================
+# SECTION 4: HIERARCHICAL DATA FLOW CATALOG
+# ================================================================================
+data_flows:
+
+  # ------------------------------------------------------------------------------
+  # LEVEL 0: CONTEXT DIAGRAM (MACRO SYSTEM BOUNDARY)
+  # ------------------------------------------------------------------------------
+  - flow_id: "FLOW_000"
+    name: "IQArchive Level 0 Context Data Flow"
+    description: "High-level macro data flow representing the entire IQArchive system boundary, interfacing with Google Workspace IdP, 7 user roles, protected disk storage, and the local Tesseract OCR engine."
+    level: 0
+    category: "System Operations"
+    trigger: "Continuous institutional operations across Bicol University accreditation lifecycles."
+    actors:
+      - name: "Google Workspace IdP"
+        type: "external_system"
+      - name: "Standard Institutional Users & Accreditors (7 Roles)"
+        type: "external_entity"
+      - name: "IQArchive Monolithic Core Application"
+        type: "process"
+      - name: "Tesseract OCR Engine"
+        type: "external_process"
+      - name: "Protected Filesystem Storage"
+        type: "external_system"
+    data_stores:
+      - name: "MySQL 8 Relational Database"
+        type: "database_table"
+      - name: "Protected File Storage (/mnt/storage/iqarchive/protected/)"
+        type: "file_storage"
+    steps:
+      - sequence: 1
+        input: "Google Workspace OAuth 2.0 Credentials & Claims"
+        process: "Authenticate institutional users and resolve RBAC roles"
+        output: "Secure encrypted session cookie + Inertia shared props"
+      - sequence: 2
+        input: "Evidence PDF uploads and accreditation metadata from Users"
+        process: "Process document intake, execute synchronous OCR, enforce multi-tier approval, and track 9-stage pipeline"
+        output: "Compliance trees, OCR text preview, approval notifications, and stage progress"
+      - sequence: 3
+        input: "Binary PDF streams and raw document images"
+        process: "Store/retrieve protected binary blobs and execute OCR extraction"
+        output: "Synchronous OCR tokens and authorized byte streams"
+      - sequence: 4
+        input: "Audit and reporting queries from Executives and Administrators"
+        process: "Aggregate multi-tenant accreditation data and generate audit logs"
+        output: "Macro executive analytics, compliance matrices, and immutable audit logs"
+    decisions:
+      - condition: "Is user authenticating with @bicol-u.edu.ph institutional domain?"
+        then: "Allow login, map college tenant scope, and grant role workspace"
+        else: "Reject authentication with 403 Forbidden Domain Guard"
+    notes:
+      - "[NOTE: Architecture] Strict desktop workstation policy (>=1024px); mobile clients intercepted by global MobileUnsupported guard."
+      - "[NOTE: Residency] All data and OCR binaries reside strictly on-premises at Bicol University."
+
+  # ------------------------------------------------------------------------------
+  # LEVEL 1: SUBSYSTEM & MAJOR DOMAIN FLOWS
+  # ------------------------------------------------------------------------------
+  - flow_id: "FLOW_100"
+    name: "Authentication & Contextual RBAC Resolution"
+    description: "Institutional user completes Google SSO; system checks institutional domain, provisions/updates user record, resolves dual roles, and binds college multi-tenancy."
+    level: 1
+    category: "Authentication & Authorization"
+    trigger: "User clicks 'Sign in with Google' on desktop browser."
+    actors:
+      - name: "Standard Institutional User"
+        type: "external_entity"
+      - name: "Google Workspace IdP"
+        type: "external_system"
+      - name: "IQArchive Auth Module (Socialite + Session)"
+        type: "process"
+    data_stores:
+      - name: "users"
+        type: "database_table"
+      - name: "roles"
+        type: "database_table"
+      - name: "user_roles"
+        type: "database_table"
+      - name: "task_force_members"
+        type: "database_table"
+      - name: "audit_logs"
+        type: "database_table"
+    steps:
+      - sequence: 1
+        input: "User initiates Google OAuth login"
+        process: "Redirect to Google Workspace OAuth 2.0 authorization endpoint with state token"
+        output: "Google authorization code callback"
+      - sequence: 2
+        input: "Authorization code"
+        process: "Laravel Socialite validates code with Google IdP and retrieves user profile payload"
+        output: "google_id, email, name, avatar_url"
+      - sequence: 3
+        input: "Email claim from Google payload"
+        process: "Verify email domain against '@bicol-u.edu.ph' institutional gatekeeper"
+        output: "Domain authorization confirmation"
+        decision: "Does email end in @bicol-u.edu.ph?"
+        then: "Proceed to user lookup/provisioning"
+      - sequence: 4
+        input: "Google profile data"
+        process: "Query users table; update google_id and avatar_url or provision active user"
+        output: "Resolved user record (user_id, college_id)"
+      - sequence: 5
+        input: "user_id"
+        process: "Query user_roles and task_force_members to resolve standard roles and Dean contextual elevation"
+        output: "Assigned roles array (e.g. ['college_dean', 'task_force_lead'])"
+      - sequence: 6
+        input: "user_id, resolved roles, IP address"
+        process: "Spawn authenticated HTTP-only cookie session and append audit_logs ('auth.login')"
+        output: "Inertia shared props (auth.user, auth.roles, auth.college_id)"
+    decisions:
+      - condition: "Is user assigned the 'college_dean' role?"
+        then: "Contextually grant 'task_force_lead' permissions across all college task forces"
+        else: "Bind standard role permissions as stored in user_roles"
+    notes:
+      - "[NOTE: Security] No local password hash exists; credential revocation in Google Workspace immediately invalidates access."
+
+  - flow_id: "FLOW_200"
+    name: "Master Academic Hierarchy & Instrument Cataloging"
+    description: "System Administrators configure colleges and degree programs; IQA Staff catalog master AACCUP Survey Instruments, Areas, Parameters, and Criteria benchmarks."
+    level: 1
+    category: "System Operations"
+    trigger: "Academic year setup or AACCUP instrument revision release."
+    actors:
+      - name: "System Administrator"
+        type: "external_entity"
+      - name: "IQA Staff / IQA Member"
+        type: "external_entity"
+      - name: "Academic Structure Module"
+        type: "process"
+    data_stores:
+      - name: "colleges"
+        type: "database_table"
+      - name: "programs"
+        type: "database_table"
+      - name: "instruments"
+        type: "database_table"
+      - name: "instrument_areas"
+        type: "database_table"
+      - name: "instrument_parameters"
+        type: "database_table"
+      - name: "instrument_criteria"
+        type: "database_table"
+      - name: "audit_logs"
+        type: "database_table"
+    steps:
+      - sequence: 1
+        input: "College metadata (name, code) from System Admin"
+        process: "Validate uniqueness and insert into colleges table"
+        output: "college_id"
+      - sequence: 2
+        input: "Program metadata (college_id, name, code, current_level)"
+        process: "Insert degree program records scoped to parent college"
+        output: "program_id"
+      - sequence: 3
+        input: "AACCUP Survey Instrument payload (type, version, code) from IQA Staff"
+        process: "Create master record in instruments table"
+        output: "instrument_id"
+      - sequence: 4
+        input: "10 Standard AACCUP Areas"
+        process: "Insert 10 rows into instrument_areas linked to instrument_id"
+        output: "instrument_area_id array (Areas 1 to 10)"
+      - sequence: 5
+        input: "Parameters (letters A-J) and benchmark criteria (S.1, I.1, O.1)"
+        process: "Populate instrument_parameters and instrument_criteria with benchmark definitions"
+        output: "Hierarchical AACCUP Instrument Tree stored in database"
+      - sequence: 6
+        input: "Creation metadata"
+        process: "Append audit_logs entry ('instrument.cataloged')"
+        output: "Audit confirmation"
+    decisions:
+      - condition: "Is instrument version already active for this degree level?"
+        then: "Archive prior version and set new version is_active=true"
+        else: "Activate new instrument directly"
+    notes:
+      - "[NOTE: Compliance] Criteria benchmark codes (System, Implementation, Outcome) strictly follow AACCUP 2024 revised guidelines."
+
+  - flow_id: "FLOW_300"
+    name: "Task Force Formation & Area SME Allocation"
+    description: "College Dean establishes an accreditation Task Force for an academic program and assigns faculty members to specific AACCUP areas (1-10); system automatically elevates Dean to Task Force Lead."
+    level: 1
+    category: "Accreditation Pipeline"
+    trigger: "College Dean initiates accreditation preparations for an upcoming academic cycle."
+    actors:
+      - name: "College Dean"
+        type: "external_entity"
+      - name: "Task Force Management Service"
+        type: "process"
+      - name: "Task Force Observer"
+        type: "process"
+    data_stores:
+      - name: "task_forces"
+        type: "database_table"
+      - name: "task_force_members"
+        type: "database_table"
+      - name: "users"
+        type: "database_table"
+      - name: "instrument_areas"
+        type: "database_table"
+      - name: "notifications"
+        type: "database_table"
+      - name: "audit_logs"
+        type: "database_table"
+    steps:
+      - sequence: 1
+        input: "program_id, academic_year, dean_user_id"
+        process: "Dean submits Task Force creation request; verify Dean belongs to program's college"
+        output: "Validated Task Force parameters"
+      - sequence: 2
+        input: "Validated parameters"
+        process: "Insert into task_forces with dean_lead_user_id"
+        output: "task_force_id"
+      - sequence: 3
+        input: "task_force_id, dean_user_id (Triggered via Model Observer)"
+        process: "Observer automatically inserts Dean into task_force_members with role_in_team='lead' and instrument_area_id=NULL"
+        output: "Automatic Dean elevation record"
+      - sequence: 4
+        input: "Faculty user_id and instrument_area_id pairs"
+        process: "Dean assigns Area Chairs and Members; validate user belongs to college"
+        output: "Multiple task_force_members rows inserted"
+      - sequence: 5
+        input: "Assigned member IDs"
+        process: "Generate in-app notification rows in notifications table alerting faculty of area assignments"
+        output: "notifications records created"
+      - sequence: 6
+        input: "task_force_id, actor user_id"
+        process: "Log audit record ('task_force.formed') with roster details"
+        output: "audit_logs updated"
+    decisions:
+      - condition: "Does faculty user already belong to another active task force in this cycle?"
+        then: "Allow cross-assignment if role is within same college; flag warning in UI"
+        else: "Assign cleanly to program area"
+    notes:
+      - "[NOTE: RBAC] Dean's elevation to Lead is enforced via Model Observer, guaranteeing consistency between task_forces.dean_lead_user_id and task_force_members."
+
+  - flow_id: "FLOW_400"
+    name: "Accreditation Survey Cycle Launch & Checklist Generation"
+    description: "IQA Staff formally initiates an accreditation cycle (Stage 1 Draft) for a program; system auto-generates compliance checklist requirements for every benchmark in the active instrument."
+    level: 1
+    category: "Accreditation Pipeline"
+    trigger: "IQA Staff sets target survey date and launches program cycle."
+    actors:
+      - name: "IQA Staff / IQA Member"
+        type: "external_entity"
+      - name: "Accreditation State Machine Service"
+        type: "process"
+    data_stores:
+      - name: "accreditations"
+        type: "database_table"
+      - name: "instrument_criteria"
+        type: "database_table"
+      - name: "compliance_requirements"
+        type: "database_table"
+      - name: "accreditation_stage_histories"
+        type: "database_table"
+      - name: "notifications"
+        type: "database_table"
+      - name: "audit_logs"
+        type: "database_table"
+    steps:
+      - sequence: 1
+        input: "program_id, task_force_id, applied_level, target_date"
+        process: "IQA Staff submits cycle launch parameters; verify user has 'iqa_staff' role"
+        output: "Authorized launch payload"
+      - sequence: 2
+        input: "Launch payload"
+        process: "Insert new row into accreditations with current_stage=1 (Draft), stage_status='in_progress'"
+        output: "accreditation_id"
+      - sequence: 3
+        input: "accreditation_id, applied_level"
+        process: "Query instrument_criteria for active instrument; bulk insert compliance_requirements checklist entries"
+        output: "compliance_requirements rows (status: 'unassigned')"
+      - sequence: 4
+        input: "accreditation_id, IQA user_id"
+        process: "Record Stage 1 initialization in accreditation_stage_histories (from_stage=NULL, to_stage=1)"
+        output: "Historical state machine record"
+      - sequence: 5
+        input: "Task Force Lead and Dean user IDs"
+        process: "Dispatch notifications to program Task Force alerting them that Stage 1 is open"
+        output: "notifications records created"
+      - sequence: 6
+        input: "accreditation_id, user_id"
+        process: "Log audit record ('accreditation.launched')"
+        output: "audit_logs entry written"
+    decisions:
+      - condition: "Does an active accreditation cycle already exist for this program?"
+        then: "Reject launch with 422 Conflict error (only one active survey permitted per program)"
+        else: "Proceed with checklist generation"
+    notes:
+      - "[NOTE: Data Integrity] All checklist requirement rows are generated inside a single database transaction."
+
+  - flow_id: "FLOW_500"
+    name: "Evidence Ingestion, Synchronous OCR & Metadata Registry"
+    description: "Task Force Member uploads evidence PDF; backend validates MIME/size, writes to protected disk, executes synchronous Tesseract OCR, parses JSON confidence tokens, and writes document records."
+    level: 1
+    category: "Document Lifecycle"
+    trigger: "Task Force Member uploads PDF file in program workspace."
+    actors:
+      - name: "Task Force Member"
+        type: "external_entity"
+      - name: "ProcessDocumentOcrService"
+        type: "process"
+      - name: "Tesseract OCR Engine"
+        type: "external_process"
+      - name: "Protected Filesystem Storage"
+        type: "external_system"
+    data_stores:
+      - name: "documents"
+        type: "database_table"
+      - name: "ocr_results"
+        type: "database_table"
+      - name: "file_storage"
+        type: "file_storage"
+      - name: "audit_logs"
+        type: "database_table"
+    steps:
+      - sequence: 1
+        input: "Uploaded file + metadata (college_id, program_id, category_id, title)"
+        process: "Validate file type (application/pdf) and size (<= 50MB); check uploader college permissions"
+        output: "Validation confirmation"
+      - sequence: 2
+        input: "Binary file stream"
+        process: "Compute SHA-256 hash and write file to /mnt/storage/iqarchive/protected/{college_id}/{program_id}/{hash}.pdf"
+        output: "file_path, file_hash, file_size_bytes"
+      - sequence: 3
+        input: "Stored file path"
+        process: "Invoke local Tesseract OCR CLI binary synchronously; rasterize pages and extract text + word confidence metrics"
+        output: "raw_text, confidence_metrics (JSON), pages_data (JSON), average_confidence"
+      - sequence: 4
+        input: "File metadata + OCR extraction output"
+        process: "Execute DB transaction: insert documents row (status: 'draft') and ocr_results row (status: 'processing' if low confidence, 'completed' if >= 0.65)"
+        output: "document_id, ocr_result_id"
+      - sequence: 5
+        input: "document_id, user_id"
+        process: "Record audit log ('document.uploaded') with file hash and OCR duration"
+        output: "audit_logs entry written"
+      - sequence: 6
+        input: "document_id + OCR data"
+        process: "Return Inertia response redirecting user to Split-Screen OCR Human Validation UI"
+        output: "Inertia render payload"
+    decisions:
+      - condition: "Is average OCR confidence >= 0.65 with no unreadable pages?"
+        then: "Set ocr_results.status = 'completed'; prompt user for optional text adjustments"
+        else: "Set ocr_results.status = 'processing'; highlight low-confidence tokens for mandatory human correction"
+    notes:
+      - "[NOTE: Performance] Synchronous OCR runs inline with maximum execution timeout capped at 120s (estimated 2-3s per MB)."
+
+  - flow_id: "FLOW_600"
+    name: "Evidence-to-Criteria Matrix Linking"
+    description: "Task Force Member maps uploaded evidence documents to specific AACCUP criteria benchmarks in the interactive tree workspace, updating requirement compliance status."
+    level: 1
+    category: "Document Lifecycle"
+    trigger: "Task Force Member drags an evidence card onto an AACCUP criterion benchmark."
+    actors:
+      - name: "Task Force Member"
+        type: "external_entity"
+      - name: "Compliance Matrix Linking Service"
+        type: "process"
+    data_stores:
+      - name: "documents"
+        type: "database_table"
+      - name: "compliance_requirements"
+        type: "database_table"
+      - name: "accreditation_document_links"
+        type: "database_table"
+      - name: "audit_logs"
+        type: "database_table"
+    steps:
+      - sequence: 1
+        input: "document_id, compliance_requirement_id, relevance_notes"
+        process: "Verify user is assigned to the corresponding AACCUP area in task_force_members"
+        output: "Authorization verified"
+      - sequence: 2
+        input: "document_id, compliance_requirement_id"
+        process: "Insert unique link into accreditation_document_links"
+        output: "Link established"
+      - sequence: 3
+        input: "compliance_requirement_id"
+        process: "Update compliance_requirements.status from 'unassigned' to 'in_progress'"
+        output: "compliance_requirements updated"
+      - sequence: 4
+        input: "document_id, compliance_requirement_id, user_id"
+        process: "Log audit record ('evidence.linked')"
+        output: "audit_logs updated"
+    decisions:
+      - condition: "Does document link already exist for this requirement?"
+        then: "Return validation message 'Document already linked to this criterion'"
+        else: "Insert junction record and recalculate area completion percentage"
+    notes:
+      - "[NOTE: Flexibility] A single evidence document (e.g. University Faculty Manual) may be linked to multiple criteria across different areas."
+
+  - flow_id: "FLOW_700"
+    name: "Two-Tier Evidence Review & College Gatekeeper Approval"
+    description: "Evidence passes through a mandatory two-tier gate: Tier 1 College Dean gatekeeper approval, followed by Tier 2 IQA Staff consolidation approval before inclusion in official packages."
+    level: 1
+    category: "Document Lifecycle"
+    trigger: "Task Force Member submits document for formal review."
+    actors:
+      - name: "Task Force Member"
+        type: "external_entity"
+      - name: "College Dean"
+        type: "external_entity"
+      - name: "IQA Staff / IQA Member"
+        type: "external_entity"
+      - name: "Document Approval Service"
+        type: "process"
+    data_stores:
+      - name: "documents"
+        type: "database_table"
+      - name: "document_reviews"
+        type: "database_table"
+      - name: "notifications"
+        type: "database_table"
+      - name: "audit_logs"
+        type: "database_table"
+    steps:
+      - sequence: 1
+        input: "document_id (status: 'draft') from Task Force Member"
+        process: "Submit document for review; transition status to 'dean_pending'"
+        output: "Notification sent to College Dean"
+      - sequence: 2
+        input: "Dean review action (Approved / Rejected) + remarks"
+        process: "Record Tier 1 review in document_reviews (stage: 'dean')"
+        output: "Tier 1 review recorded"
+        decision: "Did College Dean approve?"
+        then: "Update documents.status = 'dean_appr'; notify IQA Staff"
+      - sequence: 3
+        input: "IQA Staff review action (Approved / Rejected) + remarks"
+        process: "Record Tier 2 review in document_reviews (stage: 'iqa')"
+        output: "Tier 2 review recorded"
+        decision: "Did IQA Staff approve?"
+        then: "Update documents.status = 'iqa_appr'; mark evidence as consolidated"
+      - sequence: 4
+        input: "Review outcomes, user_id"
+        process: "Log audit records ('document.dean_approved' or 'document.iqa_approved')"
+        output: "audit_logs written"
+    decisions:
+      - condition: "Is document rejected at either Tier 1 or Tier 2?"
+        then: "Update documents.status = 'rejected'; dispatch notification to uploader with review remarks"
+        else: "Progress to next approval tier"
+    notes:
+      - "[NOTE: Compliance] IQA Staff cannot consolidate evidence that has not been approved by the College Dean."
+
+  - flow_id: "FLOW_800"
+    name: "9-Stage Accreditation Pipeline State Machine Progression"
+    description: "IQA Staff evaluates program readiness against strict stage pre-conditions and advances the accreditation lifecycle across the 9 defined stages, recording transition history."
+    level: 1
+    category: "Accreditation Pipeline"
+    trigger: "IQA Staff clicks 'Advance Stage' on accreditation control panel."
+    actors:
+      - name: "IQA Staff / IQA Member"
+        type: "external_entity"
+      - name: "Accreditation State Machine"
+        type: "process"
+    data_stores:
+      - name: "accreditations"
+        type: "database_table"
+      - name: "accreditation_stage_histories"
+        type: "database_table"
+      - name: "compliance_requirements"
+        type: "database_table"
+      - name: "documents"
+        type: "database_table"
+      - name: "notifications"
+        type: "database_table"
+      - name: "audit_logs"
+        type: "database_table"
+    steps:
+      - sequence: 1
+        input: "accreditation_id, target_stage (current_stage + 1), remarks"
+        process: "Verify user is IQA Staff; execute pre-condition validation rules for target_stage"
+        output: "Pre-condition validation report (pass/fail)"
+      - sequence: 2
+        input: "Validation pass"
+        process: "Update accreditations.current_stage to target_stage and stage_status='in_progress'"
+        output: "accreditations record updated"
+      - sequence: 3
+        input: "accreditation_id, from_stage, to_stage, IQA user_id, remarks"
+        process: "Insert immutable transition record into accreditation_stage_histories"
+        output: "Historical state log recorded"
+      - sequence: 4
+        input: "accreditation_id, to_stage"
+        process: "Query Task Force roster and Dean; dispatch broadcast notifications of new stage"
+        output: "notifications records created"
+      - sequence: 5
+        input: "accreditation_id, user_id, stage transition data"
+        process: "Log audit record ('stage.transitioned')"
+        output: "audit_logs written"
+    decisions:
+      - condition: "Attempting transition from Stage 3 (Evidence Collection) to Stage 4 (Consolidation)?"
+        then: "Enforce guard: All evidence must have documents.status = 'dean_appr' or 'iqa_appr'"
+        else: "Apply corresponding pre-conditions for target stage"
+    notes:
+      - "[NOTE: Authority] Only IQA Staff can initiate and approve stage transitions. Deans and Task Force members have zero transition privileges."
+
+  - flow_id: "FLOW_900"
+    name: "Internal Accreditor Mock Review & Deficit Feedback Loop"
+    description: "During Stages 5 to 7, Internal Accreditors simulate external review by inspecting compiled evidence packages and submitting advisory comments and deficit flags."
+    level: 1
+    category: "Quality Assurance & Feedback"
+    trigger: "Internal Accreditor reviews criteria and posts feedback."
+    actors:
+      - name: "Internal Accreditor"
+        type: "external_entity"
+      - name: "Task Force Member"
+        type: "external_entity"
+      - name: "Advisory Feedback Service"
+        type: "process"
+    data_stores:
+      - name: "compliance_requirements"
+        type: "database_table"
+      - name: "compliance_comments"
+        type: "database_table"
+      - name: "document_reviews"
+        type: "database_table"
+      - name: "notifications"
+        type: "database_table"
+      - name: "audit_logs"
+        type: "database_table"
+    steps:
+      - sequence: 1
+        input: "compliance_requirement_id, comment_type, comment_text"
+        process: "Verify accreditation is in Stage 5, 6, or 7 and user has 'internal_accreditor' role"
+        output: "Authorization confirmed"
+      - sequence: 2
+        input: "Comment payload"
+        process: "Insert row into compliance_comments (is_resolved: false)"
+        output: "comment_id"
+      - sequence: 3
+        input: "comment_id, compliance_requirement_id"
+        process: "Query assigned Task Force area members; dispatch alert notification"
+        output: "notifications created"
+      - sequence: 4
+        input: "Remediation evidence / notes from Task Force Member"
+        process: "Task Force Member updates evidence links and toggles is_resolved = true"
+        output: "compliance_comments updated"
+      - sequence: 5
+        input: "comment_id, user_id, action"
+        process: "Log audit record ('comment.posted' or 'comment.resolved')"
+        output: "audit_logs entry written"
+    decisions:
+      - condition: "Does accreditation stage advance to Stage 8 with unresolved deficit comments?"
+        then: "IQA Staff receives advisory warning modal outlining unresolved comments before confirming transition"
+        else: "Proceed without warning"
+    notes:
+      - "[NOTE: Non-Blocking] Internal Accreditor comments are advisory; they provide actionable feedback but cannot programmatically veto stage progression."
+
+  - flow_id: "FLOW_1000"
+    name: "Post-Submission External Accreditor Access & Authorized Streaming"
+    description: "Upon transition to Stage 8 (Submitted), External Accreditors receive read-only access to browse verified evidence trees and stream authorized PDF files."
+    level: 1
+    category: "External Access"
+    trigger: "External Accreditor logs in during formal survey visit."
+    actors:
+      - name: "External Accreditor"
+        type: "external_entity"
+      - name: "Document Streaming Controller"
+        type: "process"
+      - name: "Protected Filesystem Storage"
+        type: "external_system"
+    data_stores:
+      - name: "accreditations"
+        type: "database_table"
+      - name: "documents"
+        type: "database_table"
+      - name: "ocr_results"
+        type: "database_table"
+      - name: "file_storage"
+        type: "file_storage"
+      - name: "audit_logs"
+        type: "database_table"
+    steps:
+      - sequence: 1
+        input: "User requests AACCUP evidence tree for program"
+        process: "DocumentPolicy checks if current_stage >= 8 (Submitted) for 'external_accreditor' role"
+        output: "Read-only tree navigation unlocked"
+      - sequence: 2
+        input: "Document view request (document_id)"
+        process: "DocumentController verifies documents.status = 'iqa_appr' and visibility is accessible"
+        output: "Authorization confirmed"
+      - sequence: 3
+        input: "document_id"
+        process: "Resolve physical file path at /mnt/storage/iqarchive/protected/{college_id}/{program_id}/{hash}.pdf"
+        output: "Physical file path"
+      - sequence: 4
+        input: "Physical file path"
+        process: "Open secure binary stream; emit HTTP headers (Content-Type: application/pdf, X-Content-Type-Options: nosniff)"
+        output: "Binary PDF byte stream to browser"
+      - sequence: 5
+        input: "document_id, External Accreditor user_id, IP address"
+        process: "Log audit record ('document.external_viewed')"
+        output: "audit_logs entry written"
+    decisions:
+      - condition: "Is accreditation current_stage < 8?"
+        then: "Deny access with 403 Forbidden ('Accreditation package not yet formally submitted')"
+        else: "Authorize read-only document stream"
+    notes:
+      - "[NOTE: Security] Protected storage is outside public web root; direct URLs do not exist. Every single byte is authorized and logged."
+
+  - flow_id: "FLOW_1100"
+    name: "Executive Analytics & Cross-College Macro Monitoring"
+    description: "BU Executives access real-time university-wide dashboards to monitor accreditation progress, completion percentages, and compliance readiness across all 7 colleges."
+    level: 1
+    category: "Reporting & Monitoring"
+    trigger: "BU Executive opens Executive Dashboard."
+    actors:
+      - name: "BU Executive"
+        type: "external_entity"
+      - name: "Analytics Aggregation Engine"
+        type: "process"
+    data_stores:
+      - name: "colleges"
+        type: "database_table"
+      - name: "programs"
+        type: "database_table"
+      - name: "accreditations"
+        type: "database_table"
+      - name: "compliance_requirements"
+        type: "database_table"
+      - name: "documents"
+        type: "database_table"
+    steps:
+      - sequence: 1
+        input: "Executive dashboard navigation request"
+        process: "Verify user has 'bu_executive' or 'system_admin' role"
+        output: "Dashboard authorization granted"
+      - sequence: 2
+        input: "Aggregation query"
+        process: "Query accreditations grouped by college_id and current_stage; compute active vs completed surveys"
+        output: "University-wide stage distribution metrics"
+      - sequence: 3
+        input: "compliance_requirements data"
+        process: "Aggregate criteria status counts (unassigned, in_progress, compliant) per program and area"
+        output: "Compliance completion percentages"
+      - sequence: 4
+        input: "Aggregated metrics"
+        process: "Render Inertia executive overview dashboard with visual progress charts"
+        output: "Read-only executive analytics view"
+    decisions:
+      - condition: "Does executive select a specific college filter?"
+        then: "Filter aggregated datasets to selected college without exposing file editing actions"
+        else: "Present macro totals across all 7 colleges"
+    notes:
+      - "[NOTE: Read-Only] BU Executive view contains zero action buttons or editing controls."
+
+  - flow_id: "FLOW_1200"
+    name: "Compliance Audit Trail & Administrative Logging"
+    description: "Continuous recording of all system mutations and authentication events into an immutable log table, queryable by System Administrators."
+    level: 1
+    category: "System Operations"
+    trigger: "Any state-changing action (upload, approval, stage advance, login)."
+    actors:
+      - name: "System Administrator"
+        type: "external_entity"
+      - name: "Audit Logger Service"
+        type: "process"
+    data_stores:
+      - name: "audit_logs"
+        type: "database_table"
+      - name: "users"
+        type: "database_table"
+      - name: "colleges"
+        type: "database_table"
+    steps:
+      - sequence: 1
+        input: "Action event (action, target_type, target_id, details, user_id, college_id, ip)"
+        process: "Construct immutable log entry payload"
+        output: "Audit payload"
+      - sequence: 2
+        input: "Audit payload"
+        process: "Execute direct INSERT into audit_logs table"
+        output: "audit_logs row created"
+      - sequence: 3
+        input: "Admin search request (filter by college, user, date range, action type)"
+        process: "Verify user has 'system_admin' role; execute paginated query on audit_logs"
+        output: "Paginated audit trail table"
+    decisions:
+      - condition: "Is user attempting to UPDATE or DELETE an audit log record?"
+        then: "Reject action immediately; database lacks mutation routes and Eloquent model is read/create only"
+        else: "Permit append and read"
+    notes:
+      - "[NOTE: Non-Repudiation] Database user permissions can be configured to REVOKE UPDATE, DELETE on audit_logs in production."
+
+  # ------------------------------------------------------------------------------
+  # LEVEL 2: DETAILED CRITICAL PATH FLOWS (DEEP DIVES)
+  # ------------------------------------------------------------------------------
+  - flow_id: "FLOW_501"
+    name: "Document Ingestion, Synchronous OCR & Split-Screen Validation"
+    description: "Detailed Level 2 execution of the document upload pipeline, synchronous Tesseract OCR invocation, word-level confidence parsing (< 0.65 threshold), and human validation editing."
+    level: 2
+    category: "Document Lifecycle"
+    trigger: "Task Force Member clicks 'Upload Document' in Area Evidence Workspace."
+    actors:
+      - name: "Task Force Member"
+        type: "external_entity"
+      - name: "DocumentController"
+        type: "process"
+      - name: "ProcessDocumentOcrService"
+        type: "process"
+      - name: "Tesseract OCR CLI"
+        type: "external_process"
+      - name: "Protected Filesystem Storage"
+        type: "external_system"
+    data_stores:
+      - name: "documents"
+        type: "database_table"
+      - name: "ocr_results"
+        type: "database_table"
+      - name: "file_storage"
+        type: "file_storage"
+      - name: "audit_logs"
+        type: "database_table"
+    steps:
+      - sequence: 1
+        input: "Multipart HTTP POST (file, college_id, program_id, category_id, title)"
+        process: "DocumentController validates MIME type (application/pdf), maximum size (50MB), and verifies user's college scope"
+        output: "Validated file stream and form fields"
+        guard: "User must be active Task Force Member or Dean for the target college"
+
+      - sequence: 2
+        input: "Binary PDF stream"
+        process: "Compute SHA-256 hash across binary content; determine target path /mnt/storage/iqarchive/protected/{college_id}/{program_id}/{hash}.pdf"
+        output: "file_hash, file_path, file_size_bytes"
+        guard: "Storage write must precede database insertion"
+
+      - sequence: 3
+        input: "File stream + file_path"
+        process: "Write binary data to protected disk with 0640 permissions"
+        output: "Physical file persisted on disk"
+        decision: "Does identical file_hash already exist in this college/program?"
+        then: "Flag duplicate evidence warning; link existing file or proceed with new title"
+
+      - sequence: 4
+        input: "Physical file path"
+        process: "ProcessDocumentOcrService converts PDF pages to temporary 300 DPI TIFF/PNG images using pdftoppm"
+        output: "Rasterized page images in temporary directory"
+        guard: "Image rasterization completes within 30 seconds"
+
+      - sequence: 5
+        input: "Rasterized page images"
+        process: "Invoke Tesseract CLI: 'tesseract {page_img} {out} -l eng hocr tsv'; parse TSV token stream"
+        output: "raw_text, per-word bounding boxes, per-word confidence (0-100), per-page metrics"
+        guard: "Synchronous timeout bounded at 120s"
+
+      - sequence: 6
+        input: "TSV token stream"
+        process: "Calculate average_confidence; map word confidence to decimal (0.00-1.00); flag all tokens with confidence < 0.65"
+        output: "confidence_metrics JSON array [{word: 'AACCUP', conf: 0.94, bbox: [...]}, {word: 'Currclm', conf: 0.52, flag: true}]"
+        decision: "Is average_confidence >= 0.65 and flag_count == 0?"
+        then: "Set initial ocr_status = 'completed'"
+
+      - sequence: 7
+        input: "File metadata + OCR outputs"
+        process: "Open DB transaction: Insert documents row (status: 'draft'); Insert ocr_results row (raw_text, confidence_metrics, pages_data, average_confidence)"
+        output: "documents.id, ocr_results.id committed"
+        guard: "ACID transaction guarantees zero orphaned records on error"
+
+      - sequence: 8
+        input: "documents.id, user_id"
+        process: "Append audit_logs entry ('document.uploaded')"
+        output: "Audit logged"
+
+      - sequence: 9
+        input: "documents.id, ocr_results.id"
+        process: "Render Inertia Split-Screen OCR UI: Left pane displays original PDF via protected stream; Right pane renders editable text with highlighted low-confidence tokens"
+        output: "Interactive validation view delivered to user"
+
+      - sequence: 10
+        input: "Human-edited text + validation approval from Task Force Member"
+        process: "Update ocr_results: edited_text = sanitized input, validated_by_user_id = auth.id, validated_at = NOW(), status = 'validated'"
+        output: "Official validated evidence record established"
+        guard: "Human must explicitly click 'Approve Text Extraction'"
+
+      - sequence: 11
+        input: "Validation confirmation, user_id"
+        process: "Append audit_logs entry ('ocr.human_validated')"
+        output: "Audit logged"
+    decisions:
+      - condition: "Does user abandon split-screen validation without approving?"
+        then: "ocr_results remains in 'processing' status; document remains in 'draft' and cannot be submitted to College Dean"
+        else: "ocr_results status becomes 'validated'; document is eligible for Dean approval submission"
+    notes:
+      - "[NOTE: Capstone Mandate] Inline synchronous OCR eliminates background worker complexity for current document volume."
+      - "[NOTE: Accuracy] Flagging words below 0.65 ensures that accreditation reviewers are never misled by OCR misrecognitions."
+
+  - flow_id: "FLOW_701"
+    name: "Two-Tier Evidence Review & Approval Chain"
+    description: "Detailed Level 2 execution of the two-tier evidence gate: Task Force submission, College Dean gatekeeper inspection, IQA Staff consolidation review, and rejection/revision handling."
+    level: 2
+    category: "Document Lifecycle"
+    trigger: "Task Force Member clicks 'Submit for Dean Approval' on an evidence document."
+    actors:
+      - name: "Task Force Member"
+        type: "external_entity"
+      - name: "College Dean"
+        type: "external_entity"
+      - name: "IQA Staff / IQA Member"
+        type: "external_entity"
+      - name: "DocumentReviewController"
+        type: "process"
+    data_stores:
+      - name: "documents"
+        type: "database_table"
+      - name: "document_reviews"
+        type: "database_table"
+      - name: "ocr_results"
+        type: "database_table"
+      - name: "notifications"
+        type: "database_table"
+      - name: "audit_logs"
+        type: "database_table"
+    steps:
+      - sequence: 1
+        input: "document_id (status: 'draft')"
+        process: "Verify ocr_results.status == 'validated'; transition documents.status = 'dean_pending'"
+        output: "Document queued for Tier 1 review"
+        guard: "Unvalidated OCR documents cannot enter approval chain"
+
+      - sequence: 2
+        input: "dean_pending document"
+        process: "Insert notification for College Dean in target college"
+        output: "Dean alerted on dashboard"
+
+      - sequence: 3
+        input: "College Dean review decision (Approved / Rejected) + remarks"
+        process: "DocumentReviewController verifies user is Dean of document's college_id; record review in document_reviews (review_stage: 'dean')"
+        output: "Tier 1 review log created"
+        decision: "Did Dean approve or reject?"
+        then: "If Approved: set documents.status = 'dean_appr'; dispatch notification to IQA Staff"
+
+      - sequence: 4
+        input: "Dean rejection path"
+        process: "If Rejected: set documents.status = 'rejected'; dispatch notification to uploader with Dean remarks"
+        output: "Document returned to uploader"
+        guard: "Rejected documents require mandatory remarks from Dean"
+
+      - sequence: 5
+        input: "document_id (status: 'dean_appr')"
+        process: "Document appears in IQA Consolidation Queue workspace"
+        output: "IQA Staff notified"
+
+      - sequence: 6
+        input: "IQA Staff review decision (Approved / Rejected) + remarks"
+        process: "DocumentReviewController verifies user has 'iqa_staff' role; record review in document_reviews (review_stage: 'iqa')"
+        output: "Tier 2 review log created"
+        decision: "Did IQA Staff approve or reject?"
+        then: "If Approved: set documents.status = 'iqa_appr'; mark evidence as consolidated"
+
+      - sequence: 7
+        input: "IQA rejection path"
+        process: "If Rejected: set documents.status = 'rejected'; dispatch notification to College Dean and uploader with IQA remarks"
+        output: "Consolidation rejected"
+
+      - sequence: 8
+        input: "document_id, decision, user_id"
+        process: "Append audit_logs entry ('document.dean_review' or 'document.iqa_review')"
+        output: "audit_logs written"
+    decisions:
+      - condition: "Can IQA Staff approve a document before College Dean approves?"
+        then: "Server-side Policy throws 403 Forbidden: 'Document must pass College Dean gate before IQA review'"
+        else: "Allow review progression"
+    notes:
+      - "[NOTE: Compliance] This two-tier chain mirrors Bicol University's institutional quality assurance governance."
+
+  - flow_id: "FLOW_801"
+    name: "9-Stage Accreditation Pipeline Progression & Guard Verification"
+    description: "Detailed Level 2 execution of the accreditation state machine: evaluating strict per-stage completion pre-conditions, advancing the current stage, creating audit stage histories, and broadcasting alerts."
+    level: 2
+    category: "Accreditation Pipeline"
+    trigger: "IQA Staff clicks 'Advance to Next Stage' in Stage Governance Console."
+    actors:
+      - name: "IQA Staff / IQA Member"
+        type: "external_entity"
+      - name: "AccreditationPipelineService"
+        type: "process"
+    data_stores:
+      - name: "accreditations"
+        type: "database_table"
+      - name: "accreditation_stage_histories"
+        type: "database_table"
+      - name: "compliance_requirements"
+        type: "database_table"
+      - name: "documents"
+        type: "database_table"
+      - name: "notifications"
+        type: "database_table"
+      - name: "audit_logs"
+        type: "database_table"
+    steps:
+      - sequence: 1
+        input: "accreditation_id, requested_stage, transition_remarks"
+        process: "AccreditationPipelineService verifies auth.user has 'iqa_staff' role and requested_stage == current_stage + 1"
+        output: "Stage transition request authorized"
+        guard: "Stage skips are strictly prohibited (transitions must be linear 1 -> 2 -> ... -> 9)"
+
+      - sequence: 2
+        input: "accreditation_id, current_stage"
+        process: "Evaluate pre-condition guard rules specific to the departing stage"
+        output: "Guard evaluation results"
+        decision: "Stage 3 (Evidence Collection) -> Stage 4 (Consolidation) guard:"
+        then: "Check that >= 1 document is linked per AACCUP Area and all linked documents have documents.status = 'dean_appr' or 'iqa_appr'"
+
+      - sequence: 3
+        input: "Stage 4 (Consolidation) -> Stage 5 (Feedback Integration) guard"
+        process: "Verify that 100% of linked evidence documents have documents.status = 'iqa_appr'"
+        output: "Consolidation verification result"
+        decision: "Are all evidence documents IQA approved?"
+        then: "Pass pre-condition guard"
+
+      - sequence: 4
+        input: "Pre-condition pass confirmation"
+        process: "Open DB transaction: Update accreditations: current_stage = requested_stage, stage_status = 'in_progress'"
+        output: "accreditations updated"
+
+      - sequence: 5
+        input: "accreditation_id, from_stage, to_stage, remarks, auth.id"
+        process: "Insert row into accreditation_stage_histories: from_stage, to_stage, initiated_by=auth.id, approved_by=auth.id, transitioned_at=NOW()"
+        output: "Historical transition row created"
+
+      - sequence: 6
+        input: "accreditation_id, requested_stage"
+        process: "Query Task Force roster, College Dean, and BU Executives; bulk insert notification alerts"
+        output: "notifications records created"
+
+      - sequence: 7
+        input: "accreditation_id, requested_stage, auth.id"
+        process: "Append audit_logs entry ('stage.transitioned') with stage change diff"
+        output: "audit_logs committed"
+    decisions:
+      - condition: "Does pre-condition evaluation detect missing Area evidence or unapproved documents?"
+        then: "Block transition; return 422 Unprocessable Entity with detailed checklist of unmet requirements"
+        else: "Commit state machine transition and dispatch alerts"
+    notes:
+      - "[NOTE: Stage 8 Access Gate] When stage advances to Stage 8 (Submitted), External Accreditor read-only access is automatically unlocked."
+      - "[NOTE: Linearity] State machine prevents backward transitions except via explicit admin 'revision' status override."
+
+  - flow_id: "FLOW_901"
+    name: "Internal Accreditor Mock Review & Deficit Remediation Loop"
+    description: "Detailed Level 2 execution of mock accreditation review: Internal Accreditor annotates criteria, Task Force addresses deficits, and comments are marked resolved."
+    level: 2
+    category: "Quality Assurance & Feedback"
+    trigger: "Internal Accreditor inspects compiled program package during Stages 5-7."
+    actors:
+      - name: "Internal Accreditor"
+        type: "external_entity"
+      - name: "Task Force Member"
+        type: "external_entity"
+      - name: "ComplianceCommentController"
+        type: "process"
+    data_stores:
+      - name: "compliance_requirements"
+        type: "database_table"
+      - name: "compliance_comments"
+        type: "database_table"
+      - name: "accreditation_document_links"
+        type: "database_table"
+      - name: "notifications"
+        type: "database_table"
+      - name: "audit_logs"
+        type: "database_table"
+    steps:
+      - sequence: 1
+        input: "Internal Accreditor navigates to AACCUP Area in program undergoing Stage 5, 6, or 7"
+        process: "Render criteria list and linked evidence documents"
+        output: "Interactive evaluation view"
+
+      - sequence: 2
+        input: "compliance_requirement_id, comment_type (gap/advisory/clarification), comment_text"
+        process: "ComplianceCommentController validates payload and inserts into compliance_comments with is_resolved = false"
+        output: "compliance_comments row created"
+
+      - sequence: 3
+        input: "compliance_requirement_id"
+        process: "Query task_force_members assigned to the parent instrument_area_id; insert notification records"
+        output: "Task Force Area Chair alerted of deficit comment"
+
+      - sequence: 4
+        input: "Task Force Area Chair inspects comment"
+        process: "Task Force uploads supplementary evidence or clarifies documentation in relevance_notes"
+        output: "Supplementary evidence linked"
+
+      - sequence: 5
+        input: "comment_id, resolution_notes, auth.id"
+        process: "Update compliance_comments set is_resolved = true"
+        output: "Comment marked resolved"
+        guard: "Only assigned Task Force Member or IQA Staff can toggle resolution"
+
+      - sequence: 6
+        input: "comment_id, user_id"
+        process: "Append audit_logs entry ('comment.resolved')"
+        output: "audit_logs written"
+    decisions:
+      - condition: "Are there unresolved gap comments when IQA Staff prepares Stage 7 (Revision) closeout?"
+        then: "Display unresolved comment count on IQA dashboard; require explicit IQA signoff before submitting Stage 8"
+        else: "Clean signoff permitted"
+    notes:
+      - "[NOTE: Advisory Nature] Simulates the exact consultative role played by Bicol University internal accreditors prior to AACCUP on-site surveys."
+
+  - flow_id: "FLOW_1001"
+    name: "Secure Authorized PDF Streaming & Access Enforcement"
+    description: "Detailed Level 2 execution of binary document streaming: session validation, college multi-tenant policy check, stage gate verification, and authorized byte streaming."
+    level: 2
+    category: "External Access"
+    trigger: "User clicks 'View PDF' in browser document viewer."
+    actors:
+      - name: "Authenticated User (Any Role)"
+        type: "external_entity"
+      - name: "DocumentController@stream"
+        type: "process"
+      - name: "DocumentPolicy"
+        type: "process"
+      - name: "Protected Filesystem Storage"
+        type: "external_system"
+    data_stores:
+      - name: "documents"
+        type: "database_table"
+      - name: "accreditations"
+        type: "database_table"
+      - name: "file_storage"
+        type: "file_storage"
+      - name: "audit_logs"
+        type: "database_table"
+    steps:
+      - sequence: 1
+        input: "HTTP GET /documents/{id}/stream with session cookie"
+        process: "DocumentController retrieves document record; invokes DocumentPolicy::view($user, $document)"
+        output: "Policy evaluation initiated"
+
+      - sequence: 2
+        input: "User role, college_id, document.college_id, document.status"
+        process: "DocumentPolicy evaluates multi-tenant and role authorization rules"
+        output: "Authorization result (allow / deny)"
+        decision: "Is requesting user an 'external_accreditor'?"
+        then: "Verify that associated accreditation is in Stage 8 (Submitted) or Stage 9 (Accredited) AND documents.status == 'iqa_appr'"
+
+      - sequence: 3
+        input: "Dean or Task Force Member request"
+        process: "Verify user.college_id == document.college_id"
+        output: "Tenant isolation check passed"
+        decision: "Does user college match document college?"
+        then: "Allow streaming"
+        else: "Throw 403 Forbidden ('Cross-college access denied')"
+
+      - sequence: 4
+        input: "Authorized stream request"
+        process: "Verify physical file existence at /mnt/storage/iqarchive/protected/{college_id}/{program_id}/{hash}.pdf"
+        output: "Physical file handle"
+        guard: "File must exist on disk; otherwise return 404 with audit alert"
+
+      - sequence: 5
+        input: "Physical file handle"
+        process: "Stream binary response with security headers: Content-Type: application/pdf, Content-Disposition: inline, X-Content-Type-Options: nosniff, Cache-Control: private, no-store"
+        output: "Encrypted TLS binary stream delivered to browser"
+
+      - sequence: 6
+        input: "document_id, user_id, client IP"
+        process: "Append audit_logs entry ('document.streamed')"
+        output: "audit_logs written"
+    decisions:
+      - condition: "Is document status 'draft' and requesting user is NOT the uploader or College Dean?"
+        then: "Throw 403 Forbidden: 'Draft evidence only visible to uploader and College Dean'"
+        else: "Authorize stream"
+    notes:
+      - "[NOTE: Direct Link Prevention] No direct static file URLs are configured in web server config. All PDF access requires PHP runtime authorization."
+
+# ================================================================================
+# SECTION 5: DATA FLOW MATRIX & DIAGRAM TOOL MAPPING GUIDE
+# ================================================================================
+diagram_tool_mapping:
+  draw_io:
+    process_shape: "Round Rectangle (mxgraph.flowchart.process)"
+    data_store_shape: "Cylinder / Database (mxgraph.flowchart.data_store)"
+    external_entity_shape: "Rectangle / Box (mxgraph.flowchart.external_entity)"
+    data_flow_edge: "Directional Connector Arrow (endArrow=classic;html=1;)"
+  lucidchart:
+    process_shape: "Process Box (Rectangle with rounded corners)"
+    data_store_shape: "Open-ended Rectangle or Cylinder"
+    external_entity_shape: "Terminator / External Entity (Solid Square/Rectangle)"
+    data_flow_edge: "Labeled Line Connector with directional arrowhead"
+  miro_figjam:
+    process_shape: "Rounded Card / Action Node"
+    data_store_shape: "Database Cylinder Component"
+    external_entity_shape: "Actor / External Card"
+    data_flow_edge: "Smart Line Connector with text label"
