@@ -1,0 +1,625 @@
+[2026-08-28 10:41:26] local.WARNING: Alpine Expression Error: this.$nextTick is not a function
+
+Expression: "
+                 restoreScroll();
+                 this.$nextTick(() => restoreScroll());
+                 document.addEventListener('livewire:navigated', () => restoreScroll());
+             " null null null null null [Circular] 9 null null null null null null true  {"url":"http://localhost:8000/roles/iqa-staff/dashboard","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0","timestamp":"2026-08-28T02:41:25.496Z"} 
+[2026-08-28 10:41:26] local.WARNING: Alpine Expression Error: hasMoreBelow is not defined
+
+Expression: "hasMoreBelow" null null null null null null null null null 147 transition-opacity ease-out duration-200 opacity-0 opacity-100 transition-opacity ease-in duration-150 opacity-100 opacity-0 null null  {"url":"http://localhost:8000/roles/iqa-staff/dashboard","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0","timestamp":"2026-08-28T02:41:25.497Z"} 
+[2026-08-28 10:41:26] local.ERROR: TypeError: this.$nextTick is not a function http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction 5 23 TypeError this.$nextTick is not a function anonymous@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction:5:23
+generateEvaluatorFromString/<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1497:28
+tryCatch@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1395:14
+evaluate@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1429:34
+@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:3922:37
+skipDuringClone/<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2251:58
+flushHandlers@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1614:48
+stopDeferring@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1619:7
+deferHandlingDirectives@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1622:5
+initTree@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1820:28
+start/<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1766:15
+start@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1765:97
+start2@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13981:20
+@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:15823:17 {"url":"http://localhost:8000/roles/iqa-staff/dashboard","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0","timestamp":"2026-08-28T02:41:25.506Z"} 
+[2026-08-28 10:41:26] local.ERROR: TypeError: this.$nextTick is not a function http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction 5 23 TypeError this.$nextTick is not a function anonymous@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction:5:23
+generateEvaluatorFromString/<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1497:28
+tryCatch@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1395:14
+evaluate@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1429:34
+@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:3922:37
+skipDuringClone/<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2251:58
+flushHandlers@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1614:48
+stopDeferring@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1619:7
+deferHandlingDirectives@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1622:5
+initTree@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1820:28
+start/<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1766:15
+start@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1765:97
+start2@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13981:20
+@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:15823:17 {"url":"http://localhost:8000/roles/iqa-staff/dashboard","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0","timestamp":"2026-08-28T02:41:25.506Z"} 
+[2026-08-28 10:41:26] local.ERROR: ReferenceError: hasMoreBelow is not defined http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction 3 16 ReferenceError hasMoreBelow is not defined anonymous@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction:3:16
+generateEvaluatorFromString/<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1497:28
+tryCatch@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1395:14
+@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4062:29
+reactiveEffect@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2775:18
+effect2@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2750:7
+effect@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1007:35
+wrappedEffect@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1023:35
+@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4062:12
+flushHandlers@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1614:48
+stopDeferring@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1619:7
+deferHandlingDirectives@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1622:5
+initTree@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1820:28
+start/<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1766:15
+start@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1765:97
+start2@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13981:20
+@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:15823:17 {"url":"http://localhost:8000/roles/iqa-staff/dashboard","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0","timestamp":"2026-08-28T02:41:25.507Z"} 
+[2026-08-28 10:41:26] local.ERROR: ReferenceError: hasMoreBelow is not defined http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction 3 16 ReferenceError hasMoreBelow is not defined anonymous@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction:3:16
+generateEvaluatorFromString/<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1497:28
+tryCatch@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1395:14
+@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4062:29
+reactiveEffect@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2775:18
+effect2@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2750:7
+effect@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1007:35
+wrappedEffect@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1023:35
+@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4062:12
+flushHandlers@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1614:48
+stopDeferring@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1619:7
+deferHandlingDirectives@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1622:5
+initTree@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1820:28
+start/<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1766:15
+start@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1765:97
+start2@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13981:20
+@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:15823:17 {"url":"http://localhost:8000/roles/iqa-staff/dashboard","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0","timestamp":"2026-08-28T02:41:25.507Z"} 
+[2026-08-28 10:42:06] local.WARNING: Alpine Expression Error: this.$nextTick is not a function
+
+Expression: "
+                 restoreScroll();
+                 this.$nextTick(() => restoreScroll());
+                 document.addEventListener('livewire:navigated', () => restoreScroll());
+             " null null null null null [Circular] 279 null null null null null null true  {"url":"http://localhost:8000/roles/iqa-staff/documents?tab=common-documents","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0","timestamp":"2026-08-28T02:42:05.581Z"} 
+[2026-08-28 10:42:06] local.WARNING: Alpine Expression Error: hasMoreBelow is not defined
+
+Expression: "hasMoreBelow" null null null null null null null null null 417 transition-opacity ease-out duration-200 opacity-0 opacity-100 transition-opacity ease-in duration-150 opacity-100 opacity-0 null null  {"url":"http://localhost:8000/roles/iqa-staff/documents?tab=common-documents","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0","timestamp":"2026-08-28T02:42:05.582Z"} 
+[2026-08-28 10:42:06] local.ERROR: TypeError: this.$nextTick is not a function http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction 5 23 TypeError this.$nextTick is not a function anonymous@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction:5:23
+generateEvaluatorFromString/<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1497:28
+tryCatch@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1395:14
+evaluate@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1429:34
+@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:3922:37
+skipDuringClone/<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2251:58
+flushHandlers@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1614:48
+stopDeferring@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1619:7
+deferHandlingDirectives@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1622:5
+initTree@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1820:28
+nowInitializeAlpineOnTheNewPage@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13157:13
+navigate_default/navigateTo/</</</</<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13064:48
+preventAlpineFromPickingUpDomChanges/</<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13143:9 {"url":"http://localhost:8000/roles/iqa-staff/documents?tab=common-documents","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0","timestamp":"2026-08-28T02:42:05.596Z"} 
+[2026-08-28 10:42:06] local.ERROR: TypeError: this.$nextTick is not a function http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction 5 23 TypeError this.$nextTick is not a function anonymous@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction:5:23
+generateEvaluatorFromString/<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1497:28
+tryCatch@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1395:14
+evaluate@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1429:34
+@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:3922:37
+skipDuringClone/<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2251:58
+flushHandlers@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1614:48
+stopDeferring@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1619:7
+deferHandlingDirectives@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1622:5
+initTree@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1820:28
+nowInitializeAlpineOnTheNewPage@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13157:13
+navigate_default/navigateTo/</</</</<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13064:48
+preventAlpineFromPickingUpDomChanges/</<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13143:9 {"url":"http://localhost:8000/roles/iqa-staff/documents?tab=common-documents","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0","timestamp":"2026-08-28T02:42:05.596Z"} 
+[2026-08-28 10:42:06] local.ERROR: ReferenceError: hasMoreBelow is not defined http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction 3 16 ReferenceError hasMoreBelow is not defined anonymous@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction:3:16
+generateEvaluatorFromString/<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1497:28
+tryCatch@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1395:14
+@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4062:29
+reactiveEffect@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2775:18
+effect2@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2750:7
+effect@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1007:35
+wrappedEffect@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1023:35
+@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4062:12
+flushHandlers@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1614:48
+stopDeferring@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1619:7
+deferHandlingDirectives@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1622:5
+initTree@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1820:28
+nowInitializeAlpineOnTheNewPage@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13157:13
+navigate_default/navigateTo/</</</</<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13064:48
+preventAlpineFromPickingUpDomChanges/</<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13143:9 {"url":"http://localhost:8000/roles/iqa-staff/documents?tab=common-documents","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0","timestamp":"2026-08-28T02:42:05.596Z"} 
+[2026-08-28 10:42:06] local.ERROR: ReferenceError: hasMoreBelow is not defined http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction 3 16 ReferenceError hasMoreBelow is not defined anonymous@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction:3:16
+generateEvaluatorFromString/<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1497:28
+tryCatch@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1395:14
+@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4062:29
+reactiveEffect@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2775:18
+effect2@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2750:7
+effect@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1007:35
+wrappedEffect@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1023:35
+@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4062:12
+flushHandlers@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1614:48
+stopDeferring@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1619:7
+deferHandlingDirectives@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1622:5
+initTree@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1820:28
+nowInitializeAlpineOnTheNewPage@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13157:13
+navigate_default/navigateTo/</</</</<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13064:48
+preventAlpineFromPickingUpDomChanges/</<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13143:9 {"url":"http://localhost:8000/roles/iqa-staff/documents?tab=common-documents","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0","timestamp":"2026-08-28T02:42:05.596Z"} 
+[2026-08-28 10:42:06] local.WARNING: Alpine Expression Error: this.$nextTick is not a function
+
+Expression: "
+                 restoreScroll();
+                 this.$nextTick(() => restoreScroll());
+                 document.addEventListener('livewire:navigated', () => restoreScroll());
+             " null null null null null [Circular] 4367 null null null null null null true  {"url":"http://localhost:8000/roles/iqa-staff/documents?tab=program-accreditation","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0","timestamp":"2026-08-28T02:42:06.480Z"} 
+[2026-08-28 10:42:06] local.WARNING: Alpine Expression Error: hasMoreBelow is not defined
+
+Expression: "hasMoreBelow" null null null null null null null null null 4505 transition-opacity ease-out duration-200 opacity-0 opacity-100 transition-opacity ease-in duration-150 opacity-100 opacity-0 null null  {"url":"http://localhost:8000/roles/iqa-staff/documents?tab=program-accreditation","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0","timestamp":"2026-08-28T02:42:06.480Z"} 
+[2026-08-28 10:42:06] local.ERROR: TypeError: this.$nextTick is not a function http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction 5 23 TypeError this.$nextTick is not a function anonymous@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction:5:23
+generateEvaluatorFromString/<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1497:28
+tryCatch@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1395:14
+evaluate@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1429:34
+@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:3922:37
+skipDuringClone/<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2251:58
+flushHandlers@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1614:48
+stopDeferring@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1619:7
+deferHandlingDirectives@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1622:5
+initTree@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1820:28
+nowInitializeAlpineOnTheNewPage@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13157:13
+navigate_default/navigateTo/</</</</<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13064:48
+preventAlpineFromPickingUpDomChanges/</<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13143:9 {"url":"http://localhost:8000/roles/iqa-staff/documents?tab=program-accreditation","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0","timestamp":"2026-08-28T02:42:06.493Z"} 
+[2026-08-28 10:42:06] local.ERROR: TypeError: this.$nextTick is not a function http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction 5 23 TypeError this.$nextTick is not a function anonymous@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction:5:23
+generateEvaluatorFromString/<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1497:28
+tryCatch@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1395:14
+evaluate@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1429:34
+@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:3922:37
+skipDuringClone/<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2251:58
+flushHandlers@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1614:48
+stopDeferring@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1619:7
+deferHandlingDirectives@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1622:5
+initTree@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1820:28
+nowInitializeAlpineOnTheNewPage@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13157:13
+navigate_default/navigateTo/</</</</<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13064:48
+preventAlpineFromPickingUpDomChanges/</<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13143:9 {"url":"http://localhost:8000/roles/iqa-staff/documents?tab=program-accreditation","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0","timestamp":"2026-08-28T02:42:06.493Z"} 
+[2026-08-28 10:42:06] local.ERROR: ReferenceError: hasMoreBelow is not defined http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction 3 16 ReferenceError hasMoreBelow is not defined anonymous@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction:3:16
+generateEvaluatorFromString/<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1497:28
+tryCatch@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1395:14
+@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4062:29
+reactiveEffect@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2775:18
+effect2@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2750:7
+effect@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1007:35
+wrappedEffect@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1023:35
+@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4062:12
+flushHandlers@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1614:48
+stopDeferring@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1619:7
+deferHandlingDirectives@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1622:5
+initTree@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1820:28
+nowInitializeAlpineOnTheNewPage@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13157:13
+navigate_default/navigateTo/</</</</<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13064:48
+preventAlpineFromPickingUpDomChanges/</<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13143:9 {"url":"http://localhost:8000/roles/iqa-staff/documents?tab=program-accreditation","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0","timestamp":"2026-08-28T02:42:06.493Z"} 
+[2026-08-28 10:42:06] local.ERROR: ReferenceError: hasMoreBelow is not defined http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction 3 16 ReferenceError hasMoreBelow is not defined anonymous@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction:3:16
+generateEvaluatorFromString/<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1497:28
+tryCatch@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1395:14
+@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4062:29
+reactiveEffect@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2775:18
+effect2@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2750:7
+effect@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1007:35
+wrappedEffect@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1023:35
+@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4062:12
+flushHandlers@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1614:48
+stopDeferring@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1619:7
+deferHandlingDirectives@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1622:5
+initTree@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1820:28
+nowInitializeAlpineOnTheNewPage@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13157:13
+navigate_default/navigateTo/</</</</<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13064:48
+preventAlpineFromPickingUpDomChanges/</<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13143:9 {"url":"http://localhost:8000/roles/iqa-staff/documents?tab=program-accreditation","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0","timestamp":"2026-08-28T02:42:06.493Z"} 
+[2026-08-28 10:42:06] local.ERROR: Error fetching colleges: TypeError can't access property "college_id", this.newProgram is undefined window.documentWorkspace/initBackendData/<@http://[::1]:5173/resources/js/iqa-documents.js:3040:48 {"url":"http://localhost:8000/roles/iqa-staff/documents?tab=program-accreditation","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0","timestamp":"2026-08-28T02:42:06.501Z"} 
+[2026-08-28 10:42:07] local.ERROR: Error fetching colleges: TypeError can't access property "college_id", this.newProgram is undefined window.documentWorkspace/initBackendData/<@http://[::1]:5173/resources/js/iqa-documents.js:3040:48 {"url":"http://localhost:8000/roles/iqa-staff/documents?tab=program-accreditation","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0","timestamp":"2026-08-28T02:42:06.808Z"} 
+[2026-08-28 10:42:30] local.WARNING: Alpine Expression Error: userRole is not defined
+
+Expression: "currentUserRole === 'task-force-member' || userRole === 'task-force-member'" null 12903 null  {"url":"http://localhost:8000/roles/iqa-staff/documents?tab=program-accreditation","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0","timestamp":"2026-08-28T02:42:30.493Z"} 
+[2026-08-28 10:42:30] local.ERROR: ReferenceError: userRole is not defined http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction 3 16 ReferenceError userRole is not defined anonymous@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction:3:16
+generateEvaluatorFromString/<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1497:28
+tryCatch@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1395:14
+@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4257:29
+reactiveEffect@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2775:18
+effect2@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2750:7
+effect@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1007:35
+wrappedEffect@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1023:35
+@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4257:12
+flushHandlers@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1614:48
+stopDeferring@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1619:7
+deferHandlingDirectives@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1622:5
+initTree@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1820:28
+show/</<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4239:39
+skipDuringClone/<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2251:58
+show/<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4239:49
+mutateDom@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1141:18
+show@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4237:16
+@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4258:15
+runIfTypeOfFunction@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1520:15
+generateEvaluatorFromString/<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1499:30
+tryCatch@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1395:14
+@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4257:29
+reactiveEffect@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2775:18
+flushJobs@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:987:15 {"url":"http://localhost:8000/roles/iqa-staff/documents?tab=program-accreditation","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0","timestamp":"2026-08-28T02:42:30.518Z"} 
+[2026-08-28 10:42:30] local.ERROR: ReferenceError: userRole is not defined http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction 3 16 ReferenceError userRole is not defined anonymous@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction:3:16
+generateEvaluatorFromString/<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1497:28
+tryCatch@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1395:14
+@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4257:29
+reactiveEffect@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2775:18
+effect2@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2750:7
+effect@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1007:35
+wrappedEffect@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1023:35
+@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4257:12
+flushHandlers@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1614:48
+stopDeferring@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1619:7
+deferHandlingDirectives@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1622:5
+initTree@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1820:28
+show/</<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4239:39
+skipDuringClone/<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2251:58
+show/<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4239:49
+mutateDom@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1141:18
+show@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4237:16
+@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4258:15
+runIfTypeOfFunction@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1520:15
+generateEvaluatorFromString/<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1499:30
+tryCatch@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1395:14
+@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4257:29
+reactiveEffect@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2775:18
+flushJobs@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:987:15 {"url":"http://localhost:8000/roles/iqa-staff/documents?tab=program-accreditation","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0","timestamp":"2026-08-28T02:42:30.518Z"} 
+[2026-08-28 10:45:14] local.WARNING: Alpine Expression Error: this.$nextTick is not a function
+
+Expression: "
+                 restoreScroll();
+                 this.$nextTick(() => restoreScroll());
+                 document.addEventListener('livewire:navigated', () => restoreScroll());
+             " null null null null null [Circular] 13265 null null null null null null true  {"url":"http://localhost:8000/roles/iqa-staff/documents?tab=institutional-accreditation","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0","timestamp":"2026-08-28T02:45:14.116Z"} 
+[2026-08-28 10:45:14] local.WARNING: Alpine Expression Error: hasMoreBelow is not defined
+
+Expression: "hasMoreBelow" null null null null null null null null null 13403 transition-opacity ease-out duration-200 opacity-0 opacity-100 transition-opacity ease-in duration-150 opacity-100 opacity-0 null null  {"url":"http://localhost:8000/roles/iqa-staff/documents?tab=institutional-accreditation","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0","timestamp":"2026-08-28T02:45:14.116Z"} 
+[2026-08-28 10:45:14] local.ERROR: TypeError: this.$nextTick is not a function http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction 5 23 TypeError this.$nextTick is not a function anonymous@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction:5:23
+generateEvaluatorFromString/<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1497:28
+tryCatch@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1395:14
+evaluate@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1429:34
+@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:3922:37
+skipDuringClone/<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2251:58
+flushHandlers@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1614:48
+stopDeferring@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1619:7
+deferHandlingDirectives@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1622:5
+initTree@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1820:28
+nowInitializeAlpineOnTheNewPage@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13157:13
+navigate_default/navigateTo/</</</</<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13064:48
+preventAlpineFromPickingUpDomChanges/</<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13143:9 {"url":"http://localhost:8000/roles/iqa-staff/documents?tab=institutional-accreditation","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0","timestamp":"2026-08-28T02:45:14.132Z"} 
+[2026-08-28 10:45:14] local.ERROR: TypeError: this.$nextTick is not a function http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction 5 23 TypeError this.$nextTick is not a function anonymous@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction:5:23
+generateEvaluatorFromString/<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1497:28
+tryCatch@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1395:14
+evaluate@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1429:34
+@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:3922:37
+skipDuringClone/<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2251:58
+flushHandlers@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1614:48
+stopDeferring@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1619:7
+deferHandlingDirectives@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1622:5
+initTree@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1820:28
+nowInitializeAlpineOnTheNewPage@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13157:13
+navigate_default/navigateTo/</</</</<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13064:48
+preventAlpineFromPickingUpDomChanges/</<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13143:9 {"url":"http://localhost:8000/roles/iqa-staff/documents?tab=institutional-accreditation","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0","timestamp":"2026-08-28T02:45:14.132Z"} 
+[2026-08-28 10:45:14] local.ERROR: ReferenceError: hasMoreBelow is not defined http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction 3 16 ReferenceError hasMoreBelow is not defined anonymous@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction:3:16
+generateEvaluatorFromString/<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1497:28
+tryCatch@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1395:14
+@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4062:29
+reactiveEffect@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2775:18
+effect2@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2750:7
+effect@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1007:35
+wrappedEffect@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1023:35
+@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4062:12
+flushHandlers@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1614:48
+stopDeferring@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1619:7
+deferHandlingDirectives@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1622:5
+initTree@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1820:28
+nowInitializeAlpineOnTheNewPage@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13157:13
+navigate_default/navigateTo/</</</</<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13064:48
+preventAlpineFromPickingUpDomChanges/</<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13143:9 {"url":"http://localhost:8000/roles/iqa-staff/documents?tab=institutional-accreditation","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0","timestamp":"2026-08-28T02:45:14.132Z"} 
+[2026-08-28 10:45:14] local.ERROR: ReferenceError: hasMoreBelow is not defined http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction 3 16 ReferenceError hasMoreBelow is not defined anonymous@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction:3:16
+generateEvaluatorFromString/<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1497:28
+tryCatch@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1395:14
+@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4062:29
+reactiveEffect@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2775:18
+effect2@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2750:7
+effect@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1007:35
+wrappedEffect@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1023:35
+@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4062:12
+flushHandlers@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1614:48
+stopDeferring@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1619:7
+deferHandlingDirectives@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1622:5
+initTree@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1820:28
+nowInitializeAlpineOnTheNewPage@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13157:13
+navigate_default/navigateTo/</</</</<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13064:48
+preventAlpineFromPickingUpDomChanges/</<@http://localhost:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13143:9 {"url":"http://localhost:8000/roles/iqa-staff/documents?tab=institutional-accreditation","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0","timestamp":"2026-08-28T02:45:14.132Z"} 
+[2026-08-28 10:45:14] local.ERROR: Error fetching colleges: TypeError can't access property "college_id", this.newProgram is undefined window.documentWorkspace/initBackendData/<@http://[::1]:5173/resources/js/iqa-documents.js:3040:48 {"url":"http://localhost:8000/roles/iqa-staff/documents?tab=institutional-accreditation","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:154.0) Gecko/20100101 Firefox/154.0","timestamp":"2026-08-28T02:45:14.352Z"} 
+[2026-09-08 19:26:56] local.ERROR: [vite] failed to connect to websocket.
+your current setup:
+  (browser) [::1]:5173/ <--[HTTP]--> localhost:5173/ (server)
+  (browser) [::1]:5173/ <--[WebSocket (failing)]--> localhost:5173/ (server)
+Check out your Vite / network configuration and https://vite.dev/config/server-options.html#server-hmr . {"url":"http://127.0.0.1:8000/","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:155.0) Gecko/20100101 Firefox/155.0","timestamp":"2026-09-08T11:26:54.877Z"} 
+[2026-09-08 19:32:38] local.WARNING: Alpine Expression Error: this.$nextTick is not a function
+
+Expression: "
+                 restoreScroll();
+                 this.$nextTick(() => restoreScroll());
+                 document.addEventListener('livewire:navigated', () => restoreScroll());
+             " null null null null null [Circular] 48 null null null null null null true  {"url":"http://127.0.0.1:8000/roles/iqa-staff/dashboard","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:155.0) Gecko/20100101 Firefox/155.0","timestamp":"2026-09-08T11:32:37.956Z"} 
+[2026-09-08 19:32:38] local.WARNING: Alpine Expression Error: hasMoreBelow is not defined
+
+Expression: "hasMoreBelow" null null null null null null null null null 186 transition-opacity ease-out duration-200 opacity-0 opacity-100 transition-opacity ease-in duration-150 opacity-100 opacity-0 null null  {"url":"http://127.0.0.1:8000/roles/iqa-staff/dashboard","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:155.0) Gecko/20100101 Firefox/155.0","timestamp":"2026-09-08T11:32:37.957Z"} 
+[2026-09-08 19:32:38] local.ERROR: TypeError: this.$nextTick is not a function http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction 5 23 TypeError this.$nextTick is not a function anonymous@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction:5:23
+generateEvaluatorFromString/<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1497:28
+tryCatch@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1395:14
+evaluate@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1429:34
+@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:3922:37
+skipDuringClone/<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2251:58
+flushHandlers@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1614:48
+stopDeferring@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1619:7
+deferHandlingDirectives@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1622:5
+initTree@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1820:28
+start/<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1766:15
+start@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1765:97
+start2@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13981:20
+@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:15823:17 {"url":"http://127.0.0.1:8000/roles/iqa-staff/dashboard","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:155.0) Gecko/20100101 Firefox/155.0","timestamp":"2026-09-08T11:32:37.963Z"} 
+[2026-09-08 19:32:38] local.ERROR: TypeError: this.$nextTick is not a function http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction 5 23 TypeError this.$nextTick is not a function anonymous@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction:5:23
+generateEvaluatorFromString/<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1497:28
+tryCatch@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1395:14
+evaluate@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1429:34
+@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:3922:37
+skipDuringClone/<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2251:58
+flushHandlers@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1614:48
+stopDeferring@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1619:7
+deferHandlingDirectives@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1622:5
+initTree@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1820:28
+start/<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1766:15
+start@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1765:97
+start2@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13981:20
+@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:15823:17 {"url":"http://127.0.0.1:8000/roles/iqa-staff/dashboard","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:155.0) Gecko/20100101 Firefox/155.0","timestamp":"2026-09-08T11:32:37.963Z"} 
+[2026-09-08 19:32:38] local.ERROR: ReferenceError: hasMoreBelow is not defined http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction 3 16 ReferenceError hasMoreBelow is not defined anonymous@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction:3:16
+generateEvaluatorFromString/<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1497:28
+tryCatch@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1395:14
+@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4062:29
+reactiveEffect@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2775:18
+effect2@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2750:7
+effect@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1007:35
+wrappedEffect@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1023:35
+@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4062:12
+flushHandlers@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1614:48
+stopDeferring@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1619:7
+deferHandlingDirectives@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1622:5
+initTree@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1820:28
+start/<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1766:15
+start@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1765:97
+start2@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13981:20
+@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:15823:17 {"url":"http://127.0.0.1:8000/roles/iqa-staff/dashboard","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:155.0) Gecko/20100101 Firefox/155.0","timestamp":"2026-09-08T11:32:37.963Z"} 
+[2026-09-08 19:32:38] local.ERROR: ReferenceError: hasMoreBelow is not defined http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction 3 16 ReferenceError hasMoreBelow is not defined anonymous@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction:3:16
+generateEvaluatorFromString/<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1497:28
+tryCatch@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1395:14
+@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4062:29
+reactiveEffect@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2775:18
+effect2@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2750:7
+effect@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1007:35
+wrappedEffect@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1023:35
+@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4062:12
+flushHandlers@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1614:48
+stopDeferring@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1619:7
+deferHandlingDirectives@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1622:5
+initTree@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1820:28
+start/<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1766:15
+start@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1765:97
+start2@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13981:20
+@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:15823:17 {"url":"http://127.0.0.1:8000/roles/iqa-staff/dashboard","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:155.0) Gecko/20100101 Firefox/155.0","timestamp":"2026-09-08T11:32:37.963Z"} 
+[2026-09-08 19:32:59] local.WARNING: Alpine Expression Error: this.$nextTick is not a function
+
+Expression: "
+                 restoreScroll();
+                 this.$nextTick(() => restoreScroll());
+                 document.addEventListener('livewire:navigated', () => restoreScroll());
+             " null null null null null [Circular] 358 null null null null null null true  {"url":"http://127.0.0.1:8000/roles/iqa-staff/documents?tab=common-documents","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:155.0) Gecko/20100101 Firefox/155.0","timestamp":"2026-09-08T11:32:59.113Z"} 
+[2026-09-08 19:32:59] local.WARNING: Alpine Expression Error: hasMoreBelow is not defined
+
+Expression: "hasMoreBelow" null null null null null null null null null 496 transition-opacity ease-out duration-200 opacity-0 opacity-100 transition-opacity ease-in duration-150 opacity-100 opacity-0 null null  {"url":"http://127.0.0.1:8000/roles/iqa-staff/documents?tab=common-documents","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:155.0) Gecko/20100101 Firefox/155.0","timestamp":"2026-09-08T11:32:59.114Z"} 
+[2026-09-08 19:32:59] local.ERROR: TypeError: this.$nextTick is not a function http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction 5 23 TypeError this.$nextTick is not a function anonymous@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction:5:23
+generateEvaluatorFromString/<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1497:28
+tryCatch@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1395:14
+evaluate@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1429:34
+@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:3922:37
+skipDuringClone/<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2251:58
+flushHandlers@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1614:48
+stopDeferring@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1619:7
+deferHandlingDirectives@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1622:5
+initTree@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1820:28
+nowInitializeAlpineOnTheNewPage@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13157:13
+navigate_default/navigateTo/</</</</<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13064:48
+preventAlpineFromPickingUpDomChanges/</<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13143:9 {"url":"http://127.0.0.1:8000/roles/iqa-staff/documents?tab=common-documents","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:155.0) Gecko/20100101 Firefox/155.0","timestamp":"2026-09-08T11:32:59.162Z"} 
+[2026-09-08 19:32:59] local.ERROR: TypeError: this.$nextTick is not a function http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction 5 23 TypeError this.$nextTick is not a function anonymous@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction:5:23
+generateEvaluatorFromString/<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1497:28
+tryCatch@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1395:14
+evaluate@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1429:34
+@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:3922:37
+skipDuringClone/<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2251:58
+flushHandlers@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1614:48
+stopDeferring@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1619:7
+deferHandlingDirectives@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1622:5
+initTree@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1820:28
+nowInitializeAlpineOnTheNewPage@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13157:13
+navigate_default/navigateTo/</</</</<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13064:48
+preventAlpineFromPickingUpDomChanges/</<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13143:9 {"url":"http://127.0.0.1:8000/roles/iqa-staff/documents?tab=common-documents","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:155.0) Gecko/20100101 Firefox/155.0","timestamp":"2026-09-08T11:32:59.162Z"} 
+[2026-09-08 19:32:59] local.ERROR: ReferenceError: hasMoreBelow is not defined http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction 3 16 ReferenceError hasMoreBelow is not defined anonymous@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction:3:16
+generateEvaluatorFromString/<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1497:28
+tryCatch@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1395:14
+@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4062:29
+reactiveEffect@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2775:18
+effect2@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2750:7
+effect@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1007:35
+wrappedEffect@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1023:35
+@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4062:12
+flushHandlers@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1614:48
+stopDeferring@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1619:7
+deferHandlingDirectives@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1622:5
+initTree@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1820:28
+nowInitializeAlpineOnTheNewPage@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13157:13
+navigate_default/navigateTo/</</</</<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13064:48
+preventAlpineFromPickingUpDomChanges/</<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13143:9 {"url":"http://127.0.0.1:8000/roles/iqa-staff/documents?tab=common-documents","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:155.0) Gecko/20100101 Firefox/155.0","timestamp":"2026-09-08T11:32:59.162Z"} 
+[2026-09-08 19:32:59] local.ERROR: ReferenceError: hasMoreBelow is not defined http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction 3 16 ReferenceError hasMoreBelow is not defined anonymous@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction:3:16
+generateEvaluatorFromString/<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1497:28
+tryCatch@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1395:14
+@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4062:29
+reactiveEffect@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2775:18
+effect2@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2750:7
+effect@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1007:35
+wrappedEffect@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1023:35
+@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4062:12
+flushHandlers@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1614:48
+stopDeferring@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1619:7
+deferHandlingDirectives@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1622:5
+initTree@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1820:28
+nowInitializeAlpineOnTheNewPage@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13157:13
+navigate_default/navigateTo/</</</</<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13064:48
+preventAlpineFromPickingUpDomChanges/</<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13143:9 {"url":"http://127.0.0.1:8000/roles/iqa-staff/documents?tab=common-documents","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:155.0) Gecko/20100101 Firefox/155.0","timestamp":"2026-09-08T11:32:59.162Z"} 
+[2026-09-08 19:33:00] local.WARNING: Alpine Expression Error: this.$nextTick is not a function
+
+Expression: "
+                 restoreScroll();
+                 this.$nextTick(() => restoreScroll());
+                 document.addEventListener('livewire:navigated', () => restoreScroll());
+             " null null null null null [Circular] 4482 null null null null null null true  {"url":"http://127.0.0.1:8000/roles/iqa-staff/documents?tab=program-accreditation","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:155.0) Gecko/20100101 Firefox/155.0","timestamp":"2026-09-08T11:32:59.702Z"} 
+[2026-09-08 19:33:00] local.WARNING: Alpine Expression Error: hasMoreBelow is not defined
+
+Expression: "hasMoreBelow" null null null null null null null null null 4620 transition-opacity ease-out duration-200 opacity-0 opacity-100 transition-opacity ease-in duration-150 opacity-100 opacity-0 null null  {"url":"http://127.0.0.1:8000/roles/iqa-staff/documents?tab=program-accreditation","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:155.0) Gecko/20100101 Firefox/155.0","timestamp":"2026-09-08T11:32:59.702Z"} 
+[2026-09-08 19:33:00] local.ERROR: TypeError: this.$nextTick is not a function http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction 5 23 TypeError this.$nextTick is not a function anonymous@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction:5:23
+generateEvaluatorFromString/<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1497:28
+tryCatch@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1395:14
+evaluate@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1429:34
+@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:3922:37
+skipDuringClone/<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2251:58
+flushHandlers@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1614:48
+stopDeferring@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1619:7
+deferHandlingDirectives@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1622:5
+initTree@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1820:28
+nowInitializeAlpineOnTheNewPage@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13157:13
+navigate_default/navigateTo/</</</</<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13064:48
+preventAlpineFromPickingUpDomChanges/</<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13143:9 {"url":"http://127.0.0.1:8000/roles/iqa-staff/documents?tab=program-accreditation","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:155.0) Gecko/20100101 Firefox/155.0","timestamp":"2026-09-08T11:32:59.719Z"} 
+[2026-09-08 19:33:00] local.ERROR: TypeError: this.$nextTick is not a function http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction 5 23 TypeError this.$nextTick is not a function anonymous@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction:5:23
+generateEvaluatorFromString/<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1497:28
+tryCatch@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1395:14
+evaluate@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1429:34
+@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:3922:37
+skipDuringClone/<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2251:58
+flushHandlers@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1614:48
+stopDeferring@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1619:7
+deferHandlingDirectives@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1622:5
+initTree@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1820:28
+nowInitializeAlpineOnTheNewPage@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13157:13
+navigate_default/navigateTo/</</</</<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13064:48
+preventAlpineFromPickingUpDomChanges/</<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13143:9 {"url":"http://127.0.0.1:8000/roles/iqa-staff/documents?tab=program-accreditation","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:155.0) Gecko/20100101 Firefox/155.0","timestamp":"2026-09-08T11:32:59.719Z"} 
+[2026-09-08 19:33:00] local.ERROR: ReferenceError: hasMoreBelow is not defined http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction 3 16 ReferenceError hasMoreBelow is not defined anonymous@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction:3:16
+generateEvaluatorFromString/<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1497:28
+tryCatch@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1395:14
+@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4062:29
+reactiveEffect@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2775:18
+effect2@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2750:7
+effect@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1007:35
+wrappedEffect@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1023:35
+@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4062:12
+flushHandlers@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1614:48
+stopDeferring@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1619:7
+deferHandlingDirectives@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1622:5
+initTree@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1820:28
+nowInitializeAlpineOnTheNewPage@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13157:13
+navigate_default/navigateTo/</</</</<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13064:48
+preventAlpineFromPickingUpDomChanges/</<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13143:9 {"url":"http://127.0.0.1:8000/roles/iqa-staff/documents?tab=program-accreditation","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:155.0) Gecko/20100101 Firefox/155.0","timestamp":"2026-09-08T11:32:59.719Z"} 
+[2026-09-08 19:33:00] local.ERROR: ReferenceError: hasMoreBelow is not defined http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction 3 16 ReferenceError hasMoreBelow is not defined anonymous@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction:3:16
+generateEvaluatorFromString/<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1497:28
+tryCatch@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1395:14
+@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4062:29
+reactiveEffect@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2775:18
+effect2@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2750:7
+effect@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1007:35
+wrappedEffect@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1023:35
+@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4062:12
+flushHandlers@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1614:48
+stopDeferring@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1619:7
+deferHandlingDirectives@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1622:5
+initTree@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1820:28
+nowInitializeAlpineOnTheNewPage@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13157:13
+navigate_default/navigateTo/</</</</<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13064:48
+preventAlpineFromPickingUpDomChanges/</<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13143:9 {"url":"http://127.0.0.1:8000/roles/iqa-staff/documents?tab=program-accreditation","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:155.0) Gecko/20100101 Firefox/155.0","timestamp":"2026-09-08T11:32:59.719Z"} 
+[2026-09-08 19:33:00] local.ERROR: Error fetching colleges: TypeError can't access property "college_id", this.newProgram is undefined window.documentWorkspace/initBackendData/<@http://[::1]:5173/resources/js/iqa-documents.js:3040:48 {"url":"http://127.0.0.1:8000/roles/iqa-staff/documents?tab=program-accreditation","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:155.0) Gecko/20100101 Firefox/155.0","timestamp":"2026-09-08T11:32:59.723Z"} 
+[2026-09-08 19:33:00] local.ERROR: Error fetching colleges: TypeError can't access property "college_id", this.newProgram is undefined window.documentWorkspace/initBackendData/<@http://[::1]:5173/resources/js/iqa-documents.js:3040:48 {"url":"http://127.0.0.1:8000/roles/iqa-staff/documents?tab=program-accreditation","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:155.0) Gecko/20100101 Firefox/155.0","timestamp":"2026-09-08T11:32:59.999Z"} 
+[2026-09-08 19:33:05] local.WARNING: Alpine Expression Error: this.$nextTick is not a function
+
+Expression: "
+                 restoreScroll();
+                 this.$nextTick(() => restoreScroll());
+                 document.addEventListener('livewire:navigated', () => restoreScroll());
+             " null null null null null [Circular] 13008 null null null null null null true  {"url":"http://127.0.0.1:8000/roles/iqa-staff/documents?tab=common-documents","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:155.0) Gecko/20100101 Firefox/155.0","timestamp":"2026-09-08T11:33:05.180Z"} 
+[2026-09-08 19:33:05] local.WARNING: Alpine Expression Error: hasMoreBelow is not defined
+
+Expression: "hasMoreBelow" null null null null null null null null null 13146 transition-opacity ease-out duration-200 opacity-0 opacity-100 transition-opacity ease-in duration-150 opacity-100 opacity-0 null null  {"url":"http://127.0.0.1:8000/roles/iqa-staff/documents?tab=common-documents","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:155.0) Gecko/20100101 Firefox/155.0","timestamp":"2026-09-08T11:33:05.181Z"} 
+[2026-09-08 19:33:05] local.ERROR: TypeError: this.$nextTick is not a function http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction 5 23 TypeError this.$nextTick is not a function anonymous@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction:5:23
+generateEvaluatorFromString/<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1497:28
+tryCatch@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1395:14
+evaluate@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1429:34
+@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:3922:37
+skipDuringClone/<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2251:58
+flushHandlers@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1614:48
+stopDeferring@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1619:7
+deferHandlingDirectives@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1622:5
+initTree@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1820:28
+nowInitializeAlpineOnTheNewPage@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13157:13
+navigate_default/navigateTo/</</</</<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13064:48
+preventAlpineFromPickingUpDomChanges/</<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13143:9 {"url":"http://127.0.0.1:8000/roles/iqa-staff/documents?tab=common-documents","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:155.0) Gecko/20100101 Firefox/155.0","timestamp":"2026-09-08T11:33:05.202Z"} 
+[2026-09-08 19:33:05] local.ERROR: TypeError: this.$nextTick is not a function http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction 5 23 TypeError this.$nextTick is not a function anonymous@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction:5:23
+generateEvaluatorFromString/<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1497:28
+tryCatch@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1395:14
+evaluate@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1429:34
+@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:3922:37
+skipDuringClone/<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2251:58
+flushHandlers@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1614:48
+stopDeferring@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1619:7
+deferHandlingDirectives@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1622:5
+initTree@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1820:28
+nowInitializeAlpineOnTheNewPage@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13157:13
+navigate_default/navigateTo/</</</</<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13064:48
+preventAlpineFromPickingUpDomChanges/</<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13143:9 {"url":"http://127.0.0.1:8000/roles/iqa-staff/documents?tab=common-documents","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:155.0) Gecko/20100101 Firefox/155.0","timestamp":"2026-09-08T11:33:05.202Z"} 
+[2026-09-08 19:33:05] local.ERROR: ReferenceError: hasMoreBelow is not defined http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction 3 16 ReferenceError hasMoreBelow is not defined anonymous@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction:3:16
+generateEvaluatorFromString/<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1497:28
+tryCatch@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1395:14
+@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4062:29
+reactiveEffect@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2775:18
+effect2@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2750:7
+effect@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1007:35
+wrappedEffect@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1023:35
+@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4062:12
+flushHandlers@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1614:48
+stopDeferring@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1619:7
+deferHandlingDirectives@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1622:5
+initTree@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1820:28
+nowInitializeAlpineOnTheNewPage@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13157:13
+navigate_default/navigateTo/</</</</<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13064:48
+preventAlpineFromPickingUpDomChanges/</<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13143:9 {"url":"http://127.0.0.1:8000/roles/iqa-staff/documents?tab=common-documents","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:155.0) Gecko/20100101 Firefox/155.0","timestamp":"2026-09-08T11:33:05.202Z"} 
+[2026-09-08 19:33:05] local.ERROR: ReferenceError: hasMoreBelow is not defined http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction 3 16 ReferenceError hasMoreBelow is not defined anonymous@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2 line 1472 > AsyncFunction:3:16
+generateEvaluatorFromString/<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1497:28
+tryCatch@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1395:14
+@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4062:29
+reactiveEffect@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2775:18
+effect2@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:2750:7
+effect@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1007:35
+wrappedEffect@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1023:35
+@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4062:12
+flushHandlers@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1614:48
+stopDeferring@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1619:7
+deferHandlingDirectives@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1622:5
+initTree@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:1820:28
+nowInitializeAlpineOnTheNewPage@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13157:13
+navigate_default/navigateTo/</</</</<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13064:48
+preventAlpineFromPickingUpDomChanges/</<@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:13143:9 {"url":"http://127.0.0.1:8000/roles/iqa-staff/documents?tab=common-documents","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:155.0) Gecko/20100101 Firefox/155.0","timestamp":"2026-09-08T11:33:05.202Z"} 
+[2026-09-08 19:33:05] local.ERROR: Error fetching colleges: TypeError can't access property "college_id", this.newProgram is undefined window.documentWorkspace/initBackendData/<@http://[::1]:5173/resources/js/iqa-documents.js:3040:48 {"url":"http://127.0.0.1:8000/roles/iqa-staff/documents?tab=common-documents","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:155.0) Gecko/20100101 Firefox/155.0","timestamp":"2026-09-08T11:33:05.232Z"} 
+[2026-09-08 19:35:33] local.ERROR: Unhandled Promise Rejection InvalidStateError HTMLDialogElement.showModal: Cannot call showModal() on an open non-modal dialog. showHtmlModal@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4703:11
+error@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:5528:24
+sendRequest@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:5628:16 {"url":"http://127.0.0.1:8000/roles/iqa-staff/documents?tab=program-accreditation&college=17&program=123","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:155.0) Gecko/20100101 Firefox/155.0","timestamp":"2026-09-08T11:35:33.209Z"} 
+[2026-09-08 19:37:59] local.ERROR: Unhandled Promise Rejection InvalidStateError HTMLDialogElement.showModal: Cannot call showModal() on an open non-modal dialog. showHtmlModal@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4703:11
+error@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:5528:24
+sendRequest@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:5628:16 {"url":"http://127.0.0.1:8000/roles/iqa-staff/documents?tab=program-accreditation&college=17&program=123","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:155.0) Gecko/20100101 Firefox/155.0","timestamp":"2026-09-08T11:37:58.934Z"} 
+[2026-09-08 19:38:27] local.ERROR: Unhandled Promise Rejection InvalidStateError HTMLDialogElement.showModal: Cannot call showModal() on an open non-modal dialog. showHtmlModal@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:4703:11
+error@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:5528:24
+sendRequest@http://127.0.0.1:8000/livewire-8f0370e9/livewire.js?id=657d57c2:5628:16 {"url":"http://127.0.0.1:8000/roles/iqa-staff/documents?tab=program-accreditation&college=17&program=123","user_agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:155.0) Gecko/20100101 Firefox/155.0","timestamp":"2026-09-08T11:38:27.711Z"} 

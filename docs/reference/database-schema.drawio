@@ -1,0 +1,330 @@
+<mxfile host="app.diagrams.net" modified="2026-09-11T02:45:00.000Z" agent="Antigravity" version="24.7.5" type="device">
+  <diagram id="iqarchive-live-database-schema" name="IQArchive Database Schema">
+    <mxGraphModel dx="1800" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2000" pageHeight="1400" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Title Block (Clean Black & White) -->
+        <mxCell id="title" value="&lt;b style='font-size: 18px;'&gt;IQArchive — Relational Database Schema&lt;/b&gt;&lt;br&gt;&lt;span style='font-size: 12px;'&gt;Bicol University Institutional Quality Assurance Portal (Extracted from Live DB)&lt;/span&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="50" y="25" width="1500" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- COLUMN 1: USERS, AUTHENTICATION & SYSTEM AUDIT (X = 50)      -->
+        <!-- ============================================================ -->
+
+        <!-- ROLES -->
+        <mxCell id="tbl_roles" value="&lt;b style='font-size:12px;'&gt;roles&lt;/b&gt;&lt;hr style='margin:4px 0;border:1px solid #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&lt;b&gt;PK&lt;/b&gt;&amp;nbsp;&amp;nbsp;id&lt;/div&gt;&lt;hr style='margin:4px 0;border:0;border-top:1px dashed #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;role_name&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;description&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;created_at&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;updated_at&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;verticalAlign=top;spacingTop=6;spacingBottom=6;spacingLeft=6;spacingRight=6;" vertex="1" parent="1">
+          <mxGeometry x="50" y="100" width="220" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- ROLE_USER -->
+        <mxCell id="tbl_role_user" value="&lt;b style='font-size:12px;'&gt;role_user&lt;/b&gt;&lt;hr style='margin:4px 0;border:1px solid #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&lt;b&gt;PK&lt;/b&gt;&amp;nbsp;&amp;nbsp;id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;user_id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;role_id&lt;/div&gt;&lt;hr style='margin:4px 0;border:0;border-top:1px dashed #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;created_at&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;updated_at&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;verticalAlign=top;spacingTop=6;spacingBottom=6;spacingLeft=6;spacingRight=6;" vertex="1" parent="1">
+          <mxGeometry x="50" y="245" width="220" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- USERS -->
+        <mxCell id="tbl_users" value="&lt;b style='font-size:12px;'&gt;users&lt;/b&gt;&lt;hr style='margin:4px 0;border:1px solid #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&lt;b&gt;PK&lt;/b&gt;&amp;nbsp;&amp;nbsp;id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;role_id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;college_id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;program_id&lt;/div&gt;&lt;hr style='margin:4px 0;border:0;border-top:1px dashed #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;email&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;first_name&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;middle_name&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;last_name&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;password&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;status&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;google_id&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;avatar&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;google_avatar&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;two_factor_secret&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;remember_token&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;verticalAlign=top;spacingTop=6;spacingBottom=6;spacingLeft=6;spacingRight=6;" vertex="1" parent="1">
+          <mxGeometry x="50" y="390" width="220" height="280" as="geometry" />
+        </mxCell>
+
+        <!-- PASSKEYS -->
+        <mxCell id="tbl_passkeys" value="&lt;b style='font-size:12px;'&gt;passkeys&lt;/b&gt;&lt;hr style='margin:4px 0;border:1px solid #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&lt;b&gt;PK&lt;/b&gt;&amp;nbsp;&amp;nbsp;id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;user_id&lt;/div&gt;&lt;hr style='margin:4px 0;border:0;border-top:1px dashed #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;name&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;credential_id&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;credential&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;last_used_at&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;verticalAlign=top;spacingTop=6;spacingBottom=6;spacingLeft=6;spacingRight=6;" vertex="1" parent="1">
+          <mxGeometry x="50" y="695" width="220" height="135" as="geometry" />
+        </mxCell>
+
+        <!-- AUDIT_LOGS -->
+        <mxCell id="tbl_audit_logs" value="&lt;b style='font-size:12px;'&gt;audit_logs&lt;/b&gt;&lt;hr style='margin:4px 0;border:1px solid #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&lt;b&gt;PK&lt;/b&gt;&amp;nbsp;&amp;nbsp;id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;user_id&lt;/div&gt;&lt;hr style='margin:4px 0;border:0;border-top:1px dashed #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;action&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;target_type&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;target_id&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;timestamp&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;verticalAlign=top;spacingTop=6;spacingBottom=6;spacingLeft=6;spacingRight=6;" vertex="1" parent="1">
+          <mxGeometry x="50" y="855" width="220" height="145" as="geometry" />
+        </mxCell>
+
+        <!-- NOTIFICATIONS -->
+        <mxCell id="tbl_notifications" value="&lt;b style='font-size:12px;'&gt;notifications&lt;/b&gt;&lt;hr style='margin:4px 0;border:1px solid #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&lt;b&gt;PK&lt;/b&gt;&amp;nbsp;&amp;nbsp;id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;user_id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;related_document_id&lt;/div&gt;&lt;hr style='margin:4px 0;border:0;border-top:1px dashed #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;type&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;message&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;is_read&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;created_at&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;verticalAlign=top;spacingTop=6;spacingBottom=6;spacingLeft=6;spacingRight=6;" vertex="1" parent="1">
+          <mxGeometry x="50" y="1025" width="220" height="150" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- COLUMN 2: ACADEMIC ORGANIZATIONAL STRUCTURE (X = 340)         -->
+        <!-- ============================================================ -->
+
+        <!-- COLLEGES -->
+        <mxCell id="tbl_colleges" value="&lt;b style='font-size:12px;'&gt;colleges&lt;/b&gt;&lt;hr style='margin:4px 0;border:1px solid #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&lt;b&gt;PK&lt;/b&gt;&amp;nbsp;&amp;nbsp;id&lt;/div&gt;&lt;hr style='margin:4px 0;border:0;border-top:1px dashed #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;name&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;code&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;campus&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;logo_image&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;deleted_at&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;verticalAlign=top;spacingTop=6;spacingBottom=6;spacingLeft=6;spacingRight=6;" vertex="1" parent="1">
+          <mxGeometry x="340" y="100" width="220" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- PROGRAMS -->
+        <mxCell id="tbl_programs" value="&lt;b style='font-size:12px;'&gt;programs&lt;/b&gt;&lt;hr style='margin:4px 0;border:1px solid #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&lt;b&gt;PK&lt;/b&gt;&amp;nbsp;&amp;nbsp;id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;college_id&lt;/div&gt;&lt;hr style='margin:4px 0;border:0;border-top:1px dashed #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;name&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;code&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;accreditation_level&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;deleted_at&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;verticalAlign=top;spacingTop=6;spacingBottom=6;spacingLeft=6;spacingRight=6;" vertex="1" parent="1">
+          <mxGeometry x="340" y="275" width="220" height="145" as="geometry" />
+        </mxCell>
+
+        <!-- OFFICES -->
+        <mxCell id="tbl_offices" value="&lt;b style='font-size:12px;'&gt;offices&lt;/b&gt;&lt;hr style='margin:4px 0;border:1px solid #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&lt;b&gt;PK&lt;/b&gt;&amp;nbsp;&amp;nbsp;id&lt;/div&gt;&lt;hr style='margin:4px 0;border:0;border-top:1px dashed #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;name&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;description&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;created_at&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;verticalAlign=top;spacingTop=6;spacingBottom=6;spacingLeft=6;spacingRight=6;" vertex="1" parent="1">
+          <mxGeometry x="340" y="455" width="220" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- TASK_FORCE_ASSIGNMENTS -->
+        <mxCell id="tbl_task_force_assignments" value="&lt;b style='font-size:12px;'&gt;task_force_assignments&lt;/b&gt;&lt;hr style='margin:4px 0;border:1px solid #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&lt;b&gt;PK&lt;/b&gt;&amp;nbsp;&amp;nbsp;id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;user_id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;program_id&lt;/div&gt;&lt;hr style='margin:4px 0;border:0;border-top:1px dashed #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;assigned_at&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;status&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;verticalAlign=top;spacingTop=6;spacingBottom=6;spacingLeft=6;spacingRight=6;" vertex="1" parent="1">
+          <mxGeometry x="340" y="595" width="220" height="125" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- COLUMN 3: TASK FORCES & ACCREDITATIONS (X = 630)              -->
+        <!-- ============================================================ -->
+
+        <!-- TASK_FORCES -->
+        <mxCell id="tbl_task_forces" value="&lt;b style='font-size:12px;'&gt;task_forces&lt;/b&gt;&lt;hr style='margin:4px 0;border:1px solid #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&lt;b&gt;PK&lt;/b&gt;&amp;nbsp;&amp;nbsp;id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;college_id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;program_id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;created_by&lt;/div&gt;&lt;hr style='margin:4px 0;border:0;border-top:1px dashed #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;name&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;purpose&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;status&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;proposed_members&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;verticalAlign=top;spacingTop=6;spacingBottom=6;spacingLeft=6;spacingRight=6;" vertex="1" parent="1">
+          <mxGeometry x="630" y="100" width="230" height="170" as="geometry" />
+        </mxCell>
+
+        <!-- TASK_FORCE_MEMBERS -->
+        <mxCell id="tbl_task_force_members" value="&lt;b style='font-size:12px;'&gt;task_force_members&lt;/b&gt;&lt;hr style='margin:4px 0;border:1px solid #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&lt;b&gt;PK&lt;/b&gt;&amp;nbsp;&amp;nbsp;id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;task_force_id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;user_id&lt;/div&gt;&lt;hr style='margin:4px 0;border:0;border-top:1px dashed #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;role_in_team&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;assigned_at&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;verticalAlign=top;spacingTop=6;spacingBottom=6;spacingLeft=6;spacingRight=6;" vertex="1" parent="1">
+          <mxGeometry x="630" y="300" width="230" height="125" as="geometry" />
+        </mxCell>
+
+        <!-- ACCREDITATIONS -->
+        <mxCell id="tbl_accreditations" value="&lt;b style='font-size:12px;'&gt;accreditations&lt;/b&gt;&lt;hr style='margin:4px 0;border:1px solid #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&lt;b&gt;PK&lt;/b&gt;&amp;nbsp;&amp;nbsp;id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;program_id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;task_force_id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;created_by&lt;/div&gt;&lt;hr style='margin:4px 0;border:0;border-top:1px dashed #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;status&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;target_date&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;proposed_members&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;deleted_at&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;verticalAlign=top;spacingTop=6;spacingBottom=6;spacingLeft=6;spacingRight=6;" vertex="1" parent="1">
+          <mxGeometry x="630" y="460" width="230" height="170" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- COLUMN 4: DYNAMIC INSTRUMENTS & COMPLIANCE (X = 930)         -->
+        <!-- ============================================================ -->
+
+        <!-- INSTRUMENTS -->
+        <mxCell id="tbl_instruments" value="&lt;b style='font-size:12px;'&gt;instruments&lt;/b&gt;&lt;hr style='margin:4px 0;border:1px solid #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&lt;b&gt;PK&lt;/b&gt;&amp;nbsp;&amp;nbsp;id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;program_id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;accreditation_id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;document_id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;created_by&lt;/div&gt;&lt;hr style='margin:4px 0;border:0;border-top:1px dashed #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;name&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;code&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;accreditation_type&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;is_template&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;level&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;version&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;status&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;description&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;verticalAlign=top;spacingTop=6;spacingBottom=6;spacingLeft=6;spacingRight=6;" vertex="1" parent="1">
+          <mxGeometry x="930" y="100" width="240" height="210" as="geometry" />
+        </mxCell>
+
+        <!-- INSTRUMENT_AREAS -->
+        <mxCell id="tbl_instrument_areas" value="&lt;b style='font-size:12px;'&gt;instrument_areas&lt;/b&gt;&lt;hr style='margin:4px 0;border:1px solid #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&lt;b&gt;PK&lt;/b&gt;&amp;nbsp;&amp;nbsp;id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;instrument_id&lt;/div&gt;&lt;hr style='margin:4px 0;border:0;border-top:1px dashed #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;code&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;name&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;order&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;weight&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;description&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;verticalAlign=top;spacingTop=6;spacingBottom=6;spacingLeft=6;spacingRight=6;" vertex="1" parent="1">
+          <mxGeometry x="930" y="345" width="240" height="145" as="geometry" />
+        </mxCell>
+
+        <!-- INSTRUMENT_PARAMETERS -->
+        <mxCell id="tbl_instrument_parameters" value="&lt;b style='font-size:12px;'&gt;instrument_parameters&lt;/b&gt;&lt;hr style='margin:4px 0;border:1px solid #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&lt;b&gt;PK&lt;/b&gt;&amp;nbsp;&amp;nbsp;id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;instrument_area_id&lt;/div&gt;&lt;hr style='margin:4px 0;border:0;border-top:1px dashed #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;code&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;name&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;order&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;weight&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;description&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;verticalAlign=top;spacingTop=6;spacingBottom=6;spacingLeft=6;spacingRight=6;" vertex="1" parent="1">
+          <mxGeometry x="930" y="520" width="240" height="145" as="geometry" />
+        </mxCell>
+
+        <!-- INSTRUMENT_CRITERIA -->
+        <mxCell id="tbl_instrument_criteria" value="&lt;b style='font-size:12px;'&gt;instrument_criteria&lt;/b&gt;&lt;hr style='margin:4px 0;border:1px solid #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&lt;b&gt;PK&lt;/b&gt;&amp;nbsp;&amp;nbsp;id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;instrument_parameter_id&lt;/div&gt;&lt;hr style='margin:4px 0;border:0;border-top:1px dashed #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;section&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;code&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;statement&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;description&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;required_tags&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;order&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;verticalAlign=top;spacingTop=6;spacingBottom=6;spacingLeft=6;spacingRight=6;" vertex="1" parent="1">
+          <mxGeometry x="930" y="695" width="240" height="165" as="geometry" />
+        </mxCell>
+
+        <!-- COMPLIANCE_REQUIREMENTS -->
+        <mxCell id="tbl_compliance_requirements" value="&lt;b style='font-size:12px;'&gt;compliance_requirements&lt;/b&gt;&lt;hr style='margin:4px 0;border:1px solid #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&lt;b&gt;PK&lt;/b&gt;&amp;nbsp;&amp;nbsp;id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;accreditation_id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;instrument_id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;program_id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;instrument_criterion_id&lt;/div&gt;&lt;hr style='margin:4px 0;border:0;border-top:1px dashed #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;description&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;due_date&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;status&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;verticalAlign=top;spacingTop=6;spacingBottom=6;spacingLeft=6;spacingRight=6;" vertex="1" parent="1">
+          <mxGeometry x="930" y="890" width="240" height="175" as="geometry" />
+        </mxCell>
+
+        <!-- ACCREDITATION_DOCUMENT_LINKS -->
+        <mxCell id="tbl_accreditation_document_links" value="&lt;b style='font-size:12px;'&gt;accreditation_document_links&lt;/b&gt;&lt;hr style='margin:4px 0;border:1px solid #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&lt;b&gt;PK&lt;/b&gt;&amp;nbsp;&amp;nbsp;id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;compliance_requirement_id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;document_id&lt;/div&gt;&lt;hr style='margin:4px 0;border:0;border-top:1px dashed #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;created_at&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;verticalAlign=top;spacingTop=6;spacingBottom=6;spacingLeft=6;spacingRight=6;" vertex="1" parent="1">
+          <mxGeometry x="930" y="1095" width="240" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- COLUMN 5: DOCUMENT MANAGEMENT & REVIEWS (X = 1240)           -->
+        <!-- ============================================================ -->
+
+        <!-- DOCUMENT_CATEGORIES -->
+        <mxCell id="tbl_document_categories" value="&lt;b style='font-size:12px;'&gt;document_categories&lt;/b&gt;&lt;hr style='margin:4px 0;border:1px solid #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&lt;b&gt;PK&lt;/b&gt;&amp;nbsp;&amp;nbsp;id&lt;/div&gt;&lt;hr style='margin:4px 0;border:0;border-top:1px dashed #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;name&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;description&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;created_at&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;verticalAlign=top;spacingTop=6;spacingBottom=6;spacingLeft=6;spacingRight=6;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="100" width="250" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- DOCUMENTS -->
+        <mxCell id="tbl_documents" value="&lt;b style='font-size:12px;'&gt;documents&lt;/b&gt;&lt;hr style='margin:4px 0;border:1px solid #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&lt;b&gt;PK&lt;/b&gt;&amp;nbsp;&amp;nbsp;id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;uploaded_by&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;category_id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;program_id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;office_id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;confirmed_by&lt;/div&gt;&lt;hr style='margin:4px 0;border:0;border-top:1px dashed #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;title&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;file_path&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;status&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;visibility&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;confirmed_at&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;deleted_at&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;verticalAlign=top;spacingTop=6;spacingBottom=6;spacingLeft=6;spacingRight=6;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="240" width="250" height="235" as="geometry" />
+        </mxCell>
+
+        <!-- DOCUMENT_REVIEWS -->
+        <mxCell id="tbl_document_reviews" value="&lt;b style='font-size:12px;'&gt;document_reviews&lt;/b&gt;&lt;hr style='margin:4px 0;border:1px solid #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&lt;b&gt;PK&lt;/b&gt;&amp;nbsp;&amp;nbsp;id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;document_id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;reviewed_by&lt;/div&gt;&lt;hr style='margin:4px 0;border:0;border-top:1px dashed #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;decision&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;remarks&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;reviewed_at&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;verticalAlign=top;spacingTop=6;spacingBottom=6;spacingLeft=6;spacingRight=6;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="505" width="250" height="145" as="geometry" />
+        </mxCell>
+
+        <!-- DOCUMENT_OCR_VALIDATIONS -->
+        <mxCell id="tbl_document_ocr_validations" value="&lt;b style='font-size:12px;'&gt;document_ocr_validations&lt;/b&gt;&lt;hr style='margin:4px 0;border:1px solid #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&lt;b&gt;PK&lt;/b&gt;&amp;nbsp;&amp;nbsp;id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;document_id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;validated_by&lt;/div&gt;&lt;hr style='margin:4px 0;border:0;border-top:1px dashed #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;extracted_data&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;validation_status&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;validated_at&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;verticalAlign=top;spacingTop=6;spacingBottom=6;spacingLeft=6;spacingRight=6;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="680" width="250" height="145" as="geometry" />
+        </mxCell>
+
+        <!-- DOCUMENT_ACCESS_REQUESTS -->
+        <mxCell id="tbl_document_access_requests" value="&lt;b style='font-size:12px;'&gt;document_access_requests&lt;/b&gt;&lt;hr style='margin:4px 0;border:1px solid #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&lt;b&gt;PK&lt;/b&gt;&amp;nbsp;&amp;nbsp;id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;document_id&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;requested_by&lt;br&gt;&lt;b&gt;FK&lt;/b&gt;&amp;nbsp;&amp;nbsp;approved_by&lt;/div&gt;&lt;hr style='margin:4px 0;border:0;border-top:1px dashed #000;'&gt;&lt;div style='text-align:left;font-family:monospace;font-size:11px;'&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;status&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;remarks&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;approved_at&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;expires_at&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=1.5;verticalAlign=top;spacingTop=6;spacingBottom=6;spacingLeft=6;spacingRight=6;" vertex="1" parent="1">
+          <mxGeometry x="1240" y="855" width="250" height="165" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- RELATIONSHIP CONNECTORS (STRICTLY STRAIGHT ORTHOGONAL LINES) -->
+        <!-- ============================================================ -->
+
+        <!-- roles -> users -->
+        <mxCell id="edge_roles_users" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=ERmany;startArrow=ERone;" edge="1" parent="1" source="tbl_roles" target="tbl_users">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- roles -> role_user -->
+        <mxCell id="edge_roles_role_user" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=ERmany;startArrow=ERone;" edge="1" parent="1" source="tbl_roles" target="tbl_role_user">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- users -> role_user -->
+        <mxCell id="edge_users_role_user" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=ERmany;startArrow=ERone;" edge="1" parent="1" source="tbl_users" target="tbl_role_user">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- users -> passkeys -->
+        <mxCell id="edge_users_passkeys" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=ERmany;startArrow=ERone;" edge="1" parent="1" source="tbl_users" target="tbl_passkeys">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- users -> audit_logs -->
+        <mxCell id="edge_users_audit" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=ERmany;startArrow=ERone;" edge="1" parent="1" source="tbl_users" target="tbl_audit_logs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- users -> notifications -->
+        <mxCell id="edge_users_notifications" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=ERmany;startArrow=ERone;" edge="1" parent="1" source="tbl_users" target="tbl_notifications">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- colleges -> programs -->
+        <mxCell id="edge_colleges_programs" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=ERmany;startArrow=ERone;" edge="1" parent="1" source="tbl_colleges" target="tbl_programs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- colleges -> users -->
+        <mxCell id="edge_colleges_users" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=ERmany;startArrow=ERone;" edge="1" parent="1" source="tbl_colleges" target="tbl_users">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- programs -> users -->
+        <mxCell id="edge_programs_users" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=ERmany;startArrow=ERone;" edge="1" parent="1" source="tbl_programs" target="tbl_users">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- colleges -> task_forces -->
+        <mxCell id="edge_colleges_task_forces" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=ERmany;startArrow=ERone;" edge="1" parent="1" source="tbl_colleges" target="tbl_task_forces">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- programs -> task_forces -->
+        <mxCell id="edge_programs_task_forces" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=ERmany;startArrow=ERone;" edge="1" parent="1" source="tbl_programs" target="tbl_task_forces">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- users -> task_forces (created_by) -->
+        <mxCell id="edge_users_task_forces" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=ERmany;startArrow=ERone;" edge="1" parent="1" source="tbl_users" target="tbl_task_forces">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- task_forces -> task_force_members -->
+        <mxCell id="edge_tf_members" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=ERmany;startArrow=ERone;" edge="1" parent="1" source="tbl_task_forces" target="tbl_task_force_members">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- users -> task_force_members -->
+        <mxCell id="edge_users_tf_members" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=ERmany;startArrow=ERone;" edge="1" parent="1" source="tbl_users" target="tbl_task_force_members">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- users -> task_force_assignments -->
+        <mxCell id="edge_users_tf_assignments" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=ERmany;startArrow=ERone;" edge="1" parent="1" source="tbl_users" target="tbl_task_force_assignments">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- programs -> task_force_assignments -->
+        <mxCell id="edge_programs_tf_assignments" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=ERmany;startArrow=ERone;" edge="1" parent="1" source="tbl_programs" target="tbl_task_force_assignments">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- programs -> accreditations -->
+        <mxCell id="edge_programs_accreditations" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=ERmany;startArrow=ERone;" edge="1" parent="1" source="tbl_programs" target="tbl_accreditations">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- task_forces -> accreditations -->
+        <mxCell id="edge_tf_accreditations" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=ERmany;startArrow=ERone;" edge="1" parent="1" source="tbl_task_forces" target="tbl_accreditations">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- instruments -> instrument_areas -->
+        <mxCell id="edge_inst_areas" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=ERmany;startArrow=ERone;" edge="1" parent="1" source="tbl_instruments" target="tbl_instrument_areas">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- instrument_areas -> instrument_parameters -->
+        <mxCell id="edge_areas_params" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=ERmany;startArrow=ERone;" edge="1" parent="1" source="tbl_instrument_areas" target="tbl_instrument_parameters">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- instrument_parameters -> instrument_criteria -->
+        <mxCell id="edge_params_criteria" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=ERmany;startArrow=ERone;" edge="1" parent="1" source="tbl_instrument_parameters" target="tbl_instrument_criteria">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- accreditations -> compliance_requirements -->
+        <mxCell id="edge_accred_compliance" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=ERmany;startArrow=ERone;" edge="1" parent="1" source="tbl_accreditations" target="tbl_compliance_requirements">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- instruments -> compliance_requirements -->
+        <mxCell id="edge_inst_compliance" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=ERmany;startArrow=ERone;" edge="1" parent="1" source="tbl_instruments" target="tbl_compliance_requirements">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- instrument_criteria -> compliance_requirements -->
+        <mxCell id="edge_crit_compliance" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=ERmany;startArrow=ERone;" edge="1" parent="1" source="tbl_instrument_criteria" target="tbl_compliance_requirements">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- compliance_requirements -> accreditation_document_links -->
+        <mxCell id="edge_comp_doc_links" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=ERmany;startArrow=ERone;" edge="1" parent="1" source="tbl_compliance_requirements" target="tbl_accreditation_document_links">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- documents -> accreditation_document_links -->
+        <mxCell id="edge_docs_doc_links" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=ERmany;startArrow=ERone;" edge="1" parent="1" source="tbl_documents" target="tbl_accreditation_document_links">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- document_categories -> documents -->
+        <mxCell id="edge_cat_docs" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=ERmany;startArrow=ERone;" edge="1" parent="1" source="tbl_document_categories" target="tbl_documents">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- offices -> documents -->
+        <mxCell id="edge_offices_docs" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=ERmany;startArrow=ERone;" edge="1" parent="1" source="tbl_offices" target="tbl_documents">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- programs -> documents -->
+        <mxCell id="edge_programs_docs" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=ERmany;startArrow=ERone;" edge="1" parent="1" source="tbl_programs" target="tbl_documents">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- users -> documents (uploaded_by) -->
+        <mxCell id="edge_users_docs" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=ERmany;startArrow=ERone;" edge="1" parent="1" source="tbl_users" target="tbl_documents">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- documents -> document_reviews -->
+        <mxCell id="edge_docs_reviews" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=ERmany;startArrow=ERone;" edge="1" parent="1" source="tbl_documents" target="tbl_document_reviews">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- users -> document_reviews -->
+        <mxCell id="edge_users_reviews" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=ERmany;startArrow=ERone;" edge="1" parent="1" source="tbl_users" target="tbl_document_reviews">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- documents -> document_ocr_validations -->
+        <mxCell id="edge_docs_ocr" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=ERmany;startArrow=ERone;" edge="1" parent="1" source="tbl_documents" target="tbl_document_ocr_validations">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- documents -> document_access_requests -->
+        <mxCell id="edge_docs_access" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000000;strokeWidth=1.2;endArrow=ERmany;startArrow=ERone;" edge="1" parent="1" source="tbl_documents" target="tbl_document_access_requests">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
