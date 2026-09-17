@@ -43,25 +43,25 @@ Program → Accreditation Record → 9 Stages → Stage History
 **Tables:** `documents`, `ocr_results`, `document_reviews`, `document_categories`
 
 **What it does:**
-- Stores **uploaded evidence files** (PDFs, images, spreadsheets)
-- Captures **OCR results** — extracted text, confidence scores, raw + edited text
-- Tracks **human verification** of OCR (user confirms or corrects the extraction)
-- Categorizes documents (e.g., "Curriculum", "Faculty Qualifications")
+- Stores **uploaded evidence files** (PDFs stored in private S3-compatible cloud storage)
+- Captures **synchronous OCR results** for accreditation results (certificates, rating sheets, 1–3 pages) — extracted text, confidence scores, raw + edited text
+- Tracks **human verification** of OCR (user inspects split-screen canvas with flagged tokens $< 0.65$ and confirms or corrects the extraction)
+- Categorizes documents (e.g., "Curriculum", "Faculty Qualifications", "Accreditation Results")
 
 **The OCR flow:**
 ```
-PDF Uploaded
+PDF Uploaded to Private Cloud Storage (S3)
     ↓
-Tesseract extracts text → stored in ocr_results
+Synchronous OCR engine extracts text & confidence metrics (< 3s) → stored in ocr_results
     ↓
-System shows confidence score
+System displays Split-Screen Canvas (PDF streamed via 15m Pre-Signed URL + OCR Text)
     ↓
-User reviews & approves (or edits) → stored as verified
+User reviews, corrects flagged tokens (< 0.65) & validates → stored as verified
     ↓
-Ready for accreditation review
+Ready for Dean approval & accreditation linking
 ```
 
-**Why it matters:** Evidence is the foundation of accreditation — OCR speed + human verification builds confidence.
+**Why it matters:** Evidence is the foundation of accreditation — instant synchronous OCR on accreditation results paired with human-in-the-loop verification ensures high data fidelity without queue complexity.
 
 ---
 

@@ -7,7 +7,8 @@ Purpose: Authoritative relational database schema documentation and end-to-end
          data flow specification for Bicol University's AACCUP Accreditation System.
 Architecture: Modern Monolithic 3-Tier (Laravel 13 MVC + Inertia.js + MySQL 8 3NF).
 Security Context: Strict multi-tenant college isolation (college_id scoping),
-                  immutable audit logging, protected local disk storage, and
+                  immutable audit logging, protected cloud object storage (S3-compatible
+                  private bucket with 15-minute temporary pre-signed URLs), and
                   server-side RBAC enforcement across 7 institutional roles.
 ================================================================================
 -->
@@ -25,9 +26,9 @@ IQArchive uses a **split-storage model** to balance relational querying speed, c
 1. **Structured Metadata (MySQL 8 InnoDB):** 
    - Strict 3rd Normal Form (3NF) relational tables for institutional hierarchies, user RBAC, survey criteria, task force rosters, and accreditation state machines.
    - Variable-length OCR metrics (per-word bounding boxes, per-page confidence scores) are stored in native MySQL `JSON` columns.
-2. **Binary Document Storage (Protected Local Disk):**
-   - PDF evidence files live outside the web root at `/mnt/storage/iqarchive/protected/{college}/{program}/`.
-   - Direct web server access to PDF URLs is strictly blocked. All file streams require server-side policy authorization through `DocumentController`.
+2. **Binary Document Storage (Managed Cloud Object Storage — S3-Compatible):**
+   - PDF evidence files reside in a strictly private S3-compatible cloud storage bucket using the structured object key convention `evidence/{college_id}/{program_id}/{file_hash}.pdf`.
+   - Direct public web server access to PDF URLs is strictly blocked. All file streams require server-side policy authorization through `DocumentController`, which mints a temporary 15-minute pre-signed URL for direct browser streaming.
 3. **Multi-Tenant College Isolation:**
    - Academic units are isolated at the database level. Key tenant tables (`documents`, `users`, `programs`, `audit_logs`) carry a direct, indexed `college_id` foreign key.
 
@@ -280,7 +281,7 @@ Master evidence registry containing file paths, cryptographic hashes, and multi-
 - `user_id` (BIGINT UNSIGNED, FK $\rightarrow$ `users.id`, NOT NULL) — Uploader
 - `title` (VARCHAR(255), NOT NULL)
 - `original_filename` (VARCHAR(255), NOT NULL)
-- `file_path` (VARCHAR(500), NOT NULL) — Protected local storage path
+- `file_path` (VARCHAR(500), NOT NULL) — Cloud storage object key: `evidence/{college_id}/{program_id}/{file_hash}.pdf`
 - `file_hash` (VARCHAR(64), NOT NULL) — Cryptographic SHA-256 integrity hash
 - `file_size_bytes` (BIGINT UNSIGNED, NOT NULL)
 - `mime_type` (VARCHAR(100), NOT NULL) — e.g., "application/pdf"
@@ -298,11 +299,11 @@ Many-to-many junction linking uploaded documents to compliance requirements.
 - *Unique Index:* `(compliance_requirement_id, document_id)`
 
 #### `ocr_results`
-Synchronous Tesseract OCR extraction output (1:1 with `documents`).
+Synchronous OCR extraction output (1:1 with `documents`), targeted specifically at accreditation results (certificates and rating sheets of 1–3 pages).
 - `id` (BIGINT UNSIGNED, PK, AUTO_INCREMENT)
 - `document_id` (BIGINT UNSIGNED, FK $\rightarrow$ `documents.id`, UNIQUE, NOT NULL)
 - `validated_by_user_id` (BIGINT UNSIGNED, FK $\rightarrow$ `users.id`, NULLABLE) — Stamped upon human validation
-- `raw_text` (LONGTEXT, NOT NULL) — Original Tesseract text output
+- `raw_text` (LONGTEXT, NOT NULL) — Original OCR text output
 - `edited_text` (LONGTEXT, NULLABLE) — Human-corrected text
 - `confidence_metrics` (JSON, NOT NULL) — Per-word bounding boxes and confidence scores $(< 0.65$ flagged)
 - `pages_data` (JSON, NOT NULL) — Per-page dimensions and layout metrics
@@ -372,12 +373,13 @@ IQA Staff ──► accreditations (program_id, current_stage=1)
 
 ### Workflow 6: Evidence Upload, Synchronous OCR & Human Validation
 ```
-Task Force Member ──► Upload PDF
+Task Force Member ──► Upload PDF (Accreditation Result, 1–3 pages)
                            │
-                           ├── Write protected storage + compute SHA-256 hash ──► documents
-                           ├── Synchronous ProcessDocumentOcrService ──────────► ocr_results
+                           ├── Write private S3 bucket + compute SHA-256 hash ──► documents
+                           ├── Synchronous ProcessDocumentOcrService (< 3s) ───► ocr_results
                            │    (extract raw_text, JSON confidence, flag < 0.65)
                            └── Split-Screen Human Validation UI
+                                ├── PDF rendered via 15m Pre-Signed URL + OCR Text
                                 └── Reviewer edits & approves ─────────────────► ocr_results.edited_text
 ```
 
@@ -432,7 +434,7 @@ IQA Staff ──► Transition to Stage 8 (Submitted)
 External Accreditor ──► Read-only access unlocked
                              │
                              ├── Browse compiled AACCUP tree
-                             ├── Stream bytes via DocumentController
+                             ├── Stream PDF via 15m Pre-Signed URL minted by DocumentController
                              └── Every download logged in audit_logs
 ```
 
