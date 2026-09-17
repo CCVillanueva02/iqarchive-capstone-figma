@@ -77,16 +77,16 @@ external_entities:
     interaction: "Granted read-only access strictly upon Stage 8 (Submitted) to inspect verified evidence trees and stream authorized PDFs."
 
   - entity_id: "EXT_010"
-    name: "Tesseract OCR Subsystem"
-    type: "external_process"
-    description: "Locally installed self-hosted Tesseract 5.x OCR engine executed synchronously via CLI wrapper."
-    interaction: "Accepts rasterized image pages, executes text recognition, and returns raw text plus bounding box confidence tokens."
+    name: "Cloud OCR Engine / Adapter"
+    type: "external_service"
+    description: "OCR processing engine (Google Cloud Vision API in production with local Tesseract 5.x fallback for development) executed synchronously on accreditation results (1–3 pages)."
+    interaction: "Accepts accreditation result PDF pages, executes text recognition synchronously (< 3s), and returns raw text plus bounding box confidence tokens."
 
   - entity_id: "EXT_011"
-    name: "Protected Local Filesystem Storage"
+    name: "Managed Cloud Object Storage (S3-Compatible)"
     type: "external_system"
-    description: "Host file storage mount residing outside public web root at /mnt/storage/iqarchive/protected/{college}/{program}/."
-    interaction: "Persists encrypted/protected raw PDF blobs and streams binary content via authorized PHP file handles."
+    description: "Private encrypted S3-compatible cloud storage bucket on Laravel Cloud using structured object key convention evidence/{college_id}/{program_id}/{file_hash}.pdf."
+    interaction: "Persists encrypted raw PDF evidence blobs and streams binary content directly to authorized client browsers via 15-minute temporary pre-signed URLs."
 
 # ================================================================================
 # SECTION 2: DATA STORES CATALOG (23 SYSTEM DATA STORES)
@@ -381,7 +381,7 @@ data_stores:
   - store_id: "DS_OCR_RESULTS"
     name: "ocr_results"
     type: "database_table"
-    purpose: "Tesseract OCR extraction output with per-word confidence metrics and human edits (1:1 with documents)."
+    purpose: "Synchronous OCR extraction output with per-word confidence metrics and human edits (1:1 with documents), targeted at accreditation results."
     key_columns:
       - "id (BIGINT UNSIGNED, PK)"
       - "document_id (BIGINT UNSIGNED, FK -> documents.id, UNIQUE)"
@@ -418,8 +418,9 @@ data_stores:
     type: "file_storage"
     purpose: "On-disk filesystem hierarchy residing outside public web root for raw PDF evidence."
     key_columns:
-      - "Physical Mount: /mnt/storage/iqarchive/protected/{college_id}/{program_id}/{file_hash}.pdf"
-      - "Permissions: 0640 (Web server read/write only, no public HTTP access)"
+      - "Cloud Bucket: Private S3-Compatible Bucket (Laravel Cloud Managed Storage)"
+      - "Object Key: evidence/{college_id}/{program_id}/{file_hash}.pdf"
+      - "Access: Server-authorized 15-minute temporary pre-signed URLs (no direct public HTTP access)"
     access_patterns:
       - "Written synchronously during file upload"
       - "Read and streamed via DocumentController following Policy authorization"
@@ -435,7 +436,7 @@ assumptions:
 
   - id: "ASSUMPTION_BULK_UPLOADS"
     label: "[ASSUMPTION: bulk_uploads]"
-    description: "Document uploads are executed as single-file requests per HTTP POST to prevent server process starvation and request timeouts caused by synchronous Tesseract OCR processing."
+    description: "Document uploads are executed as single-file requests per HTTP POST, with synchronous inline OCR processing optimized for accreditation results (1–3 pages, < 3s execution)."
     impact: "Frontend upload UI queues files client-side and dispatches them sequentially rather than in a single multipart bulk payload."
 
   - id: "ASSUMPTION_REJECTION_LIFECYCLE"
@@ -473,7 +474,7 @@ data_flows:
   # ------------------------------------------------------------------------------
   - flow_id: "FLOW_000"
     name: "IQArchive Level 0 Context Data Flow"
-    description: "High-level macro data flow representing the entire IQArchive system boundary, interfacing with Google Workspace IdP, 7 user roles, protected disk storage, and the local Tesseract OCR engine."
+    description: "High-level macro data flow representing the entire IQArchive system boundary, interfacing with Google Workspace IdP, 7 user roles, private S3 cloud storage, and the synchronous OCR engine."
     level: 0
     category: "System Operations"
     trigger: "Continuous institutional operations across Bicol University accreditation lifecycles."
@@ -484,14 +485,14 @@ data_flows:
         type: "external_entity"
       - name: "IQArchive Monolithic Core Application"
         type: "process"
-      - name: "Tesseract OCR Engine"
+      - name: "Cloud OCR Engine"
         type: "external_process"
-      - name: "Protected Filesystem Storage"
+      - name: "Cloud Object Storage (S3-Compatible Private Bucket)"
         type: "external_system"
     data_stores:
       - name: "MySQL 8 Relational Database"
         type: "database_table"
-      - name: "Protected File Storage (/mnt/storage/iqarchive/protected/)"
+      - name: "Cloud Object Storage (S3-Compatible)"
         type: "file_storage"
     steps:
       - sequence: 1
@@ -755,7 +756,7 @@ data_flows:
 
   - flow_id: "FLOW_500"
     name: "Evidence Ingestion, Synchronous OCR & Metadata Registry"
-    description: "Task Force Member uploads evidence PDF; backend validates MIME/size, writes to protected disk, executes synchronous Tesseract OCR, parses JSON confidence tokens, and writes document records."
+    description: "Task Force Member uploads accreditation result PDF; backend validates MIME/size, writes to private S3 bucket, executes synchronous OCR (< 3s), parses JSON confidence tokens, and renders Split-Screen validation UI via 15m pre-signed URL."
     level: 1
     category: "Document Lifecycle"
     trigger: "Task Force Member uploads PDF file in program workspace."
@@ -764,9 +765,9 @@ data_flows:
         type: "external_entity"
       - name: "ProcessDocumentOcrService"
         type: "process"
-      - name: "Tesseract OCR Engine"
+      - name: "Cloud OCR Engine"
         type: "external_process"
-      - name: "Protected Filesystem Storage"
+      - name: "Cloud Object Storage (S3-Compatible)"
         type: "external_system"
     data_stores:
       - name: "documents"
@@ -784,11 +785,11 @@ data_flows:
         output: "Validation confirmation"
       - sequence: 2
         input: "Binary file stream"
-        process: "Compute SHA-256 hash and write file to /mnt/storage/iqarchive/protected/{college_id}/{program_id}/{hash}.pdf"
+        process: "Compute SHA-256 hash and write file to private S3 bucket at evidence/{college_id}/{program_id}/{hash}.pdf"
         output: "file_path, file_hash, file_size_bytes"
       - sequence: 3
         input: "Stored file path"
-        process: "Invoke local Tesseract OCR CLI binary synchronously; rasterize pages and extract text + word confidence metrics"
+        process: "Invoke synchronous OCR engine inline (< 3s); extract text + word confidence metrics and flag tokens < 0.65"
         output: "raw_text, confidence_metrics (JSON), pages_data (JSON), average_confidence"
       - sequence: 4
         input: "File metadata + OCR extraction output"
@@ -1044,7 +1045,7 @@ data_flows:
         output: "Authorization confirmed"
       - sequence: 3
         input: "document_id"
-        process: "Resolve physical file path at /mnt/storage/iqarchive/protected/{college_id}/{program_id}/{hash}.pdf"
+        process: "Verify document record and mint 15-minute pre-signed URL for cloud object evidence/{college_id}/{program_id}/{hash}.pdf"
         output: "Physical file path"
       - sequence: 4
         input: "Physical file path"
@@ -1150,7 +1151,7 @@ data_flows:
   # ------------------------------------------------------------------------------
   - flow_id: "FLOW_501"
     name: "Document Ingestion, Synchronous OCR & Split-Screen Validation"
-    description: "Detailed Level 2 execution of the document upload pipeline, synchronous Tesseract OCR invocation, word-level confidence parsing (< 0.65 threshold), and human validation editing."
+    description: "Detailed Level 2 execution of the document upload pipeline, synchronous OCR invocation on accreditation results, word-level confidence parsing (< 0.65 threshold), and human validation editing."
     level: 2
     category: "Document Lifecycle"
     trigger: "Task Force Member clicks 'Upload Document' in Area Evidence Workspace."
@@ -1161,9 +1162,9 @@ data_flows:
         type: "process"
       - name: "ProcessDocumentOcrService"
         type: "process"
-      - name: "Tesseract OCR CLI"
+      - name: "Cloud OCR Engine"
         type: "external_process"
-      - name: "Protected Filesystem Storage"
+      - name: "Cloud Object Storage (S3-Compatible)"
         type: "external_system"
     data_stores:
       - name: "documents"
@@ -1183,13 +1184,13 @@ data_flows:
 
       - sequence: 2
         input: "Binary PDF stream"
-        process: "Compute SHA-256 hash across binary content; determine target path /mnt/storage/iqarchive/protected/{college_id}/{program_id}/{hash}.pdf"
+        process: "Compute SHA-256 hash across binary content; determine target cloud object key evidence/{college_id}/{program_id}/{hash}.pdf"
         output: "file_hash, file_path, file_size_bytes"
         guard: "Storage write must precede database insertion"
 
       - sequence: 3
         input: "File stream + file_path"
-        process: "Write binary data to protected disk with 0640 permissions"
+        process: "Write binary data directly to private S3-compatible cloud storage bucket"
         output: "Physical file persisted on disk"
         decision: "Does identical file_hash already exist in this college/program?"
         then: "Flag duplicate evidence warning; link existing file or proceed with new title"
@@ -1202,7 +1203,7 @@ data_flows:
 
       - sequence: 5
         input: "Rasterized page images"
-        process: "Invoke Tesseract CLI: 'tesseract {page_img} {out} -l eng hocr tsv'; parse TSV token stream"
+        process: "Invoke synchronous OCR service inline (< 3s) on accreditation result PDF; parse token stream with bounding boxes and confidence scores"
         output: "raw_text, per-word bounding boxes, per-word confidence (0-100), per-page metrics"
         guard: "Synchronous timeout bounded at 120s"
 
@@ -1507,7 +1508,7 @@ data_flows:
 
       - sequence: 4
         input: "Authorized stream request"
-        process: "Verify physical file existence at /mnt/storage/iqarchive/protected/{college_id}/{program_id}/{hash}.pdf"
+        process: "Verify document record and issue 15-minute temporary pre-signed URL for cloud object evidence/{college_id}/{program_id}/{hash}.pdf"
         output: "Physical file handle"
         guard: "File must exist on disk; otherwise return 404 with audit alert"
 

@@ -28,7 +28,7 @@ In IQArchive's 3-tier monolithic architecture, Level 1 processes encapsulate bro
 | Level 1 Process | Sub-Process Range | Core Focus | Dedicated Diagram File |
 | :--- | :--- | :--- | :--- |
 | **1.0 Google SSO Authentication & Scoping** | `1.1` – `1.5` | OAuth 2.0 token exchange, institutional domain gating, JIT user provisioning, multi-tenant college scoping, and session establishment. | [`lvl2-proc1-auth-scoping.drawio.xml`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc1-auth-scoping.drawio.xml) |
-| **2.0 Document Submissions, Linking & OCR** | `2.1` – `2.7` | MIME validation, protected filesystem write, SHA-256 hashing, synchronous Tesseract OCR, confidence flagging, split-screen validation, and criteria junction linking. | [`lvl2-proc2-document-submission-ocr.drawio.xml`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc2-document-submission-ocr.drawio.xml) |
+| **2.0 Document Submissions, Linking & OCR** | `2.1` – `2.7` | MIME validation, cloud storage write (S3), SHA-256 hashing, synchronous inline OCR (accreditation results), confidence flagging, split-screen validation (15m pre-signed URL), and criteria junction linking. | [`lvl2-proc2-document-submission-ocr.drawio.xml`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc2-document-submission-ocr.drawio.xml) |
 | **3.0 Document Review & Dean Verification** | `3.1` – `3.6` | OCR validation guard, Tier 1 College Dean gatekeeping, Tier 2 IQA consolidation, review history logging, and revision alert dispatching. | [`lvl2-proc3-document-review-verification.drawio.xml`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc3-document-review-verification.drawio.xml) |
 | **4.0 Accreditation Pipeline & Stage Governance** | `4.1` – `4.6` | Stage transition authorization, pre-condition validation rules (100% compliance, zero gaps), state machine updates, transition logging, and Stage 8 external access unlocking. | [`lvl2-proc4-accreditation-pipeline.drawio.xml`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc4-accreditation-pipeline.drawio.xml) |
 | **5.0 Quality Assurance & Advisory Review** | `5.1` – `5.6` | Mock survey tree traversal, streaming evidence inspection, advisory remark logging, deficit alerts to Area Chairs, supplementary evidence linking, and sign-off resolution. | [`lvl2-proc5-qa-advisory-review.drawio.xml`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc5-qa-advisory-review.drawio.xml) |
@@ -76,23 +76,23 @@ flowchart LR
 
 ## 3. Process 2.0: Document Submissions, Linking & OCR
 
-Decomposes the evidence upload workflow from client-side file selection through protected filesystem storage, synchronous Tesseract OCR token extraction, confidence flagging, human validation, and AACCUP criteria linking.
+Decomposes the evidence upload workflow from client-side file selection through private cloud object storage write, synchronous inline OCR token extraction (targeted at accreditation results), confidence flagging, human validation via pre-signed URLs, and AACCUP criteria linking.
 
 ### 3.1 Sub-Process Dictionary
 
 - **2.1 File Ingestion & MIME Validation:** Inspects uploaded payload against strict constraints: MIME `application/pdf`, max file size 50MB, and valid upload session token.
-- **2.2 SHA-256 Hashing & Protected Storage Write:** Computes cryptographic SHA-256 checksum for deduplication and non-repudiation. Stores the file to disk at `/mnt/storage/iqarchive/protected/{college_id}/{program_id}/{hash}.pdf` with `0640` file permissions outside web root.
-- **2.3 Page Rasterization & Inline OCR Execution:** Spawns `pdftoppm` to render document pages into 300 DPI PNG images, and executes synchronous Tesseract OCR via CLI producing structured TSV outputs with word-level bounding boxes and confidence metrics.
-- **2.4 Token Parsing & Word Confidence Flagging:** Parses OCR TSV streams into structured JSON (`pages_data`, `confidence_metrics`). Evaluates individual token confidence scores against threshold $\theta = 0.65$, tagging low-confidence tokens for visual verification.
-- **2.5 Split-Screen Human Validation & Editing:** Renders an interactive split-screen review canvas in the Inertia/Vue client (PDF viewer alongside editable OCR transcription with flagged words highlighted). Collects manual corrections from the uploader.
+- **2.2 SHA-256 Hashing & Cloud Storage Write:** Computes cryptographic SHA-256 checksum for deduplication and non-repudiation. Stores the file directly to private S3-compatible cloud storage at object key `evidence/{college_id}/{program_id}/{hash}.pdf`.
+- **2.3 Synchronous OCR Execution:** Executes inline OCR processing on the uploaded accreditation result (1–3 pages) in 1.5–3 seconds via `ProcessDocumentOcrService` (using Cloud OCR / Tesseract driver), producing structured text outputs with word-level bounding boxes and confidence metrics without queue overhead.
+- **2.4 Token Parsing & Word Confidence Flagging:** Parses OCR outputs into structured JSON (`pages_data`, `confidence_metrics`). Evaluates individual token confidence scores against threshold $\theta = 0.65$, tagging low-confidence tokens for visual verification.
+- **2.5 Split-Screen Human Validation & Editing:** Renders an interactive split-screen review canvas in the Inertia/Vue client (PDF rendered via 15-minute temporary pre-signed URL alongside editable OCR transcription with flagged words highlighted). Collects manual corrections from the uploader.
 - **2.6 Criteria Matrix Junction Linking:** Associates the validated document record with target AACCUP criteria by creating junction entries in `accreditation_document_links`.
 - **2.7 Submission Event & Audit Dispatcher:** Updates document status to `dean_pending`, appends an entry to `audit_logs`, and dispatches notification alerts to the College Dean.
 
 ### 3.2 Data Flows & Stores
 
-- **External Entities:** Task Force Member (Area SME), Tesseract OCR Engine (CLI).
+- **External Entities:** Task Force Member (Area SME), Cloud OCR Engine / Adapter.
 - **Data Stores Accessed:**
-  - `D8: Protected File Storage` (`/mnt/storage/.../0640`) — Write.
+  - `D8: Cloud Object Storage (S3-Compatible)` (`evidence/{college_id}/{program_id}/{hash}.pdf`) — Write.
   - `D2: Documents & Evidence Links` (`documents`, `accreditation_document_links`) — Read / Write.
   - `D3: Reviews & OCR Validation` (`ocr_results`, `raw_text`, `edited_text`) — Write.
   - `D7: Regulatory Audit Trail` (`audit_logs`) — Append-only.
@@ -103,13 +103,13 @@ Decomposes the evidence upload workflow from client-side file selection through 
 ```mermaid
 flowchart TD
     TF([Task Force Member]) -->|1. Evidentiary Document & Tags| P21[2.1 File Ingestion & MIME Validation]
-    P21 -->|2. Validated PDF Stream| P22[2.2 SHA-256 Hashing & Protected Storage Write]
-    P22 -->|Write Protected File 0640| D8[(D8: Protected Storage)]
-    P22 -->|3. file_path & Checksum| P23[2.3 Page Rasterization & OCR Execution]
-    P23 <-->|Rasterized 300 DPI / TSV Stream| TESS([Tesseract OCR CLI])
-    P23 -->|4. TSV Token Data| P24[2.4 Token Parsing & Confidence Flagging]
+    P21 -->|2. Validated PDF Stream| P22[2.2 SHA-256 Hashing & Cloud Storage Write]
+    P22 -->|Write Private S3 Bucket| D8[(D8: Cloud Object Storage S3)]
+    P22 -->|3. Object Key & Hash| P23[2.3 Synchronous OCR Execution]
+    P23 <-->|Accreditation Result PDF / TSV Stream| OCR([Cloud OCR Engine])
+    P23 -->|4. Structured Token Metrics| P24[2.4 Token Parsing & Confidence Flagging]
     P24 -->|5. Flagged Words < 0.65| P25[2.5 Split-Screen Validation UI]
-    TF <-->|Interactive Review & Text Edits| P25
+    TF <-->|Interactive Review & Text Edits (Pre-Signed URL)| P25
     P25 -->|6. Validated OCR Record| D3[(D3: OCR Validation)]
     P22 -->|7. Target Criterion Mapping| P26[2.6 Criteria Matrix Junction Linking]
     P26 <-->|Insert Links & Read Checklist| D2[(D2: Documents & Evidence Links)]
@@ -219,7 +219,7 @@ Decomposes the pre-submission advisory review subsystem executed by Internal Acc
 ### 6.1 Sub-Process Dictionary
 
 - **5.1 Mock Survey Package & Criteria Navigator:** Displays an interactive tree view of the accreditation criteria hierarchy for programs currently in Stages 5, 6, or 7.
-- **5.2 Evidence Stream & Inspection Controller:** Streams authorized PDF evidence directly from protected storage through an ephemeral browser blob stream, enforcing read-only inspection without persistent public URLs.
+- **5.2 Evidence Stream & Inspection Controller:** Streams authorized PDF evidence directly from cloud object storage via temporary 15-minute pre-signed URLs minted by `DocumentController`, enforcing read-only inspection without persistent public URLs.
 - **5.3 Advisory Comment & Deficit Flag Logging:** Collects qualitative observations, recommendations, and deficiency flags from Internal Accreditors. Persists entries in `compliance_comments`.
 - **5.4 Deficit Notification Alerting Engine:** Automatically identifies the Area Chair responsible for the flagged criterion and queues an urgent deficit alert.
 - **5.5 Deficit Remediation & Evidence Linking:** Task Force SME uploads replacement or supplementary evidence addressing the deficit, automatically linking the new file to the contested criterion.
@@ -229,7 +229,7 @@ Decomposes the pre-submission advisory review subsystem executed by Internal Acc
 
 - **External Entities:** Internal Accreditor (Mock Reviewer), Task Force Member (Area SME Remediator), IQA Staff (QA Oversight).
 - **Data Stores Accessed:**
-  - `D8: Protected File Storage` (`/mnt/storage/.../0640`) — Read.
+  - `D8: Cloud Object Storage (S3-Compatible)` (`evidence/{college_id}/{program_id}/{hash}.pdf`) — Read.
   - `D2: Documents & Evidence Links` (`documents`, `accreditation_document_links`) — Read / Write.
   - `D5: Advisory Comments` (`compliance_comments`) — Read / Write.
   - `D6: System Notifications` (`notifications`) — Append-only.
@@ -241,7 +241,7 @@ Decomposes the pre-submission advisory review subsystem executed by Internal Acc
 flowchart TD
     IA([Internal Accreditor]) -->|1. Browse Compiled Tree| P51[5.1 Mock Survey Package Navigator]
     P51 -->|2. Inspect Criterion Evidence| P52[5.2 Evidence Stream & Inspection Controller]
-    P52 <-->|Stream Authorized PDF Bytes| D8[(D8: Protected File Storage)]
+    P52 <-->|15m Pre-Signed URL PDF Stream| D8[(D8: Cloud Object Storage S3)]
     IA -->|3. Advisory Notes & Gap Annotations| P53[5.3 Advisory Comment & Deficit Logging]
     P53 -->|Insert compliance_comments| D5[(D5: Advisory Comments)]
     P53 -->|Deficit Alert Event| P54[5.4 Deficit Notification Alerting Engine]
@@ -264,10 +264,10 @@ The canonical Draw.io visual diagrams are stored as separate modular XML files u
 1. **Process 1.0 (Auth & Scoping):** [`lvl2-proc1-auth-scoping.drawio.xml`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc1-auth-scoping.drawio.xml)
    - Layout: Standardized External Entities (Peach), 5 Blue Sub-Processes, 3 Green Data Stores (`D1`, `D4`, `D7`), 13 Directed Connectors.
 2. **Process 2.0 (Submission & OCR):** [`lvl2-proc2-document-submission-ocr.drawio.xml`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc2-document-submission-ocr.drawio.xml)
-   - Layout: Task Force Uploader & Tesseract OCR CLI, 7 Sub-Processes, 5 Data Stores (`D8`, `D2`, `D3`, `D7`, `D6`), 18 Directed Connectors.
+   - Layout: Task Force Uploader & Cloud OCR Engine, 7 Sub-Processes, 5 Data Stores (`D8` Cloud Storage, `D2`, `D3`, `D7`, `D6`), 18 Directed Connectors.
 3. **Process 3.0 (Review & Dean Verification):** [`lvl2-proc3-document-review-verification.drawio.xml`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc3-document-review-verification.drawio.xml)
    - Layout: College Dean, IQA Staff, Task Force Member, 6 Sub-Processes, 4 Data Stores (`D3`, `D2`, `D7`, `D6`), 17 Directed Connectors.
 4. **Process 4.0 (Accreditation Pipeline):** [`lvl2-proc4-accreditation-pipeline.drawio.xml`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc4-accreditation-pipeline.drawio.xml)
    - Layout: IQA Staff & University Stakeholders, 6 Sub-Processes, 5 Data Stores (`D2`, `D5`, `D4`, `D7`, `D6`), 15 Directed Connectors.
 5. **Process 5.0 (QA & Advisory Review):** [`lvl2-proc5-qa-advisory-review.drawio.xml`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc5-qa-advisory-review.drawio.xml)
-   - Layout: Internal Accreditor, Task Force Remediator, IQA Staff, 6 Sub-Processes, 5 Data Stores (`D8`, `D2`, `D5`, `D6`, `D7`), 16 Directed Connectors.
+   - Layout: Internal Accreditor, Task Force Remediator, IQA Staff, 6 Sub-Processes, 5 Data Stores (`D8` Cloud Storage, `D2`, `D5`, `D6`, `D7`), 16 Directed Connectors.
