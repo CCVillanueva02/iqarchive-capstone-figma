@@ -18,10 +18,10 @@ IQArchive is a Document Management and Monitoring System supporting Bicol Univer
   - Services encapsulate complex business logic (e.g., `ProcessDocumentOcrService`).
   - Policies enforce server-side RBAC and authorization gates.
 - **Frontend SPA (Tier 1):** Inertia.js + Vue 3 (Composition API with `<script setup>`) + Tailwind CSS v4 + UI primitives (Shadcn Vue, DaisyUI, Lucide Icons).
-- **Database & Storage (Tier 3):** MySQL 8 (strict 3NF schema, JSON columns for OCR confidence and page metrics) + protected local disk storage (`/mnt/storage/iqarchive/protected/{college}/{program}/`) outside web root. All document streams require policy authorization.
+- **Database & Storage (Tier 3):** Laravel Cloud Managed MySQL 8 (strict 3NF schema, JSON columns for OCR confidence and page metrics) + Managed Cloud Object Storage (private S3 bucket at `evidence/{college_id}/{program_id}/{hash}.pdf`). All document streams require server-side policy authorization and use 15-minute temporary pre-signed URLs.
 - **External & Supporting Services:**
   - **Google Workspace OAuth 2.0:** Single sign-on gated strictly to `@bicol-u.edu.ph` institutional accounts.
-  - **Synchronous Tesseract OCR:** Inline OCR execution during document uploads with a split-screen human-in-the-loop validation UI (flagging words with confidence $< 0.65$).
+  - **Synchronous OCR Engine:** Inline OCR execution during document uploads targeted strictly at accreditation results (1–3 pages, 1.5–3s) with a split-screen human-in-the-loop validation UI (flagging words with confidence $< 0.65$). Dual-driver adapter supports Google Cloud Vision API in production with local Tesseract fallback for development.
 
 ### Domain Reference Specifications
 When working on specific subsystems, consult and maintain consistency with the dedicated architectural documents:
