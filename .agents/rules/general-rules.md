@@ -28,7 +28,7 @@ When working on specific subsystems, consult and maintain consistency with the d
 - [System Architecture Specification](file:~/iqarchive/v2/docs/system-architecture/system-architecture.md)
 - [Accreditation Stages & Pipeline](file:~/iqarchive/v2/docs/accre-pipeline/accreditation-stages.md)
 - [RBAC & Role Definitions](file:~/iqarchive/v2/docs/rbac/roles.md)
-- [Database Schema & ERD](file:~/iqarchive/v2/docs/db-design/IQArchive-ERD-CAPSTONE%202%20ERD.drawio.svg)
+- [Database Schema & ERD](file:~/iqarchive/v2/docs/db-design/IQArchive-ERD.drawio.svg)
 
 ---
 

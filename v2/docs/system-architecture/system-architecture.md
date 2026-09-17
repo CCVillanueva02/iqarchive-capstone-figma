@@ -112,7 +112,7 @@ Inertia.js replaces traditional REST API + SPA separation. RBAC gates run secure
   - *Role Gatekeeper:* Every controller action explicitly calls `$this->authorize()` before executing domain logic.
   - *Forced Gates:* Critical actions require explicit human approval (OCR validation cannot auto-commit; stage advancement requires explicit IQA signoff).
 - **Accreditation Engine (9-Stage State Machine):**
-  - Manages the full accreditation lifecycle: *Draft → Candidate Status → Self-Survey Preparation → Evidence Collection → Internal Mock Review → Feedback Integration → Revision & Signoff → Formal Submission → Accredited*.
+  - Manages the full accreditation lifecycle: *Draft → Preliminary Review → Evidence Collection → Evidence Consolidation → Feedback Integration → Final Review → Revision → Submitted → Accredited*.
   - Enforces per-stage pre-conditions (e.g., Evidence Collection requires at least one document per area; Revision requires resolving all advisory deficits).
   - *Stage Transition Authority:* All 9 stage transitions are initiated and approved exclusively by **IQA Staff**.
 - **Tesseract OCR Processing (`ProcessDocumentOcrService`):**

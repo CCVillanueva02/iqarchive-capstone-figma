@@ -77,8 +77,9 @@ erDiagram
 ```
 
 ### Visual Diagram References
-- **Interactive Draw.io XML:** [`IQArchive-ERD-CAPSTONE 2 ERD.drawio.xml`](./IQArchive-ERD-CAPSTONE%202%20ERD.drawio.xml)
-- **Vector Graphic SVG:** [`IQArchive-ERD-CAPSTONE 2 ERD.drawio.svg`](./IQArchive-ERD-CAPSTONE%202%20ERD.drawio.svg)
+- **Interactive Draw.io XML:** [`IQArchive-ERD.drawio.xml`](./IQArchive-ERD.drawio.xml)
+- **Vector Graphic SVG:** [`IQArchive-ERD.drawio.svg`](./IQArchive-ERD.drawio.svg)
+- **Standalone SVG:** [`IQArchive-ERD.svg`](./IQArchive-ERD.svg)
 
 ---
 
