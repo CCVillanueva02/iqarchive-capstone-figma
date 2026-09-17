@@ -46,8 +46,8 @@ Inertia is used instead of a REST API + SPA framework because RBAC gates run ser
 - **Interactive workspaces:**
   - *AACCUP Tree* — hierarchical navigation of the 10 accreditation areas and their criteria
   - *Document Linking* — drag evidence documents onto criteria
-  - *OCR Preview* — split-screen validation UI
-- **Split-screen: PDF + Extracted Text** — original PDF on one side, editable OCR output on the other, with low-confidence words flagged for the user's attention.
+  - *OCR Preview* — split-screen validation UI (original PDF alongside extracted text)
+- **Human-in-the-Loop Confidence Preview** — interactive split-screen canvas rendering the uploaded PDF via pre-signed URL on one side and editable OCR text on the other, automatically highlighting words with confidence $< 0.65$ for human inspection and correction before submission.
 
 ---
 
@@ -77,7 +77,7 @@ The frontend/backend communication protocol:
 
 **Accreditation Engine:** Implements the 9-stage pipeline as a state machine, with per-stage requirements (e.g., Evidence Collection requires at least one document per area) and an audit trail of every transition.
 
-**ProcessDocumentOcrJob (asynchronous queue worker):** Evidence document uploads decouple OCR text extraction from the HTTP request cycle by dispatching `ProcessDocumentOcrJob` to Laravel Cloud's managed queue. The HTTP upload request completes in $< 400$ms, returning an immediate status badge to the Inertia client. Background queue workers process multi-page PDFs asynchronously, eliminating 504 Gateway Timeouts on long documents while preventing web container process starvation.
+**Synchronous OCR Processing (`ProcessDocumentOcrService`):** In IQArchive, OCR text extraction is targeted strictly at **accreditation results** (official AACCUP certificates, evaluation rating sheets, and board resolutions). Because these documents are standardized and short (typically 1–3 pages), OCR executes **synchronously inline** within the upload request cycle in 1.5 to 3 seconds. This design choice eliminates the infrastructure overhead and monitoring complexity of background queue workers and WebSockets, delivering an instantaneous response that redirects the user directly to the Split-Screen Validation canvas with highlighted low-confidence tokens.
 
 ---
 
@@ -93,22 +93,23 @@ Laravel's Eloquent ORM maps PHP objects to MySQL tables and manages relationship
 
 **Why split storage:** Managed MySQL is efficient for querying structured metadata (RBAC, audit logs, confidence scores); cloud object storage is engineered for high-throughput, encrypted binary PDF persistence and edge delivery, preventing database table bloat.
 
-- **Strict 3NF schema** — normalized tables for colleges, programs, documents, OCR results, AACCUP areas/criteria, and the `task_force_members` pivot table that is the authoritative source of RBAC assignment.
-- **JSON columns** — `confidence_metrics` and `pages_data` on `ocr_results` store variable-length OCR confidence data (per-word bounding boxes and scores, per-page breakdowns) without needing a separate table per word.
-- **Audit trail** — an immutable, append-only activity log records every meaningful action (uploads, views, approvals, stage transitions) with who, what, and when, for AACCUP compliance.
-- **Managed object storage (S3-compatible)** — PDFs reside in a strictly private cloud storage bucket using the structured key convention `evidence/{college_id}/{program_id}/{file_hash}.pdf`. Direct public web access is completely prohibited; every document view or download is authorized server-side by `DocumentController` policy checks before minting a time-limited pre-signed URL.
+The data tier is anchored by four foundational pillars:
+- **Normalized Schema (Strict 3NF)** — normalized tables for colleges, programs, documents, OCR results, AACCUP areas/criteria, and the `task_force_members` pivot table that is the authoritative source of RBAC assignment.
+- **JSON Columns** — `confidence_metrics` and `pages_data` on `ocr_results` store variable-length OCR confidence data (per-word bounding boxes and scores, per-page breakdowns) without needing a separate table per word.
+- **Audit Trail** — an immutable, append-only activity log records every meaningful action (uploads, views, approvals, stage transitions) with who, what, and when, for AACCUP compliance.
+- **Protected Storage** — PDFs reside in a strictly private cloud storage bucket using the structured key convention `evidence/{college_id}/{program_id}/{file_hash}.pdf`. Direct public web access is completely prohibited; every document view or download is authorized server-side by `DocumentController` policy checks before minting a time-limited pre-signed URL.
 
 ---
 
-## 8. HTTPS / Pre-Signed Temporary URLs + Async OCR Queue
+## 8. Cloud Storage Integration / Pre-Signed Temporary URLs
 
-The backend's outbound connections to cloud infrastructure and external services:
+The backend's connection to cloud storage:
 - **Pre-signed temporary URLs (15-minute expiration)** — when an authorized user requests a document stream or preview, `DocumentController` verifies role authorization, records an audit log entry, and mints an S3 pre-signed URL with `Content-Disposition: inline`. The desktop browser streams the PDF directly from cloud storage, offloading all binary transfer from Laravel application containers.
-- **Async OCR queue dispatch** — upon upload completion, the application dispatches `ProcessDocumentOcrJob` to Laravel Cloud's managed queue (`cloud` driver). Dedicated background workers consume the job, stream the source PDF, invoke the OCR engine, and write extracted tokens to MySQL.
+- **Zero Local Disk Dependency** — all uploads write directly to the managed S3-compatible bucket, ensuring seamless operation in ephemeral container environments on Laravel Cloud.
 
 ---
 
-## 9. External & Async Services Layer
+## 9. External Services Layer
 
 **Google Workspace OAuth 2.0** — Single sign-on gated strictly to `@bicol-u.edu.ph` addresses. There is no local password flow; if a user's Google Workspace account is disabled by university IT, their IQArchive access is automatically revoked too.
 
@@ -116,14 +117,12 @@ The backend's outbound connections to cloud infrastructure and external services
 - *Google Cloud Vision API (Production Cloud Driver):* Seamlessly aligns with Bicol University's institutional Google Workspace ecosystem. Provides $> 96\%$ extraction accuracy on complex academic records, stamps, and multi-column syllabi with zero server binary dependencies.
 - *Tesseract OCR 5.x (Local Dev Fallback Driver):* Preserves local offline development capabilities on Laravel Herd / Windows / Linux workstations without incurring external API requirements.
 
-**Human-in-the-Loop Confidence Preview** — No OCR text is committed to the official accreditation record automatically. The extracted text is rendered in an interactive split-screen canvas alongside the original PDF, low-confidence words are highlighted ($< 0.65$ threshold), and a Task Force reviewer must inspect, correct, and validate the text before Dean submission.
-
 ---
 
 ## Design Principles Reflected in This Architecture
 
 - **Compliance & Privacy First:** Immutable audit trail, mandatory human approval before OCR data is trusted, and AES-256 encrypted private cloud storage with time-limited pre-signed URLs adhering to RA 10173.
 - **Institutional Ecosystem Fit:** Cloud OCR and SSO natively leverage Bicol University's enterprise Google Workspace identity.
-- **PaaS Scalability & Zero-Downtime:** Ephemeral container architecture on Laravel Cloud with automated point-in-time database backups, managed worker scaling, and zero-downtime deployment pipelines.
+- **PaaS Scalability & Zero-Downtime:** Ephemeral container architecture on Laravel Cloud with automated point-in-time database backups, health checks, and zero-downtime deployment pipelines.
 - **Role-Based and Multi-Tenant:** 7 distinct institutional roles, college-scoped data isolation enforced at the Eloquent query and storage path level.
-- **Decoupled Asynchronous Processing:** Background queue workers prevent gateway timeouts on multi-page accreditation evidence packages while preserving an instantaneous $< 400$ms upload response time.
+- **Lean Synchronous OCR Pipeline:** Because OCR is targeted strictly at standardized accreditation results (certificates and rating sheets of 1–3 pages), processing executes synchronously in 1.5–3 seconds, eliminating queue worker overhead and delivering instantaneous split-screen validation feedback.
