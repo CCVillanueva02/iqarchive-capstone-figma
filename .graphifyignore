@@ -1,0 +1,18 @@
+# Graphify ignore patterns for IQArchive repository root
+# Restricts knowledge graph generation strictly to project architecture & source code (v2)
+
+# Agent rules, workflows, personas, and IDE configurations
+.agents/
+.antigravity/
+.cursorrules
+.editorconfig
+
+# Playwright & automated testing artifacts
+.playwright-mcp/
+
+# Archive & backup directories
+backup/
+
+# Tooling configs & personal task trackers
+*.tasks
+boost.json
