@@ -3,8 +3,11 @@ IQArchive Todo Tasks:
 Initialization Tasks:
     ✔ Create an Architecture markdown file for the project.
     ✔ Align architecture, database design, and data flows with Laravel Cloud Managed Storage & Synchronous OCR.
-    ☐ Create a Design markdown file for the project.
-    ☐ Create a README.md file for the project.
+    Define PRD.md
+    Define a ARCHITECTURE.md
+    Map out the specific architecture concepts and write it to ARCHITECTURE-ESSENTIALS.md
+    ☐ Create a Design markdown file for the project. (under design-system folder) 
+    ☐ Create a README.md file for the project. (should include the directions on how to run this project for other developers)
     ☐ Initialize the project repository with the needed files and packages for Laravel, Vue, Tailwind, and Inertia.
     ☐ Initialize the project repository with the components and fonts such as Interfont, Shadcnvue, DaisyUI, and LucideIcons.
     ☐ Initialize the project repository with a ghost file structure for the project.
