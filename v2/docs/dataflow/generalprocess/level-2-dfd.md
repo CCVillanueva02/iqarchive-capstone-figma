@@ -257,17 +257,33 @@ flowchart TD
 
 ---
 
-## 7. Draw.io XML Diagram Artifacts Reference
+## 7. Diagram Artifacts Reference (XML & Vector SVG)
 
-The canonical Draw.io visual diagrams are stored as separate modular XML files under [`v2/docs/dataflow/subprocess/`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/):
+The canonical visual diagrams are stored under [`v2/docs/dataflow/`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/) in both editable XML format and rendered vector SVG format:
 
-1. **Process 1.0 (Auth & Scoping):** [`lvl2-proc1-auth-scoping.drawio.xml`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc1-auth-scoping.drawio.xml)
+### Level 1 General Process Diagram
+- **Source XML:** [`lvl1-dfd.drawio.xml`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/generalprocess/lvl1-dfd.drawio.xml)
+- **Vector SVG:** [`lvl1-dfd.drawio.svg`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/generalprocess/lvl1-dfd.drawio.svg) | [`lvl1-dfd.svg`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/generalprocess/lvl1-dfd.svg)
+- **Overview:** 7 macro processes (`1.0`–`7.0`), 7 core data stores (`D1`–`D7`), and all 7 institutional user boundaries.
+
+### Level 2 Sub-Process Diagrams
+1. **Process 1.0 (Auth & Scoping):**
+   - Source XML: [`lvl2-proc1-auth-scoping.drawio.xml`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc1-auth-scoping.drawio.xml)
+   - Vector SVG: [`lvl2-proc1-auth-scoping.drawio.svg`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc1-auth-scoping.drawio.svg) | [`lvl2-proc1-auth-scoping.svg`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc1-auth-scoping.svg)
    - Layout: Standardized External Entities (Peach), 5 Blue Sub-Processes, 3 Green Data Stores (`D1`, `D4`, `D7`), 13 Directed Connectors.
-2. **Process 2.0 (Submission & OCR):** [`lvl2-proc2-document-submission-ocr.drawio.xml`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc2-document-submission-ocr.drawio.xml)
-   - Layout: Task Force Uploader & Cloud OCR Engine, 7 Sub-Processes, 5 Data Stores (`D8` Cloud Storage, `D2`, `D3`, `D7`, `D6`), 18 Directed Connectors.
-3. **Process 3.0 (Review & Dean Verification):** [`lvl2-proc3-document-review-verification.drawio.xml`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc3-document-review-verification.drawio.xml)
+2. **Process 2.0 (Submission & OCR):**
+   - Source XML: [`lvl2-proc2-document-submission-ocr.drawio.xml`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc2-document-submission-ocr.drawio.xml)
+   - Vector SVG: [`lvl2-proc2-document-submission-ocr.drawio.svg`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc2-document-submission-ocr.drawio.svg) | [`lvl2-proc2-document-submission-ocr.svg`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc2-document-submission-ocr.svg)
+   - Layout: Task Force Uploader & Tesseract OCR Engine, 7 Sub-Processes, 5 Data Stores (`D8` Cloud Storage, `D2`, `D3`, `D7`, `D6`), 18 Directed Connectors.
+3. **Process 3.0 (Review & Dean Verification):**
+   - Source XML: [`lvl2-proc3-document-review-verification.drawio.xml`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc3-document-review-verification.drawio.xml)
+   - Vector SVG: [`lvl2-proc3-document-review-verification.drawio.svg`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc3-document-review-verification.drawio.svg) | [`lvl2-proc3-document-review-verification.svg`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc3-document-review-verification.svg)
    - Layout: College Dean, IQA Staff, Task Force Member, 6 Sub-Processes, 4 Data Stores (`D3`, `D2`, `D7`, `D6`), 17 Directed Connectors.
-4. **Process 4.0 (Accreditation Pipeline):** [`lvl2-proc4-accreditation-pipeline.drawio.xml`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc4-accreditation-pipeline.drawio.xml)
+4. **Process 4.0 (Accreditation Pipeline):**
+   - Source XML: [`lvl2-proc4-accreditation-pipeline.drawio.xml`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc4-accreditation-pipeline.drawio.xml)
+   - Vector SVG: [`lvl2-proc4-accreditation-pipeline.drawio.svg`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc4-accreditation-pipeline.drawio.svg) | [`lvl2-proc4-accreditation-pipeline.svg`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc4-accreditation-pipeline.svg)
    - Layout: IQA Staff & University Stakeholders, 6 Sub-Processes, 5 Data Stores (`D2`, `D5`, `D4`, `D7`, `D6`), 15 Directed Connectors.
-5. **Process 5.0 (QA & Advisory Review):** [`lvl2-proc5-qa-advisory-review.drawio.xml`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc5-qa-advisory-review.drawio.xml)
+5. **Process 5.0 (QA & Advisory Review):**
+   - Source XML: [`lvl2-proc5-qa-advisory-review.drawio.xml`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc5-qa-advisory-review.drawio.xml)
+   - Vector SVG: [`lvl2-proc5-qa-advisory-review.drawio.svg`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc5-qa-advisory-review.drawio.svg) | [`lvl2-proc5-qa-advisory-review.svg`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc5-qa-advisory-review.svg)
    - Layout: Internal Accreditor, Task Force Remediator, IQA Staff, 6 Sub-Processes, 5 Data Stores (`D8` Cloud Storage, `D2`, `D5`, `D6`, `D7`), 16 Directed Connectors.
