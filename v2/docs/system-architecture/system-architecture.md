@@ -21,7 +21,7 @@ Security Context: Multi-tenant college isolation, Google Workspace SSO, RBAC
 
 ## Overview
 
-IQArchive is a Document Management and Monitoring System supporting Bicol University's AACCUP accreditation process. The architecture is a single Laravel application organized into three tiers plus a workstation access layer and external services layer. This modern monolithic approach was chosen for simplicity, maintainability, and rapid development by a focused team, while delivering enterprise-grade multi-tenancy, immutable compliance auditing, and synchronous OCR text recognition on accreditation results.
+IQArchive is a Document Management and Monitoring System supporting Bicol University's AACCUP accreditation process. The architecture is a single Laravel application organized into three tiers plus a workstation access layer and external services layer. This modern monolithic approach was chosen for simplicity, maintainability, and rapid development by a focused team, while delivering enterprise-grade multi-tenancy, immutable compliance auditing, and Tesseract OCR text recognition on accreditation results.
 
 The architecture comprises **5 foundational components** directly reflecting the system architecture diagram:
 
@@ -42,7 +42,7 @@ The architecture comprises **5 foundational components** directly reflecting the
   • Controllers → Services → Eloquent Models & Policies
   • Security & RBAC: Multi-tenant college isolation, Role gatekeeper & forced gates
   • 9-stage Accreditation pipeline
-  • Synchronous OCR
+  • Tesseract OCR
        │
        ├──────────────────────────────────────────┐
        ▼                                          ▼
@@ -115,8 +115,8 @@ Inertia.js replaces traditional REST API + SPA separation. RBAC gates run secure
   - Manages the full accreditation lifecycle: *Draft → Candidate Status → Self-Survey Preparation → Evidence Collection → Internal Mock Review → Feedback Integration → Revision & Signoff → Formal Submission → Accredited*.
   - Enforces per-stage pre-conditions (e.g., Evidence Collection requires at least one document per area; Revision requires resolving all advisory deficits).
   - *Stage Transition Authority:* All 9 stage transitions are initiated and approved exclusively by **IQA Staff**.
-- **Synchronous OCR Processing (`ProcessDocumentOcrService`):**
-  - In IQArchive, OCR text extraction is targeted strictly at **accreditation results** (official AACCUP certificates, evaluation summary rating sheets, and board resolutions).
+- **Tesseract OCR Processing (`ProcessDocumentOcrService`):**
+  - In IQArchive, OCR text extraction is powered by Tesseract OCR (with an adaptable cloud vision driver for production) targeted strictly at **accreditation results** (official AACCUP certificates, evaluation summary rating sheets, and board resolutions).
   - Because these documents are standardized and short (typically 1–3 pages), OCR executes **synchronously inline** within the upload request cycle in 1.5 to 3 seconds.
   - This eliminates the infrastructure overhead, failed job tables, and monitoring complexity of background queue workers and WebSockets, delivering an instantaneous response that redirects the user directly to the Split-Screen Validation canvas with highlighted low-confidence tokens.
 - **Data Persistence & ACID Transactions:**
@@ -160,4 +160,4 @@ The data tier is anchored by **four foundational pillars**:
 - **Institutional Ecosystem Fit:** Cloud OCR and single sign-on natively leverage Bicol University's enterprise Google Workspace identity infrastructure.
 - **PaaS Scalability & Zero-Downtime:** Ephemeral container architecture on Laravel Cloud with automated point-in-time database backups, health checks, and zero-downtime deployment pipelines.
 - **Role-Based and Multi-Tenant:** 7 distinct institutional roles, college-scoped data isolation enforced at the Eloquent query and storage path level.
-- **Lean Synchronous OCR Pipeline:** Because OCR is targeted strictly at standardized accreditation results (certificates and rating sheets of 1–3 pages), processing executes synchronously in 1.5–3 seconds, eliminating queue worker overhead and delivering instantaneous split-screen validation feedback.
+- **Lean Tesseract OCR Pipeline:** Because OCR is targeted strictly at standardized accreditation results (certificates and rating sheets of 1–3 pages), processing executes synchronously in 1.5–3 seconds, eliminating queue worker overhead and delivering instantaneous split-screen validation feedback.

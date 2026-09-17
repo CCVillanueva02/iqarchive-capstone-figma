@@ -57,7 +57,7 @@ The engine that powers all business logic, security policies, and accreditation 
 - **Controller → Service → Eloquent Pipeline:** Strict separation where controllers handle HTTP orchestration, services encapsulate complex logic, and policies enforce server-side RBAC.
 - **Multi-Tenant College Isolation:** Every database query and storage path is strictly scoped by `college_id`. Deans and Task Forces from one college can never inspect another college's non-public data.
 - **Accreditation Engine (9-Stage Pipeline):** Manages the full accreditation lifecycle as a strict state machine with enforceable pre-conditions. Stage advancement authority is restricted exclusively to IQA Staff.
-- **Synchronous OCR Engine:** Inline text extraction dedicated strictly to **accreditation results** (AACCUP certificates, rating sheets, and board resolutions of 1–3 pages). Processing completes in **1.5 to 3 seconds**, eliminating queue worker complexity while providing instant validation feedback.
+- **Tesseract OCR Engine:** Inline text extraction powered by Tesseract OCR dedicated strictly to **accreditation results** (AACCUP certificates, rating sheets, and board resolutions of 1–3 pages). Processing completes in **1.5 to 3 seconds**, eliminating queue worker complexity while providing instant validation feedback.
 - **ACID Transactions:** Multi-step writes (document creation + OCR extraction + audit logging) are wrapped in database transactions to guarantee data integrity.
 
 ---
@@ -90,7 +90,7 @@ Third-party integrations that extend system capabilities:
         ↓
 3. Task Force Member uploads an accreditation result PDF (1–3 pages)
         ↓
-4. Tier 2 (Backend) saves PDF to private S3 bucket & executes ProcessDocumentOcrService synchronously (< 3s)
+4. Tier 2 (Backend) saves PDF to private S3 bucket & executes ProcessDocumentOcrService (Tesseract OCR) synchronously (< 3s)
         ↓
 5. Tier 3 (Database) stores extracted text + per-word confidence metrics in MySQL JSON columns
         ↓
@@ -106,7 +106,7 @@ Third-party integrations that extend system capabilities:
 | Architectural Choice | Why It Matters |
 | :--- | :--- |
 | **Monolithic 3-Tier SPA** | Combines the security of server-side RBAC with the fluid UX of a SPA, avoiding API boilerplate for a focused team. |
-| **Synchronous OCR Pipeline** | Because OCR is targeted strictly at standardized accreditation results (1–3 pages), inline processing ($< 3$s) eliminates background queue worker infrastructure and failed job monitoring. |
+| **Tesseract OCR Pipeline** | Because OCR is targeted strictly at standardized accreditation results (1–3 pages), inline processing ($< 3$s) eliminates background queue worker infrastructure and failed job monitoring. |
 | **Colocated Managed Cloud** | Laravel Cloud Managed MySQL 8 and private S3 storage ensure high availability, automatic point-in-time backups, and zero local disk dependency. |
 | **Expiring Pre-Signed URLs** | 15-minute temporary URLs stream binary PDFs directly from cloud storage to desktop browsers, protecting documents and offloading web server memory. |
 | **Multi-Tenant College Isolation** | Prevents cross-college data leaks at the query and storage level, complying with RA 10173 (Data Privacy Act of 2012). |
@@ -116,4 +116,4 @@ Third-party integrations that extend system capabilities:
 
 ## **Quick Summary for Panelists**
 
-> IQArchive follows a **modern cloud 3-tier architecture** organized into 5 foundational components: institutional users access the system via desktop browsers → interact with a role-aware Inertia/Vue frontend featuring split-screen OCR preview → supported by an authorized Laravel backend that enforces multi-tenant college isolation and runs synchronous inline OCR on accreditation results → backed by colocated managed MySQL and private S3 storage with 15-minute pre-signed URLs → and gated strictly to Bicol University Google Workspace accounts.
+> IQArchive follows a **modern cloud 3-tier architecture** organized into 5 foundational components: institutional users access the system via desktop browsers → interact with a role-aware Inertia/Vue frontend featuring split-screen OCR preview → supported by an authorized Laravel backend that enforces multi-tenant college isolation and runs synchronous inline Tesseract OCR on accreditation results → backed by colocated managed MySQL and private S3 storage with 15-minute pre-signed URLs → and gated strictly to Bicol University Google Workspace accounts.
