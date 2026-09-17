@@ -11,6 +11,8 @@ Associated Diagram Files:
   - v2/docs/dataflow/subprocess/lvl2-proc3-document-review-verification.drawio.xml
   - v2/docs/dataflow/subprocess/lvl2-proc4-accreditation-pipeline.drawio.xml
   - v2/docs/dataflow/subprocess/lvl2-proc5-qa-advisory-review.drawio.xml
+  - v2/docs/dataflow/subprocess/lvl2-proc6-notification-management.drawio.xml
+  - v2/docs/dataflow/subprocess/lvl2-proc7-executive-analytics-audit.drawio.xml
 Parent Catalog: v2/docs/dataflow/iqarchive-data-flows.yaml
 ===================================================================================
 -->
@@ -32,8 +34,11 @@ In IQArchive's 3-tier monolithic architecture, Level 1 processes encapsulate bro
 | **3.0 Document Review & Dean Verification** | `3.1` – `3.6` | OCR validation guard, Tier 1 College Dean gatekeeping, Tier 2 IQA consolidation, review history logging, and revision alert dispatching. | [`lvl2-proc3-document-review-verification.drawio.xml`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc3-document-review-verification.drawio.xml) |
 | **4.0 Accreditation Pipeline & Stage Governance** | `4.1` – `4.6` | Stage transition authorization, pre-condition validation rules (100% compliance, zero gaps), state machine updates, transition logging, and Stage 8 external access unlocking. | [`lvl2-proc4-accreditation-pipeline.drawio.xml`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc4-accreditation-pipeline.drawio.xml) |
 | **5.0 Quality Assurance & Advisory Review** | `5.1` – `5.6` | Mock survey tree traversal, streaming evidence inspection, advisory remark logging, deficit alerts to Area Chairs, supplementary evidence linking, and sign-off resolution. | [`lvl2-proc5-qa-advisory-review.drawio.xml`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc5-qa-advisory-review.drawio.xml) |
+| **6.0 Notification Management & Dispatch** | `6.1` – `6.5` | Ingestion of domain event triggers, recipient roster resolution, multi-row notification record generation, real-time polling with badge counters, and read acknowledgment lifecycle auditing. | [`lvl2-proc6-notification-management.drawio.xml`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc6-notification-management.drawio.xml) |
+| **7.0 Executive Analytics & Regulatory Audit Reporting** | `7.1` – `7.6` | RBAC-gated macro queries, multi-tenant 10-college stage progress aggregation, criteria compliance matrix calculations, executive KPI dashboard serialization, multi-dimensional audit log queries, and formal regulatory compliance report exports. | [`lvl2-proc7-executive-analytics-audit.drawio.xml`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc7-executive-analytics-audit.drawio.xml) |
 
 ---
+
 
 ## 2. Process 1.0: Google SSO Authentication & Scoping
 
@@ -257,7 +262,91 @@ flowchart TD
 
 ---
 
-## 7. Diagram Artifacts Reference (XML & Vector SVG)
+## 7. Process 6.0: System Notification Management & Dispatch
+
+Decomposes the real-time alerting and notification engine that dispatches timely alerts across institutional stakeholders (Deans, Task Force Members, Accreditors, and Executives) for critical accreditation lifecycle events.
+
+### 7.1 Sub-Process Dictionary
+
+- **6.1 Event Ingestion & Trigger Parsing:** Ingests domain events dispatched across the system (e.g., document submitted, review verdict rendered, stage transition executed, advisory comment flagged). Parses event payloads for entity IDs, event severity, and target operational context.
+- **6.2 Recipient Resolution & Roster Preference Filter:** Resolves eligible recipient user IDs based on program task force rosters (`task_force_members`), college scoping (`users`), and role assignments (`roles`). Evaluates user alert preferences to filter suppressed or opt-out channels.
+- **6.3 In-App Notification Record Generation:** Formats localized, role-specific notification payloads and executes batched inserts into `notifications` (`D6: System Notifications`), initializing records with `is_read = false`, contextual target links, and severity classifications.
+- **6.4 Real-Time Polling & Badge Counter Dispatch:** Serves polling and feed requests initiated by the Vue 3 frontend top navigation bar. Serializes unread notification counts and paginated notification lists for authenticated institutional users.
+- **6.5 Read Acknowledgment & Lifecycle Audit Logging:** Processes user interaction events when notifications are marked as read (`is_read = true`, `read_at = now()`) or cleared. Logs state transitions to `audit_logs` (`D7: Regulatory Audit Trail`) to maintain non-repudiation.
+
+### 7.2 Data Flows & Stores
+
+- **External Entities:** System Event Dispatcher (Laravel Event Bus), Institutional Users (Deans, Task Force Members, Accreditors, BU Executives).
+- **Data Stores Accessed:**
+  - `D4: Accreditations & Stage History` (`task_force_members`) — Read.
+  - `D1: User & Roles` (`users`, `roles`, `preferences`) — Read.
+  - `D6: System Notifications` (`notifications`) — Read / Write.
+  - `D7: Regulatory Audit Trail` (`audit_logs`) — Append-only.
+
+### 7.3 Mermaid Visualization
+
+```mermaid
+flowchart TD
+    EventBus([System Event Dispatcher]) -->|1. Dispatched Domain Event Payload| P61[6.1 Event Ingestion & Trigger Parsing]
+    P61 -->|2. Parsed Event Data & Severity| P62[6.2 Recipient Resolution & Preference Filter]
+    P62 <-->|Query Task Force Roster| D4[(D4: Accreditations & Stage History)]
+    P62 <-->|Query Users, Roles & Preferences| D1[(D1: User & Roles)]
+    P62 -->|3. Resolved User Recipient IDs| P63[6.3 In-App Notification Record Generation]
+    P63 -->|4. Insert Unread Notification Records| D6[(D6: System Notifications)]
+    D6 <-->|5. Query Unread Notifications & Counter| P64[6.4 Real-Time Polling & Badge Dispatch]
+    P64 <-->|6. Fetch Updates & Badge Count Feed| User([Institutional Users])
+    User -->|7. Mark as Read / Dismiss Alert| P65[6.5 Read Acknowledgment & Audit Logging]
+    P65 -->|Update is_read=true, read_at| D6
+    P65 -->|Log Notification Lifecycle Event| D7[(D7: Regulatory Audit Trail)]
+```
+
+---
+
+## 8. Process 7.0: Executive Analytics & Regulatory Audit Reporting
+
+Decomposes the macro analytics engine and regulatory audit query subsystem that powers university leadership dashboards and compliance reporting.
+
+### 8.1 Sub-Process Dictionary
+
+- **7.1 Executive Analytics Query & RBAC Gate:** Intercepts incoming analytics requests from the web client. Enforces strict server-side authorization policies, ensuring only BU Executives, System Administrators, and IQA Staff can access university-wide macro intelligence.
+- **7.2 Multi-Tenant Stage Aggregation Engine:** Aggregates accreditation progress across all 10 BU colleges without cross-tenant data leaks. Computes distribution metrics across the 9 accreditation pipeline stages using `accreditations`, `colleges`, and `programs`.
+- **7.3 Criteria Compliance Matrix Calculator:** Computes real-time compliance percentages, evidence attachment densities, and open deficit counts across all 10 AACCUP areas by aggregating `compliance_requirements`, `accreditation_document_links`, and `documents`.
+- **7.4 Executive Dashboard Data Serialization:** Formats and serializes high-level KPIs, college readiness rankings, and historical progress timelines into structured JSON payloads for consumption by executive summary cards and chart components in the Vue 3 dashboard.
+- **7.5 Audit Log Filter & Query Controller:** Provides System Administrators and authorized compliance officers with high-performance multi-dimensional queries over `audit_logs` (`D7: Regulatory Audit Trail`), supporting filtering by user ID, action category, college tenant, IP address, and date range.
+- **7.6 Regulatory Compliance Report Generator:** Compiles on-demand, publication-grade accreditation readiness summaries, audit trail verification packages, and formal AACCUP submission dossiers for institutional leadership and external review boards.
+
+### 8.2 Data Flows & Stores
+
+- **External Entities:** BU Executive (University Leadership), System Administrator (IT Operations & Security), IQA Staff / Director (QA Oversight).
+- **Data Stores Accessed:**
+  - `D1: User & Roles` (`colleges`, `programs`) — Read.
+  - `D2: Documents & Evidence Links` (`documents`, `compliance_requirements`, `accreditation_document_links`) — Read.
+  - `D4: Accreditations & Stage History` (`accreditations`, `accreditation_stage_histories`) — Read.
+  - `D7: Regulatory Audit Trail` (`audit_logs`) — Read.
+
+### 8.3 Mermaid Visualization
+
+```mermaid
+flowchart TD
+    Exec([BU Executive / Admin / IQA]) -->|1. Analytics / Audit Request| P71[7.1 Executive Query & RBAC Gate]
+    P71 -->|2. Authorized Macro Query| P72[7.2 Multi-Tenant Stage Aggregation Engine]
+    P72 <-->|Read Accreditation Stage & History| D4[(D4: Accreditations & Stage History)]
+    P72 <-->|Read College & Program Metadata| D1[(D1: User & Roles)]
+    P71 -->|3. Compliance Metrics Request| P73[7.3 Criteria Compliance Matrix Calculator]
+    P73 <-->|Read Evidence Links & Compliance Items| D2[(D2: Documents & Evidence Links)]
+    P72 & P73 -->|4. Raw Metric Aggregations| P74[7.4 Executive Dashboard Data Serialization]
+    P74 -->|5. Serialized KPI & Chart Payload| Exec
+    Admin([System Administrator]) -->|6. Audit Trail Filter Query| P75[7.5 Audit Log Filter & Query Controller]
+    P75 <-->|Query Filtered Audit Records| D7[(D7: Regulatory Audit Trail)]
+    P75 -->|7. Paginated Audit Trail Records| Admin
+    IQA([IQA Director / Exec]) -->|8. Generate Compliance Dossier| P76[7.6 Regulatory Compliance Report Generator]
+    P76 <-->|Compile Compliance Evidence & History| D2 & D4 & D7
+    P76 -->|9. Exported Compliance Report / Dossier| IQA
+```
+
+---
+
+## 9. Diagram Artifacts Reference (XML & Vector SVG)
 
 The canonical visual diagrams are stored under [`v2/docs/dataflow/`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/) in both editable XML format and rendered vector SVG format:
 
@@ -270,20 +359,29 @@ The canonical visual diagrams are stored under [`v2/docs/dataflow/`](file:///c:/
 1. **Process 1.0 (Auth & Scoping):**
    - Source XML: [`lvl2-proc1-auth-scoping.drawio.xml`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc1-auth-scoping.drawio.xml)
    - Vector SVG: [`lvl2-proc1-auth-scoping.drawio.svg`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc1-auth-scoping.drawio.svg) | [`lvl2-proc1-auth-scoping.svg`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc1-auth-scoping.svg)
-   - Layout: Standardized External Entities (Peach), 5 Blue Sub-Processes, 3 Green Data Stores (`D1`, `D4`, `D7`), 13 Directed Connectors.
+   - Layout: Standardized External Entities (Peach), 5 Blue Sub-Processes (`1.1`–`1.5`), 3 Green Data Stores (`D1`, `D4`, `D7`), 13 Directed Connectors.
 2. **Process 2.0 (Submission & OCR):**
    - Source XML: [`lvl2-proc2-document-submission-ocr.drawio.xml`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc2-document-submission-ocr.drawio.xml)
    - Vector SVG: [`lvl2-proc2-document-submission-ocr.drawio.svg`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc2-document-submission-ocr.drawio.svg) | [`lvl2-proc2-document-submission-ocr.svg`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc2-document-submission-ocr.svg)
-   - Layout: Task Force Uploader & Tesseract OCR Engine, 7 Sub-Processes, 5 Data Stores (`D8` Cloud Storage, `D2`, `D3`, `D7`, `D6`), 18 Directed Connectors.
+   - Layout: Task Force Uploader & Tesseract OCR Engine, 7 Sub-Processes (`2.1`–`2.7`), 5 Data Stores (`D8` Cloud Storage, `D2`, `D3`, `D7`, `D6`), 18 Directed Connectors.
 3. **Process 3.0 (Review & Dean Verification):**
    - Source XML: [`lvl2-proc3-document-review-verification.drawio.xml`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc3-document-review-verification.drawio.xml)
    - Vector SVG: [`lvl2-proc3-document-review-verification.drawio.svg`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc3-document-review-verification.drawio.svg) | [`lvl2-proc3-document-review-verification.svg`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc3-document-review-verification.svg)
-   - Layout: College Dean, IQA Staff, Task Force Member, 6 Sub-Processes, 4 Data Stores (`D3`, `D2`, `D7`, `D6`), 17 Directed Connectors.
+   - Layout: College Dean, IQA Staff, Task Force Member, 6 Sub-Processes (`3.1`–`3.6`), 4 Data Stores (`D3`, `D2`, `D7`, `D6`), 17 Directed Connectors.
 4. **Process 4.0 (Accreditation Pipeline):**
    - Source XML: [`lvl2-proc4-accreditation-pipeline.drawio.xml`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc4-accreditation-pipeline.drawio.xml)
    - Vector SVG: [`lvl2-proc4-accreditation-pipeline.drawio.svg`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc4-accreditation-pipeline.drawio.svg) | [`lvl2-proc4-accreditation-pipeline.svg`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc4-accreditation-pipeline.svg)
-   - Layout: IQA Staff & University Stakeholders, 6 Sub-Processes, 5 Data Stores (`D2`, `D5`, `D4`, `D7`, `D6`), 15 Directed Connectors.
+   - Layout: IQA Staff & University Stakeholders, 6 Sub-Processes (`4.1`–`4.6`), 5 Data Stores (`D2`, `D5`, `D4`, `D7`, `D6`), 15 Directed Connectors.
 5. **Process 5.0 (QA & Advisory Review):**
    - Source XML: [`lvl2-proc5-qa-advisory-review.drawio.xml`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc5-qa-advisory-review.drawio.xml)
    - Vector SVG: [`lvl2-proc5-qa-advisory-review.drawio.svg`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc5-qa-advisory-review.drawio.svg) | [`lvl2-proc5-qa-advisory-review.svg`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc5-qa-advisory-review.svg)
-   - Layout: Internal Accreditor, Task Force Remediator, IQA Staff, 6 Sub-Processes, 5 Data Stores (`D8` Cloud Storage, `D2`, `D5`, `D6`, `D7`), 16 Directed Connectors.
+   - Layout: Internal Accreditor, Task Force Remediator, IQA Staff, 6 Sub-Processes (`5.1`–`5.6`), 5 Data Stores (`D8` Cloud Storage, `D2`, `D5`, `D6`, `D7`), 16 Directed Connectors.
+6. **Process 6.0 (Notification Management):**
+   - Source XML: [`lvl2-proc6-notification-management.drawio.xml`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc6-notification-management.drawio.xml)
+   - Vector SVG: [`lvl2-proc6-notification-management.drawio.svg`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc6-notification-management.drawio.svg) | [`lvl2-proc6-notification-management.svg`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc6-notification-management.svg)
+   - Layout: System Event Dispatcher & Institutional Users (Peach), 5 Blue Sub-Processes (`6.1`–`6.5`), 4 Green Data Stores (`D4`, `D1`, `D6`, `D7`), 14 Directed Connectors.
+7. **Process 7.0 (Executive Analytics & Audit):**
+   - Source XML: [`lvl2-proc7-executive-analytics-audit.drawio.xml`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc7-executive-analytics-audit.drawio.xml)
+   - Vector SVG: [`lvl2-proc7-executive-analytics-audit.drawio.svg`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc7-executive-analytics-audit.drawio.svg) | [`lvl2-proc7-executive-analytics-audit.svg`](file:///c:/Users/janss/Herd/iqarchive/v2/docs/dataflow/subprocess/lvl2-proc7-executive-analytics-audit.svg)
+   - Layout: BU Executive, System Administrator, IQA Staff (Peach), 6 Blue Sub-Processes (`7.1`–`7.6`), 4 Green Data Stores (`D1`, `D2`, `D4`, `D7`), 17 Directed Connectors.
+
