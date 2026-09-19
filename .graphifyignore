@@ -16,3 +16,10 @@ backup/
 # Tooling configs & personal task trackers
 *.tasks
 boost.json
+
+# Documentation files - exclude from graph analysis
+docs/
+v2/docs/
+
+# Tasks 
+v2/tasks/
