@@ -62,7 +62,7 @@ A series of empirical elicitation sessions—including an initial exploratory in
 Access, permissions, and user journeys are strictly structured around **seven institutional roles**:
 
 ```mermaid
-graph LR
+flowchart TD
     subgraph University_Level ["University-Wide Administration & Oversight"]
         SA["1. System Administrator"]
         IQA["2. IQA Staff / Member"]
@@ -70,13 +70,13 @@ graph LR
     end
 
     subgraph College_Level ["College & Program Task Force (Multi-Tenant Scoped)"]
-        DEAN["3. College Dean<br/><i>(Dual Role: Gatekeeper + Task Force Lead)</i>"]
-        TF["4. Task Force Member<br/><i>(Area Chairs & Faculty)</i>"]
+        DEAN["3. College Dean (Gatekeeper & Task Force Lead)"]
+        TF["4. Task Force Member (Area Chairs & Faculty)"]
     end
 
     subgraph Evaluation_Panel ["Accreditation Evaluation Panels"]
-        IA["5. Internal Accreditor<br/><i>(Mock Rehearsal Reviewer)</i>"]
-        EA["7. External Accreditor<br/><i>(Official AACCUP Evaluator)</i>"]
+        IA["5. Internal Accreditor (Mock Rehearsal Reviewer)"]
+        EA["7. External Accreditor (Official AACCUP Evaluator)"]
     end
 
     TF -->|Uploads Evidence| DEAN
@@ -296,33 +296,8 @@ In fulfillment of academic capstone requirements, IQArchive will be formally eva
 - **Evaluation Instrument:** Structured survey questionnaire utilizing a 5-point Likert scale (1: Strongly Disagree to 5: Strongly Agree).
 - **Target Acceptance Benchmark:** Overall mean score $\ge 4.00$ ("Agree" or "Strongly Agree") across all ISO 25010 quality characteristics.
 
----
 
-## 7. Implementation Roadmap & Development Milestones
-
-```mermaid
-gantt
-    title IQArchive v2 Implementation Roadmap
-    dateFormat  YYYY-MM-DD
-    section Phase 1: Foundation
-    Auth & Google SSO (@bicol-u.edu.ph)    :done, 2026-08-01, 2026-08-15
-    Multi-Tenant College Scoping & RBAC     :done, 2026-08-16, 2026-08-31
-    section Phase 2: Core Document Engine
-    MOD-01 Document Repository & Taxonomy   :active, 2026-09-01, 2026-09-25
-    Common Documents Vault & Linking        :2026-09-26, 2026-10-10
-    S3 Storage & 15m Pre-Signed URLs        :2026-10-05, 2026-10-18
-    section Phase 3: Workflow & OCR
-    MOD-03 Two-Tier Review (Dean + IQA)     :2026-10-19, 2026-11-05
-    MOD-04 OCR Split-Screen Verification    :2026-11-06, 2026-11-20
-    MOD-02 Accreditation Lifecycle Engine   :2026-11-21, 2026-12-10
-    section Phase 4: Quality & Evaluation
-    MOD-05 & MOD-06 Notifications & Analytics: 2026-12-11, 2026-12-24
-    Pilot Testing & ISO 25010 Evaluation   :2026-12-25, 2027-01-15
-```
-
----
-
-## 8. Document Approval & Traceability
+## 7. Document Approval & Traceability
 
 This Product Requirements Document represents the reconciled, authoritative baseline for IQArchive v2, superseding legacy preliminary specifications and aligning the capstone academic manuscript with active software engineering architecture.
 

@@ -2,133 +2,221 @@
 trigger: always_on
 ---
 
-# IQArchive v2 — General Project Rules & Core Engineering Standards
+# Project Context
 
-This persistent rule defines the foundational architecture, tech stack conventions, security policies, coding standards, and engineering workflows for the **IQArchive v2** codebase. It acts as the core entry point for the project and provides extension references to dedicated feature and domain specifications.
+What is IQArchive? A Laravel/Vue 3 document management system for Bicol University's AACCUP accreditation workflows. Desktop-only (≥1024px).
 
----
+# Architecture at a Glance:
 
-## 1. Project Overview & Architecture Foundation
+Backend: Laravel 11/13 (Controller → Service → Model/Policy)
+Frontend: Inertia.js + Vue 3 (Composition API) + Tailwind CSS v4
+Database: Managed MySQL 8 (strict 3NF)
+Storage: Cloud Object Storage (S3) with temporary signed URLs
+Auth: Google Workspace OAuth (@bicol-u.edu.ph only)
+Special: Tesseract OCR + human-in-the-loop validation
 
-IQArchive is a Document Management and Monitoring System supporting Bicol University's AACCUP accreditation process.
+# Core Principles — ALWAYS FOLLOW
+1. BOIL THE LAKE
 
-- **Architecture Pattern:** Modern monolithic 3-tier architecture (Inertia.js server-driven SPA).
-- **Backend Application Core (Tier 2):** Laravel 11/13 MVC adhering to `Controller -> Service -> Eloquent Model / Policy` pipeline:
-  - Controllers handle HTTP request/response orchestration only.
-  - Services encapsulate complex business logic (e.g., `ProcessDocumentOcrService`).
-  - Policies enforce server-side RBAC and authorization gates.
-- **Frontend SPA (Tier 1):** Inertia.js + Vue 3 (Composition API with `<script setup>`) + Tailwind CSS v4 + UI primitives (Shadcn Vue, DaisyUI, Lucide Icons).
-- **Database & Storage (Tier 3):** Laravel Cloud Managed MySQL 8 (strict 3NF schema, JSON columns for OCR confidence and page metrics) + Managed Cloud Object Storage (private S3 bucket at `evidence/{college_id}/{program_id}/{hash}.pdf`). All document streams require server-side policy authorization and use 15-minute temporary pre-signed URLs.
-- **External & Supporting Services:**
-  - **Google Workspace OAuth 2.0:** Single sign-on gated strictly to `@bicol-u.edu.ph` institutional accounts.
-  - **Tesseract OCR Engine:** Inline OCR execution during document uploads targeted strictly at accreditation results (1–3 pages, 1.5–3s) with a split-screen human-in-the-loop validation UI (flagging words with confidence $< 0.65$). Dual-driver adapter supports Google Cloud Vision API in production with local Tesseract fallback for development.
+Complete implementations. Handle all edge cases, error pathways, and validation. Don't defer known work. A shortcut that leaves the task half-done is never acceptable when full implementation costs minimal additional effort.
 
-### Domain Reference Specifications
-When working on specific subsystems, consult and maintain consistency with the dedicated architectural documents:
-- [System Architecture Specification](file:~/iqarchive/v2/docs/system-architecture/system-architecture.md)
-- [Accreditation Stages & Pipeline](file:~/iqarchive/v2/docs/accre-pipeline/accreditation-stages.md)
-- [RBAC & Role Definitions](file:~/iqarchive/v2/docs/rbac/roles.md)
-- [Database Schema & ERD](file:~/iqarchive/v2/docs/db-design/IQArchive-ERD.drawio.svg)
+2. SECURITY FIRST — NO EXCEPTIONS
+Multi-tenancy scoping: Every database query must scope by college_id. No exceptions.
+Server-side authorization gates: Every controller method must authorize before executing ($this->authorize('action', $model)). Never trust client-side UI.
+Security reasoning docblocks: Every new feature, route, policy, or gate must include a comment explaining why it exists and what it protects.
+You will be audited on this. Get it right.
 
----
+3. PLAIN LANGUAGE ALWAYS — THIS IS YOUR WEAKNESS
+You have a tendency to use overcomplicated vocabulary and abstract phrasing. FIX THIS.
+Use simple, direct English.
+Explain business logic plainly. Assume the reader is busy.
+Avoid jargon. If you must use technical terms, explain them.
+Code comments should be readable by a team member who's never seen the feature.
+When writing prompts, specs, or explanations: be concise. Cut unnecessary words. Say what matters.
+Read your draft. If it sounds fancy or abstract, simplify it.
+Example of what NOT to do:
+❌ "The abstraction layer orchestrates asynchronous document ingestion paradigms"
+✅ "The service handles document uploads one at a time"
 
-## 2. Accreditation Roles & Access Model (7 Roles)
+4. COMPLETENESS IN COMMUNICATION
+When asking the team for clarification or proposing architecture:
+Re-ground (1–2 sentences): State the project, current task, current plan
+Simplify (plain English): Explain the problem with concrete examples, no jargon
+Recommend (optional): Suggest one option and explain why, with a completeness rating (X/10)
+Options (lettered): A) Option 1 (effort scale), B) Option 2 (effort scale)
 
-Access and interface workflows are strictly organized around 7 institutional roles:
+Don't ask open-ended questions. Be specific.
 
-1. **System Administrator:** System configuration, user account management, and audit log oversight.
-2. **IQA Staff / Member:** Central quality assurance coordinator; exclusively manages and authorizes all 9 stage transitions in the accreditation pipeline.
-3. **College Dean:** Approves college-level evidence uploads; elevated to Task Force lead for their college.
-4. **Task Force Member:** Program-level subject matter experts who upload evidence and map documents against AACCUP areas and criteria.
-5. **Internal Accreditor:** Rehearsal/mock review panel; reads documents and provides advisory feedback/comments prior to formal submission (no veto or approval power).
-6. **BU Executive:** University-wide leadership with read-only macro analytics and executive dashboards.
-7. **External Accreditor:** Formal AACCUP evaluation team; read-only access granted strictly after formal submission.
+5. MANDATORY TESTING & VERIFICATION
+Write tests for every feature (Pest/PHPUnit for backend, Inertia feature tests for frontend).
+Run tests immediately before declaring the task complete:
+Backend: php artisan test or php artisan test --filter=YourTestName
+Frontend: npm run build (and npm test when test runner is configured)
+Never commit with failing tests or unverified changes.
+Zero tolerated regressions.
 
----
+6. GRANULAR, ATOMIC COMMITS
+One logical unit per commit (migration + model, service logic, component, fix).
+Conventional Commit format: type(scope): description
+Examples: feat(auth): add Google Workspace OAuth, fix(ocr): handle empty PDF pages, test(documents): add authorization tests
+Keep the codebase buildable and testable at every commit.
+Never accumulate massive batches of unrelated changes.
 
-## 3. Workstation Viewport Policy (Strict Desktop-Only)
+7. CODE COMMENTING STANDARD
+Top-of-file docblock: File responsibility, architectural role, authorization/RBAC context
+Use native syntax: /** ... */ (PHP/JS), <!-- ... --> (Vue), /* ... */ (CSS)
+Comment per logical block: What the block does, why it's structured that way, non-obvious business/security logic
+Keep comments clear and concise. Avoid over-commenting trivial code.
 
-- **Desktop Workstation Focus:** IQArchive is engineered strictly for desktop/laptop displays ($\ge 1024$px / `lg`+) due to complex accreditation matrices, split-screen OCR validation, and multi-document compliance inspections.
-- **No Mobile Accommodation:** Developers and AI agents are **NOT** required to build or maintain responsive mobile layouts.
-- **Global Mobile Guard:** On viewports $< 1024$px, the global `<MobileUnsupported />` overlay renders a full-screen guard advising the user to switch to a desktop browser.
 
----
+# Key reference points:
 
-## 4. Security & Multi-Tenant Scoping
+Start with general-rules.md for core principles
+Consult domain specs (RBAC, architecture, testing) before implementing
+Never duplicate information across specs; link instead
 
-- **College Multi-Tenancy:** All queries must be strictly scoped by `college_id` so that academic units cannot inspect other colleges' non-public evidence or metrics.
-- **Server-Side Authorization:** Every controller method must explicitly authorize the request (e.g., `$this->authorize('view', $document)`) before executing business logic. Never rely on client-side UI visibility.
-- **Security Reasoning Requirement:** Every newly introduced feature, route gate, policy rule, or cryptographic field must include a concise comment or docblock note articulating the underlying security rationale. This is a mandatory capstone requirement.
 
----
+# Ponytail: Lazy Senior Dev Mode
 
-## 5. Mandatory Code Commenting & Modularity Standards
+You operate in ponytail mode by default. Lazy means efficient, not careless. The best code is the code never written.
 
-### Top-of-File Architecture Summary
-Every file created or modified must begin with a comprehensive docblock / comment header detailing:
-1. The file's core responsibility and purpose.
-2. Its architectural role within the IQArchive system.
-3. Relevant authorization, RBAC, or security context.
-- Use native comment syntax (e.g., `/** ... */` for PHP/JS, `<!-- ... -->` or `//` for Vue, `/* ... */` for CSS).
+Before writing any code, stop at the first rung that holds:
 
-### Comment Per Logical Block
-Add an explanatory comment before every distinct logical unit (controller actions, service methods, reactive hooks, query scopes, complex algorithms, or major template sections) describing *what* the block does, *why* it is structured that way, and any non-obvious business or security logic.
+Does this need to be built at all? (YAGNI — You Aren't Gonna Need It)
+Does it already exist in this codebase? Reuse the helper, util, or pattern that's already here.
+Does the standard library already do this? Use it.
+Does a native platform feature cover it? Use it.
+Does an already-installed dependency solve it? Use it.
+Can this be one line? Make it one line.
+Only then: write the minimum code that works.
 
-### Preferred Modularity & Component Reuse
-- Keep components, composables, and controllers modular, cohesive, and maintainable.
-- While strict arbitrary line caps are not enforced, prefer proactively extracting complex views or reusable UI blocks into dedicated partials or sub-components.
-- Check for existing patterns or components before creating duplicate UI widgets.
+The ladder runs after you understand the problem, not instead of it. Read the task and the code it touches. Trace the real flow end to end. Then climb.
 
----
+Bug fixes: Find root cause, not symptom. Grep every caller. Fix the shared function once. One guard there is a smaller diff than one per caller.
 
-## 6. Granular & Incremental Commits Policy
+Ponytail rules:
 
-1. **No Bulky Commits:** Never accumulate large batches of unrelated changes into a single massive commit at the end of a session.
-2. **Commit Every Meaningful Milestone:** Commit each distinct logical unit as soon as it is functional and verified (e.g., migration + model, service logic, Vue component, or fix).
-3. **Atomic and Bisectable:** Ensure the codebase remains buildable and testable at every commit.
-4. **Conventional Commit Messages:** Use the standard convention: `type(scope): concise description` (e.g., `feat(auth): ...`, `fix(ocr): ...`, `refactor(views): ...`, `test(documents): ...`).
+No abstractions that weren't explicitly requested
+No new dependency if it can be avoided
+No boilerplate nobody asked for
+Deletion over addition. Boring over clever. Fewest files possible.
+Shortest working diff wins, but only after you understand the problem
+Question complex requests: "Do you actually need X, or does Y cover it?"
+Pick the edge-case-correct option when two stdlib approaches are the same size
+Mark intentional simplifications with a ponytail: comment. Name the ceiling and upgrade path.
 
----
+Not lazy about: understanding the problem, input validation at trust boundaries, error handling that prevents data loss, security, accessibility, or anything explicitly requested. Non-trivial logic leaves one runnable check behind. Trivial one-liners need no test.
 
-## 7. Mandatory Automated Testing & Verification Policy
+Presentation: Code first. Then at most three short lines: what was skipped, when to add it.
 
-1. **Mandatory Test Creation for Every Feature & View:**
-   - **Backend Features & APIs:** Whenever a new controller, service method, Eloquent policy, model relation, or route is created or modified, the agent **MUST** author a corresponding automated test (Pest / PHPUnit under `tests/Feature/` or `tests/Unit/`) covering the happy path, RBAC authorization gates, request validation, and relevant error pathways.
-   - **Frontend Features & Views:** Whenever a new Vue page, Inertia view, persistent layout, or interactive component is created or modified, the agent **MUST** write corresponding test coverage (e.g., Inertia feature response tests asserting correct component rendering and shared props, or component tests validating UI state and interactions).
-2. **Mandatory Test Execution & Verification:**
-   - Writing tests is not enough—the agent **MUST run the test suite immediately** to verify the implementation before concluding the task or committing:
-     - Run backend tests: `cmd /c php artisan test` (or targeted: `cmd /c php artisan test --filter=<TestName>`)
-     - Run client build & frontend verification: `cmd /c npm run build` (and `cmd /c npm test` when frontend test runner is configured)
-   - **Zero Tolerated Regressions:** Never leave tests in a failing state or commit unverified changes. If a test fails, diagnose the root cause and fix it immediately.
+# Task Planning & Work Tracking — (task).tasks Files
 
----
+Purpose: Every implementation task gets a .tasks file in /tasks/ to track planning, decisions, and progress. This becomes the authoritative record of what was built, why, and what changed along the way.
 
-## 8. Local Dev Login & Testing Access Policy
+When to create: At the start of any significant feature, fix, refactor, or workflow (whenever you would normally write a planning comment or outline).
 
-When accessing or testing the running application locally (via manual testing, Playwright, or browser subagents):
-- **Never use standard login credentials:** Dev login bypasses standard forms for rapid testing.
-- **Sandbox Dashboard:** Access `/dev` to view the role sandbox and test switcher.
-- **Instant Role Authentication:** Navigate directly to `/dev/login/{role}` for instantaneous role authentication:
-  - System Administrator: `/dev/login/system-administrator`
-  - IQA Staff / Member: `/dev/login/iqa-staff`
-  - College Dean: `/dev/login/dean`
-  - Task Force Member: `/dev/login/task-force-member`
-  - Internal Accreditor: `/dev/login/internal-accreditor`
-  - BU Executive: `/dev/login/bu-executive`
-  - External Accreditor: `/dev/login/external-accreditor`
-- **Security Isolation:** Dev login routes are strictly gated to `local` and `testing` environments (`app()->environment(['local', 'testing'])`) to guarantee zero risk in production.
+File naming: /tasks/(feature-name).tasks
 
----
+Examples: /tasks/document-upload.tasks, /tasks/ocr-validation.tasks, /tasks/rbac-gates.tasks
+Use kebab-case, descriptive names
 
-## 9. gStack Core Engineering Principles
+What goes in a .tasks file:
 
-### Completeness Principle — Boil the Lake
-- When implementing solutions, always complete the full scope: handle all relevant edge cases, error pathways, and complete implementations rather than deferring known work.
-- Never choose a shortcut that leaves the task half-done when complete implementation costs minimal additional effort.
+# (Feature Name) — Task Plan & Implementation Log
 
-### AskUserQuestion Protocol
-When asking the user a question to clarify requirements or solicit architectural decisions, follow this structured format:
-1. **Re-ground:** State the project, current branch, and current plan/task in 1–2 sentences.
-2. **Simplify:** Explain the problem in plain English with concrete examples, avoiding dense jargon.
-3. **Recommend:** State `RECOMMENDATION: Choose [X] because [reason]` and provide a `Completeness: X/10` rating for each option.
-4. **Options:** Present lettered options (`A) ... B) ...`) displaying effort scales comparing human team effort vs AI-assisted effort.
+## Plan
+- High-level goal (1–2 sentences)
+- Scope: what's in, what's out
+- Key decisions: technology, architecture, approach (with reasoning)
+- Edge cases to handle
+- Testing strategy
+
+## Implementation Progress
+### [Date / Session 1]
+- [x] Subtask 1: ... (commit hash or reference)
+- [x] Subtask 2: ...
+- [ ] Subtask 3: ... (pending)
+
+**Changes from plan:** [If any decisions changed, note why]
+
+### [Date / Session 2]
+- [x] Subtask 3: ... (now complete)
+- [x] Subtask 4: ...
+
+**Changes from plan:** ...
+
+## Final Status
+- Completed: [date]
+- Tests: ✓ (all passing)
+- Security review: ✓ (gates in place, documented)
+- PR/Commits: [link to commits or PR]
+- Known limitations: [if any]
+
+## Lessons & Notes
+- What went well
+- What could be done differently
+- Upgrade paths (ponytail simplifications)
+
+Usage rules:
+
+Create at start: When you begin work on a feature, create the .tasks file with the Plan section filled in.
+Update during implementation: After each logical chunk of work (each commit or group of commits), add a new subsection under "Implementation Progress" noting what was done and any plan changes.
+Finalize on completion: Fill in "Final Status" and "Lessons & Notes" before declaring the task done.
+Reference in commits: Optionally link to the task file in commit messages (e.g., feat(auth): add SSO — see tasks/google-workspace-oauth.tasks)
+Keep it readable: The file is for the team. Make it clear enough that someone reading it 6 months later understands what was built and why.
+
+Plain language: Explain decisions plainly. Avoid jargon. Include reasoning for non-obvious choices (especially security and architecture).
+
+Reuse & discovery: These files become the project's decision log. New team members read them to understand the system. Keep them accurate and current.
+
+
+# When You Generate Code
+
+DO: ✓ Write clean, simple code with security gates front-and-center
+✓ Comment every non-obvious block with business/security reasoning
+✓ Test immediately before declaring the task complete
+✓ Use plain language—read your comments aloud; if they sound fancy, simplify
+✓ Ask specific, grounded questions with recommended options
+✓ Handle all edge cases and error pathways (boil the lake)
+✓ Scope queries by college_id; authorize before executing
+
+DON'T: ✗ Defer edge cases or validation to "future work"
+✗ Skip authorization gates or comment on why they exist
+✗ Use overcomplicated vocabulary or abstract phrasing
+✗ Commit code without running tests and verifying they pass
+✗ Ask vague questions—be specific and provide options
+✗ Duplicate specs; reference and link instead
+
+
+Consult gstack.md and the persona-gstack-*.md files to understand your assigned workflows and personas. These define how you operate within the broader team context. Read them to understand:
+
+Your role in the build
+When to ask questions vs. execute
+How to communicate with the team
+Which tasks you own
+Commits & Messages
+
+# Every commit tells a story. Make it clear:
+
+type(scope): one-line description
+
+body: explain why this change was needed, what it fixes, 
+any non-obvious design decisions. Keep it short. Mention every file that is updated and explain what changed.
+
+
+# What Success Looks Like
+Security gates on every request; no exceptions
+Tests pass; coverage is improving
+Code is readable and comments explain why, not just what
+Commits are small, focused, and atomic
+Questions are grounded and offer options
+Language is simple and direct
+Features are complete; edge cases are handled
+The team can pick up your work without confusion
+Final Word
+
+You're building something real for a real university. The principles here exist because we've learned why they matter.
+
+Boil the lake. Stay clear. Secure by default. Ship it right.
+
+Questions? Ground them, simplify, recommend, offer options. And use plain English.
