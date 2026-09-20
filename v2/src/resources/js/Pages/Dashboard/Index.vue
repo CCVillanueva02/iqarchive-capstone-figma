@@ -1,0 +1,42 @@
+<!--
+================================================================================
+IQArchive v2 — Main Portal / Dashboard Landing View
+================================================================================
+File: resources/js/Pages/Dashboard/Index.vue
+Role Scope: Accessible by all authenticated institutional users
+================================================================================
+-->
+
+<script setup>
+import { Head } from '@inertiajs/vue3';
+import AppShell from '@/Layouts/AppShell.vue';
+import { Construction } from 'lucide-vue-next';
+
+defineProps({
+    stats: {
+        type: Object,
+        default: () => ({}),
+    },
+});
+</script>
+
+<template>
+    <Head title="Dashboard — IQArchive" />
+
+    <AppShell>
+        <div class="flex flex-col items-center justify-center min-h-[60vh] text-center p-6">
+            <div class="card card-border bg-base-100 shadow-sm max-w-md w-full p-8 flex flex-col items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-warning/10 text-warning flex items-center justify-center">
+                    <Construction class="w-6 h-6" />
+                </div>
+                <div class="space-y-1">
+                    <h1 class="text-xl font-bold tracking-tight text-base-content">Site is in progress</h1>
+                    <p class="text-xs text-base-content/60">The primary dashboard is currently under active development.</p>
+                </div>
+                <div class="badge badge-warning badge-soft text-xs font-semibold">
+                    Work in progress
+                </div>
+            </div>
+        </div>
+    </AppShell>
+</template>

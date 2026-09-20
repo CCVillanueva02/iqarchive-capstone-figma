@@ -10,3 +10,10 @@
 /backup
 /.agents/ponytail-antigravity-IDE
 /graphify-out/
+/.agents/skills/
+skills-lock.json
+
+
+# IT activity files remove later
+compliance-activity.md
+compliance_plan.md

@@ -6,21 +6,22 @@ trigger: always_on
 
 What is IQArchive? A Laravel/Vue 3 document management system for Bicol University's AACCUP accreditation workflows. Desktop-only (≥1024px).
 
-# Architecture at a Glance:
+# Architecture:
 
 Backend: Laravel 11/13 (Controller → Service → Model/Policy)
-Frontend: Inertia.js + Vue 3 (Composition API) + Tailwind CSS v4
-Database: Managed MySQL 8 (strict 3NF)
+Frontend: Inertia.js + Vue 3 (Composition API) + Tailwind CSS v4 + DaisyUI
+Database: Managed MySQL 8
 Storage: Cloud Object Storage (S3) with temporary signed URLs
 Auth: Google Workspace OAuth (@bicol-u.edu.ph only)
 Special: Tesseract OCR + human-in-the-loop validation
+UI Standard: Always use DaisyUI component classes (btn, card, badge, modal, alert, table, input) instead of building custom one-off components.
 
-# Core Principles — ALWAYS FOLLOW
+# Core Principles
 1. BOIL THE LAKE
 
 Complete implementations. Handle all edge cases, error pathways, and validation. Don't defer known work. A shortcut that leaves the task half-done is never acceptable when full implementation costs minimal additional effort.
 
-2. SECURITY FIRST — NO EXCEPTIONS
+2. SECURITY FIRST
 Multi-tenancy scoping: Every database query must scope by college_id. No exceptions.
 Server-side authorization gates: Every controller method must authorize before executing ($this->authorize('action', $model)). Never trust client-side UI.
 Security reasoning docblocks: Every new feature, route, policy, or gate must include a comment explaining why it exists and what it protects.
@@ -55,6 +56,21 @@ Frontend: npm run build (and npm test when test runner is configured)
 Never commit with failing tests or unverified changes.
 Zero tolerated regressions.
 
+Local Website Access & Testing (Dev Login Policy):
+When accessing, inspecting, or testing the running website locally (via browser subagent, Playwright, or manual verification):
+- Always use Dev Login: Never attempt to fill out credentials or interact with Google OAuth on the /login form during local automated or manual testing.
+- Dev Sandbox Dashboard: Navigate to /dev to view the interactive developer sandbox and switch between roles.
+- Instant Role Authentication: Directly navigate to /dev/login/{role} for immediate one-click authentication without credentials:
+  • System Administrator: /dev/login/system-administrator (or sysadmin)
+  • IQA Staff / Member: /dev/login/iqa-staff (or iqa-member)
+  • College Head / Dean: /dev/login/college-head (or dean)
+  • Task Force Member: /dev/login/task-force-member (or task-force)
+  • AACCUP Accreditor (External): /dev/login/accreditor
+  • Internal Accreditor: /dev/login/internal-accreditor
+  • University Administrator / BU Executive: /dev/login/university-administrator (or bu-executive)
+  • Dual-Role Personas: /dev/login/iqa-staff-multi, /dev/login/dean-multi
+- Security Isolation: Dev login routes are strictly gated to local and testing environments (app()->environment(['local', 'testing'])) in routes/web.php and DevAuthController.php to prevent privilege escalation outside development.
+
 6. GRANULAR, ATOMIC COMMITS
 One logical unit per commit (migration + model, service logic, component, fix).
 Conventional Commit format: type(scope): description
@@ -67,6 +83,11 @@ Top-of-file docblock: File responsibility, architectural role, authorization/RBA
 Use native syntax: /** ... */ (PHP/JS), <!-- ... --> (Vue), /* ... */ (CSS)
 Comment per logical block: What the block does, why it's structured that way, non-obvious business/security logic
 Keep comments clear and concise. Avoid over-commenting trivial code.
+
+8. FILE SIZE & MODULAR SPLITTING RULE (150–200 LINE CAP)
+Avoid generating or maintaining single files that are excessively long (> 150–200 lines for Vue single-file components, Blade templates, controllers, or services).
+- Frontend (Vue 3 / Inertia): Proactively extract page sections, complex forms, modals, tables, and filter bars into modular sub-components and partials from the start (e.g. resources/js/Pages/Documents/Partials/DocumentTable.vue, Modals/UploadModal.vue, Components/FilterBar.vue).
+- Backend (Laravel): Keep controllers thin (Controller → Service → Model/Policy). Move business logic, data formatting, and complex queries into dedicated Service classes or Actions rather than inflating controller methods.
 
 
 # Key reference points:
@@ -179,6 +200,8 @@ DO: ✓ Write clean, simple code with security gates front-and-center
 ✓ Ask specific, grounded questions with recommended options
 ✓ Handle all edge cases and error pathways (boil the lake)
 ✓ Scope queries by college_id; authorize before executing
+✓ Keep files modular under 150–200 lines; extract partials and services proactively
+✓ Use /dev/login/{role} for automated browser testing instead of interactive login forms
 
 DON'T: ✗ Defer edge cases or validation to "future work"
 ✗ Skip authorization gates or comment on why they exist
@@ -186,6 +209,8 @@ DON'T: ✗ Defer edge cases or validation to "future work"
 ✗ Commit code without running tests and verifying they pass
 ✗ Ask vague questions—be specific and provide options
 ✗ Duplicate specs; reference and link instead
+✗ Create bloated 200+ line monolithic Vue components or controllers
+✗ Attempt to test authentication via standard Google OAuth or password forms locally
 
 
 Consult gstack.md and the persona-gstack-*.md files to understand your assigned workflows and personas. These define how you operate within the broader team context. Read them to understand:
