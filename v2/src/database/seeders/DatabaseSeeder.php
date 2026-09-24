@@ -23,5 +23,6 @@ class DatabaseSeeder extends Seeder
         );
 
         $this->call(CommonDocumentSeeder::class);
+        $this->call(SampleCommonDocumentSeeder::class);
     }
 }

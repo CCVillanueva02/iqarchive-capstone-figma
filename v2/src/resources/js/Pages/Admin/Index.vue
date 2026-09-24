@@ -21,7 +21,7 @@ defineProps({
 </script>
 
 <template>
-    <Head title="System Administration — IQArchive" />
+    <Head title="System Administration" />
 
     <AppShell>
         <div class="flex flex-col items-center justify-center min-h-[60vh] text-center p-6">

@@ -9,18 +9,252 @@
 @source '../js/**/*.js';
 
 @theme {
+    /* -------------------------------------------------------------------------
+     * 1. TYPOGRAPHY FONT FAMILIES
+     * ------------------------------------------------------------------------- */
     --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    /* Applied to: Main body text, headings, table cells, modal copy, navigation labels, and standard form inputs */
+
     --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    /* Applied to: File hashes, technical metadata, document file sizes, timestamps, code snippets, and accreditation criteria codes */
 
-    --color-bu-orange-50: #FFF7ED;
-    --color-bu-orange-100: #FFEDD5;
-    --color-bu-orange-500: #F26522;
-    --color-bu-orange-600: #D95316;
-    --color-bu-orange-700: #C2410C;
 
+    /* -------------------------------------------------------------------------
+     * 2. SIDEBAR BLUE / DEEP NAVY PALETTE (Primary System UI Tone)
+     * Matches the exact midnight navy (#0B1B3D) used in the master navigation sidebar.
+     * ------------------------------------------------------------------------- */
+    --color-sidebar-blue: #0B1B3D;
+    /* Applied to: Main navigation sidebar background, primary workstation action buttons ("Upload Document", "Save Office"), dark table header bars, and high-emphasis brand containers */
+
+    --color-sidebar-blue-hover: #15264A;
+    /* Applied to: Hover state for sidebar-blue buttons, active row selections, and interactive surface elevations */
+
+    --color-sidebar-blue-surface: #0E214A;
+    /* Applied to: Sub-panels within dark sidebar areas, floating flyout popovers, floating expand toggles, and card active states */
+
+    --color-sidebar-blue-dark: #081530;
+    /* Applied to: Deepest navy containers, university wordmark bar in sidebar header, and high-contrast terminal/footer strips */
+
+
+    /* -------------------------------------------------------------------------
+     * 3. INSTITUTIONAL BU BLUE PALETTE (Official Bicol University Blue #0038A8)
+     * ------------------------------------------------------------------------- */
     --color-bu-blue-50: #EFF6FF;
+    /* Applied to: Subtle tinted card backgrounds, active sidebar item backgrounds, info callout banners, and soft table row highlights */
+
     --color-bu-blue-100: #DBEAFE;
+    /* Applied to: Light borders for selected office cards, active tab indicator lines, and secondary badge backgrounds */
+
+    --color-bu-blue-200: #BFDBFE;
+    /* Applied to: Focused form input borders, active checkbox outlines, and modal separator dividers */
+
+    --color-bu-blue-300: #93C5FD;
+    /* Applied to: Interactive hover rings, secondary tag badges, and subtle progress bars */
+
+    --color-bu-blue-500: #1D4ED8;
+    /* Applied to: Hyperlinks in content bodies, secondary interactive links, and breadcrumb navigation steps */
+
+    --color-bu-blue-600: #1E40AF;
+    /* Applied to: Hover states for text links, icons within info cards, and mid-tier blue buttons */
+
     --color-bu-blue-700: #0038A8;
+    /* Applied to: Official Bicol University Seal blue, institutional branding badges, secondary headers, and authoritative verification marks */
+
     --color-bu-blue-800: #002D8A;
+    /* Applied to: Active text within blue-tinted items (e.g. selected office title), pressed link states, and prominent status pills */
+
     --color-bu-blue-900: #002878;
+    /* Applied to: Dark contrast text on light blue backgrounds and high-authority heading accents */
+
+
+    /* -------------------------------------------------------------------------
+     * 4. INSTITUTIONAL BU ORANGE PALETTE (Official Bicol University Orange #F26522)
+     * ------------------------------------------------------------------------- */
+    --color-bu-orange-50: #FFF7ED;
+    /* Applied to: Warm alert banners, subtle warning backgrounds, soft active state cards, and pending notification highlights */
+
+    --color-bu-orange-100: #FFEDD5;
+    /* Applied to: Warning badge soft fills, draft document status pills, and attention-grabbing badge borders */
+
+    --color-bu-orange-200: #FED7AA;
+    /* Applied to: Subtle warm borders for pending submissions and attention callouts */
+
+    --color-bu-orange-500: #F26522;
+    /* Applied to: Official Bicol University Orange, vital call-to-action highlights, active navigation rail indicators, upload indicators, and key metric card accents */
+
+    --color-bu-orange-600: #D95316;
+    /* Applied to: Hover states on orange action buttons and primary alert icons */
+
+    --color-bu-orange-700: #C2410C;
+    /* Applied to: Dark orange text on warm light backgrounds, overdue alert copy, and emphasized warnings */
+
+
+    /* -------------------------------------------------------------------------
+     * 5. NEUTRAL SLATE PALETTE (Surfaces, Layout Grids, and Typography)
+     * ------------------------------------------------------------------------- */
+    --color-slate-50: #F8FAFC;
+    /* Applied to: Workspace background surface (bg-base-200), table header row fills, and zebra-striped table rows */
+
+    --color-slate-100: #F1F5F9;
+    /* Applied to: Card inner section dividers, subtle panel outlines, and input field backdrops */
+
+    --color-slate-200: #E2E8F0;
+    /* Applied to: Standard card borders (card-border), table cell divider borders, and modal footers */
+
+    --color-slate-300: #CBD5E1;
+    /* Applied to: Inactive borders, placeholder icons, empty-state illustrations, and disabled element outlines */
+
+    --color-slate-400: #94A3B8;
+    /* Applied to: Input placeholder text, decorative icons, file metadata subtitles, and pagination controls */
+
+    --color-slate-500: #64748B;
+    /* Applied to: Secondary body text, table column headers (th), date stamps, and helper text under form inputs */
+
+    --color-slate-600: #475569;
+    /* Applied to: Uploader names, table cell content, secondary modal labels, and breadcrumb links */
+
+    --color-slate-700: #334155;
+    /* Applied to: Fieldset legends, form input labels, dropdown menu options, and active tab labels */
+
+    --color-slate-800: #1E293B;
+    /* Applied to: Section titles, card titles (card-title), modal dialog headings, and directory panel headers */
+
+    --color-slate-900: #0F172A;
+    /* Applied to: Primary page title (h1), high-contrast body text, and dark theme neutral base */
+
+
+    /* -------------------------------------------------------------------------
+     * 6. SEMANTIC STATUS COLOR TOKENS
+     * ------------------------------------------------------------------------- */
+    --color-status-success: #16A34A;
+    /* Applied to: "IQA Approved" badges, completed accreditation milestones, upload success toasts, and valid OCR indicators */
+
+    --color-status-warning: #D97706;
+    /* Applied to: "Draft" document status pills, impending deadline warnings, and pending revision notifications */
+
+    --color-status-error: #DC2626;
+    /* Applied to: "Rejected" document badges, form validation error text, deficit alerts, and destructive confirmation modals */
+
+    --color-status-info: #0284C7;
+    /* Applied to: "Dean Approved" badges, informative system announcements, and instructional tooltips */
+
+
+    /* -------------------------------------------------------------------------
+     * 7. TYPOGRAPHY SCALE TOKENS (Font Size & Line Height Pairs)
+     * ------------------------------------------------------------------------- */
+    --text-display: 2rem;
+    --text-display--line-height: 2.25rem;
+    /* Applied to: Landmark portal titles, hero accreditation statistics, and major scorecard numerals */
+
+    --text-heading-xl: 1.5rem;
+    --text-heading-xl--line-height: 1.875rem;
+    /* Applied to: Top-level page titles (h1, e.g. "Common Documents", "IQA Staff Dashboard") */
+
+    --text-heading-lg: 1.25rem;
+    --text-heading-lg--line-height: 1.625rem;
+    /* Applied to: Modal dialog titles, primary section headers, and major dashboard widget headers */
+
+    --text-heading-md: 1rem;
+    --text-heading-md--line-height: 1.375rem;
+    /* Applied to: Office titles in document table header, card titles, and criteria section headings */
+
+    --text-heading-sm: 0.875rem;
+    --text-heading-sm--line-height: 1.25rem;
+    /* Applied to: Panel titles (e.g. "OFFICES"), sub-card headings, and form section group legends */
+
+    --text-body-md: 0.875rem;
+    --text-body-md--line-height: 1.375rem;
+    /* Applied to: Default body copy, modal descriptions, standard table text, and form inputs */
+
+    --text-body-sm: 0.8125rem;
+    --text-body-sm--line-height: 1.25rem;
+    /* Applied to: Secondary directory listing items, compact table rows, and dropdown menus */
+
+    --text-caption: 0.75rem;
+    --text-caption--line-height: 1rem;
+    /* Applied to: Office mandate descriptions, input field helper hints, table column headers (th), and status badges */
+
+    --text-micro: 0.6875rem;
+    --text-micro--line-height: 0.875rem;
+    /* Applied to: File size/extension tags, tabular numeric timestamps, and small status pill text */
+}
+
+/* -----------------------------------------------------------------------------
+ * 8. DAISYUI 5 INSTITUTIONAL THEME MAPPING
+ * Maps DaisyUI semantic components (btn, badge, modal, input) directly to BU brand tokens.
+ * ----------------------------------------------------------------------------- */
+@plugin "daisyui/theme" {
+    name: "iqarchive";
+    default: true;
+    prefersdark: false;
+    color-scheme: light;
+
+    --color-primary: #0B1B3D;
+    /* Applied to: Primary action buttons (matching sidebar deep navy), active tab pills, and focus rings */
+
+    --color-primary-content: #FFFFFF;
+    /* Applied to: High-contrast foreground text and icons rendered on primary elements */
+
+    --color-secondary: #F26522;
+    /* Applied to: Secondary action buttons (BU Orange), key highlights, and active rail accents */
+
+    --color-secondary-content: #FFFFFF;
+    /* Applied to: Foreground text and icons rendered on secondary elements */
+
+    --color-accent: #0D9488;
+    /* Applied to: Third-tier emphasis, accreditor distinction indicators, and special tagging */
+
+    --color-accent-content: #FFFFFF;
+    /* Applied to: Foreground text and icons rendered on accent elements */
+
+    --color-neutral: #0B1B3D;
+    /* Applied to: Neutral dark surfaces, dropdown menus, and deep navy containers */
+
+    --color-neutral-content: #FFFFFF;
+    /* Applied to: Foreground text on neutral dark surfaces */
+
+    --color-base-100: #FFFFFF;
+    /* Applied to: Primary card surfaces, modal dialog boxes, and white table backgrounds */
+
+    --color-base-200: #F8FAFC;
+    /* Applied to: Global workstation canvas background and card headers */
+
+    --color-base-300: #F1F5F9;
+    /* Applied to: Zebra-striped table rows, card divider lines, and disabled input backdrops */
+
+    --color-base-content: #0F172A;
+    /* Applied to: Default text color for body copy on base-100/200 surfaces */
+
+    --color-info: #0284C7;
+    /* Applied to: Information alerts, Dean Approved status pills, and informational tooltips */
+
+    --color-info-content: #FFFFFF;
+    /* Applied to: Foreground text and icons on info elements */
+
+    --color-success: #16A34A;
+    /* Applied to: Success banners, IQA Approved status pills, and upload confirmations */
+
+    --color-success-content: #FFFFFF;
+    /* Applied to: Foreground text and icons on success elements */
+
+    --color-warning: #D97706;
+    /* Applied to: Warning alerts, Draft status pills, and pending review tags */
+
+    --color-warning-content: #FFFFFF;
+    /* Applied to: Foreground text and icons on warning elements */
+
+    --color-error: #DC2626;
+    /* Applied to: Error alerts, Rejected status pills, and form validation messages */
+
+    --color-error-content: #FFFFFF;
+    /* Applied to: Foreground text and icons on error elements */
+
+    --radius-selector: 0.375rem;
+    /* Applied to: Border radius of badges, status pills, tags, checkboxes, and toggles (6px) */
+
+    --radius-field: 0.5rem;
+    /* Applied to: Border radius of buttons (btn), text inputs (input), and select dropdowns (8px) */
+
+    --radius-box: 0.75rem;
+    /* Applied to: Border radius of cards (card), modal boxes (modal-box), and alert banners (12px) */
 }

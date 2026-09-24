@@ -94,7 +94,7 @@ class CommonDocumentsTest extends TestCase
 
         $response->assertOk()
             ->assertInertia(fn (Assert $page) => $page
-                ->component('Documents/CommonDocuments')
+                ->component('Documents/Common-Documents/Index')
                 ->has('offices')
                 ->where('canUpload', true)
                 ->where('selectedOfficeId', $this->hrdoCategory->id)
@@ -108,7 +108,7 @@ class CommonDocumentsTest extends TestCase
 
         $response->assertOk()
             ->assertInertia(fn (Assert $page) => $page
-                ->component('Documents/CommonDocuments')
+                ->component('Documents/Common-Documents/Index')
                 ->where('canUpload', false)
             );
     }
@@ -233,7 +233,7 @@ class CommonDocumentsTest extends TestCase
         $response = $this->actingAs($this->iqaUser)->get("/documents?office_id={$this->hrdoCategory->id}");
         $response->assertOk()
             ->assertInertia(fn (Assert $page) => $page
-                ->component('Documents/CommonDocuments')
+                ->component('Documents/Common-Documents/Index')
                 ->has('documents', 2)
             );
 
@@ -241,7 +241,7 @@ class CommonDocumentsTest extends TestCase
         $response = $this->actingAs($this->iqaUser)->get("/documents?office_id={$this->hrdoCategory->id}&search=Recruitment");
         $response->assertOk()
             ->assertInertia(fn (Assert $page) => $page
-                ->component('Documents/CommonDocuments')
+                ->component('Documents/Common-Documents/Index')
                 ->has('documents', 1)
                 ->where('documents.0.title', 'HRDO Recruitment Charter')
             );
@@ -275,5 +275,63 @@ class CommonDocumentsTest extends TestCase
             'user_id' => $this->taskForceUser->id,
             'target_id' => (string) $doc->id,
         ]);
+    }
+
+    public function test_iqa_staff_can_add_administrative_office(): void
+    {
+        $response = $this->actingAs($this->iqaUser)->post('/documents/offices', [
+            'name' => 'Admissions and Registrar Services',
+            'description' => 'Administers university student applications and scholastic records.',
+        ]);
+
+        $created = DocumentCategory::where('name', 'Admissions and Registrar Services')->first();
+        $this->assertNotNull($created);
+        $this->assertEquals('institutional', $created->scope);
+        $this->assertEquals('Administers university student applications and scholastic records.', $created->description);
+
+        $response->assertRedirect("/documents?office_id={$created->id}");
+        $response->assertSessionHas('success');
+
+        $this->assertDatabaseHas('audit_logs', [
+            'action' => 'document_category.create',
+            'user_id' => $this->iqaUser->id,
+            'target_type' => DocumentCategory::class,
+            'target_id' => (string) $created->id,
+        ]);
+    }
+
+    public function test_system_admin_can_add_administrative_office(): void
+    {
+        $response = $this->actingAs($this->adminUser)->post('/documents/offices', [
+            'name' => 'Information and Communications Technology Office',
+            'description' => 'Oversees university IT systems and digital infrastructure.',
+        ]);
+
+        $created = DocumentCategory::where('name', 'Information and Communications Technology Office')->first();
+        $this->assertNotNull($created);
+        $response->assertRedirect("/documents?office_id={$created->id}");
+    }
+
+    public function test_task_force_member_is_forbidden_from_adding_office(): void
+    {
+        $response = $this->actingAs($this->taskForceUser)->post('/documents/offices', [
+            'name' => 'Unauthorized Office Addition',
+            'description' => 'Should fail with 403',
+        ]);
+
+        $response->assertForbidden();
+        $this->assertDatabaseMissing('document_categories', [
+            'name' => 'Unauthorized Office Addition',
+        ]);
+    }
+
+    public function test_office_name_must_be_unique_within_institutional_scope(): void
+    {
+        $response = $this->actingAs($this->iqaUser)->post('/documents/offices', [
+            'name' => $this->hrdoCategory->name,
+            'description' => 'Duplicate HRDO',
+        ]);
+
+        $response->assertSessionHasErrors(['name']);
     }
 }

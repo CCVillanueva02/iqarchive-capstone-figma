@@ -2,9 +2,9 @@
 ================================================================================
 IQArchive v2 — Common Documents Workspace
 ================================================================================
-File: resources/js/Pages/Documents/CommonDocuments.vue
+File: resources/js/Pages/Documents/Common-Documents/Index.vue
 Role: Central repository for university-wide Common Documents and office policies.
-UI Standard: DaisyUI tabs, card, badge, btn.
+UI Standard: DaisyUI card, badge, btn.
 Line count target: < 150 lines.
 ================================================================================
 -->
@@ -16,7 +16,8 @@ import AppShell from '@/Layouts/AppShell.vue';
 import OfficePanel from './Partials/OfficePanel.vue';
 import DocumentsTable from './Partials/DocumentsTable.vue';
 import UploadCommonDocModal from './Partials/UploadCommonDocModal.vue';
-import { FileText, FolderKanban, Building2, ChevronRight } from 'lucide-vue-next';
+import AddOfficeModal from './Partials/AddOfficeModal.vue';
+import { Plus, UploadCloud } from 'lucide-vue-next';
 
 const props = defineProps({
     activeTab: {
@@ -46,6 +47,7 @@ const props = defineProps({
 });
 
 const isUploadModalOpen = ref(false);
+const isAddOfficeModalOpen = ref(false);
 
 const activeOffice = computed(() => {
     return props.offices.find((o) => Number(o.id) === Number(props.selectedOfficeId)) || props.offices[0] || null;
@@ -79,60 +81,43 @@ function handleFilter({ search, status }) {
 </script>
 
 <template>
-    <Head title="Common Documents — IQArchive" />
+    <Head :title="'Common Documents — IQArchive'" />
 
-    <AppShell>
-        <div class="space-y-5 max-w-7xl mx-auto">
-            <!-- Header & Breadcrumbs -->
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+    <AppShell :hide-topbar="true" :hide-breadcrumbs="true">
+        <div class="h-[calc(100vh-3rem)] lg:h-[calc(100vh-4rem)] flex flex-col space-y-4 max-w-7xl mx-auto">
+            <!-- Header (shrink-0) -->
+            <div class="pb-3 border-b border-slate-200 shrink-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
-                    <div class="flex items-center gap-1.5 text-xs text-slate-500 mb-1">
-                        <span>Documents</span>
-                        <ChevronRight class="w-3 h-3 text-slate-400" />
-                        <span class="text-orange-600 font-semibold">Common Documents</span>
-                    </div>
                     <h1 class="text-2xl font-extrabold tracking-tight text-slate-900">
-                        Document Repository
+                        Common Documents
                     </h1>
+                </div>
+
+                <!-- Header Actions (Rightmost) -->
+                <div v-if="canUpload" class="flex items-center gap-2">
+                    <button
+                        type="button"
+                        @click="isAddOfficeModalOpen = true"
+                        class="btn btn-sm btn-outline border-sidebar-blue text-sidebar-blue hover:bg-sidebar-blue hover:border-sidebar-blue hover:text-white gap-1.5"
+                    >
+                        <Plus class="w-4 h-4" />
+                        <span>Add Office</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        @click="isUploadModalOpen = true"
+                        class="btn btn-sm bg-sidebar-blue hover:bg-sidebar-blue-hover text-white border-none gap-1.5"
+                    >
+                        <UploadCloud class="w-4 h-4" />
+                        <span>Upload Document</span>
+                    </button>
                 </div>
             </div>
 
-            <!-- Tab Bar -->
-            <div class="border-b border-slate-200">
-                <nav class="flex space-x-6 text-sm">
-                    <button
-                        type="button"
-                        class="pb-3 border-b-2 border-orange-600 text-orange-600 font-bold flex items-center gap-2"
-                    >
-                        <FileText class="w-4 h-4" />
-                        <span>Common Documents</span>
-                    </button>
-
-                    <button
-                        type="button"
-                        class="pb-3 border-b-2 border-transparent text-slate-400 font-medium flex items-center gap-2 cursor-not-allowed"
-                        disabled
-                    >
-                        <FolderKanban class="w-4 h-4" />
-                        <span>Program Accreditation</span>
-                        <span class="badge badge-xs badge-ghost text-[10px]">Upcoming</span>
-                    </button>
-
-                    <button
-                        type="button"
-                        class="pb-3 border-b-2 border-transparent text-slate-400 font-medium flex items-center gap-2 cursor-not-allowed"
-                        disabled
-                    >
-                        <Building2 class="w-4 h-4" />
-                        <span>Institutional Records</span>
-                        <span class="badge badge-xs badge-ghost text-[10px]">Upcoming</span>
-                    </button>
-                </nav>
-            </div>
-
-            <!-- Main Two-Column Layout -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-                <div class="lg:col-span-4">
+            <!-- Main Two-Column Layout (1/4 left, 3/4 right) (full height) -->
+            <div class="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+                <div class="lg:col-span-2 h-full min-h-0">
                     <OfficePanel
                         :offices="offices"
                         :selected-office-id="selectedOfficeId"
@@ -140,7 +125,7 @@ function handleFilter({ search, status }) {
                     />
                 </div>
 
-                <div class="lg:col-span-8">
+                <div class="lg:col-span-10 h-full min-h-0">
                     <DocumentsTable
                         :documents="documents"
                         :selected-office="activeOffice"
@@ -153,12 +138,18 @@ function handleFilter({ search, status }) {
             </div>
         </div>
 
-        <!-- Upload Modal -->
+        <!-- Upload Common Document Modal -->
         <UploadCommonDocModal
             :show="isUploadModalOpen"
             :offices="offices"
             :initial-office-id="selectedOfficeId"
             @close="isUploadModalOpen = false"
+        />
+
+        <!-- Add Administrative Office Modal -->
+        <AddOfficeModal
+            :show="isAddOfficeModalOpen"
+            @close="isAddOfficeModalOpen = false"
         />
     </AppShell>
 </template>

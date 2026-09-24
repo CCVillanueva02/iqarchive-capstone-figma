@@ -24,6 +24,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -45,7 +46,9 @@ class DocumentController extends Controller
 
         $offices = DocumentCategory::where('scope', 'institutional')
             ->withCount(['documents' => function ($query) {
-                $query->withoutGlobalScope(CollegeScoped::class);
+                $query->withoutGlobalScope(CollegeScoped::class)
+                    ->whereNull('college_id')
+                    ->where('visibility', 'univ');
             }])
             ->orderBy('name')
             ->get();
@@ -53,6 +56,8 @@ class DocumentController extends Controller
         $selectedOfficeId = $request->integer('office_id') ?: ($offices->first()?->id ?? null);
 
         $docsQuery = Document::withoutGlobalScope(CollegeScoped::class)
+            ->whereNull('college_id')
+            ->where('visibility', 'univ')
             ->with(['uploader:id,name,email'])
             ->when($selectedOfficeId, fn ($q) => $q->where('category_id', $selectedOfficeId));
 
@@ -72,7 +77,7 @@ class DocumentController extends Controller
         $user = Auth::user();
         $canUpload = $user ? $user->can('create', Document::class) : false;
 
-        return Inertia::render('Documents/CommonDocuments', [
+        return Inertia::render('Documents/Common-Documents/Index', [
             'activeTab' => $request->query('tab', 'common-documents'),
             'offices' => $offices,
             'selectedOfficeId' => $selectedOfficeId,
@@ -137,6 +142,49 @@ class DocumentController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Common document uploaded successfully.');
+    }
+
+    /**
+     * Store new institutional administrative office or unit category.
+     *
+     * Security Reasoning: Strictly gated by DocumentPolicy::create so only IQA Staff
+     * and System Administrators can curate university-level administrative offices.
+     */
+    public function storeOffice(Request $request): RedirectResponse
+    {
+        $this->authorize('create', Document::class);
+
+        $validated = $request->validate([
+            'name' => [
+                'required',
+                'string',
+                'max:100',
+                Rule::unique('document_categories', 'name')->where(fn ($query) => $query->where('scope', 'institutional')),
+            ],
+            'description' => ['nullable', 'string', 'max:1000'],
+        ]);
+
+        $office = DocumentCategory::create([
+            'name' => $validated['name'],
+            'scope' => 'institutional',
+            'description' => $validated['description'] ?? null,
+        ]);
+
+        AuditLog::create([
+            'college_id' => null,
+            'user_id' => Auth::id(),
+            'action' => 'document_category.create',
+            'target_type' => DocumentCategory::class,
+            'target_id' => (string) $office->id,
+            'ip_address' => $request->ip(),
+            'details' => [
+                'name' => $office->name,
+                'scope' => $office->scope,
+            ],
+        ]);
+
+        return redirect()->route('documents.index', ['office_id' => $office->id])
+            ->with('success', "Office '{$office->name}' added successfully.");
     }
 
     /**

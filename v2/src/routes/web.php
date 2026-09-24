@@ -79,5 +79,7 @@ Route::prefix('external-accreditor')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/documents', [DocumentController::class, 'index'])->name('documents.index');
     Route::post('/documents/common', [DocumentController::class, 'storeCommon'])->name('documents.store.common');
+    Route::post('/documents/offices', [DocumentController::class, 'storeOffice'])->name('documents.store.office');
     Route::get('/documents/{document}/download', [DocumentController::class, 'download'])->name('documents.download');
 });
+

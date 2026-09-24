@@ -5,6 +5,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title inertia>{{ config('app.name', 'IQArchive') }}</title>
 
+        <!-- Favicon (Bicol University Logo) -->
+        <link rel="icon" type="image/png" href="{{ asset('bulogo.png') }}">
+        <link rel="apple-touch-icon" href="{{ asset('bulogo.png') }}">
+
         <!-- Google Fonts: Inter & JetBrains Mono -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

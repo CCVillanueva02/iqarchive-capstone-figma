@@ -49,7 +49,7 @@ defineProps({
 </script>
 
 <template>
-    <Head title="IQA Staff Dashboard — IQArchive" />
+    <Head title="IQA Staff Dashboard" />
 
     <AppShell>
         <div class="space-y-6 max-w-7xl mx-auto">

@@ -22,7 +22,7 @@ defineProps({
 </script>
 
 <template>
-    <Head title="Developer Sandbox — IQArchive" />
+    <Head title="Developer Sandbox" />
 
     <!-- Desktop Viewport Guard -->
     <MobileUnsupported />

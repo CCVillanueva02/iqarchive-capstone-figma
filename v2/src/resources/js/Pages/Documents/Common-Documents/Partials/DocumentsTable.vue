@@ -2,7 +2,7 @@
 ================================================================================
 IQArchive v2 — Common Documents Table Partial
 ================================================================================
-File: resources/js/Pages/Documents/Partials/DocumentsTable.vue
+File: resources/js/Pages/Documents/Common-Documents/Partials/DocumentsTable.vue
 Role: Displays filterable table of documents for the active office.
 UI Standard: DaisyUI table, badge, btn, input, select.
 Line count target: < 150 lines.
@@ -11,7 +11,7 @@ Line count target: < 150 lines.
 
 <script setup>
 import { ref } from 'vue';
-import { FileText, Download, UploadCloud, Search, ExternalLink } from 'lucide-vue-next';
+import { FileText, Download, UploadCloud, Search } from 'lucide-vue-next';
 
 const props = defineProps({
     documents: {
@@ -79,49 +79,37 @@ async function downloadDocument(doc) {
 </script>
 
 <template>
-    <div class="card card-border bg-base-100 shadow-xs flex flex-col h-full">
+    <div class="card card-border bg-base-100 shadow-xs flex flex-col h-full min-h-0">
         <!-- Office Header & Toolbar -->
-        <div class="card-body p-4 space-y-4 border-b border-slate-100">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div>
-                    <h3 class="text-base font-extrabold text-slate-900 flex items-center gap-2">
-                        <span>{{ selectedOffice ? selectedOffice.name : 'All Common Documents' }}</span>
-                        <span class="badge badge-sm badge-outline tabular-nums font-mono">
-                            {{ documents.length }} files
-                        </span>
-                    </h3>
-                    <p class="text-xs text-slate-500 mt-0.5 line-clamp-1">
-                        {{ selectedOffice?.description || 'Central repository of university-wide policies and regulatory documents.' }}
-                    </p>
-                </div>
-
-                <button
-                    v-if="canUpload"
-                    type="button"
-                    @click="emit('openUpload')"
-                    class="btn btn-sm bg-orange-600 hover:bg-orange-700 text-white border-none shrink-0 cursor-pointer shadow-xs gap-1.5"
+        <div class="p-4 space-y-3 border-b border-slate-100 shrink-0">
+            <div class="min-w-0">
+                <h3 class="text-base font-bold text-slate-900 leading-snug">
+                    {{ selectedOffice ? selectedOffice.name : 'All Common Documents' }}
+                </h3>
+                <p
+                    v-if="selectedOffice?.description"
+                    class="text-xs text-slate-500 mt-1 leading-relaxed max-w-3xl"
                 >
-                    <UploadCloud class="w-4 h-4" />
-                    <span>Upload Document</span>
-                </button>
+                    {{ selectedOffice.description }}
+                </p>
             </div>
 
             <!-- Toolbar Filters -->
             <div class="flex flex-col sm:flex-row items-center gap-2">
-                <div class="relative flex-1 w-full">
-                    <Search class="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                <label class="input input-sm input-bordered flex items-center gap-2 flex-1 w-full rounded-lg">
+                    <Search class="w-3.5 h-3.5 text-slate-400 shrink-0" />
                     <input
                         v-model="searchQuery"
                         @input="handleSearchChange"
                         type="text"
                         placeholder="Search document title or filename..."
-                        class="input input-sm input-bordered w-full pl-8 text-xs rounded-lg"
+                        class="grow text-xs"
                     />
-                </div>
+                </label>
                 <select
                     v-model="statusFilter"
                     @change="handleSearchChange"
-                    class="select select-sm select-bordered w-full sm:w-40 text-xs rounded-lg"
+                    class="select select-sm select-bordered w-full sm:w-40 text-xs rounded-lg shrink-0"
                 >
                     <option value="">All Statuses</option>
                     <option value="draft">Draft</option>
@@ -133,7 +121,7 @@ async function downloadDocument(doc) {
         </div>
 
         <!-- Documents Table -->
-        <div class="overflow-x-auto flex-1">
+        <div class="overflow-x-auto overflow-y-auto flex-1 min-h-0">
             <table class="table table-zebra table-sm w-full">
                 <thead>
                     <tr class="text-slate-500 text-xs uppercase bg-slate-50/80">
@@ -148,9 +136,9 @@ async function downloadDocument(doc) {
                     <tr v-for="doc in documents" :key="doc.id" class="hover:bg-slate-50/60 transition-colors">
                         <td class="py-3 pl-4">
                             <div class="flex items-start gap-2.5">
-                                <FileText class="w-4 h-4 text-orange-600 shrink-0 mt-0.5" />
+                                <FileText class="w-4 h-4 text-primary shrink-0 mt-0.5" />
                                 <div class="space-y-0.5">
-                                    <div class="text-xs font-bold text-slate-800 hover:text-orange-600 transition line-clamp-1">
+                                    <div class="text-xs font-bold text-slate-800 hover:text-primary transition line-clamp-1">
                                         {{ doc.title }}
                                     </div>
                                     <div class="text-[11px] text-slate-400 font-mono tabular-nums">
@@ -176,7 +164,7 @@ async function downloadDocument(doc) {
                                 type="button"
                                 @click="downloadDocument(doc)"
                                 :disabled="downloadingId === doc.id"
-                                class="btn btn-xs btn-ghost text-slate-600 hover:text-orange-600 hover:bg-orange-50 gap-1 cursor-pointer"
+                                class="btn btn-xs btn-ghost text-slate-600 hover:text-primary hover:bg-primary/10 gap-1 cursor-pointer"
                             >
                                 <span v-if="downloadingId === doc.id" class="loading loading-spinner loading-xs"></span>
                                 <Download v-else class="w-3.5 h-3.5" />
@@ -198,8 +186,8 @@ async function downloadDocument(doc) {
                                     v-if="canUpload"
                                     type="button"
                                     @click="emit('openUpload')"
-                                    class="btn btn-xs btn-outline border-slate-300 text-slate-700 hover:bg-slate-100 mt-2"
-                                >
+                                    class="btn btn-xs btn-outline border-sidebar-blue text-sidebar-blue hover:bg-sidebar-blue hover:border-sidebar-blue hover:text-white gap-1.5 mt-2"
+                                >   
                                     Upload First Document
                                 </button>
                             </div>

@@ -21,7 +21,7 @@ defineProps({
 </script>
 
 <template>
-    <Head title="External Accreditor Portal — IQArchive" />
+    <Head title="External Accreditor Portal" />
 
     <AppShell>
         <div class="flex flex-col items-center justify-center min-h-[60vh] text-center p-6">

@@ -34,7 +34,7 @@ defineProps({
 </script>
 
 <template>
-    <Head title="IQArchive — Bicol University Document Management & Monitoring System" />
+    <Head title="Login" />
 
     <!-- Desktop Viewport Guard (≥1024px required) -->
     <MobileUnsupported />

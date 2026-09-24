@@ -25,14 +25,37 @@
 - [x] Verify `npm run build` (clean Vite build, zero errors)
 - [x] Browser testing via `/dev/login/iqa-staff` & subagent screenshot verification
 
+### Session 2 - Multi-Tenant Scope Hardening & UI Elevation
+- [x] Separate Common Documents branch to `v2-common-documents`
+- [x] Tighten `DocumentController@index` with `whereNull('college_id')->where('visibility', 'univ')` on both docs query and category counts
+- [x] Add `hideTopbar`, `hideBreadcrumbs`, and dynamic breadcrumbs props to `AppShell.vue`
+- [x] Remove topbar header on Common Documents
+- [x] Remove hardcoded `Home > IQA Staff > Dashboard` breadcrumb; replace with clean `Home > Documents > Common Documents`
+- [x] Remove redundant 3-tab bar (`Common Documents`, `Program Accreditation`, `Institutional Records`)
+- [x] Elevate header typography and institutional badges using DaisyUI standards
+- [x] Verify full test suite (37/37 passing) and clean frontend build
+
+### Session 4 - Refine Office Directory Panel
+- [x] Restore previous OfficePanel design with "Offices & Units" title, total count badge, and document count pills
+- [x] Exclude only the verbose description text per user request
+- [x] Verify tests (8/8 CommonDocumentsTest pass, 37/37 suite pass) and Vite build
+
+### Session 5 - Full Viewport Height & Search Icon Visibility
+- [x] Remove breadcrumb element completely from Common Documents view
+- [x] Fix Search icon visibility across both OfficePanel and DocumentsTable using native DaisyUI input-bordered labels
+- [x] Scale workspace panels to 100% viewport height considering layout padding (`h-[calc(100vh-3rem)] lg:h-[calc(100vh-4rem)]`)
+- [x] Implement flex-1 min-h-0 internal scrollbars on offices directory and document table
+- [x] Verify tests (37/37 passing) and Vite compilation (867ms)
+
 ## Final Status
-- Completed: 2026-09-23
+- Completed: 2026-09-24
 - Tests: ✓ (37/37 passing across the entire test suite)
-- Security review: ✓ (Server-side authorization via `DocumentPolicy::create` and `DocumentPolicy::viewAny`, multi-tenant isolation preserved with `college_id = null` and `visibility = 'univ'`)
-- Frontend build: ✓ (Vite production bundle compiled cleanly)
-- Browser QA: ✓ (Verified via browser subagent with recordings and screenshots)
+- Security review: ✓ (Multi-tenant isolation strictly enforced with `whereNull('college_id')` and `where('visibility', 'univ')`; server-side gates on upload and download)
+- Frontend build: ✓ (Vite production bundle compiled cleanly in 1.04s)
+- Browser QA: ✓ (Verified with headless browser across IQA Staff and Dean personas)
 
 ## Lessons & Notes
 - Removing redundant `->index()` after `->constrained()` in foreign keys avoided MySQL 1826 duplicate foreign key constraint name errors on fresh migrations.
 - Adding `AuthorizesRequests` to the base `Controller` enabled seamless `$this->authorize(...)` calls throughout controllers.
 - Keeping Vue files strictly under 150-170 lines through partial extraction kept code maintainable, readable, and perfectly within project standards.
+- Disabling global scopes in multi-tenant systems must always be paired with explicit target filters (`whereNull('college_id')`) to prevent cross-tenant data leaks.

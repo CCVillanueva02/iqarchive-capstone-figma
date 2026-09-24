@@ -23,6 +23,21 @@ import { CheckCircle2, AlertCircle, Info } from 'lucide-vue-next';
 
 const page = usePage();
 
+const props = defineProps({
+    hideTopbar: {
+        type: Boolean,
+        default: false,
+    },
+    hideBreadcrumbs: {
+        type: Boolean,
+        default: false,
+    },
+    breadcrumbs: {
+        type: Array,
+        default: null,
+    },
+});
+
 const user = computed(() => page.props.auth?.user || {
     name: 'Guest User',
     email: 'guest@bicol-u.edu.ph',
@@ -150,6 +165,7 @@ const userInitials = computed(() => {
         <!-- Main Workspace Content -->
         <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
             <AppTopbar
+                v-if="!hideTopbar"
                 :user="user"
                 :role-meta="roleMeta"
                 :system-time="systemTime"
@@ -158,13 +174,23 @@ const userInitials = computed(() => {
             <!-- Scrollable Canvas Area -->
             <main class="flex-1 overflow-y-auto p-6 lg:p-8 bg-slate-50">
                 <!-- Breadcrumbs -->
-                <div class="breadcrumbs text-xs text-slate-500 mb-4 py-0">
-                    <ul>
-                        <li><Link href="/" class="hover:text-slate-800">Home</Link></li>
-                        <li><span class="text-slate-600">{{ roleMeta.label }}</span></li>
-                        <li class="text-slate-900 font-semibold">Dashboard</li>
-                    </ul>
-                </div>
+                <slot name="breadcrumbs">
+                    <div v-if="!hideBreadcrumbs && breadcrumbs && breadcrumbs.length" class="breadcrumbs text-xs text-slate-500 mb-4 py-0">
+                        <ul>
+                            <li v-for="(crumb, idx) in breadcrumbs" :key="idx">
+                                <Link v-if="crumb.href" :href="crumb.href" class="hover:text-slate-800">{{ crumb.label }}</Link>
+                                <span v-else :class="crumb.active ? 'text-bu-orange-600 font-semibold' : 'text-slate-900 font-semibold'">{{ crumb.label }}</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div v-else-if="!hideBreadcrumbs && !breadcrumbs" class="breadcrumbs text-xs text-slate-500 mb-4 py-0">
+                        <ul>
+                            <li><Link href="/" class="hover:text-slate-800">Home</Link></li>
+                            <li><span class="text-slate-600">{{ roleMeta.label }}</span></li>
+                            <li class="text-slate-900 font-semibold">Dashboard</li>
+                        </ul>
+                    </div>
+                </slot>
 
                 <!-- Flash Notification Alerts (DaisyUI) -->
                 <div v-if="flash.success" class="alert alert-success shadow-xs text-xs mb-6">
