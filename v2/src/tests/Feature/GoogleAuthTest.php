@@ -46,6 +46,7 @@ class GoogleAuthTest extends TestCase
             ->component('Auth/Login')
             ->has('stats')
             ->has('isLocal')
+            ->has('info')
         );
     }
 
@@ -54,6 +55,7 @@ class GoogleAuthTest extends TestCase
      */
     public function test_authenticated_user_visiting_login_redirects_to_dashboard(): void
     {
+        /** @var User $user */
         $user = User::factory()->create([
             'email' => 'faculty@bicol-u.edu.ph',
             'status' => 'active',
@@ -79,9 +81,9 @@ class GoogleAuthTest extends TestCase
     }
 
     /**
-     * Test valid Bicol University email authenticates, JIT provisions, and writes audit log.
+     * Test valid Bicol University email JIT provisions as inactive pending approval (SEC-05).
      */
-    public function test_google_callback_authenticates_valid_bicol_u_user(): void
+    public function test_google_callback_jit_provisions_new_user_as_inactive_pending_approval(): void
     {
         Role::create(['name' => 'task_force_member', 'display_name' => 'Task Force Member']);
 
@@ -98,20 +100,59 @@ class GoogleAuthTest extends TestCase
 
         $response = $this->get('/auth/google/callback');
 
-        $response->assertRedirect(route('dashboard'));
-        $this->assertAuthenticated();
+        $response->assertRedirect(route('login'));
+        $response->assertSessionHas('info');
+        $this->assertGuest();
 
-        // Verify user was provisioned via JIT
-        $user = User::where('email', 'juan.delacruz@bicol-u.edu.ph')->first();
+        // Verify user was provisioned via JIT with inactive status
+        $user = User::withoutGlobalScopes()->where('email', 'juan.delacruz@bicol-u.edu.ph')->first();
         $this->assertNotNull($user);
         $this->assertEquals('google_bu_987654', $user->google_id);
         $this->assertEquals('Juan Dela Cruz', $user->name);
-        $this->assertEquals('active', $user->status);
+        $this->assertEquals('inactive', $user->status);
         $this->assertTrue($user->roles()->where('name', 'task_force_member')->exists());
 
-        // Verify audit log entry
+        // Verify registration audit log entry
         $this->assertDatabaseHas('audit_logs', [
             'user_id' => $user->id,
+            'action' => 'auth.registered',
+        ]);
+    }
+
+    /**
+     * Test approved active Bicol University user authenticates and redirects to dashboard.
+     */
+    public function test_google_callback_authenticates_active_bicol_u_user(): void
+    {
+        $role = Role::create(['name' => 'task_force_member', 'display_name' => 'Task Force Member']);
+
+        $existingUser = User::factory()->create([
+            'email' => 'maria.santos@bicol-u.edu.ph',
+            'name' => 'Maria Santos',
+            'status' => 'active',
+            'google_id' => 'google_bu_active_123',
+        ]);
+        $existingUser->roles()->attach($role);
+
+        $socialiteUser = Mockery::mock(SocialiteUser::class);
+        $socialiteUser->shouldReceive('getId')->andReturn('google_bu_active_123');
+        $socialiteUser->shouldReceive('getEmail')->andReturn('maria.santos@bicol-u.edu.ph');
+        $socialiteUser->shouldReceive('getName')->andReturn('Maria Santos');
+        $socialiteUser->shouldReceive('getAvatar')->andReturn('https://lh3.googleusercontent.com/photo2.jpg');
+
+        $provider = Mockery::mock(GoogleProvider::class);
+        $provider->shouldReceive('user')->andReturn($socialiteUser);
+
+        Socialite::shouldReceive('driver')->with('google')->andReturn($provider);
+
+        $response = $this->get('/auth/google/callback');
+
+        $response->assertRedirect(route('dashboard'));
+        $this->assertAuthenticatedAs($existingUser);
+
+        // Verify login audit log entry
+        $this->assertDatabaseHas('audit_logs', [
+            'user_id' => $existingUser->id,
             'action' => 'auth.login',
         ]);
     }

@@ -1,0 +1,38 @@
+# Common Documents Module — Task Plan & Implementation Log
+
+## Plan
+- High-level goal: Build the Common Documents tab under the Documents workspace (IQA role view and general access), allowing centralized storage and browsing of institutional office policies.
+- Scope:
+  - Database docs update in `v2/docs/db-design` reflecting `college_id` nullability for institutional docs and `document_categories` usage for administrative offices.
+  - Backend: `DocumentPolicy`, `CommonDocumentSeeder`, `DatabaseSeeder`, `DocumentController` (`index`, `storeCommon`), and web routes.
+  - Frontend: `CommonDocuments.vue` + `Partials/OfficePanel.vue`, `Partials/DocumentsTable.vue`, and `Partials/UploadCommonDocModal.vue` adhering to DaisyUI and under 150 lines per file.
+  - Testing: Feature tests in `tests/Feature/CommonDocumentsTest.php` covering permissions, viewing, filtering, and uploading.
+- Key decisions:
+  - Seed 7 BU administrative offices as `document_categories` with `scope = 'institutional'`.
+  - Make `documents.college_id` nullable so institutional documents are university-wide (`college_id = null`, `visibility = 'univ'`).
+  - Strict server-side RBAC: only `iqa_staff` and `system_admin` can upload Common Documents.
+- Testing strategy: Feature tests with Pest/PHPUnit, frontend verification with `npm run build`.
+
+## Implementation Progress
+### Session 1 - Initial Implementation
+- [x] Update database design documentation in `v2/docs/db-design/` (`database-design.md`, `database-design-expl.md`, `documents.md`, `document_categories.md`)
+- [x] Implement `DocumentPolicy` with `viewAny`, `create`, and `view` gates
+- [x] Create `CommonDocumentSeeder` and update `DatabaseSeeder`
+- [x] Implement `DocumentController` methods (`index`, `storeCommon`, `download`)
+- [x] Register routes with `auth` middleware in `routes/web.php`
+- [x] Build Vue components (`CommonDocuments.vue`, `OfficePanel.vue`, `DocumentsTable.vue`, `UploadCommonDocModal.vue`)
+- [x] Create and run `tests/Feature/CommonDocumentsTest.php` (8/8 tests passing, 37/37 total suite passing)
+- [x] Verify `npm run build` (clean Vite build, zero errors)
+- [x] Browser testing via `/dev/login/iqa-staff` & subagent screenshot verification
+
+## Final Status
+- Completed: 2026-09-23
+- Tests: ✓ (37/37 passing across the entire test suite)
+- Security review: ✓ (Server-side authorization via `DocumentPolicy::create` and `DocumentPolicy::viewAny`, multi-tenant isolation preserved with `college_id = null` and `visibility = 'univ'`)
+- Frontend build: ✓ (Vite production bundle compiled cleanly)
+- Browser QA: ✓ (Verified via browser subagent with recordings and screenshots)
+
+## Lessons & Notes
+- Removing redundant `->index()` after `->constrained()` in foreign keys avoided MySQL 1826 duplicate foreign key constraint name errors on fresh migrations.
+- Adding `AuthorizesRequests` to the base `Controller` enabled seamless `$this->authorize(...)` calls throughout controllers.
+- Keeping Vue files strictly under 150-170 lines through partial extraction kept code maintainable, readable, and perfectly within project standards.

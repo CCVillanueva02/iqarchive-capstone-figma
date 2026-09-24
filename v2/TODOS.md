@@ -23,6 +23,7 @@ Governance: Autoplan pipeline & .agents/rules/general-rules.md
 - [x] **SEC-02: Multi-Tenancy Scoping:** Create `CollegeScoped` global Eloquent scope enforcing `college_id` filtering on all tenant queries.
 - [x] **SEC-03: Google Workspace OAuth:** Implement Socialite Google SSO restricted to `@bicol-u.edu.ph` email domain with JIT user provisioning.
 - [ ] **SEC-04: RBAC & Policies:** Enforce the 7 institutional roles and Dean Lead contextual elevation across all controller actions.
+- [x] **SEC-05: User Activation & Schema Cleanup:** Drop legacy password & email_verified_at from users schema, switch default user status to 'inactive', and implement IQA/Dean approval workflow for newly provisioned Google OAuth accounts.
 
 ## P2 — Accreditation Workflows & Features (Sprint 3)
 - [ ] **DOC-01: Document Management (MOD-01):** Program, Institutional, and Common Document repositories with private S3 storage and 15-minute temporary pre-signed URLs.

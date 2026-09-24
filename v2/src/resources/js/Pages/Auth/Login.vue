@@ -14,6 +14,7 @@ import MobileUnsupported from '@/Components/MobileUnsupported.vue';
 import {
     AlertCircle,
     CheckCircle2,
+    Info,
 } from 'lucide-vue-next';
 
 defineProps({
@@ -22,6 +23,10 @@ defineProps({
         default: null,
     },
     success: {
+        type: String,
+        default: null,
+    },
+    info: {
         type: String,
         default: null,
     },
@@ -79,10 +84,15 @@ defineProps({
                                 </p>
                             </div>
 
-                            <!-- Status & Error Alert Banners (DaisyUI alert) -->
+                            <!-- Status, Info & Error Alert Banners (DaisyUI alert) -->
                             <div v-if="error" role="alert" class="alert alert-error alert-soft text-xs shadow-2xs">
                                 <AlertCircle class="w-4 h-4 shrink-0" />
                                 <span class="leading-relaxed font-medium">{{ error }}</span>
+                            </div>
+
+                            <div v-if="info" role="alert" class="alert alert-info alert-soft text-xs shadow-2xs">
+                                <Info class="w-4 h-4 shrink-0" />
+                                <span class="leading-relaxed font-medium">{{ info }}</span>
                             </div>
 
                             <div v-if="success" role="alert" class="alert alert-success alert-soft text-xs shadow-2xs">

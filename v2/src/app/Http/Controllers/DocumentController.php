@@ -9,16 +9,21 @@
  *                 evidence mapping across Program, Institutional, and Common tiers.
  * Architecture: Controller Layer (Delegates storage to DocumentStorageService)
  * Security Context: Multi-tenant college_id scoping, server-side policy authorization,
- *                  15-minute temporary pre-signed S3 URLs.
+ *                   15-minute temporary pre-signed S3 URLs.
  * ============================================================================
  */
 
 namespace App\Http\Controllers;
 
+use App\Models\AuditLog;
+use App\Models\Document;
+use App\Models\DocumentCategory;
+use App\Models\Scopes\CollegeScoped;
 use App\Services\DocumentStorageService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -31,11 +36,107 @@ class DocumentController extends Controller
     /**
      * Display the document repository workspace.
      *
-     * Security Reasoning: Scoped by the authenticated user's college_id.
+     * Security Reasoning: Authorizes viewAny before loading repository.
+     * Institutional categories and common documents are accessible university-wide.
      */
     public function index(Request $request): Response
     {
-        return Inertia::render('TaskForce/Index');
+        $this->authorize('viewAny', Document::class);
+
+        $offices = DocumentCategory::where('scope', 'institutional')
+            ->withCount(['documents' => function ($query) {
+                $query->withoutGlobalScope(CollegeScoped::class);
+            }])
+            ->orderBy('name')
+            ->get();
+
+        $selectedOfficeId = $request->integer('office_id') ?: ($offices->first()?->id ?? null);
+
+        $docsQuery = Document::withoutGlobalScope(CollegeScoped::class)
+            ->with(['uploader:id,name,email'])
+            ->when($selectedOfficeId, fn ($q) => $q->where('category_id', $selectedOfficeId));
+
+        if ($search = $request->input('search')) {
+            $docsQuery->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('original_filename', 'like', "%{$search}%");
+            });
+        }
+
+        if ($status = $request->input('status')) {
+            $docsQuery->where('status', $status);
+        }
+
+        $documents = $docsQuery->latest('id')->take(50)->get();
+
+        $user = Auth::user();
+        $canUpload = $user ? $user->can('create', Document::class) : false;
+
+        return Inertia::render('Documents/CommonDocuments', [
+            'activeTab' => $request->query('tab', 'common-documents'),
+            'offices' => $offices,
+            'selectedOfficeId' => $selectedOfficeId,
+            'documents' => $documents,
+            'filters' => [
+                'search' => $request->input('search', ''),
+                'status' => $request->input('status', ''),
+            ],
+            'canUpload' => $canUpload,
+        ]);
+    }
+
+    /**
+     * Store new institutional Common Document.
+     *
+     * Security Reasoning: Strictly gated by DocumentPolicy::create so only IQA Staff
+     * and System Administrators can curate university-wide common repository files.
+     */
+    public function storeCommon(Request $request): RedirectResponse
+    {
+        $this->authorize('create', Document::class);
+
+        $validated = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'office_id' => ['required', 'integer', 'exists:document_categories,id'],
+            'file' => ['required', 'file', 'mimes:pdf', 'max:20480'],
+            'description' => ['nullable', 'string', 'max:1000'],
+        ]);
+
+        $storageResult = $this->storageService->storeCommonDocument(
+            $validated['file'],
+            $validated['office_id']
+        );
+
+        $document = Document::withoutGlobalScopes()->create([
+            'college_id' => null,
+            'program_id' => null,
+            'category_id' => $validated['office_id'],
+            'user_id' => Auth::id(),
+            'title' => $validated['title'],
+            'original_filename' => $validated['file']->getClientOriginalName(),
+            'file_path' => $storageResult['file_path'],
+            'file_hash' => $storageResult['file_hash'],
+            'file_size_bytes' => $storageResult['file_size'],
+            'mime_type' => $storageResult['mime_type'],
+            'status' => 'draft',
+            'visibility' => 'univ',
+        ]);
+
+        AuditLog::create([
+            'college_id' => null,
+            'user_id' => Auth::id(),
+            'action' => 'document.upload.common',
+            'target_type' => Document::class,
+            'target_id' => (string) $document->id,
+            'ip_address' => $request->ip(),
+            'details' => [
+                'title' => $document->title,
+                'category_id' => $document->category_id,
+                'file_hash' => $document->file_hash,
+            ],
+        ]);
+
+        return redirect()->back()->with('success', 'Common document uploaded successfully.');
     }
 
     /**
@@ -46,19 +147,23 @@ class DocumentController extends Controller
      */
     public function download(Request $request, int $documentId): JsonResponse
     {
-        // Placeholder: Will call $this->authorize('view', $document) then mint pre-signed URL
-        $url = $this->storageService->getTemporaryUrl('evidence/sample.pdf', 15);
+        $document = Document::withoutGlobalScopes()->findOrFail($documentId);
+        $this->authorize('view', $document);
+
+        $url = $this->storageService->getTemporaryUrl($document->file_path, 15);
+
+        AuditLog::create([
+            'college_id' => $document->college_id,
+            'user_id' => Auth::id(),
+            'action' => 'document.download',
+            'target_type' => Document::class,
+            'target_id' => (string) $document->id,
+            'ip_address' => $request->ip(),
+            'details' => [
+                'file_hash' => $document->file_hash,
+            ],
+        ]);
 
         return response()->json(['url' => $url]);
-    }
-
-    /**
-     * Store new evidence file.
-     *
-     * Security Reasoning: Validates PDF mime-type and enforces college_id ownership.
-     */
-    public function store(Request $request): RedirectResponse
-    {
-        return redirect()->back()->with('success', 'Document uploaded successfully.');
     }
 }

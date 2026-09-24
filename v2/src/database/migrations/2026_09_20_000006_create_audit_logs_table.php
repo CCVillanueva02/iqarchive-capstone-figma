@@ -20,7 +20,7 @@ return new class extends Migration
     {
         Schema::create('audit_logs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('college_id')->nullable()->constrained('colleges')->nullOnDelete()->index();
+            $table->foreignId('college_id')->nullable()->constrained('colleges')->nullOnDelete();
             $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->string('action', 100);
             $table->string('target_type', 100);

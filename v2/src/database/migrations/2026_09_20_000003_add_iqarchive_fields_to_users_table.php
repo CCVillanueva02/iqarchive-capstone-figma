@@ -19,10 +19,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->foreignId('college_id')->nullable()->after('id')->constrained('colleges')->nullOnDelete()->index();
+            $table->foreignId('college_id')->nullable()->after('id')->constrained('colleges')->nullOnDelete();
             $table->string('google_id', 255)->nullable()->unique()->after('email');
             $table->string('avatar_url', 500)->nullable()->after('google_id');
-            $table->enum('status', ['active', 'inactive'])->default('active')->after('avatar_url');
+            $table->enum('status', ['active', 'inactive'])->default('inactive')->after('avatar_url');
         });
     }
 

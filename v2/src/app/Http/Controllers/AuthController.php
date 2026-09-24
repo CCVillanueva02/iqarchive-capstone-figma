@@ -50,6 +50,7 @@ class AuthController extends Controller
         return Inertia::render('Auth/Login', [
             'error' => $request->session()->get('error'),
             'success' => $request->session()->get('success'),
+            'info' => $request->session()->get('info'),
             'isLocal' => app()->environment(['local', 'testing']),
             'stats' => $stats,
         ]);
@@ -193,18 +194,20 @@ class AuthController extends Controller
         }
 
         // Retrieve existing user by google_id or email
-        $user = User::where('google_id', $googleUser->getId())
+        $user = User::withoutGlobalScopes()
+            ->where('google_id', $googleUser->getId())
             ->orWhere('email', $email)
             ->first();
 
         if (! $user) {
             // Just-In-Time (JIT) Provisioning for authorized institutional users
+            // Accounts default to 'inactive' pending administrative approval by IQA/Dean (SEC-05)
             $user = User::create([
                 'name' => $googleUser->getName() ?: explode('@', $email)[0],
                 'email' => $email,
                 'google_id' => $googleUser->getId(),
                 'avatar_url' => $googleUser->getAvatar(),
-                'status' => 'active',
+                'status' => 'inactive',
             ]);
 
             // Assign default Task Force Member role
@@ -212,25 +215,45 @@ class AuthController extends Controller
             if ($defaultRole) {
                 $user->roles()->attach($defaultRole);
             }
-        } else {
-            // Synchronize Google profile identifiers
-            $updates = [];
-            if (! $user->google_id) {
-                $updates['google_id'] = $googleUser->getId();
-            }
-            if ($googleUser->getAvatar()) {
-                $updates['avatar_url'] = $googleUser->getAvatar();
-            }
-            if (! empty($updates)) {
-                $user->update($updates);
-            }
+
+            // Audit logging for new account registration
+            AuditLog::withoutGlobalScopes()->create([
+                'college_id' => null,
+                'user_id' => $user->id,
+                'action' => 'auth.registered',
+                'target_type' => User::class,
+                'target_id' => (string) $user->id,
+                'ip_address' => $request->ip(),
+                'details' => [
+                    'provider' => 'google',
+                    'email' => $user->email,
+                    'status' => 'inactive',
+                ],
+            ]);
+
+            return redirect()->route('login')->with(
+                'info',
+                'Your account has been registered and is pending approval by the Internal Quality Assurance (IQA) Office.'
+            );
         }
 
-        // Security Gate: Block deactivated or revoked accounts
+        // Synchronize Google profile identifiers
+        $updates = [];
+        if (! $user->google_id) {
+            $updates['google_id'] = $googleUser->getId();
+        }
+        if ($googleUser->getAvatar() && $user->avatar_url !== $googleUser->getAvatar()) {
+            $updates['avatar_url'] = $googleUser->getAvatar();
+        }
+        if (! empty($updates)) {
+            $user->update($updates);
+        }
+
+        // Security Gate: Block inactive or unapproved accounts
         if ($user->status === 'inactive') {
             return redirect()->route('login')->with(
                 'error',
-                'Your institutional account has been deactivated. Please contact the Internal Quality Assurance Office.'
+                'Your account is pending approval or has been deactivated. Please contact the Internal Quality Assurance Office.'
             );
         }
 

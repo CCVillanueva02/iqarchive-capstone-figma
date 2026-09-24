@@ -266,28 +266,28 @@ Advisory commentary and gap notes left by Internal Accreditors on specific crite
 ### 🟣 Zone 4: Evidence Document Storage, Review & OCR Engine
 
 #### `document_categories`
-Taxonomy classification for uploaded evidence.
+Taxonomy classification for uploaded evidence. Also houses administrative office categories for the university-wide Common Documents vault (e.g. HRDO, University Registrar, OSAS, VPAA Office, BOR Secretariat, Budget & Finance, General Services) with `scope = 'institutional'`.
 - `id` (BIGINT UNSIGNED, PK, AUTO_INCREMENT)
-- `name` (VARCHAR(100), NOT NULL) — e.g., "Curriculum & Syllabi", "Faculty Records", "Board Resolutions"
-- `scope` (ENUM('institutional', 'college', 'program'), NOT NULL)
+- `name` (VARCHAR(100), NOT NULL) — e.g., "Curriculum & Syllabi", "Faculty Records", "HRDO", "University Registrar"
+- `scope` (ENUM('institutional', 'college', 'program'), NOT NULL) — `institutional` for university offices/common docs, `college` for college-wide records, `program` for degree-specific criteria
 - `description` (TEXT, NULLABLE)
 - `created_at` (TIMESTAMP)
 
 #### `documents`
 Master evidence registry containing file paths, cryptographic hashes, and multi-tenant scoping.
 - `id` (BIGINT UNSIGNED, PK, AUTO_INCREMENT)
-- `college_id` (BIGINT UNSIGNED, FK $\rightarrow$ `colleges.id`, NOT NULL) — Enforces multi-tenant isolation
+- `college_id` (BIGINT UNSIGNED, FK $\rightarrow$ `colleges.id`, NULLABLE) — Enforces multi-tenant isolation. NULL for university-wide institutional common documents (accessible across all colleges); populated for college and program-specific evidence.
 - `program_id` (BIGINT UNSIGNED, FK $\rightarrow$ `programs.id`, NULLABLE) — NULL for institutional/college-level evidence
 - `category_id` (BIGINT UNSIGNED, FK $\rightarrow$ `document_categories.id`, NOT NULL)
 - `user_id` (BIGINT UNSIGNED, FK $\rightarrow$ `users.id`, NOT NULL) — Uploader
 - `title` (VARCHAR(255), NOT NULL)
 - `original_filename` (VARCHAR(255), NOT NULL)
-- `file_path` (VARCHAR(500), NOT NULL) — Cloud storage object key: `evidence/{college_id}/{program_id}/{file_hash}.pdf`
+- `file_path` (VARCHAR(500), NOT NULL) — Cloud storage object key: `evidence/{college_id}/{program_id}/{file_hash}.pdf` (or `evidence/institutional/{file_hash}.pdf` for common files)
 - `file_hash` (VARCHAR(64), NOT NULL) — Cryptographic SHA-256 integrity hash
 - `file_size_bytes` (BIGINT UNSIGNED, NOT NULL)
 - `mime_type` (VARCHAR(100), NOT NULL) — e.g., "application/pdf"
 - `status` (ENUM('draft', 'dean_appr', 'iqa_appr', 'rejected'), DEFAULT 'draft')
-- `visibility` (ENUM('private', 'college', 'univ', 'accreditor'), DEFAULT 'college')
+- `visibility` (ENUM('private', 'college', 'univ', 'accreditor'), DEFAULT 'college') — Set to `univ` for Common Documents
 - `created_at` (TIMESTAMP)
 
 #### `accreditation_document_links`

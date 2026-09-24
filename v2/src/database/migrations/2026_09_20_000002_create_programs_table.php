@@ -20,7 +20,7 @@ return new class extends Migration
     {
         Schema::create('programs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('college_id')->constrained('colleges')->cascadeOnDelete()->index();
+            $table->foreignId('college_id')->constrained('colleges')->cascadeOnDelete();
             $table->string('name', 255);
             $table->string('code', 50)->unique();
             $table->string('current_level', 50);

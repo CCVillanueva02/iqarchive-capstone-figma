@@ -24,13 +24,40 @@ class DocumentPolicy
     ) {}
 
     /**
+     * Determine whether the user can browse the document workspace.
+     *
+     * Security Reasoning: All authenticated university roles have workspace read access.
+     */
+    public function viewAny(User $user): bool
+    {
+        return true;
+    }
+
+    /**
+     * Determine whether the user can upload to the Common Documents repository.
+     *
+     * Security Reasoning: Only IQA Staff and System Administrators can curate and
+     * upload institutional policy documents to the university-wide Common Documents vault.
+     */
+    public function create(User $user): bool
+    {
+        return $user->hasRole('system_admin')
+            || $user->hasRole('iqa_staff')
+            || $user->hasRole('iqa_member');
+    }
+
+    /**
      * Determine whether the user can view the document.
      *
-     * Security Reasoning: University-wide roles can view any document; college faculty
-     * and deans can only view documents scoped to their assigned college_id.
+     * Security Reasoning: Institutional common documents (college_id is null or visibility is univ)
+     * are viewable across all colleges. College/program documents are strictly restricted to the user's college.
      */
     public function view(User $user, Document $document): bool
     {
+        if ($document->college_id === null || $document->visibility === 'univ') {
+            return true;
+        }
+
         return $this->scopeService->canAccessModel($user, $document);
     }
 

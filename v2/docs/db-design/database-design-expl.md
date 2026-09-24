@@ -47,6 +47,7 @@ Program → Accreditation Record → 9 Stages → Stage History
 - Captures **synchronous OCR results** for accreditation results (certificates, rating sheets, 1–3 pages) — extracted text, confidence scores, raw + edited text
 - Tracks **human verification** of OCR (user inspects split-screen canvas with flagged tokens $< 0.65$ and confirms or corrects the extraction)
 - Categorizes documents (e.g., "Curriculum", "Faculty Qualifications", "Accreditation Results")
+- Houses the **Common Documents Vault** — university-wide policies and institutional records from administrative offices (HRDO, Registrar, OSAS, etc.) with `college_id = NULL` and `visibility = 'univ'` so any task force can access and link them without redundant uploads
 
 **The OCR flow:**
 ```

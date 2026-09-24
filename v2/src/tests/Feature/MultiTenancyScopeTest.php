@@ -59,7 +59,6 @@ class MultiTenancyScopeTest extends TestCase
             'college_id' => $this->collegeA->id,
             'name' => 'Dean Science',
             'email' => 'dean.science@bicol-u.edu.ph',
-            'password' => 'secret123',
             'status' => 'active',
         ]);
         $this->userCollegeA->roles()->attach($this->roleDean);
@@ -68,7 +67,6 @@ class MultiTenancyScopeTest extends TestCase
             'college_id' => $this->collegeB->id,
             'name' => 'Dean Engineering',
             'email' => 'dean.engineering@bicol-u.edu.ph',
-            'password' => 'secret123',
             'status' => 'active',
         ]);
         $this->userCollegeB->roles()->attach($this->roleDean);
@@ -77,7 +75,6 @@ class MultiTenancyScopeTest extends TestCase
             'college_id' => null,
             'name' => 'IQA Officer',
             'email' => 'iqa@bicol-u.edu.ph',
-            'password' => 'secret123',
             'status' => 'active',
         ]);
         $this->userIqa->roles()->attach($this->roleIqa);
@@ -86,7 +83,6 @@ class MultiTenancyScopeTest extends TestCase
             'college_id' => null,
             'name' => 'Sys Admin',
             'email' => 'admin@bicol-u.edu.ph',
-            'password' => 'secret123',
             'status' => 'active',
         ]);
         $this->userAdmin->roles()->attach($this->roleAdmin);

@@ -76,5 +76,8 @@ Route::prefix('external-accreditor')->group(function () {
 });
 
 // Document Management
-Route::get('/documents', [DocumentController::class, 'index'])->name('documents.index');
-Route::get('/documents/{document}/download', [DocumentController::class, 'download'])->name('documents.download');
+Route::middleware('auth')->group(function () {
+    Route::get('/documents', [DocumentController::class, 'index'])->name('documents.index');
+    Route::post('/documents/common', [DocumentController::class, 'storeCommon'])->name('documents.store.common');
+    Route::get('/documents/{document}/download', [DocumentController::class, 'download'])->name('documents.download');
+});

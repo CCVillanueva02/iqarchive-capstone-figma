@@ -61,4 +61,29 @@ class DocumentStorageService
             'mime_type' => $file->getMimeType(),
         ];
     }
+
+    /**
+     * Store an uploaded institutional Common Document into the private storage disk.
+     *
+     * Security Reasoning: Organizes files into an institutional directory and computes
+     * SHA-256 cryptographic hash for tamper detection and compliance integrity.
+     */
+    public function storeCommonDocument(mixed $file, int $categoryId): array
+    {
+        $hash = hash_file('sha256', $file->getRealPath());
+        $path = "evidence/common/{$categoryId}/{$hash}.pdf";
+
+        Storage::disk(config('filesystems.default', 'local'))->putFileAs(
+            "evidence/common/{$categoryId}",
+            $file,
+            "{$hash}.pdf"
+        );
+
+        return [
+            'file_path' => $path,
+            'file_hash' => $hash,
+            'file_size' => $file->getSize(),
+            'mime_type' => $file->getMimeType(),
+        ];
+    }
 }

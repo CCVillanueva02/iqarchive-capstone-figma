@@ -27,7 +27,7 @@ return new class extends Migration
             $table->text('remarks')->nullable();
             $table->timestamp('created_at')->useCurrent();
 
-            $table->unique(['accreditation_id', 'instrument_criteria_id']);
+            $table->unique(['accreditation_id', 'instrument_criteria_id'], 'comp_req_accred_crit_unique');
         });
     }
 
