@@ -37,9 +37,16 @@
 - [x] Subtask 4: Write feature tests in `AuditTrailTest.php`
 - [x] Subtask 5: Verify tests and run frontend build
 
+### [2026-09-29 / Session 2 — Root Cause Investigation & Fixes]
+- [x] Fixed search input request flooding by adding 300ms debounce in `AuditFilterBar.vue` (commit `d5ea9b5`)
+- [x] Added deep watcher on `filters` prop in `AuditFilterBar.vue` for browser history synchronization
+- [x] Expanded backend search in `AuditLogController.php` to query `details->title`, `details->file_hash`, and `details->email`
+- [x] Hardened clipboard copy in `AuditDetailDrawer.vue` with fallback `execCommand('copy')` and `try/catch`
+- [x] Added regression tests in `AuditTrailTest.php` covering payload title and hash searches (all 57 tests passing)
+
 ## Final Status
-- Completed: 2026-09-28
-- Tests: ✓ (56/56 passing, 360 assertions)
+- Completed: 2026-09-29
+- Tests: ✓ (57/57 passing, 382 assertions)
 - Frontend Build: ✓ (Vite production bundle compiled with 0 errors)
 - Security Review: ✓ (Role-gated server-side, college scoping enforced, immutable append-only records)
 
