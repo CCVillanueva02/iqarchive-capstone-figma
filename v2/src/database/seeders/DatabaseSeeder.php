@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
             CommonDocumentSeeder::class,
             SampleCommonDocumentSeeder::class,
             ComplianceUserSeeder::class,
+            AuditLogSeeder::class,
         ]);
     }
 }

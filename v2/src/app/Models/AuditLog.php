@@ -32,6 +32,7 @@ class AuditLog extends Model
         'target_id',
         'ip_address',
         'details',
+        'created_at',
     ];
 
     protected $appends = [
