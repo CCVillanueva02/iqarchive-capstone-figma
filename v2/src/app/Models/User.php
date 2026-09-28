@@ -92,10 +92,14 @@ class User extends Authenticatable
     }
 
     /**
-     * Check if user has a specific role name.
+     * Check if user has a specific role name or any role within an array.
      */
-    public function hasRole(string $roleName): bool
+    public function hasRole(string|array $roleName): bool
     {
+        if (is_array($roleName)) {
+            return $this->roles->whereIn('name', $roleName)->isNotEmpty();
+        }
+
         return $this->roles->contains('name', $roleName);
     }
 

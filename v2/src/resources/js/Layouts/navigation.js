@@ -37,7 +37,7 @@ export function getNavigationSections(role) {
                         isOpen: true,
                         children: [
                             { name: 'Common Documents', href: '/documents?tab=common-documents', icon: FileText },
-                            { name: 'Program Accreditation', href: '/documents?tab=program-accreditation', icon: FolderKanban },
+                            { name: 'Program Accreditation', href: '/documents/program-accreditation', icon: FolderKanban },
                             { name: 'Institutional Records', href: '/documents?tab=institutional-records', icon: Building2 },
                         ],
                     },

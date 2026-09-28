@@ -40,8 +40,12 @@ class DocumentController extends Controller
      * Security Reasoning: Authorizes viewAny before loading repository.
      * Institutional categories and common documents are accessible university-wide.
      */
-    public function index(Request $request): Response
+    public function index(Request $request): Response|RedirectResponse
     {
+        if ($request->query('tab') === 'program-accreditation') {
+            return redirect()->route('documents.program-accreditation', $request->except('tab'));
+        }
+
         $this->authorize('viewAny', Document::class);
 
         $offices = DocumentCategory::where('scope', 'institutional')
@@ -74,6 +78,7 @@ class DocumentController extends Controller
 
         $documents = $docsQuery->latest('id')->take(50)->get();
 
+        /** @var \App\Models\User|null $user */
         $user = Auth::user();
         $canUpload = $user ? $user->can('create', Document::class) : false;
 

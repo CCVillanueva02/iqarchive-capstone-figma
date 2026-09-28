@@ -22,7 +22,13 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Test User', 'status' => 'active']
         );
 
-        $this->call(CommonDocumentSeeder::class);
-        $this->call(SampleCommonDocumentSeeder::class);
+        $this->call([
+            CollegeSeeder::class,
+            ProgramSeeder::class,
+            AaccupMasterInstrumentSeeder::class,
+            CommonDocumentSeeder::class,
+            SampleCommonDocumentSeeder::class,
+            ComplianceUserSeeder::class,
+        ]);
     }
 }

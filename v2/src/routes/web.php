@@ -18,6 +18,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DevAuthController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\ExecutiveController;
+use App\Http\Controllers\ProgramAccreditationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -81,5 +82,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/documents/common', [DocumentController::class, 'storeCommon'])->name('documents.store.common');
     Route::post('/documents/offices', [DocumentController::class, 'storeOffice'])->name('documents.store.office');
     Route::get('/documents/{document}/download', [DocumentController::class, 'download'])->name('documents.download');
+
+    // Program Accreditation Workspace
+    Route::get('/documents/program-accreditation', [ProgramAccreditationController::class, 'index'])->name('documents.program-accreditation');
+    Route::post('/documents/program-accreditation/programs', [ProgramAccreditationController::class, 'storeProgram'])->name('documents.program-accreditation.store-program');
+    Route::post('/documents/program-accreditation/documents', [ProgramAccreditationController::class, 'storeDocument'])->name('documents.program-accreditation.store-document');
 });
 

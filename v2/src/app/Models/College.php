@@ -24,7 +24,25 @@ class College extends Model
     protected $fillable = [
         'name',
         'code',
+        'campus',
+        'logo_image',
     ];
+
+    protected $appends = [
+        'logo_url',
+    ];
+
+    /**
+     * Resolves absolute asset URL for the college logo.
+     */
+    public function getLogoUrlAttribute(): string
+    {
+        if ($this->logo_image) {
+            return asset('logos/' . $this->logo_image);
+        }
+
+        return asset('logos/' . $this->code . '.png');
+    }
 
     public function programs(): HasMany
     {

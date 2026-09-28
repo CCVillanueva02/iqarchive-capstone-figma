@@ -23,7 +23,7 @@ return new class extends Migration
             $table->foreignId('instrument_parameter_id')->constrained('instrument_parameters')->cascadeOnDelete();
             $table->string('benchmark_code', 50);
             $table->text('title');
-            $table->enum('type', ['system', 'impl', 'outcome']);
+            $table->enum('type', ['system', 'impl', 'outcome', 'best_practice']);
             $table->timestamp('created_at')->useCurrent();
         });
     }

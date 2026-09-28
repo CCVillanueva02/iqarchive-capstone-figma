@@ -1,0 +1,42 @@
+# Program Accreditation Folder Structure Reorganization — Task Plan & Implementation Log
+
+## Plan
+- High-level goal: Reorganize `resources/js/Pages/Documents/Program-Accreditation/Partials` into domain-specific subdirectories (Navigation, Modals, Hub, DocumentTypes) to prepare for feature expansion across all 5 Program Accreditation document types.
+- Scope:
+  - Create subdirectories: `Navigation/`, `Modals/`, `Hub/`, `DocumentTypes/SupportingDocs/`, `DocumentTypes/SelfSurvey/`, `DocumentTypes/ComplianceReports/`, `DocumentTypes/Ppp/`, `DocumentTypes/NarrativeProfile/`.
+  - Move/split files into dedicated modules.
+  - Split `ProfileDocumentsView.vue` into `PppView.vue` and `NarrativeProfileView.vue` so both document types have clean, dedicated workspaces.
+  - Update `Index.vue` imports and template bindings.
+  - Run frontend build (`npm run build`) and backend tests (`php artisan test`) to ensure zero regressions.
+- Key decisions: Keep `Index.vue` as top-level coordinator so backend controllers, route URLs, and query parameters remain unchanged.
+- Edge cases: Ensure event emits (`openUpload`, `backToHub`, `selectCategory`) and props continue to match exactly.
+- Testing strategy: Run `npm run build` and `php artisan test --filter=ProgramAccreditationTest`.
+
+## Implementation Progress
+### [2026-09-27 / Session 1]
+- [x] Subtask 1: Created new subfolders (`Navigation/`, `Modals/`, `Hub/`, `DocumentTypes/`).
+- [x] Subtask 2: Separated `PppView.vue` and `NarrativeProfileView.vue` into dedicated workspaces under `DocumentTypes/`.
+- [x] Subtask 3: Updated `Index.vue` imports and template bindings to match new structure.
+- [x] Subtask 4: Cleaned up obsolete flat partials in `Partials/`.
+- [x] Subtask 5: Verified frontend compilation (`npm run build`) and full backend test suite (`php artisan test` - 49/49 passed).
+
+## Final Status
+- Completed: 2026-09-27
+- Tests: ✓ (49/49 passing, 304 assertions; Vite build succeeded in 937ms)
+- Security review: ✓ (No route changes; college_id scoping and IQA authorization gates untouched)
+- PR/Commits: [PR #14: feat(documents): 3-tier program accreditation master workspace and document type hub](https://github.com/Janssen-Carl/iqarchive-capstone/pull/14)
+- Commits/Files:
+  - `Index.vue`
+  - `Partials/Navigation/{CollegeGrid, ProgramGrid, TierContextCard}.vue`
+  - `Partials/Modals/{AddProgramModal, UploadDocumentModal}.vue`
+  - `Partials/Hub/DocumentTypeHub.vue`
+  - `Partials/DocumentTypes/SupportingDocs/SupportingDocsView.vue`
+  - `Partials/DocumentTypes/SelfSurvey/SelfSurveyView.vue`
+  - `Partials/DocumentTypes/ComplianceReports/ComplianceReportsView.vue`
+  - `Partials/DocumentTypes/Ppp/PppView.vue`
+  - `Partials/DocumentTypes/NarrativeProfile/NarrativeProfileView.vue`
+- Known limitations: None.
+
+## Lessons & Notes
+- Splitting PPP and Narrative Profile early prevents bloated conditional views as soon as detailed quantitative tables and qualitative exhibits are implemented.
+- Each document type now has its own home folder ready for sub-components (such as benchmark item cards, rating summary exports, and compliance matrices).

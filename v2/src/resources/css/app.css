@@ -258,3 +258,44 @@
     --radius-box: 0.75rem;
     /* Applied to: Border radius of cards (card), modal boxes (modal-box), and alert banners (12px) */
 }
+
+/* -------------------------------------------------------------------------
+ * 7. GLOBAL SLEEK SCROLLBAR UTILITIES
+ * Resets DaisyUI's native scrollbar-color override and establishes a sleek,
+ * thin 6px custom scrollbar without chunky OS buttons or gray tracks.
+ * ------------------------------------------------------------------------- */
+html,
+body,
+* {
+    scrollbar-color: auto !important;
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #94a3b8;
+}
+
+.scrollbar-none::-webkit-scrollbar {
+    display: none;
+}
+
+.scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+
+
