@@ -101,9 +101,9 @@ function handleReset() {
 </script>
 
 <template>
-    <div class="p-4 space-y-3 border-b border-slate-100 shrink-0">
-        <!-- Main Controls Grid -->
-        <div class="flex flex-col md:flex-row items-center gap-2.5">
+    <div class="px-4 py-2.5 border-b border-slate-100 shrink-0">
+        <!-- Controls Row -->
+        <div class="flex flex-col md:flex-row items-center gap-2">
             <!-- Search input -->
             <label class="input input-sm input-bordered flex items-center gap-2 flex-1 w-full rounded-lg bg-base-100">
                 <Search class="w-3.5 h-3.5 text-slate-400 shrink-0" />
@@ -111,7 +111,7 @@ function handleReset() {
                     v-model="search"
                     @input="handleSearchInput"
                     type="text"
-                    placeholder="Search by actor name, email, action, entity ID, or IP..."
+                    placeholder="Search actor, action, document title, hash..."
                     class="grow text-xs"
                 />
                 <button
@@ -144,11 +144,11 @@ function handleReset() {
                     v-if="isUniversityWide"
                     v-model="collegeId"
                     @change="handleDropdownChange"
-                    class="select select-sm select-bordered text-xs rounded-lg w-full sm:w-40 bg-base-100"
+                    class="select select-sm select-bordered text-xs rounded-lg w-full sm:w-36 bg-base-100"
                 >
                     <option value="">All Colleges</option>
                     <option v-for="col in colleges" :key="col.id" :value="col.id">
-                        {{ col.code }} — {{ col.name }}
+                        {{ col.code }}
                     </option>
                 </select>
 
@@ -169,12 +169,12 @@ function handleReset() {
                 <select
                     v-model="dateRange"
                     @change="handleDropdownChange"
-                    class="select select-sm select-bordered text-xs rounded-lg w-full sm:w-32 bg-base-100"
+                    class="select select-sm select-bordered text-xs rounded-lg w-full sm:w-28 bg-base-100"
                 >
                     <option value="">All Time</option>
                     <option value="today">Today</option>
-                    <option value="7days">Last 7 Days</option>
-                    <option value="30days">Last 30 Days</option>
+                    <option value="7days">7 Days</option>
+                    <option value="30days">30 Days</option>
                 </select>
 
                 <!-- Reset Button -->
@@ -182,10 +182,10 @@ function handleReset() {
                     v-if="hasActiveFilters"
                     type="button"
                     @click="handleReset"
-                    class="btn btn-sm btn-ghost text-xs text-slate-500 hover:text-slate-800 gap-1 shrink-0"
+                    class="btn btn-xs btn-ghost text-xs text-slate-500 hover:text-slate-800 gap-1 shrink-0"
                     title="Clear all filters"
                 >
-                    <RotateCcw class="w-3.5 h-3.5" />
+                    <RotateCcw class="w-3 h-3" />
                     <span>Reset</span>
                 </button>
             </div>

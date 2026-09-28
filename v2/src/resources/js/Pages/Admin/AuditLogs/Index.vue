@@ -113,33 +113,23 @@ function exportAuditReport() {
 
     <AppShell :breadcrumbs="[{ label: 'Administration', href: '/admin' }, { label: 'System Audit Trail' }]">
         <div class="h-[calc(100vh-5rem)] flex flex-col space-y-3.5 max-w-7xl mx-auto w-full">
-            <!-- Header Bar -->
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0 pb-1">
+            <!-- Minimal Header Bar -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
                 <div>
-                    <h1 class="text-2xl font-extrabold tracking-tight text-slate-900">
+                    <h1 class="text-xl font-bold tracking-tight text-slate-900">
                         Audit Trail & Compliance Ledger
                     </h1>
-                    <p class="text-xs text-slate-500 mt-0.5">
+                    <p class="text-xs text-slate-500">
                         Immutable operational activity records and regulatory verification history.
                     </p>
                 </div>
 
-                <div class="flex items-center gap-2.5">
-                    <!-- Live feed pulse indicator -->
-                    <div class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200/60 text-emerald-700 text-xs">
-                        <span class="relative flex h-2 w-2">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                        </span>
-                        <span class="font-medium text-[11px]">Audit Engine Active</span>
-                    </div>
-
-                    <!-- Export Report Button -->
+                <div class="flex items-center gap-2">
                     <button
                         type="button"
                         @click="exportAuditReport"
-                        class="btn btn-sm btn-outline border-sidebar-blue text-sidebar-blue hover:bg-sidebar-blue hover:border-sidebar-blue hover:text-white gap-1.5 text-xs font-semibold"
-                        title="Download active compliance audit log records"
+                        class="btn btn-sm btn-outline border-slate-300 hover:border-sidebar-blue hover:bg-sidebar-blue hover:text-white gap-1.5 text-xs font-semibold"
+                        title="Export compliance audit records as CSV"
                     >
                         <Download class="w-3.5 h-3.5" />
                         <span>Export CSV</span>

@@ -1,17 +1,15 @@
 <!--
 ================================================================================
-IQArchive v2 — Audit Metrics Strip Partial
+IQArchive v2 — Audit Metrics Strip Partial (Distilled Minimalist View)
 ================================================================================
 File: resources/js/Pages/Admin/AuditLogs/Partials/AuditMetricsStrip.vue
-Role: Displays high-level 24h operational KPIs and event rollups.
-UI Standard: DaisyUI card, badge; Lucide icons.
-Line count target: < 100 lines.
+Role: Displays compact, high-contrast 24h operational KPIs.
+UI Standard: DaisyUI card, tabular numerals; zero decorative clutter.
+Line count target: < 60 lines.
 ================================================================================
 -->
 
 <script setup>
-import { Activity, FileCheck, ShieldAlert, Building2 } from 'lucide-vue-next';
-
 defineProps({
     metrics: {
         type: Object,
@@ -26,60 +24,36 @@ defineProps({
 </script>
 
 <template>
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 shrink-0">
-        <!-- 1. Total Daily Activity -->
-        <div class="card card-border bg-base-100 shadow-xs p-4 flex flex-row items-center justify-between">
-            <div class="space-y-0.5">
-                <span class="text-xs font-medium text-slate-500">24h Event Volume</span>
-                <div class="text-xl font-bold text-slate-900 tabular-nums">
-                    {{ (metrics.total_today || 0).toLocaleString() }}
-                </div>
-                <span class="text-[11px] text-slate-400">Total recorded events today</span>
-            </div>
-            <div class="w-10 h-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center shrink-0">
-                <Activity class="w-5 h-5" />
+    <div class="card card-border bg-base-100 shadow-xs py-2.5 px-5 grid grid-cols-2 lg:grid-cols-4 gap-4 divide-y lg:divide-y-0 lg:divide-x divide-slate-100 shrink-0">
+        <!-- 1. 24h Activity -->
+        <div class="flex flex-col justify-center">
+            <span class="text-[11px] font-medium text-slate-500 uppercase tracking-wide">24h Activity</span>
+            <div class="text-lg font-bold text-slate-900 tabular-nums">
+                {{ (metrics.total_today || 0).toLocaleString() }}
             </div>
         </div>
 
-        <!-- 2. Document & Evidence Mutations -->
-        <div class="card card-border bg-base-100 shadow-xs p-4 flex flex-row items-center justify-between">
-            <div class="space-y-0.5">
-                <span class="text-xs font-medium text-slate-500">Document Mutations</span>
-                <div class="text-xl font-bold text-primary tabular-nums">
-                    {{ (metrics.document_mutations || 0).toLocaleString() }}
-                </div>
-                <span class="text-[11px] text-slate-400">Uploads, endorsements, reviews</span>
-            </div>
-            <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                <FileCheck class="w-5 h-5" />
+        <!-- 2. Document Mutations -->
+        <div class="flex flex-col justify-center pt-2 lg:pt-0 lg:pl-5">
+            <span class="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Document Events</span>
+            <div class="text-lg font-bold text-primary tabular-nums">
+                {{ (metrics.document_mutations || 0).toLocaleString() }}
             </div>
         </div>
 
-        <!-- 3. Security & Access Events -->
-        <div class="card card-border bg-base-100 shadow-xs p-4 flex flex-row items-center justify-between">
-            <div class="space-y-0.5">
-                <span class="text-xs font-medium text-slate-500">Security & Access</span>
-                <div class="text-xl font-bold text-amber-600 tabular-nums">
-                    {{ (metrics.security_events || 0).toLocaleString() }}
-                </div>
-                <span class="text-[11px] text-slate-400">Logins, domain gates, alerts</span>
-            </div>
-            <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
-                <ShieldAlert class="w-5 h-5" />
+        <!-- 3. Security Events -->
+        <div class="flex flex-col justify-center pt-2 lg:pt-0 lg:pl-5">
+            <span class="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Security & Access</span>
+            <div class="text-lg font-bold text-slate-800 tabular-nums">
+                {{ (metrics.security_events || 0).toLocaleString() }}
             </div>
         </div>
 
-        <!-- 4. Active Tenant Colleges -->
-        <div class="card card-border bg-base-100 shadow-xs p-4 flex flex-row items-center justify-between">
-            <div class="space-y-0.5">
-                <span class="text-xs font-medium text-slate-500">Active College Tenants</span>
-                <div class="text-xl font-bold text-sky-600 tabular-nums">
-                    {{ metrics.active_tenants || 0 }}
-                </div>
-                <span class="text-[11px] text-slate-400">Colleges with activity today</span>
-            </div>
-            <div class="w-10 h-10 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center shrink-0">
-                <Building2 class="w-5 h-5" />
+        <!-- 4. Active Colleges -->
+        <div class="flex flex-col justify-center pt-2 lg:pt-0 lg:pl-5">
+            <span class="text-[11px] font-medium text-slate-500 uppercase tracking-wide">Active Colleges</span>
+            <div class="text-lg font-bold text-slate-800 tabular-nums">
+                {{ metrics.active_tenants || 0 }}
             </div>
         </div>
     </div>
