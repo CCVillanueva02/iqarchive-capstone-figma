@@ -1,0 +1,40 @@
+# Login Page Redesign — Task Plan & Implementation Log
+
+## Plan
+- High-level goal: Redesign the IQArchive login page to match the user-provided reference mockup, featuring a high-impact split-screen layout with the Bicol University monument on the left and a clean DaisyUI card on the right.
+- Scope: 
+  - Left hero panel: Bicol University entrance monument with deep navy gradient overlay, orange workspace badge line, crisp white typography with highlighted orange "Quality Assurance" span, and descriptive mission text.
+  - Right auth panel: Clean white background with centered elevated DaisyUI card, Bicol University seal, IQArchive title, Google Workspace SSO button, support link, and padlock security footer.
+  - Preserved security logic: Google OAuth redirect (`/auth/google/redirect`), `@bicol-u.edu.ph` error feedback alerts, and desktop viewport guard (`<MobileUnsupported />`).
+  - Standalone preview: Production HTML/CSS preview in `docs/designs/login/index.html`.
+- Key decisions:
+  - Use DaisyUI card, alert, and button classes adhering strictly to `daisyui.md` and `DESIGN.md`.
+  - Use official Bicol University Orange `#F26522` and Navy `#0B1B3D` tokens.
+  - Modular, concise code keeping `Login.vue` under 160 lines per general rules.
+- Edge cases to handle:
+  - Error/Info/Success alert banners from OAuth callback.
+  - Responsive collapse for viewports below 1024px via `MobileUnsupported.vue`.
+  - Image scaling on varied desktop aspect ratios (`object-cover`, `bg-cover`, `bg-center`).
+- Testing strategy:
+  - Standalone HTML rendering check.
+  - Vue build validation via `npm run build`.
+  - PHPUnit test suite: `php artisan test --filter=GoogleAuthTest`.
+  - Browser subagent visual inspection of `http://127.0.0.1:8000/login`.
+
+## Implementation Progress
+### [2026-09-25]
+- [x] Extracted assets: copied `bu-monument.jpg` to `v2/src/public/images/bu-monument.jpg`.
+- [x] Cleaned up temporary standalone design prototype after production integration in `Login.vue`.
+- [x] Implemented redesigned `v2/src/resources/js/Pages/Auth/Login.vue` using DaisyUI components and token-based colors.
+- [x] Verified production build: `npm run build` completed successfully with zero warnings/errors.
+- [x] Verified backend test suite: `php artisan test --filter=GoogleAuthTest` passed (9 tests, 63 assertions).
+- [x] Verified visual rendering at 1440x900 desktop viewport via browser subagent.
+- [x] Removed Dev Sandbox navigation link from card footer per user request.
+- [x] Adjusted blue overlay to a horizontal gradient from left to right (`from-[#0B1B3D]/95 via-[#0B1B3D]/85 to-[#0B1B3D]/60`).
+- [x] Added divider line directly above "Secure access for authorized Bicol University personnel".
+
+## Final Status
+- Completed: 2026-09-25
+- Tests: ✓ (9 passing, 63 assertions)
+- Visual QA: ✓ (Horizontal gradient overlay and top divider line verified in browser)
+- Artifacts: [Login.vue](file:///c:/Users/Vince%20Mathew/OneDrive/Documents/GitHub/iqarchive-capstone/v2/src/resources/js/Pages/Auth/Login.vue)
