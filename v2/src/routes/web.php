@@ -13,6 +13,7 @@
 
 use App\Http\Controllers\AccreditationController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AuditLogController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DevAuthController;
@@ -50,6 +51,7 @@ Route::get('/settings', [AuthController::class, 'settings'])->name('account.sett
 // Role-Scoped Workspaces
 Route::prefix('admin')->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('admin.dashboard');
+    Route::get('/audit-logs', [AuditLogController::class, 'index'])->name('admin.audit-logs')->middleware('auth');
 });
 
 Route::prefix('iqa')->group(function () {

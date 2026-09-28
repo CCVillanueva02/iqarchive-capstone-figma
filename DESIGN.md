@@ -9,7 +9,7 @@
 - **Product:** IQArchive (Bicol University AACCUP Accreditation & Evidence Repository)
 - **Design Philosophy:** Executive, calm authority, institutional dignity, clean contrast.
 - **Tone:** Academic precision, zero visual clutter, desktop-first productivity (≥1024px).
-- **Core Principle:** Always use DaisyUI component primitives (`btn`, `card`, `modal`, `badge`, `table`, `input`) powered by semantic design tokens defined in `resources/css/app.css`.
+- **Core Principle:** Always use DaisyUI component primitives (`btn`, `card`, `modal`, `badge`, `table`, `input`, `select`) powered by semantic design tokens defined in `resources/css/app.css`.
 
 ---
 
@@ -73,7 +73,7 @@
 | :--- | :--- | :--- | :--- |
 | **Success** | `--color-status-success` | `#16A34A` | "IQA Approved" badges, upload success confirmations, and valid OCR validation marks. |
 | **Warning** | `--color-status-warning` | `#D97706` | "Draft" document pills, pending review states, and impending deadline reminders. |
-| **Error** | `--color-status-error` | `#DC2626` | "Rejected" document badges, form validation errors, deficit indicators, and destructive actions. |
+| **Error / Security** | `--color-status-error` | `#DC2626` | "Rejected" document badges, form validation errors, deficit indicators, and domain security alerts. |
 | **Info** | `--color-status-info` | `#0284C7` | "Dean Approved" badges, informative system banners, and instructional tooltips. |
 
 ---
@@ -87,7 +87,7 @@ Font Stack:
 | Scale Token | Size | Line Height | Applications |
 | :--- | :--- | :--- | :--- |
 | `--text-display` | `2rem` (32px) | `2.25rem` | Major portal titles, hero accreditation statistics, and major scorecard numerals. |
-| `--text-heading-xl` | `1.5rem` (24px) | `1.875rem` | Top-level page titles (`h1`, e.g. "Common Documents", "IQA Staff Dashboard"). |
+| `--text-heading-xl` | `1.5rem` (24px) | `1.875rem` | Top-level page titles (`h1`, e.g. "Common Documents", "Audit Trail & Compliance Ledger"). |
 | `--text-heading-lg` | `1.25rem` (20px) | `1.625rem` | Modal dialog titles, primary section headers, and major dashboard widget headers. |
 | `--text-heading-md` | `1rem` (16px) | `1.375rem` | Office titles in document table header, card titles, and criteria section headings. |
 | `--text-heading-sm` | `0.875rem` (14px) | `1.25rem` | Panel titles (e.g. "OFFICES"), sub-card headings, and form section group legends. |
@@ -110,13 +110,60 @@ Font Stack:
 
 ## 5. Component Usage Standards
 
-1. **Buttons:**
-   - **Primary Action:** Use `btn btn-sm bg-sidebar-blue hover:bg-sidebar-blue-hover text-white border-none gap-1.5` or `btn btn-sm btn-primary`.
-   - **Secondary / Outline Action:** Use `btn btn-sm btn-outline border-sidebar-blue text-sidebar-blue hover:bg-sidebar-blue hover:border-sidebar-blue hover:text-white gap-1.5`.
-   - **Cancel / Close:** Use `btn btn-sm btn-ghost text-slate-600`.
-2. **Page Headers:**
-   - Place primary page action buttons on the far right of the top page header (`flex items-center justify-between`).
-   - Keep subordinate card toolbars focused purely on search and filters.
-3. **Office Directory & Documents Table:**
-   - Left column: 2/12 or 3/12 width, displaying the office list with active item styled in `bg-bu-blue-50 border-bu-blue-200 text-bu-blue-800`.
-   - Right column: 10/12 or 9/12 width, displaying the office name heading with subtitle description, toolbar filters, and tabular document records.
+### A. Buttons & Actions
+- **Primary Workstation Action:** Use `btn btn-sm bg-sidebar-blue hover:bg-sidebar-blue-hover text-white border-none gap-1.5` or `btn btn-sm btn-primary`.
+- **Secondary / Outline Action:** Use `btn btn-sm btn-outline border-sidebar-blue text-sidebar-blue hover:bg-sidebar-blue hover:border-sidebar-blue hover:text-white gap-1.5`.
+- **Cancel / Ghost Action:** Use `btn btn-sm btn-ghost text-slate-600 hover:text-slate-900`.
+- **Inspect / Row Action:** Use `btn btn-xs btn-ghost text-slate-500 hover:text-primary gap-1`.
+
+### B. Page Headers & Action Bars
+- Primary page titles must lead directly as `h1` with an explanatory subtitle below. Never float kicker badges above titles.
+- Action controls (export, upload, live pulse) align on the far right of the top page header (`flex items-center justify-between`).
+- Keep subordinate table toolbars focused strictly on search queries, filters, and resets.
+
+### C. Office Directory & Documents Table (Split View)
+- Left column (2/12 or 3/12 width): Displays the office directory list with active item styled in `bg-bu-blue-50 border-bu-blue-200 text-bu-blue-800`.
+- Right column (10/12 or 9/12 width): Displays selected office details, search/status filter bar, and tabular document records.
+
+### D. Audit Trail & Compliance Ledger
+- **Metric KPI Strip:** 4-card grid (`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3`) displaying 24h event volume, document mutations, security alerts, and active colleges.
+- **Pinned Data Table:** Uses `table table-zebra table-sm table-pin-rows` with monospace tabular numbers for timestamps and client IP addresses.
+- **Slide-Over Detail Drawer:** Right-docked modal (`w-full max-w-lg shadow-2xl border-l border-slate-200`) providing actor context, target model reference, SHA-256 copy action, before/after diff comparison cards, and raw JSON viewer.
+- **State Comparison Diffs:**
+  - Previous State: `bg-rose-50/70 border border-rose-200 text-rose-900 rounded-lg p-2.5 font-mono text-xs`.
+  - Updated State: `bg-emerald-50/70 border border-emerald-200 text-emerald-900 rounded-lg p-2.5 font-mono text-xs`.
+
+### E. StatusBadges & Indicators
+- Always use DaisyUI `badge-soft` semantic classes:
+  - `badge-success badge-soft text-success-content`: Approved / Endorsed / Milestone Reached.
+  - `badge-info badge-soft text-info-content`: Submitted / Dean Approved / Routine Event.
+  - `badge-warning badge-soft text-warning-content`: Draft / Needs Revision / Warning Alert.
+  - `badge-error badge-soft text-error-content`: Deficit / Rejected / Domain Security Alert.
+  - `badge-neutral badge-soft text-base-content/70`: Draft / Unassigned / Univ-Wide Scope.
+
+---
+
+## 6. Motion & Micro-Interaction Standards
+
+1. **Slide-Over Inspection Drawers:**
+   - Smooth entrance using `animate-in slide-in-from-right duration-200`.
+   - Backdrop dismissal with `bg-slate-900/40 backdrop-blur-[2px] transition-opacity`.
+2. **Cryptographic Hash Verification:**
+   - One-click copy interaction on SHA-256 strings and IP addresses.
+   - Immediate feedback showing `Copied!` with a green checkmark (`Check` icon) for 2,000ms.
+3. **Live Engine Heartbeat:**
+   - Continuous background ingestion pulse indicator using `relative flex h-2 w-2` with `animate-ping bg-emerald-400` and solid center dot.
+4. **Interactive Table Rows:**
+   - Hover row highlight `hover:bg-slate-50/80 transition-colors cursor-pointer`.
+   - Distinct selected row indicator: `bg-primary/5 font-medium`.
+
+---
+
+## 7. AI Slop Bans & Non-Negotiable Rules
+
+- ❌ **No eyebrow/kicker badges** floating above main page headings (let headings lead).
+- ❌ **No decorative gradient text** (use scale, font weight, and color tokens for emphasis).
+- ❌ **No repetitive, identical-sized card grids** that fail to convey clear hierarchy.
+- ❌ **No emoji or unicode symbols** masquerading as UI icons (use Lucide icons exclusively).
+- ❌ **No fake statistics, progress rings, or sparklines** without backing database records.
+- ❌ **No ad-hoc hand-coded buttons or inputs** (always use DaisyUI component primitives: `btn`, `input`, `select`, `table`, `card`).

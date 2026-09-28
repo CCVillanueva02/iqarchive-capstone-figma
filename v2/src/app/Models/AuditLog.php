@@ -34,12 +34,53 @@ class AuditLog extends Model
         'details',
     ];
 
+    protected $appends = [
+        'severity',
+        'category',
+    ];
+
     protected function casts(): array
     {
         return [
             'details' => 'array',
             'created_at' => 'datetime',
         ];
+    }
+
+    /**
+     * Compute event severity for badges and UI categorization.
+     */
+    public function getSeverityAttribute(): string
+    {
+        $action = strtolower($this->action ?? '');
+        if (str_contains($action, 'reject') || str_contains($action, 'security') || str_contains($action, 'fail') || str_contains($action, 'unauthorized') || str_contains($action, 'deficit')) {
+            return 'security';
+        }
+        if (str_contains($action, 'warning') || str_contains($action, 'return') || str_contains($action, 'elevat')) {
+            return 'warning';
+        }
+        if (str_contains($action, 'approv') || str_contains($action, 'upload') || str_contains($action, 'endorse') || str_contains($action, 'complete') || str_contains($action, 'transition')) {
+            return 'success';
+        }
+        return 'info';
+    }
+
+    /**
+     * Compute event category group for filtering.
+     */
+    public function getCategoryAttribute(): string
+    {
+        $action = strtolower($this->action ?? '');
+        if (str_starts_with($action, 'auth.') || str_contains($action, 'login') || str_contains($action, 'session')) {
+            return 'auth';
+        }
+        if (str_starts_with($action, 'document.') || str_contains($action, 'evidence')) {
+            return 'document';
+        }
+        if (str_starts_with($action, 'accreditation.') || str_contains($action, 'stage') || str_contains($action, 'instrument') || str_contains($action, 'task_force')) {
+            return 'accreditation';
+        }
+        return 'admin';
     }
 
     public function user(): BelongsTo

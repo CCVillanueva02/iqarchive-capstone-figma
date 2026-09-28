@@ -1,0 +1,49 @@
+# Audit Trail UI — Task Plan & Implementation Log
+
+## Plan
+- High-level goal: Build a responsive, reactive Audit Trail UI for System Administrators and IQA Staff that queries and visualizes the immutable `audit_logs` table with filterable table, search bar, status badges, metrics, and an interactive detail inspection drawer.
+- Scope:
+  - In:
+    - Backend: `AuditLogController` with role authorization (`system_admin`, `iqa_staff`/`iqa_member`), college scoping, search/filtering, pagination, and KPI metrics.
+    - Route: `/admin/audit -logs` registered in `routes/web.php`.
+    - Frontend: Modular Vue 3 components under `resources/js/Pages/Admin/AuditLogs/`:
+      - `Index.vue` (shell & integration)
+      - `Partials/AuditMetricsStrip.vue` (summary KPIs)
+      - `Partials/AuditFilterBar.vue` (search, category, college, severity filters)
+      - `Partials/AuditLogsTable.vue` (core table with DaisyUI components, sorting, pagination)
+      - `Partials/AuditDetailDrawer.vue` (slide-over drawer with payload details, cryptographic hash, before/after diffs)
+  - Out:
+    - Mutation/delete APIs (forbidden; logs are strictly immutable and append-only).
+- Key decisions:
+  - Use DaisyUI `table`, `card`, `badge`, `modal`, `btn`, `input`, `select` per design system guidelines.
+  - Keep all Vue components under 150–200 lines by modularizing into partials.
+  - Multi-tenancy enforcement via `MultiTenantScopeService`: System Admin and IQA have university-wide view; college deans are scoped to their `college_id`.
+  - Inertia router requests with `preserveState` and `preserveScroll` for snappy reactivity.
+- Edge cases to handle:
+  - Null actor (`user_id` is null, e.g. unauthenticated domain rejection or system background jobs).
+  - Empty search results state with quick reset action.
+  - Null or malformed `details` JSON payloads.
+  - Truncated text with full value displayed in detail drawer.
+- Testing strategy:
+  - Feature tests covering route authorization (system_admin vs iqa_staff vs unauthorized roles like task_force).
+  - Feature tests for search query filtering, college scoping, and pagination.
+  - Frontend build verification via `npm run build`.
+
+## Implementation Progress
+### [2026-09-28 / Session 1]
+- [x] Subtask 1: Establish design system compliance and create task file
+- [x] Subtask 2: Implement backend `AuditLogController` and `/admin/audit-logs` route
+- [x] Subtask 3: Implement modular Vue 3 frontend components (Index + 4 Partials)
+- [x] Subtask 4: Write feature tests in `AuditTrailTest.php`
+- [x] Subtask 5: Verify tests and run frontend build
+
+## Final Status
+- Completed: 2026-09-28
+- Tests: ✓ (56/56 passing, 360 assertions)
+- Frontend Build: ✓ (Vite production bundle compiled with 0 errors)
+- Security Review: ✓ (Role-gated server-side, college scoping enforced, immutable append-only records)
+
+## Lessons & Notes
+- DaisyUI component classes (`table`, `card`, `badge`, `modal`, `btn`, `input`, `select`) provided complete, consistent UI without any ad-hoc custom styles.
+- Extracted into 4 sub-component partials under `Admin/AuditLogs/Partials/`, keeping all Vue SFC files below 200 lines.
+- Kept the backend lean under Ponytail mode: leveraged the existing Eloquent model with `$appends` for category/severity rather than introducing superfluous transformer layers.

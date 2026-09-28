@@ -10,6 +10,7 @@ The active codebase is maintained in the [`v2/`](v2/) workspace:
 
 - **[Developer Onboarding & Setup Guide](v2/README.md):** Complete workstation requirements (PHP 8.4, Composer, Node.js, MySQL) and local setup instructions.
 - **[Architecture Essentials](v2/docs/ARCHITECTURE-ESSENTIALS.md):** Architectural boundaries, 3NF schema zones, and multi-tenant scoping.
+- **[Design System Specification](DESIGN.md):** Source of truth for brand tokens, typography scale, DaisyUI component primitives, and workstation layout guidelines.
 - **[Data Dictionary](v2/docs/db-design/data-dict/README.md):** Full 22-table data dictionary specifications across 4 schema zones.
 - **[Engineering Backlog](v2/TODOS.md):** Prioritized roadmap and milestone tracking.
 
