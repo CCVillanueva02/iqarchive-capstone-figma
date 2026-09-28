@@ -10,7 +10,7 @@ Line count target: < 150 lines.
 -->
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { Search, RotateCcw, X } from 'lucide-vue-next';
 
 const props = defineProps({
@@ -42,11 +42,26 @@ const collegeId = ref(props.filters.college_id || '');
 const severity = ref(props.filters.severity || '');
 const dateRange = ref(props.filters.date_range || '');
 
+let searchDebounceTimer = null;
+
+// Keep local filter state reactive if props change externally
+watch(
+    () => props.filters,
+    (newFilters) => {
+        search.value = newFilters.search || '';
+        category.value = newFilters.category || '';
+        collegeId.value = newFilters.college_id || '';
+        severity.value = newFilters.severity || '';
+        dateRange.value = newFilters.date_range || '';
+    },
+    { deep: true }
+);
+
 const hasActiveFilters = computed(() => {
     return Boolean(search.value || category.value || collegeId.value || severity.value || dateRange.value);
 });
 
-function applyFilter() {
+function emitFilter() {
     emit('filter', {
         search: search.value,
         category: category.value,
@@ -56,7 +71,26 @@ function applyFilter() {
     });
 }
 
+function handleSearchInput() {
+    clearTimeout(searchDebounceTimer);
+    searchDebounceTimer = setTimeout(() => {
+        emitFilter();
+    }, 300);
+}
+
+function handleDropdownChange() {
+    clearTimeout(searchDebounceTimer);
+    emitFilter();
+}
+
+function handleClearSearch() {
+    clearTimeout(searchDebounceTimer);
+    search.value = '';
+    emitFilter();
+}
+
 function handleReset() {
+    clearTimeout(searchDebounceTimer);
     search.value = '';
     category.value = '';
     collegeId.value = '';
@@ -75,7 +109,7 @@ function handleReset() {
                 <Search class="w-3.5 h-3.5 text-slate-400 shrink-0" />
                 <input
                     v-model="search"
-                    @input="applyFilter"
+                    @input="handleSearchInput"
                     type="text"
                     placeholder="Search by actor name, email, action, entity ID, or IP..."
                     class="grow text-xs"
@@ -83,7 +117,7 @@ function handleReset() {
                 <button
                     v-if="search"
                     type="button"
-                    @click="search = ''; applyFilter();"
+                    @click="handleClearSearch"
                     class="btn btn-ghost btn-xs btn-circle text-slate-400 hover:text-slate-600"
                 >
                     <X class="w-3 h-3" />
@@ -95,7 +129,7 @@ function handleReset() {
                 <!-- Category -->
                 <select
                     v-model="category"
-                    @change="applyFilter"
+                    @change="handleDropdownChange"
                     class="select select-sm select-bordered text-xs rounded-lg w-full sm:w-36 bg-base-100"
                 >
                     <option value="">All Categories</option>
@@ -109,7 +143,7 @@ function handleReset() {
                 <select
                     v-if="isUniversityWide"
                     v-model="collegeId"
-                    @change="applyFilter"
+                    @change="handleDropdownChange"
                     class="select select-sm select-bordered text-xs rounded-lg w-full sm:w-40 bg-base-100"
                 >
                     <option value="">All Colleges</option>
@@ -121,7 +155,7 @@ function handleReset() {
                 <!-- Severity Level -->
                 <select
                     v-model="severity"
-                    @change="applyFilter"
+                    @change="handleDropdownChange"
                     class="select select-sm select-bordered text-xs rounded-lg w-full sm:w-32 bg-base-100"
                 >
                     <option value="">All Severities</option>
@@ -134,7 +168,7 @@ function handleReset() {
                 <!-- Date Range -->
                 <select
                     v-model="dateRange"
-                    @change="applyFilter"
+                    @change="handleDropdownChange"
                     class="select select-sm select-bordered text-xs rounded-lg w-full sm:w-32 bg-base-100"
                 >
                     <option value="">All Time</option>

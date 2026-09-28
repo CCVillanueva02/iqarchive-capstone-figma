@@ -40,15 +40,30 @@ const updatedState = computed(() => {
     return props.log?.details?.updated || props.log?.details?.after || null;
 });
 
-function copyToClipboard(text, isHash = false) {
+async function copyToClipboard(text, isHash = false) {
     if (!text) return;
-    navigator.clipboard.writeText(typeof text === 'object' ? JSON.stringify(text, null, 2) : text);
-    if (isHash) {
-        copiedHash.value = true;
-        setTimeout(() => (copiedHash.value = false), 2000);
-    } else {
-        copiedJson.value = true;
-        setTimeout(() => (copiedJson.value = false), 2000);
+    const payload = typeof text === 'object' ? JSON.stringify(text, null, 2) : String(text);
+    try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            await navigator.clipboard.writeText(payload);
+        } else {
+            // Fallback for non-secure / restricted environments
+            const textArea = document.createElement('textarea');
+            textArea.value = payload;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+        }
+        if (isHash) {
+            copiedHash.value = true;
+            setTimeout(() => (copiedHash.value = false), 2000);
+        } else {
+            copiedJson.value = true;
+            setTimeout(() => (copiedJson.value = false), 2000);
+        }
+    } catch (err) {
+        console.warn('Clipboard copy failed:', err);
     }
 }
 </script>

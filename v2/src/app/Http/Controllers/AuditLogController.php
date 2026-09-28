@@ -56,12 +56,15 @@ class AuditLogController extends Controller
             $query->where('college_id', $request->input('college_id'));
         }
 
-        // Search filter: Actor name/email, action string, IP, or target ID
+        // Search filter: Actor name/email, action string, IP, target ID, or details payload
         if ($search = $request->input('search')) {
             $query->where(function ($q) use ($search) {
                 $q->where('action', 'like', "%{$search}%")
                     ->orWhere('ip_address', 'like', "%{$search}%")
                     ->orWhere('target_id', 'like', "%{$search}%")
+                    ->orWhere('details->title', 'like', "%{$search}%")
+                    ->orWhere('details->file_hash', 'like', "%{$search}%")
+                    ->orWhere('details->email', 'like', "%{$search}%")
                     ->orWhereHas('user', function ($userQuery) use ($search) {
                         $userQuery->where('name', 'like', "%{$search}%")
                             ->orWhere('email', 'like', "%{$search}%");

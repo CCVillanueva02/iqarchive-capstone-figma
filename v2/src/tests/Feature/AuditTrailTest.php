@@ -190,6 +190,39 @@ class AuditTrailTest extends TestCase
         );
     }
 
+    public function test_search_filter_matches_document_title_in_json_details(): void
+    {
+        AuditLog::create([
+            'college_id' => $this->collegeA->id,
+            'user_id' => $this->adminUser->id,
+            'action' => 'document.upload.common',
+            'target_type' => 'App\Models\Document',
+            'target_id' => '501',
+            'ip_address' => '10.0.0.1',
+            'details' => [
+                'title' => 'Faculty Performance Appraisal Manual',
+                'file_hash' => 'hash_998877665544332211',
+            ],
+        ]);
+
+        // Search by document title
+        $response = $this->actingAs($this->adminUser)->get('/admin/audit-logs?search=Performance+Appraisal');
+        $response->assertStatus(200);
+        $response->assertInertia(fn (Assert $page) => $page
+            ->component('Admin/AuditLogs/Index')
+            ->has('auditLogs.data', 1)
+            ->where('auditLogs.data.0.details.title', 'Faculty Performance Appraisal Manual')
+        );
+
+        // Search by cryptographic file hash
+        $hashResponse = $this->actingAs($this->adminUser)->get('/admin/audit-logs?search=hash_998877');
+        $hashResponse->assertStatus(200);
+        $hashResponse->assertInertia(fn (Assert $page) => $page
+            ->component('Admin/AuditLogs/Index')
+            ->has('auditLogs.data', 1)
+        );
+    }
+
     public function test_audit_log_model_computes_severity_and_category_accessors(): void
     {
         $log1 = AuditLog::create([
