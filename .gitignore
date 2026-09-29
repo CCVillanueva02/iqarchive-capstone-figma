@@ -8,9 +8,9 @@
 /.agents/tmp/gstack-upstream
 /.antigravity/design-reports
 /backup
-/.agents/ponytail-antigravity-IDE
+# /.agents/ponytail-antigravity-IDE
 /graphify-out/
-/.agents/skills/
+# /.agents/skills/
 skills-lock.json
 
 
