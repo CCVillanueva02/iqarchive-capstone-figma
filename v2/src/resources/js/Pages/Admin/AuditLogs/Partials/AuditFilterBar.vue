@@ -3,192 +3,153 @@
 IQArchive v2 — Audit Filter Bar Partial
 ================================================================================
 File: resources/js/Pages/Admin/AuditLogs/Partials/AuditFilterBar.vue
-Role: Controls search query, category, tenant college, and severity filters.
-UI Standard: DaisyUI input, select, badge, btn; Lucide icons.
-Line count target: < 150 lines.
+Role: Segmented subtabs, search input, severity status chips, count & reset.
+UI Standard: DaisyUI / Institutional BU Blue (#0038A8). Line count < 140.
 ================================================================================
 -->
 
 <script setup>
-import { ref, computed, watch } from 'vue';
-import { Search, RotateCcw, X } from 'lucide-vue-next';
+import { Search, X, RotateCcw } from 'lucide-vue-next';
 
-const props = defineProps({
-    filters: {
-        type: Object,
-        default: () => ({
-            search: '',
-            category: '',
-            college_id: '',
-            severity: '',
-            date_range: '',
-        }),
-    },
-    colleges: {
+defineProps({
+    subtabs: {
         type: Array,
-        default: () => [],
+        default: null,
     },
-    isUniversityWide: {
+    activeSubKey: {
+        type: String,
+        default: 'all',
+    },
+    subTabCounts: {
+        type: Object,
+        default: () => ({}),
+    },
+    search: {
+        type: String,
+        default: '',
+    },
+    sevFilter: {
+        type: String,
+        default: '',
+    },
+    resultCount: {
+        type: Number,
+        default: 0,
+    },
+    hasFilters: {
         type: Boolean,
-        default: true,
+        default: false,
     },
 });
 
-const emit = defineEmits(['filter', 'reset']);
+const emit = defineEmits([
+    'selectSubtab',
+    'update:search',
+    'update:sevFilter',
+    'clearFilters',
+]);
 
-const search = ref(props.filters.search || '');
-const category = ref(props.filters.category || '');
-const collegeId = ref(props.filters.college_id || '');
-const severity = ref(props.filters.severity || '');
-const dateRange = ref(props.filters.date_range || '');
-
-let searchDebounceTimer = null;
-
-// Keep local filter state reactive if props change externally
-watch(
-    () => props.filters,
-    (newFilters) => {
-        search.value = newFilters.search || '';
-        category.value = newFilters.category || '';
-        collegeId.value = newFilters.college_id || '';
-        severity.value = newFilters.severity || '';
-        dateRange.value = newFilters.date_range || '';
-    },
-    { deep: true }
-);
-
-const hasActiveFilters = computed(() => {
-    return Boolean(search.value || category.value || collegeId.value || severity.value || dateRange.value);
-});
-
-function emitFilter() {
-    emit('filter', {
-        search: search.value,
-        category: category.value,
-        college_id: collegeId.value,
-        severity: severity.value,
-        date_range: dateRange.value,
-    });
-}
-
-function handleSearchInput() {
-    clearTimeout(searchDebounceTimer);
-    searchDebounceTimer = setTimeout(() => {
-        emitFilter();
-    }, 300);
-}
-
-function handleDropdownChange() {
-    clearTimeout(searchDebounceTimer);
-    emitFilter();
-}
-
-function handleClearSearch() {
-    clearTimeout(searchDebounceTimer);
-    search.value = '';
-    emitFilter();
-}
-
-function handleReset() {
-    clearTimeout(searchDebounceTimer);
-    search.value = '';
-    category.value = '';
-    collegeId.value = '';
-    severity.value = '';
-    dateRange.value = '';
-    emit('reset');
-}
+const SEVERITY_OPTIONS = [
+    { value: '', label: 'All', color: '#0038A8' },
+    { value: 'security', label: 'Security Alert', color: '#EF4444' },
+    { value: 'warning', label: 'Warning', color: '#F59E0B' },
+    { value: 'success', label: 'Completed', color: '#10B981' },
+    { value: 'info', label: 'Info', color: '#94A3B8' },
+];
 </script>
 
 <template>
-    <div class="px-4 py-2.5 border-b border-slate-100 shrink-0">
-        <!-- Controls Row -->
-        <div class="flex flex-col md:flex-row items-center gap-2">
-            <!-- Search input -->
-            <label class="input input-sm input-bordered flex items-center gap-2 flex-1 w-full rounded-lg bg-base-100">
-                <Search class="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                <input
-                    v-model="search"
-                    @input="handleSearchInput"
-                    type="text"
-                    placeholder="Search actor, action, document title, hash..."
-                    class="grow text-xs"
-                />
+    <div class="flex items-center gap-2.5 px-6 py-2.5 border-b border-slate-100 shrink-0 overflow-x-auto bg-white">
+        <!-- Subtabs as segmented control (only when active tab has subtabs) -->
+        <template v-if="subtabs && subtabs.length">
+            <div class="flex items-center bg-slate-100 rounded-lg p-0.5 shrink-0">
                 <button
-                    v-if="search"
+                    v-for="sub in subtabs"
+                    :key="sub.key"
                     type="button"
-                    @click="handleClearSearch"
-                    class="btn btn-ghost btn-xs btn-circle text-slate-400 hover:text-slate-600"
+                    @click="emit('selectSubtab', sub.key)"
+                    :class="[
+                        'flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-md whitespace-nowrap transition-all cursor-pointer',
+                        activeSubKey === sub.key
+                            ? 'bg-white text-slate-800 shadow-xs'
+                            : 'text-slate-500 hover:text-slate-700'
+                    ]"
                 >
-                    <X class="w-3 h-3" />
-                </button>
-            </label>
-
-            <!-- Dropdown Selectors Group -->
-            <div class="flex items-center gap-2 w-full md:w-auto flex-wrap sm:flex-nowrap">
-                <!-- Category -->
-                <select
-                    v-model="category"
-                    @change="handleDropdownChange"
-                    class="select select-sm select-bordered text-xs rounded-lg w-full sm:w-36 bg-base-100"
-                >
-                    <option value="">All Categories</option>
-                    <option value="auth">Authentication</option>
-                    <option value="document">Documents</option>
-                    <option value="accreditation">Accreditation</option>
-                    <option value="admin">System Admin</option>
-                </select>
-
-                <!-- College Scope (University-wide only) -->
-                <select
-                    v-if="isUniversityWide"
-                    v-model="collegeId"
-                    @change="handleDropdownChange"
-                    class="select select-sm select-bordered text-xs rounded-lg w-full sm:w-36 bg-base-100"
-                >
-                    <option value="">All Colleges</option>
-                    <option v-for="col in colleges" :key="col.id" :value="col.id">
-                        {{ col.code }}
-                    </option>
-                </select>
-
-                <!-- Severity Level -->
-                <select
-                    v-model="severity"
-                    @change="handleDropdownChange"
-                    class="select select-sm select-bordered text-xs rounded-lg w-full sm:w-32 bg-base-100"
-                >
-                    <option value="">All Severities</option>
-                    <option value="info">Info</option>
-                    <option value="success">Success</option>
-                    <option value="warning">Warning</option>
-                    <option value="security">Security</option>
-                </select>
-
-                <!-- Date Range -->
-                <select
-                    v-model="dateRange"
-                    @change="handleDropdownChange"
-                    class="select select-sm select-bordered text-xs rounded-lg w-full sm:w-28 bg-base-100"
-                >
-                    <option value="">All Time</option>
-                    <option value="today">Today</option>
-                    <option value="7days">7 Days</option>
-                    <option value="30days">30 Days</option>
-                </select>
-
-                <!-- Reset Button -->
-                <button
-                    v-if="hasActiveFilters"
-                    type="button"
-                    @click="handleReset"
-                    class="btn btn-xs btn-ghost text-xs text-slate-500 hover:text-slate-800 gap-1 shrink-0"
-                    title="Clear all filters"
-                >
-                    <RotateCcw class="w-3 h-3" />
-                    <span>Reset</span>
+                    <span>{{ sub.label }}</span>
+                    <span
+                        :class="[
+                            'text-[10px] tabular-nums font-semibold',
+                            activeSubKey === sub.key ? 'text-slate-500' : 'text-slate-400'
+                        ]"
+                    >
+                        {{ subTabCounts[sub.key] ?? 0 }}
+                    </span>
                 </button>
             </div>
+            <span class="w-px h-4 bg-slate-200 shrink-0" />
+        </template>
+
+        <!-- Search input -->
+        <label class="flex items-center gap-2 flex-1 min-w-[150px] max-w-[240px] border border-slate-200 rounded-lg bg-slate-50 px-3 py-[5px] focus-within:border-[#0038A8]/40 focus-within:bg-white focus-within:ring-2 focus-within:ring-[#0038A8]/8 transition-all">
+            <Search :size="11" class="text-slate-400 shrink-0" />
+            <input
+                type="text"
+                :value="search"
+                @input="emit('update:search', $event.target.value)"
+                placeholder="Search events, people…"
+                class="grow text-xs outline-none bg-transparent placeholder:text-slate-400 text-slate-700 border-none focus:outline-none focus:ring-0 p-0"
+            />
+            <button
+                v-if="search"
+                type="button"
+                @click="emit('update:search', '')"
+                class="text-slate-300 hover:text-slate-500 shrink-0 cursor-pointer"
+                aria-label="Clear search"
+            >
+                <X :size="10" />
+            </button>
+        </label>
+
+        <!-- Status filter — dot + label chips -->
+        <div class="flex items-center gap-1 shrink-0">
+            <button
+                v-for="opt in SEVERITY_OPTIONS"
+                :key="opt.value"
+                type="button"
+                @click="emit('update:sevFilter', opt.value)"
+                :style="sevFilter === opt.value ? { backgroundColor: opt.color } : {}"
+                :class="[
+                    'flex items-center gap-1 text-[11px] font-semibold px-2 py-1 rounded-md transition-all cursor-pointer',
+                    sevFilter === opt.value
+                        ? 'text-white shadow-xs'
+                        : 'text-slate-500 hover:text-slate-700 hover:bg-slate-100'
+                ]"
+            >
+                <span
+                    v-if="opt.value"
+                    class="w-1.5 h-1.5 rounded-full shrink-0"
+                    :style="{ backgroundColor: sevFilter === opt.value ? 'rgba(255,255,255,0.9)' : opt.color }"
+                />
+                <span>{{ opt.label }}</span>
+            </button>
+        </div>
+
+        <!-- Result count + reset -->
+        <div class="flex items-center gap-2 ml-auto shrink-0">
+            <span class="text-[11px] text-slate-400 tabular-nums">
+                <span class="font-semibold text-slate-600">{{ resultCount }}</span>
+                result{{ resultCount !== 1 ? 's' : '' }}
+            </span>
+            <button
+                v-if="hasFilters"
+                type="button"
+                @click="emit('clearFilters')"
+                class="flex items-center gap-1 text-[11px] text-slate-400 hover:text-slate-700 transition-colors cursor-pointer"
+                title="Reset filters"
+            >
+                <RotateCcw :size="9" />
+                <span>Reset</span>
+            </button>
         </div>
     </div>
 </template>
