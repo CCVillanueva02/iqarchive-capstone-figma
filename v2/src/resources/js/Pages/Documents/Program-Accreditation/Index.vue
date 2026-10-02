@@ -165,7 +165,7 @@ const activeCategoryTitle = computed(() => {
 
                 <ComplianceReportsView v-else-if="currentTier === 3 && activeCategory === 'compliance-reports'" :college="selectedCollege" :program="selectedProgram" :documents="documents" @open-upload="handleOpenUpload('compliance-reports')" @back-to-hub="handleBackToHub" />
 
-                <PppView v-else-if="currentTier === 3 && activeCategory === 'ppp'" :college="selectedCollege" :program="selectedProgram" :documents="documents" @open-upload="handleOpenUpload('ppp')" @back-to-hub="handleBackToHub" />
+                <PppView v-else-if="currentTier === 3 && activeCategory === 'ppp'" :college="selectedCollege" :program="selectedProgram" :documents="documents" @open-upload="handleOpenUpload('ppp', $event)" @back-to-hub="handleBackToHub" />
 
                 <NarrativeProfileView v-else-if="currentTier === 3 && activeCategory === 'narrative-profile'" :college="selectedCollege" :program="selectedProgram" :documents="documents" @open-upload="handleOpenUpload('narrative-profile')" @back-to-hub="handleBackToHub" />
             </div>
